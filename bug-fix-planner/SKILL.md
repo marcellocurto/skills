@@ -1,63 +1,205 @@
 ---
 name: bug-fix-planner
-description: Plan how to fix a specific bug, regression, or defect without implementing it. Trigger when the user asks to plan a fix, hands over a bug report, GitHub issue, error, stack trace, failing test, or crash log and wants a path forward, or describes broken behavior and asks what to do. Do NOT trigger for new features, unrelated refactors, or when the user wants the bug fixed immediately.
+description: Plan a concrete fix for a specific bug, regression, crash, failing test, error, or broken behavior without changing code. Use when the user wants a path forward from a bug report, GitHub issue, stack trace, logs, screenshots, repro steps, or failing test. Do not use for new features, broad refactors, general debugging advice, or requests to directly implement the fix.
 ---
 
 # Bug Fix Planner
 
-Produce a clear, actionable plan for fixing a specific bug or defect. **Plan only — do not modify code unless the user explicitly asks to implement.**
+Create a clear, evidence-based plan for fixing a specific bug or defect.
 
-## Investigate Before Planning
+**Plan only. Do not edit files, apply patches, create commits, or implement the fix unless the user explicitly asks for implementation.**
 
-1. Read all available context: user description, issue text, errors, logs, screenshots, files, and code references.
-2. If a GitHub issue is referenced and `gh` is available, run:
+The plan should be specific enough that another engineer could implement it without needing the original conversation.
 
-   ```bash
-   gh issue view <number-or-url> --comments
-   ```
+## Core Behavior
 
-3. Read the relevant code and trace the failing path. Do not plan against imagined code.
-4. Identify repro steps or a failing test. If you cannot reproduce, say so and make reproduction the first implementation step.
-5. Separate symptom from cause; the fix should target the cause.
+When invoked:
 
-Ask clarifying questions only when missing information blocks a useful plan. Otherwise make the smartest assumption, label it, and continue.
+1. Understand the reported bug, affected behavior, expected behavior, and impact.
+2. Inspect all available evidence before proposing a fix:
+   - user description
+   - issue text
+   - logs
+   - stack traces
+   - screenshots
+   - failing tests
+   - repro steps
+   - referenced files
+   - relevant source code
+3. Trace the likely failing path through the actual code when repository access is available.
+4. Distinguish confirmed facts from hypotheses.
+5. Recommend one primary fix path, not a loose list of possibilities.
+6. Keep the scope limited to resolving the bug.
+7. Include validation steps that would prove the bug is fixed and prevent regression.
+
+Ask clarifying questions only when the missing information prevents a useful plan. Otherwise, make the best reasonable assumption, label it clearly, and continue.
+
+## Source and Tool Use
+
+Use available tools to inspect the real issue and code. Do not plan against imagined implementation details.
+
+If a GitHub issue is referenced and a GitHub tool or `gh` CLI is available, inspect the issue and comments.
+
+For example:
+
+```bash
+gh issue view <number-or-url> --comments
+```
+
+If a repository, file, log, or test is referenced, inspect the relevant artifacts before producing the plan.
+
+If code or issue access is unavailable, say so explicitly and produce a plan based only on the provided evidence. In that case, make reproduction and code inspection early implementation steps.
+
+## Evidence Standard
+
+Classify important claims using one of these labels:
+
+- **Confirmed** — directly supported by code, logs, failing tests, issue text, or repro steps.
+- **Likely** — strongly suggested by available evidence but not fully proven.
+- **Unknown** — not yet supported; must be verified during implementation.
+
+Do not present a hypothesis as the root cause unless the evidence supports it. If the root cause is uncertain, explain how to confirm or falsify the leading hypothesis.
+
+## Investigation Checklist
+
+Before planning, try to answer:
+
+- What exactly is broken?
+- What behavior was expected?
+- When or where does the bug occur?
+- Is this a regression?
+- Can it be reproduced?
+- Is there a failing test?
+- What code path handles the broken behavior?
+- What changed recently, if known?
+- What is the smallest change that would fix the root cause?
+- What tests or manual checks would catch this in the future?
+
+Do not include this checklist verbatim unless it helps the final answer.
 
 ## Plan Structure
 
-Scale depth to the issue. A typo fix may need only a few short sections; a subtle race condition may need all of them. Drop sections that do not apply.
+Scale the depth to the bug. A simple bug may only need a few sections; a subtle production regression may need all of them. Omit sections that do not apply.
 
-1. **Goal** — what “fixed” means in one or two sentences.
-2. **Current understanding** — where it manifests, impact, and relevant files, lines, or logs.
-3. **Reproduction** — exact steps or failing test; if unknown, how to establish one.
-4. **Root cause** — confirmed cause with evidence, or a clearly labeled hypothesis plus how to confirm it.
-5. **Assumptions and open questions** — inferred details to verify during implementation.
-6. **Proposed fix** — recommended change, files/functions involved, and rationale.
-7. **Alternatives considered** — only when a real trade-off exists; explain why rejected.
-8. **Implementation steps** — ordered, concrete steps an engineer can follow.
-9. **Validation** — tests, manual checks, regression coverage, and edge cases.
-10. **Risks and rollback** — blast radius, compatibility concerns, and revert strategy.
-11. **Acceptance criteria** — short checklist proving the bug is fixed.
+Use this structure:
+
+```markdown
+# Bug Fix Plan: <short title>
+
+## Goal
+
+Define what “fixed” means in one or two sentences.
+
+## Current Understanding
+
+Summarize the bug, impact, affected area, and relevant evidence.
+
+Include files, functions, tests, logs, errors, or issue references when known.
+
+## Reproduction
+
+Describe the exact repro steps or failing test.
+
+If reproduction is not yet established, explain how to establish it first.
+
+## Root Cause
+
+State the confirmed root cause.
+
+If not confirmed, state the leading hypothesis, why it is likely, and how to verify it.
+
+## Proposed Fix
+
+Recommend the primary fix.
+
+Include:
+- files or functions to change
+- what should change
+- why this addresses the root cause
+- why this is preferable to broader alternatives
+
+## Implementation Steps
+
+Provide ordered, concrete steps.
+
+Each step should be actionable by an engineer.
+
+## Validation
+
+List tests and checks to run.
+
+Include:
+- existing tests to run
+- new or updated regression tests
+- manual verification steps
+- edge cases to cover
+
+## Risks and Rollback
+
+Describe likely risks, compatibility concerns, blast radius, and how to revert safely.
+
+## Acceptance Criteria
+
+Provide a short checklist proving the bug is fixed.
+```
 
 ## Choosing the Fix
 
-Prefer, in order:
+Prefer fixes in this order:
 
 1. Correctness
 2. Minimal scope
 3. Low risk
-4. Fit with existing code patterns
+4. Consistency with existing code patterns
+5. Maintainability
 
-Recommend the smallest change that resolves the root cause. Use deeper redesign only when a surface fix would leave the real defect intact.
+Recommend the smallest change that fixes the root cause. Do not recommend a redesign unless a smaller fix would leave the actual defect unresolved.
+
+## Handling Uncertainty
+
+When information is incomplete:
+
+- Do not block on clarification unless necessary.
+- State assumptions clearly.
+- Identify what must be verified.
+- Put verification early in the implementation steps.
+- Avoid overclaiming.
+
+Example wording:
+
+```markdown
+Root cause is not confirmed yet. The leading hypothesis is that ...
+This should be verified by ...
+If that hypothesis is wrong, the next most likely area to inspect is ...
+```
 
 ## Anti-Patterns
 
-- Listing vague options instead of picking a recommended path.
-- Padding with generic advice that does not reference this bug.
-- Planning without inspecting relevant code.
-- Expanding scope into unrelated refactors or cleanups.
-- Treating an unverified hypothesis as fact.
-- Skipping validation because the fix “looks obvious.”
+Avoid:
 
-## Output
+- modifying code during planning
+- inventing files, functions, or architecture
+- listing vague options without choosing a recommendation
+- giving generic debugging advice unrelated to the bug
+- expanding into unrelated refactors
+- treating unverified guesses as facts
+- skipping reproduction
+- skipping validation
+- proposing a workaround when the root cause can be fixed directly
+- producing a plan that requires reading the original conversation to understand
 
-Write Markdown with headings and checklists. The plan should stand alone so another engineer can implement it without reading the original conversation. Aim for actionable density, not length.
+## Output Requirements
+
+Write in Markdown with clear headings.
+
+Be concise but concrete. Prefer actionable density over length.
+
+The final plan must include:
+
+- the recommended fix path
+- the evidence behind it
+- implementation steps
+- validation steps
+- acceptance criteria
+
+When repo access or reproduction is unavailable, the plan must say so and include the exact next steps needed to close that gap.
