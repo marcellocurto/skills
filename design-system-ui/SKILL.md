@@ -4,11 +4,13 @@ description: Design and implement polished frontend UI that feels native to the 
 disable-model-invocation: true
 ---
 
-# Frontend Design
+# Design System UI
 
 Create polished, production-grade frontend interfaces with strong visual direction and real working code.
 
-The goal is to make the UI feel like the **best-designed version of this product**, not like a random standalone concept. Be creative, but ground every design choice in the codebase, design system, component library, and surrounding product experience.
+The goal is to make the UI feel like the **best-designed version of this product**, not like a random standalone concept or a bland assembly of existing components. Be creative, but ground every design choice in the codebase, design system, component library, and surrounding product experience.
+
+Avoid generic SaaS defaults. Existing components are raw material, not an excuse for visually flat output.
 
 ## Design Principle
 
@@ -22,7 +24,7 @@ A great result should feel:
 - consistent with existing components and tokens
 - memorable because of hierarchy, composition, detail, and interaction quality
 
-Do not default to bland consistency. Extend the system with taste.
+Do not default to bland consistency. Extend the system with taste. Bold maximalism and refined minimalism can both work, but inside a product system the key is intentional extension, not visual rebellion.
 
 ## Design Discovery
 
@@ -46,7 +48,7 @@ Build from these patterns first. If the codebase already has usable primitives, 
 
 ## Design Thinking
 
-Before implementing, form a short design direction.
+Before implementing, form a short product-aware direction.
 
 Answer these silently or briefly:
 
@@ -54,7 +56,10 @@ Answer these silently or briefly:
 - **User** — Who is using it, and what are they trying to decide or accomplish?
 - **Product context** — Is this a dashboard, marketing surface, admin tool, editor, onboarding flow, data view, commerce page, or content experience?
 - **System language** — What does the existing UI already communicate: calm, dense, playful, technical, premium, utilitarian, editorial, enterprise, minimal?
+- **Tone** — What should this surface feel like within that system: focused, confident, warm, precise, premium, dense, calm, urgent, celebratory?
+- **Constraints** — Which components, tokens, accessibility patterns, data states, or layout conventions must be respected?
 - **Upgrade move** — What can be made more distinctive while still fitting the product?
+- **Differentiation** — What makes this better than a default implementation?
 - **Signature moment** — What is the one detail users will remember?
 
 Choose a clear direction that belongs in the product, for example:
@@ -75,9 +80,9 @@ Use creativity through product-aware design moves.
 
 ### Typography
 
-Use the existing font system unless the task is greenfield or explicitly allows new typography.
+Use the existing font system unless the task is greenfield or explicitly allows new typography. Do not change fonts casually.
 
-Create distinction through:
+If the product uses a generic font, create distinction through:
 
 - stronger heading hierarchy
 - better line length
@@ -88,6 +93,10 @@ Create distinction through:
 - numeric emphasis for metrics
 - improved content rhythm
 - clearer primary and secondary text relationships
+- thoughtful casing and label density
+- stronger relationships between headings, metadata, and body text
+
+Typography should make the interface easier to scan and more memorable without fighting the product.
 
 ### Layout and Composition
 
@@ -109,7 +118,7 @@ Use:
 - spacious layouts for onboarding or marketing
 - cards and panels that create meaningful information zones
 
-Prefer composition that helps the user understand what matters first.
+Prefer composition that helps the user understand what matters first. Do not fall back to centered cards, equal-width grids, or predictable CRUD layouts unless they are genuinely the right structure.
 
 ### Color and Theme
 
@@ -118,6 +127,7 @@ Use existing semantic tokens and palette first.
 Create polish through:
 
 - better contrast between primary, secondary, and muted content
+- one dominant surface language
 - one confident accent area
 - semantic status colors
 - subtle surface layering
@@ -125,7 +135,7 @@ Create polish through:
 - tinted panels for emphasis
 - color used to guide attention, not decorate everything
 
-If the design system is minimal, introduce a small, coherent local palette using CSS variables or existing token patterns.
+Dominant surfaces with sharp accents usually outperform timid, evenly distributed palettes. If the design system is minimal, introduce a small, coherent local palette using CSS variables or existing token patterns.
 
 ### Surface and Detail
 
@@ -146,7 +156,7 @@ Good details include:
 - tasteful background texture or pattern when appropriate
 - clear affordances for interactive elements
 
-Details should make the interface easier to read, trust, or use.
+Details should make the interface easier to read, trust, or use. Decoration must have product purpose.
 
 ### Motion and Interaction
 
@@ -156,14 +166,16 @@ Prefer:
 
 - fast, subtle transitions
 - hover and press states
-- staged entrance for important content
+- one well-orchestrated reveal for important content
 - smooth expand/collapse
 - loading skeletons
 - optimistic state feedback
+- CSS transitions where sufficient
+- Motion or framework animation libraries when already available
 - scroll or reveal effects only for expressive surfaces
 - reduced-motion friendly behavior
 
-Motion should support comprehension. One well-placed interaction is better than many decorative animations.
+Motion should support comprehension. One polished interaction beats scattered micro-interactions.
 
 ### States
 
@@ -186,6 +198,17 @@ Include useful handling for:
 
 A production-grade UI feels considered in every state.
 
+## Complexity Should Match the Product Moment
+
+Match implementation complexity to the surface:
+
+- Dense expert workflows need compact information architecture, strong scan paths, and efficient controls.
+- Refined minimal surfaces need precise spacing, typography, alignment, and subtle interaction detail.
+- Marketing, onboarding, and empty states can support richer visuals and more expressive composition.
+- High-risk flows need clarity, trust cues, validation, and conservative interaction patterns.
+
+Do not add complexity for its own sake. Elegance comes from executing the product-appropriate direction well.
+
 ## Implementation Guidelines
 
 Write real, working frontend code that follows the project’s conventions.
@@ -204,9 +227,7 @@ Prefer:
 - scoped styling
 - reusable local abstractions when helpful
 
-Add new visual primitives only when they improve the design and can fit naturally into the system.
-
-If adding a new style pattern, make it look like something the product could adopt elsewhere.
+Add new visual primitives only when they improve the design and can fit naturally into the system. If adding a new style pattern, make it look like something the product could adopt elsewhere.
 
 ## When the Codebase Has No Clear Design System
 
@@ -224,6 +245,21 @@ Define:
 
 Keep it coherent and reusable. Make the design distinctive through a few strong choices rather than many unrelated effects.
 
+## Avoid
+
+- generic AI/SaaS aesthetics
+- bland CRUD screens
+- unstyled dumps of available components
+- arbitrary custom styles that fight existing tokens
+- decoration without product purpose
+- adding new components when existing primitives fit
+- matching the system so literally that the result has no hierarchy or point of view
+- centered-card layouts by default
+- timid, evenly distributed color usage
+- purple-gradient polish pasted onto unrelated products
+- changing typography, radius, shadows, or spacing without system-aware rationale
+- ignoring loading, empty, error, disabled, focus, hover, or mobile states
+
 ## Output Expectations
 
 When implementing, provide scoped code that is ready to run in the user’s stack.
@@ -240,4 +276,4 @@ When explaining the result, briefly mention:
 
 The finished UI should feel like it belongs in the product, but with better composition, clearer hierarchy, more thoughtful states, and stronger visual polish than a default implementation.
 
-It should be distinctive because it is deeply fitted to the product context — not because it ignores it.
+It should look like a senior product designer refined the existing system — not like an engineer merely assembled available components, and not like an unrelated concept pasted into the app.
