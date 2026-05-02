@@ -1,144 +1,97 @@
 ---
 name: github-issue-create
-description: Turn provided context, notes, bugs, feature requests, or conversation history into a detailed GitHub issue and create it with `gh issue create`. Use when the user asks to write/create/open/file a GitHub issue, especially phrasing like "based on this, write a GitHub issue". The issue must have a concise title, detailed description, clear acceptance criteria, an assignee inferred from mentioned users or the current GitHub CLI user, and inferred labels.
+description: Create detailed new GitHub issues from context using `gh issue create`. Use when asked to write/create/open/file/log/raise an issue, open a ticket, log a bug, file this, or track something in GitHub.
 ---
 
 # GitHub Issue Create
 
-Create high-quality GitHub issues from the user's provided context, then file them with GitHub CLI.
+Create new GitHub issues from user context. Draft first; run `gh issue create` only after explicit approval. If the user wants to modify an existing issue, do not create a duplicate.
 
-## When to Use
+## Requirements
 
-Use this skill when the user asks to:
-
-- Turn notes, bugs, feature requests, PR feedback, or conversation context into a GitHub issue
-- Create/open/file a GitHub issue with `gh issue create`
-- Write a concise issue title, detailed description, and acceptance criteria
-- Infer labels for an issue from the issue content
-
-## Core Requirements
-
-Every issue must include:
-
-1. **Concise title**: clear, specific, easily understandable, ideally under 80 characters.
-2. **Detailed description**: explain the problem/opportunity, relevant context, expected behavior, and scope.
-3. **Clear acceptance criteria**: use checkbox bullets that are observable and testable.
-4. **Assignee**: assign to the user explicitly mentioned in the request; if no assignee is mentioned, default to the current GitHub CLI user from `gh api user --jq .login`.
-5. **Labels**: infer appropriate labels from the issue content and available repository labels.
-6. **Creation command**: create the issue with `gh issue create`.
+- Title: concise, clear, ideally under 80 characters.
+- Body: use repo issue template when available; otherwise use `templates/bug.md`, `templates/feature.md`, or `templates/task.md`.
+- Acceptance criteria: observable, testable, and derived only from the user's input.
+- Assignee: mentioned GitHub user, otherwise current `gh` user.
+- Labels: use only labels that exist in the target repo.
 
 ## Workflow
 
-### 1. Confirm there is enough context
+1. **Preflight**
 
-If the request lacks enough information to create a useful issue, ask targeted follow-up questions before creating it. Do not invent core requirements.
+   ```bash
+   gh --version
+   gh auth status
+   gh repo view --json nameWithOwner --jq .nameWithOwner
+   ```
 
-Ask only for missing essentials, such as:
+   If not in the target repo, ask for `owner/name` and use `--repo owner/name` in all `gh` commands.
 
-- What repository should this be filed in?
-- Is this a bug, feature, task, documentation change, or refactor?
-- What behavior should be accepted as complete?
+2. **Ask only for missing essentials**
 
-If the repository is obvious from the current working directory and the context is sufficient, proceed without asking.
+   Get the target repo, issue type, and completion criteria if unclear. For bugs, get repro steps, expected behavior, actual behavior, and environment when missing. Do not invent requirements.
 
-### 2. Determine the assignee
+3. **Choose issue structure**
 
-If the user explicitly mentions an assignee, use that GitHub username. Strip a leading `@` when passing it to `gh issue create`.
+   ```bash
+   find .github/ISSUE_TEMPLATE -maxdepth 1 -type f 2>/dev/null
+   ```
 
-If no assignee is mentioned, use the currently authenticated GitHub CLI user:
+   Prefer matching repo templates, including YAML issue forms. If none apply, use:
+   - `templates/bug.md` for defects/regressions/repro-based issues
+   - `templates/feature.md` for user-facing enhancements
+   - `templates/task.md` for chores/docs/refactors/tests/maintenance
 
-```bash
-gh api user --jq .login
-```
+4. **Resolve assignee, labels, duplicates**
 
-If the current user cannot be determined, ask the user who should be assigned before creating the issue.
+   ```bash
+   gh api user --jq .login
+   gh label list --limit 100
+   gh issue list --search "<keywords>" --state all --limit 5
+   ```
 
-### 3. Inspect repository labels
+   - Use a mentioned assignee, stripping leading `@`; otherwise use the current `gh` user.
+   - Infer labels only from the actual `gh label list` output; never assume common labels exist or create labels unless asked.
+   - If likely duplicates appear, show them and ask whether to continue, update an existing issue, or stop.
 
-Before choosing labels, check available labels:
+5. **Draft carefully**
 
-```bash
-gh label list --limit 100
-```
+   - Keep the body grounded in the user's content.
+   - Keep acceptance criteria proportional: if the user gave 3 concrete bullets, usually produce ≤3 criteria.
+   - Do not add tests, docs, rollout, analytics, monitoring, migration, or follow-up work unless requested or required by the repo template.
+   - For bugs, criteria should normally state that the original repro now produces the expected behavior. Add regression-test criteria only when requested or clearly expected by repo norms.
+   - Omit `Why` if it duplicates the description.
 
-Infer labels only after seeing the repository's actual labels. Do not assume common labels exist.
+6. **Confirm before create**
 
-Map the issue content to whatever labels are available in the repository. For example, if labels like `bug`, `enhancement`, `documentation`, `refactor`, `tests`, `chore`, or `good first issue` appear in `gh label list`, use them only when they fit the issue content.
+   Show repo, title, body, assignee, labels, optional milestone/project metadata, and duplicate candidates. Ask for approval. For multiple issues, draft all first, get one combined approval, then create sequentially.
 
-Do not create new labels unless the user explicitly asks. If no appropriate existing labels are available, create the issue without labels and mention that no matching labels were available.
+7. **Create safely**
 
-### 4. Draft the issue body
+   Use `mktemp`; do not use a fixed temp path. Keep `<<'EOF'` quoted so user content is not shell-expanded.
 
-Use a readable Markdown structure. Prefer this template unless the repo has its own issue template:
+   ```bash
+   body_file="$(mktemp -t gh-issue-body.XXXXXX.md)"
+   cat > "$body_file" <<'EOF'
+   <approved issue body>
+   EOF
 
-```markdown
-## Description
+   gh issue create \
+     --title "<title>" \
+     --body-file "$body_file" \
+     --assignee "<assignee>" \
+     --label "<label>"
 
-<Explain the problem, feature, or task in detail. Include relevant context from the user request.>
+   rm -f "$body_file"
+   ```
 
-## Why
+   Repeat `--label` for multiple labels; omit labels if none match. Add `--repo`, `--milestone`, or `--project` only when needed/requested.
 
-<Explain the motivation, user impact, or value.>
+## Response
 
-## Scope
+Return the issue URL prominently, plus title, assignee, labels, and any milestone/project metadata used.
 
-<Clarify what should be included. If helpful, also list explicit non-goals.>
+## References
 
-## Acceptance Criteria
-
-- [ ] <Observable/testable criterion>
-- [ ] <Observable/testable criterion>
-- [ ] <Observable/testable criterion>
-
-## Notes
-
-<Optional implementation notes, links, constraints, or open questions. Omit if unnecessary.>
-```
-
-Acceptance criteria must be specific enough that someone can verify whether the issue is complete.
-
-### 5. Create the issue safely
-
-Write the body to a temporary Markdown file to avoid shell escaping issues:
-
-```bash
-cat > /tmp/issue-body.md <<'EOF'
-## Description
-
-...
-EOF
-```
-
-Then create the issue:
-
-```bash
-gh issue create \
-  --title "<concise title>" \
-  --body-file /tmp/issue-body.md \
-  --assignee "<assignee-login>" \
-  --label "<label-1>" \
-  --label "<label-2>"
-```
-
-Use repeated `--label` flags for multiple labels. Omit `--label` flags if no suitable existing labels are available.
-
-### 6. Report the result
-
-After creation, return:
-
-- The created issue URL from `gh issue create`
-- The selected title
-- The selected assignee
-- The selected labels, if any
-
-Keep the response brief.
-
-## Quality Bar
-
-Before running `gh issue create`, verify:
-
-- [ ] The title is concise and understandable without extra context
-- [ ] The body captures the user's actual request and does not add unsupported requirements
-- [ ] Acceptance criteria are testable and outcome-focused
-- [ ] Labels are inferred from available repository labels
-- [ ] The issue is assigned to the mentioned user or, if none was mentioned, the current GitHub CLI user
+- Templates: [bug](templates/bug.md), [feature](templates/feature.md), [task](templates/task.md)
+- Example: [settings crash bug](examples/settings-crash-bug.md)
