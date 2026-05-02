@@ -50,6 +50,18 @@ Create new GitHub issues from user context. Draft first; run `gh issue create` o
    gh issue list --search "<keywords>" --state all --limit 5
    ```
 
+   If you need to inspect an existing issue or duplicate candidate, avoid `gh issue view --comments`: some repos fail with GitHub's Projects (classic) GraphQL deprecation (`repository.issue.projectCards`). Use REST instead:
+
+   ```bash
+   repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
+   gh api "repos/$repo/issues/<number>" \
+     --jq '{number, title, state, author: .user.login, body, url: .html_url, labels: [.labels[].name], assignees: [.assignees[].login]}'
+   gh api "repos/$repo/issues/<number>/comments" --paginate \
+     --jq '.[] | {author: .user.login, created_at, body, url: .html_url}'
+   ```
+
+   When working outside the target repo, use `repo="owner/name"` or `gh repo view owner/name --json nameWithOwner --jq .nameWithOwner`.
+
    - Use a mentioned assignee, stripping leading `@`; otherwise use the current `gh` user.
    - Infer labels only from the actual `gh label list` output; never assume common labels exist or create labels unless asked.
    - If likely duplicates appear, show them and ask whether to continue, update an existing issue, or stop.
