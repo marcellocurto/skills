@@ -1,23 +1,26 @@
 ---
 name: github-issue-create
-description: Create detailed new GitHub issues from context using `gh issue create`. Use when asked to write/create/open/file/log/raise an issue, open a ticket, log a bug, file this, or track something in GitHub.
+description: Draft and create GitHub issues from user context using `gh issue create`. Use when asked to write, create, open, file, log, raise, or track an issue/ticket/bug in GitHub. Draft first and create only after explicit approval.
 ---
 
 # GitHub Issue Create
 
-Create new GitHub issues from user context. Draft first; run `gh issue create` only after explicit approval. If the user wants to modify an existing issue, do not create a duplicate.
+Create one or more GitHub issues from the user's context. Draft first; run `gh issue create` only after explicit approval. If the request is to modify or continue an existing issue, do not create a duplicate.
 
-## Requirements
+## Rules
 
-- Title: concise, clear, ideally under 80 characters.
-- Body: use repo issue template when available; otherwise use `templates/bug.md`, `templates/feature.md`, or `templates/task.md`.
-- Acceptance criteria: observable, testable, and derived only from the user's input.
-- Assignee: mentioned GitHub user, otherwise current `gh` user.
-- Labels: use only labels that exist in the target repo.
+- Use the target repo's templates, labels, and conventions when available.
+- Do not invent requirements, labels, assignees, milestones, projects, or acceptance criteria.
+- Use only labels returned by `gh label list`.
+- Keep titles concise, ideally under 80 characters.
+- Keep acceptance criteria observable, testable, and proportional to the user's input.
+- Do not add tests, docs, rollout, analytics, migrations, or follow-up work unless requested or required by the repo template.
+- For bugs, anchor the issue in repro, expected behavior, actual behavior, and environment when available.
+- Search for duplicates before creating; if likely duplicates exist, ask whether to stop, update, or continue.
 
 ## Workflow
 
-1. **Preflight**
+1. Preflight:
 
    ```bash
    gh --version
@@ -25,24 +28,19 @@ Create new GitHub issues from user context. Draft first; run `gh issue create` o
    gh repo view --json nameWithOwner --jq .nameWithOwner
    ```
 
-   If not in the target repo, ask for `owner/name` and use `--repo owner/name` in all `gh` commands.
+   If the target repo is unclear, ask for `owner/name` and pass `--repo owner/name`.
 
-2. **Ask only for missing essentials**
+2. Gather only missing essentials: repo, issue type, title/summary, completion criteria, and bug repro details when relevant.
 
-   Get the target repo, issue type, and completion criteria if unclear. For bugs, get repro steps, expected behavior, actual behavior, and environment when missing. Do not invent requirements.
-
-3. **Choose issue structure**
+3. Choose structure:
 
    ```bash
    find .github/ISSUE_TEMPLATE -maxdepth 1 -type f 2>/dev/null
    ```
 
-   Prefer matching repo templates, including YAML issue forms. If none apply, use:
-   - `templates/bug.md` for defects/regressions/repro-based issues
-   - `templates/feature.md` for user-facing enhancements
-   - `templates/task.md` for chores/docs/refactors/tests/maintenance
+   Prefer matching repo templates. Otherwise use `templates/bug.md`, `templates/feature.md`, or `templates/task.md`.
 
-4. **Resolve assignee, labels, duplicates**
+4. Resolve metadata:
 
    ```bash
    gh api user --jq .login
@@ -50,60 +48,36 @@ Create new GitHub issues from user context. Draft first; run `gh issue create` o
    gh issue list --search "<keywords>" --state all --limit 5
    ```
 
-   If you need to inspect an existing issue or duplicate candidate, avoid `gh issue view --comments`: some repos fail with GitHub's Projects (classic) GraphQL deprecation (`repository.issue.projectCards`). Use REST instead:
+   Use mentioned assignees; otherwise use the current `gh` user. Omit labels when none match.
+
+   If inspecting duplicate candidates, prefer REST when `gh issue view --comments` fails:
 
    ```bash
    repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
-   gh api "repos/$repo/issues/<number>" \
-     --jq '{number, title, state, author: .user.login, body, url: .html_url, labels: [.labels[].name], assignees: [.assignees[].login]}'
-   gh api "repos/$repo/issues/<number>/comments" --paginate \
-     --jq '.[] | {author: .user.login, created_at, body, url: .html_url}'
+   gh api "repos/$repo/issues/<number>"
+   gh api "repos/$repo/issues/<number>/comments" --paginate
    ```
 
-   When working outside the target repo, use `repo="owner/name"` or `gh repo view owner/name --json nameWithOwner --jq .nameWithOwner`.
+5. Draft the issue. Show repo, title, body, assignee, labels, duplicate candidates, and any milestone/project metadata. Ask for approval. For multiple issues, draft all first, then create sequentially after approval.
 
-   - Use a mentioned assignee, stripping leading `@`; otherwise use the current `gh` user.
-   - Infer labels only from the actual `gh label list` output; never assume common labels exist or create labels unless asked.
-   - If likely duplicates appear, show them and ask whether to continue, update an existing issue, or stop.
-
-5. **Draft carefully**
-
-   - Keep the body grounded in the user's content.
-   - Keep acceptance criteria proportional: if the user gave 3 concrete bullets, usually produce ≤3 criteria.
-   - Do not add tests, docs, rollout, analytics, monitoring, migration, or follow-up work unless requested or required by the repo template.
-   - For bugs, criteria should normally state that the original repro now produces the expected behavior. Add regression-test criteria only when requested or clearly expected by repo norms.
-   - Omit `Why` if it duplicates the description.
-
-6. **Confirm before create**
-
-   Show repo, title, body, assignee, labels, optional milestone/project metadata, and duplicate candidates. Ask for approval. For multiple issues, draft all first, get one combined approval, then create sequentially.
-
-7. **Create safely**
-
-   Use `mktemp`; do not use a fixed temp path. Keep `<<'EOF'` quoted so user content is not shell-expanded.
+6. Create after approval using a temp body file:
 
    ```bash
    body_file="$(mktemp -t gh-issue-body.XXXXXX.md)"
    cat > "$body_file" <<'EOF'
    <approved issue body>
    EOF
-
-   gh issue create \
-     --title "<title>" \
-     --body-file "$body_file" \
-     --assignee "<assignee>" \
-     --label "<label>"
-
+   gh issue create --title "<title>" --body-file "$body_file"
    rm -f "$body_file"
    ```
 
-   Repeat `--label` for multiple labels; omit labels if none match. Add `--repo`, `--milestone`, or `--project` only when needed/requested.
+   Add `--repo`, `--assignee`, repeated `--label`, `--milestone`, or `--project` only when resolved and approved.
 
-## Response
+## Output
 
-Return the issue URL prominently, plus title, assignee, labels, and any milestone/project metadata used.
+Return the issue URL, title, assignee, labels, and milestone/project metadata used.
 
-## References
+## Local References
 
-- Templates: [bug](templates/bug.md), [feature](templates/feature.md), [task](templates/task.md)
-- Example: [settings crash bug](examples/settings-crash-bug.md)
+- Templates: `templates/bug.md`, `templates/feature.md`, `templates/task.md`
+- Example: `examples/settings-crash-bug.md`
