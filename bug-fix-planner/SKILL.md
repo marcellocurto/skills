@@ -5,201 +5,54 @@ description: Plan a concrete fix for a specific bug, regression, crash, failing 
 
 # Bug Fix Planner
 
-Create a clear, evidence-based plan for fixing a specific bug or defect.
+Create an evidence-based fix plan for one specific defect.
 
-**Plan only. Do not edit files, apply patches, create commits, or implement the fix unless the user explicitly asks for implementation.**
+Plan only. Do not edit files, apply patches, commit, or implement unless the user explicitly asks.
 
-The plan should be specific enough that another engineer could implement it without needing the original conversation.
+## Standard
 
-## Core Behavior
+A good plan lets another engineer fix the bug without rereading the conversation. It identifies what is broken, why it is likely broken, the smallest safe fix, and how to prove it works.
 
-When invoked:
+## Workflow
 
-1. Understand the reported bug, affected behavior, expected behavior, and impact.
-2. Inspect all available evidence before proposing a fix:
-   - user description
-   - issue text
-   - logs
-   - stack traces
-   - screenshots
-   - failing tests
-   - repro steps
-   - referenced files
-   - relevant source code
-3. Trace the likely failing path through the actual code when repository access is available.
-4. Distinguish confirmed facts from hypotheses.
-5. Recommend one primary fix path, not a loose list of possibilities.
-6. Keep the scope limited to resolving the bug.
-7. Include validation steps that would prove the bug is fixed and prevent regression.
+1. Define the broken behavior, expected behavior, impact, and affected area.
+2. Inspect available evidence: issue text, logs, stack traces, screenshots, repro steps, failing tests, referenced files, and relevant source.
+3. Trace the failing path in real code when repository access exists.
+4. Classify important claims:
+   - **Confirmed**: directly supported by code, logs, tests, issue text, or repro.
+   - **Likely**: strongly suggested but not proven.
+   - **Unknown**: must be verified before implementation.
+5. Identify the root cause or the first verification step needed to confirm it.
+6. Recommend one primary fix path. Avoid loose option lists.
+7. Keep scope limited to the defect.
+8. Include validation and acceptance criteria.
 
-Ask clarifying questions only when the missing information prevents a useful plan. Otherwise, make the best reasonable assumption, label it clearly, and continue.
+Ask only when missing information prevents a useful plan. Otherwise state assumptions and continue.
 
-## Source and Tool Use
+## Fix Choice
 
-Use available tools to inspect the real issue and code. Do not plan against imagined implementation details.
+Prefer the smallest change that fixes the root cause and matches existing code patterns.
 
-If a GitHub issue is referenced and a GitHub tool or `gh` CLI is available, inspect the issue and comments.
+Do not recommend:
 
-For example:
+- a redesign when a local fix resolves the defect
+- unrelated cleanup or refactors
+- a workaround when the root cause can be fixed directly
+- a migration before proving the current model cannot work
+- tests that only mirror implementation
 
-```bash
-gh issue view <number-or-url> --comments
-```
+## Output
 
-If a repository, file, log, or test is referenced, inspect the relevant artifacts before producing the plan.
+Use concise Markdown. Include only relevant sections.
 
-If code or issue access is unavailable, say so explicitly and produce a plan based only on the provided evidence. In that case, make reproduction and code inspection early implementation steps.
+- **Goal**: what fixed means.
+- **Evidence**: confirmed facts, likely facts, unknowns.
+- **Reproduction**: exact repro or how to establish it first.
+- **Root cause**: confirmed cause, or leading hypothesis plus verification.
+- **Fix plan**: files/functions to change, what to change, and why this solves it.
+- **Steps**: ordered implementation steps.
+- **Validation**: existing tests, new regression coverage, manual checks, edge cases.
+- **Risks**: blast radius, compatibility concerns, rollback if relevant.
+- **Acceptance criteria**: short checklist proving the bug is fixed.
 
-## Evidence Standard
-
-Classify important claims using one of these labels:
-
-- **Confirmed** — directly supported by code, logs, failing tests, issue text, or repro steps.
-- **Likely** — strongly suggested by available evidence but not fully proven.
-- **Unknown** — not yet supported; must be verified during implementation.
-
-Do not present a hypothesis as the root cause unless the evidence supports it. If the root cause is uncertain, explain how to confirm or falsify the leading hypothesis.
-
-## Investigation Checklist
-
-Before planning, try to answer:
-
-- What exactly is broken?
-- What behavior was expected?
-- When or where does the bug occur?
-- Is this a regression?
-- Can it be reproduced?
-- Is there a failing test?
-- What code path handles the broken behavior?
-- What changed recently, if known?
-- What is the smallest change that would fix the root cause?
-- What tests or manual checks would catch this in the future?
-
-Do not include this checklist verbatim unless it helps the final answer.
-
-## Plan Structure
-
-Scale the depth to the bug. A simple bug may only need a few sections; a subtle production regression may need all of them. Omit sections that do not apply.
-
-Use this structure:
-
-```markdown
-# Bug Fix Plan: <short title>
-
-## Goal
-
-Define what “fixed” means in one or two sentences.
-
-## Current Understanding
-
-Summarize the bug, impact, affected area, and relevant evidence.
-
-Include files, functions, tests, logs, errors, or issue references when known.
-
-## Reproduction
-
-Describe the exact repro steps or failing test.
-
-If reproduction is not yet established, explain how to establish it first.
-
-## Root Cause
-
-State the confirmed root cause.
-
-If not confirmed, state the leading hypothesis, why it is likely, and how to verify it.
-
-## Proposed Fix
-
-Recommend the primary fix.
-
-Include:
-- files or functions to change
-- what should change
-- why this addresses the root cause
-- why this is preferable to broader alternatives
-
-## Implementation Steps
-
-Provide ordered, concrete steps.
-
-Each step should be actionable by an engineer.
-
-## Validation
-
-List tests and checks to run.
-
-Include:
-- existing tests to run
-- new or updated regression tests
-- manual verification steps
-- edge cases to cover
-
-## Risks and Rollback
-
-Describe likely risks, compatibility concerns, blast radius, and how to revert safely.
-
-## Acceptance Criteria
-
-Provide a short checklist proving the bug is fixed.
-```
-
-## Choosing the Fix
-
-Prefer fixes in this order:
-
-1. Correctness
-2. Minimal scope
-3. Low risk
-4. Consistency with existing code patterns
-5. Maintainability
-
-Recommend the smallest change that fixes the root cause. Do not recommend a redesign unless a smaller fix would leave the actual defect unresolved.
-
-## Handling Uncertainty
-
-When information is incomplete:
-
-- Do not block on clarification unless necessary.
-- State assumptions clearly.
-- Identify what must be verified.
-- Put verification early in the implementation steps.
-- Avoid overclaiming.
-
-Example wording:
-
-```markdown
-Root cause is not confirmed yet. The leading hypothesis is that ...
-This should be verified by ...
-If that hypothesis is wrong, the next most likely area to inspect is ...
-```
-
-## Anti-Patterns
-
-Avoid:
-
-- modifying code during planning
-- inventing files, functions, or architecture
-- listing vague options without choosing a recommendation
-- giving generic debugging advice unrelated to the bug
-- expanding into unrelated refactors
-- treating unverified guesses as facts
-- skipping reproduction
-- skipping validation
-- proposing a workaround when the root cause can be fixed directly
-- producing a plan that requires reading the original conversation to understand
-
-## Output Requirements
-
-Write in Markdown with clear headings.
-
-Be concise but concrete. Prefer actionable density over length.
-
-The final plan must include:
-
-- the recommended fix path
-- the evidence behind it
-- implementation steps
-- validation steps
-- acceptance criteria
-
-When repo access or reproduction is unavailable, the plan must say so and include the exact next steps needed to close that gap.
+When repo access or reproduction is unavailable, say so and make closing that gap the first step.
