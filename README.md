@@ -14,7 +14,7 @@ npx skills add marcellocurto/skills
 | --- | --- |
 | [`bug-fix-planner`](bug-fix-planner/SKILL.md) | Plans a concrete fix for a specific bug, regression, crash, failing test, error, or broken behavior without changing code. |
 | [`design-system-ui`](design-system-ui/SKILL.md) | Designs and implements polished frontend UI that feels native to the existing product, codebase, component library, and design system. |
-| [`github-issue-create`](github-issue-create/SKILL.md) | Drafts and creates GitHub issues from user context with `gh issue create`, using repo templates, real labels, duplicate checks, and explicit approval before creation. |
+| [`github-issue-create`](github-issue-create/SKILL.md) | Drafts and creates GitHub issues with `gh`, including bugs, tasks, features, PRD/spec breakdowns, sub-issues, blockers, and vertical slices after explicit approval. |
 | [`relentless-review`](relentless-review/SKILL.md) | Stress-tests work by asking whether it is actually the best path, challenging assumptions, edge cases, and failure modes without forcing unnecessary changes. |
 | [`simplify-code-solution`](simplify-code-solution/SKILL.md) | Simplifies code fixes and feature proposals by grounding them in real requirements, existing code, and the smallest complete solution. |
 | [`test-quality-audit`](test-quality-audit/SKILL.md) | Audits tests for real bug-finding value and classifies what to keep, fix, cut, or add. |
@@ -36,9 +36,9 @@ The aim is not bland consistency. Existing components are the starting material 
 
 ### [`github-issue-create`](github-issue-create/SKILL.md)
 
-For turning scattered context into a GitHub issue a maintainer can actually act on. It drafts first, checks the target repo, uses repository templates and labels, searches for duplicates, and only creates the issue after explicit approval.
+For turning scattered context into GitHub issues a maintainer can actually act on. It drafts first, checks the target repo, reads the right issue template, searches for duplicates, and only creates issues after explicit approval.
 
-The important restraint is scope control. It should capture what is known, ask for what is missing, and avoid inventing labels, acceptance criteria, rollout work, or follow-up tasks just to make the issue look fuller.
+It handles both single issues and issue sets: bugs, tasks, features, PRD/spec breakdowns, sub-issues, blockers, and vertical slices. The important restraint is scope control: capture what is known, ask for what is missing, and avoid inventing metadata or acceptance criteria.
 
 ### [`relentless-review`](relentless-review/SKILL.md)
 
