@@ -12,15 +12,15 @@ Create issues for the import reliability work:
 - Retry work is blocked by header validation.
 ```
 
-## Drafted relationship plan
+## Drafted breakdown and relationship plan
 
 ```text
 Parent issue:
-- Make CSV imports reliable
+- Make CSV imports reliable (Type: HITL, Blocked by: None)
 
-Sub-issues:
-- Validate CSV headers before upload
-- Add resumable import retries
+Vertical slices / sub-issues:
+- Validate CSV headers before upload (Type: AFK, Parent: Make CSV imports reliable, Blocked by: None)
+- Add resumable import retries (Type: AFK, Parent: Make CSV imports reliable, Blocked by: Validate CSV headers before upload)
 
 Dependencies:
 - Add resumable import retries is blocked by Validate CSV headers before upload

@@ -16,6 +16,7 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 - Add tests, docs, rollout, analytics, migrations, or follow-up work only when useful, not as boilerplate.
 - For bugs, include repro, expected/actual behavior, and environment when known.
 - Search for duplicates before creating; ask how to proceed if likely duplicates exist.
+- For requested issue sets, prefer thin vertical slices that are independently buildable and verifiable over horizontal slices split only by implementation layer.
 
 ## Workflow
 
@@ -53,7 +54,7 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
    gh api "repos/$repo/issues/<number>/comments" --paginate
    ```
 
-5. Draft the issue. Show repo, title, body, assignee, labels/new labels, duplicate candidates, any milestone/project metadata, and any parent/sub-issue or blocking relationships. Ask for approval. For multiple issues, draft all first.
+5. Draft the issue. Show repo, title, body, assignee, labels/new labels, duplicate candidates, any milestone/project metadata, and any parent/sub-issue or blocking relationships. Ask for approval. For multiple issues from a plan or spec, use the multi-issue breakdown below before drafting final issue bodies.
 
 6. After approval, create missing labels first, then create the issue:
 
@@ -73,9 +74,19 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 
    If creating multiple issues that should have parent/sub-issue or blocked-by relationships with one another, read `examples/multiple-related-issues.md` for the `gh api graphql` follow-up commands.
 
+## Multi-Issue Breakdown
+
+Use this path when the user asks to turn a plan, spec, PRD, or broad feature into multiple implementation issues.
+
+1. Work from the current conversation. If the user gives an issue number, URL, or path as source material, fetch and read the full body and comments before breaking it down.
+2. Draft a complete issue set as vertical slices. Each slice should deliver a narrow, end-to-end path through the relevant layers and be demoable or verifiable on its own.
+3. For each proposed issue, show title, type (`AFK` for implementable without more human input, `HITL` for requiring a decision or review), parent/source issue if any, blockers, and a short acceptance criteria summary.
+4. Ask the user to approve granularity, dependency order, and `AFK`/`HITL` markings before creating anything.
+5. After approval, publish blockers first, then dependents. Add `## Parent` and `## Blocked by` sections only when relevant, and use real issue URLs once they exist. If relationships should be first-class in GitHub, read `examples/multiple-related-issues.md` and apply the `gh api graphql` follow-up commands after creation.
+
 ## Output
 
-Return the issue URL, title, assignee, labels, and milestone/project metadata used.
+Return the issue URL, title, assignee, labels, milestone/project metadata used, and any created parent/sub-issue or blocked-by relationships.
 
 ## Local References
 
