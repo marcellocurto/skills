@@ -3,40 +3,33 @@
 ## User context
 
 ```text
-Create issues for the import reliability work:
-- Epic: Make CSV imports reliable.
-- Task: Validate CSV headers before upload.
-- Task: Add resumable import retries.
-- The header validation task should be a sub-issue of the epic.
-- The retry task should be a sub-issue of the epic.
+Create issues for import reliability:
+- Tracking issue: Make CSV imports reliable.
+- Sub-issues: validate CSV headers; add resumable import retries.
 - Retry work is blocked by header validation.
-- User story: as an operator, I can recover from import problems without restarting the whole import manually.
+- User story: as an operator, I can recover from import problems without restarting manually.
 ```
 
 ## Drafted breakdown and relationship plan
 
 ```text
-Parent tracking issue:
-- Make CSV imports reliable (Kind: Tracking, Blocked by: None)
-
-Vertical slices / sub-issues:
-1. Validate CSV headers before upload
+1. Make CSV imports reliable
+   - Kind: Tracking
+   - Blocked by: None
+2. Validate CSV headers before upload
    - Kind: Implementation
    - Type: AFK
    - Parent: Make CSV imports reliable
    - Blocked by: None
-   - User stories covered: operator can see import problems before upload work starts
-   - Acceptance summary: invalid/missing headers produce actionable validation errors
-2. Add resumable import retries
+   - User stories covered: detect import problems before upload work starts
+   - Acceptance summary: invalid or missing headers produce actionable errors
+3. Add resumable import retries
    - Kind: Implementation
    - Type: AFK
    - Parent: Make CSV imports reliable
    - Blocked by: Validate CSV headers before upload
-   - User stories covered: operator can recover from import problems without restarting manually
-   - Acceptance summary: failed imports can resume from the last safe point
-
-Dependencies:
-- Add resumable import retries is blocked by Validate CSV headers before upload
+   - User stories covered: recover from import problems without restarting manually
+   - Acceptance summary: failed imports resume from the last safe point
 ```
 
 ## Example commands after approval
