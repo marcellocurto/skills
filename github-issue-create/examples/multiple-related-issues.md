@@ -10,17 +10,30 @@ Create issues for the import reliability work:
 - The header validation task should be a sub-issue of the epic.
 - The retry task should be a sub-issue of the epic.
 - Retry work is blocked by header validation.
+- User story: as an operator, I can recover from import problems without restarting the whole import manually.
 ```
 
 ## Drafted breakdown and relationship plan
 
 ```text
-Parent issue:
-- Make CSV imports reliable (Type: HITL, Blocked by: None)
+Parent tracking issue:
+- Make CSV imports reliable (Kind: Tracking, Blocked by: None)
 
 Vertical slices / sub-issues:
-- Validate CSV headers before upload (Type: AFK, Parent: Make CSV imports reliable, Blocked by: None)
-- Add resumable import retries (Type: AFK, Parent: Make CSV imports reliable, Blocked by: Validate CSV headers before upload)
+1. Validate CSV headers before upload
+   - Kind: Implementation
+   - Type: AFK
+   - Parent: Make CSV imports reliable
+   - Blocked by: None
+   - User stories covered: operator can see import problems before upload work starts
+   - Acceptance summary: invalid/missing headers produce actionable validation errors
+2. Add resumable import retries
+   - Kind: Implementation
+   - Type: AFK
+   - Parent: Make CSV imports reliable
+   - Blocked by: Validate CSV headers before upload
+   - User stories covered: operator can recover from import problems without restarting manually
+   - Acceptance summary: failed imports can resume from the last safe point
 
 Dependencies:
 - Add resumable import retries is blocked by Validate CSV headers before upload

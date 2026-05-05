@@ -16,7 +16,9 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 - Add tests, docs, rollout, analytics, migrations, or follow-up work only when useful, not as boilerplate.
 - For bugs, include repro, expected/actual behavior, and environment when known.
 - Search for duplicates before creating; ask how to proceed if likely duplicates exist.
-- For requested issue sets, prefer thin vertical slices that are independently buildable and verifiable over horizontal slices split only by implementation layer.
+- Do not close, edit, or otherwise modify parent/source issues unless the user explicitly asks.
+- For requested issue sets, prefer thin vertical slices that are independently buildable and verifiable over horizontal slices split only by implementation layer. A vertical slice is the smallest end-to-end behavior that can be implemented, verified, and reviewed independently.
+- Prefer `AFK` slices. Mark `HITL` only when a real human decision, design review, product call, or architecture choice blocks implementation.
 
 ## Workflow
 
@@ -34,7 +36,7 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 
 3. Choose structure:
 
-   Use `templates/bug.md`, `templates/feature.md`, or `templates/task.md` by default. Use repo templates only when requested.
+   Use `templates/bug.md`, `templates/feature.md`, or `templates/task.md` by default. For approved implementation slices from a multi-issue breakdown, use `templates/vertical-slice.md`. Use repo templates only when requested.
 
 4. Resolve metadata:
 
@@ -79,10 +81,11 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 Use this path when the user asks to turn a plan, spec, PRD, or broad feature into multiple implementation issues.
 
 1. Work from the current conversation. If the user gives an issue number, URL, or path as source material, fetch and read the full body and comments before breaking it down.
-2. Draft a complete issue set as vertical slices. Each slice should deliver a narrow, end-to-end path through the relevant layers and be demoable or verifiable on its own.
-3. For each proposed issue, show title, type (`AFK` for implementable without more human input, `HITL` for requiring a decision or review), parent/source issue if any, blockers, and a short acceptance criteria summary.
-4. Ask the user to approve granularity, dependency order, and `AFK`/`HITL` markings before creating anything.
-5. After approval, publish blockers first, then dependents. Add `## Parent` and `## Blocked by` sections only when relevant, and use real issue URLs once they exist. If relationships should be first-class in GitHub, read `examples/multiple-related-issues.md` and apply the `gh api graphql` follow-up commands after creation.
+2. For implementation issue sets, briefly inspect relevant code, docs, and ADRs when available so titles and descriptions use the project's actual domain language. Skip this for simple one-off issues or when the user already provided enough concrete context.
+3. Draft a complete issue set as vertical slices. Do not split into "backend", "frontend", or "tests" issues unless that is itself the smallest independently verifiable behavior.
+4. Present the proposed breakdown as a numbered list. For each issue, show title, kind (`Tracking` or `Implementation`), type (`AFK` or `HITL` for implementation issues only), parent/source issue if any, blockers, user stories covered if the source material has them, and a short acceptance criteria summary.
+5. Ask the user whether the granularity is right, the dependencies are correct, any slices should be merged or split, and the `AFK`/`HITL` markings are correct. Iterate until the user approves the breakdown.
+6. After approval, publish blockers first, then dependents. Use `templates/vertical-slice.md` for implementation slices. Add `## Parent` and `## Blocked by` sections only when relevant. For dependent issue bodies, wait until blockers exist and use real issue URLs instead of placeholder titles. If the user requested parent/sub-issue, blocked-by, or blocking relationships, create the issues first, then read `examples/multiple-related-issues.md` and apply the `gh api graphql` follow-up commands. If a relationship command fails, report which relationships were not created and keep the textual issue links in the issue bodies.
 
 ## Output
 
@@ -90,6 +93,6 @@ Return the issue URL, title, assignee, labels, milestone/project metadata used, 
 
 ## Local References
 
-- Templates: `templates/bug.md`, `templates/feature.md`, `templates/task.md`
+- Templates: `templates/bug.md`, `templates/feature.md`, `templates/task.md`, `templates/vertical-slice.md`
 - Example: `examples/settings-crash-bug.md`
 - Related issue example: `examples/multiple-related-issues.md`
