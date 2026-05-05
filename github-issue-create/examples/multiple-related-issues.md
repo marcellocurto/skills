@@ -10,7 +10,7 @@ Create issues for import reliability:
 - User story: as an operator, I can recover from import problems without restarting manually.
 ```
 
-## Drafted breakdown and relationship plan
+## Drafted breakdown
 
 ```text
 1. Make CSV imports reliable
@@ -20,21 +20,25 @@ Create issues for import reliability:
    - Kind: Implementation
    - Type: AFK
    - Parent: Make CSV imports reliable
+   - End-to-end behavior: invalid CSV headers fail before upload work starts.
+   - Demo / verification path: upload a CSV with missing headers and verify actionable errors.
    - Blocked by: None
-   - User stories covered: detect import problems before upload work starts
+   - Tracer-bullet: yes - validation runs from upload path to user-facing error.
    - Acceptance summary: invalid or missing headers produce actionable errors
 3. Add resumable import retries
    - Kind: Implementation
    - Type: AFK
    - Parent: Make CSV imports reliable
+   - End-to-end behavior: failed imports resume without manual restart.
+   - Demo / verification path: interrupt an import, retry it, verify it resumes from the last safe point.
    - Blocked by: Validate CSV headers before upload
-   - User stories covered: recover from import problems without restarting manually
+   - Tracer-bullet: yes - retry behavior runs through import state and operator workflow.
    - Acceptance summary: failed imports resume from the last safe point
 ```
 
 ## Example commands after approval
 
-Create all approved issues first and capture the issue URLs. The `*_body_file` variables are the approved issue body files from the normal workflow.
+Create approved issues and capture URLs. `*_body_file` variables come from the normal workflow.
 
 ```bash
 repo="$(gh repo view --json nameWithOwner --jq .nameWithOwner)"
@@ -44,7 +48,7 @@ headers_url="$(gh issue create --repo "$repo" --title "Validate CSV headers befo
 retries_url="$(gh issue create --repo "$repo" --title "Add resumable import retries" --body-file "$retries_body_file")"
 ```
 
-Resolve issue numbers and REST IDs from the URLs:
+Resolve numbers and REST IDs:
 
 ```bash
 epic_number="${epic_url##*/}"
@@ -66,7 +70,7 @@ for child_id in "$headers_id" "$retries_id"; do
 done
 ```
 
-Add the dependency. GitHub models this as "blocked issue is blocked by blocking issue":
+Add the dependency:
 
 ```bash
 gh api \
@@ -75,7 +79,7 @@ gh api \
   -f issue_id="$headers_id"
 ```
 
-Verify before the final response:
+Verify:
 
 ```bash
 gh api "repos/$repo/issues/$epic_number/sub_issues" --jq '.[].number'

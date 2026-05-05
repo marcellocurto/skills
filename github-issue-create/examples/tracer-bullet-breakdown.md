@@ -9,9 +9,9 @@ Break down notification preferences:
 - Admins can see when a preference changed.
 ```
 
-## Bad horizontal breakdown
+## Bad: horizontal layers
 
-Do not create this shape unless the user explicitly asks for layer work:
+Do not use this shape:
 
 ```text
 1. Add notification preference database fields
@@ -20,34 +20,37 @@ Do not create this shape unless the user explicitly asks for layer work:
 4. Add tests
 ```
 
-Each issue depends on the others before any behavior is demoable. This is not independently grabbable.
+No issue is demoable alone.
 
-## Good tracer-bullet breakdown
+## Good: tracer bullets
 
 ```text
 1. Let users opt out of marketing emails
    - Kind: Implementation
    - Type: AFK
-   - End-to-end behavior: a user toggles marketing emails off and marketing sends respect it.
-   - Demo / verification path: toggle the setting, reload it, trigger or inspect a marketing send path, and verify the user is excluded.
+   - End-to-end behavior: user disables marketing email; marketing sends exclude them.
+   - Demo / verification path: toggle setting, reload it, inspect/send marketing email, verify exclusion.
    - Blocked by: None
-   - Acceptance summary: preference persists, UI reflects it, send path checks it, tests cover the behavior.
+   - Tracer-bullet: yes - preference works from UI through send path.
+   - Acceptance summary: preference persists; UI reflects it; send path checks it; tests cover behavior.
 
 2. Let users opt out of product update emails
    - Kind: Implementation
    - Type: AFK
-   - End-to-end behavior: a user toggles product updates off and product update sends respect it.
-   - Demo / verification path: toggle the setting, reload it, trigger or inspect a product update send path, and verify the user is excluded.
-   - Blocked by: Let users opt out of marketing emails, if it establishes the shared preference pattern
-   - Acceptance summary: preference persists, UI reflects it, send path checks it, tests cover the behavior.
+   - End-to-end behavior: user disables product updates; product sends exclude them.
+   - Demo / verification path: toggle setting, reload it, inspect/send product update, verify exclusion.
+   - Blocked by: marketing opt-out, if it establishes the shared preference path.
+   - Tracer-bullet: yes - second preference works through the same path.
+   - Acceptance summary: preference persists; UI reflects it; send path checks it; tests cover behavior.
 
 3. Show admins preference change history
    - Kind: Implementation
    - Type: AFK
-   - End-to-end behavior: when a user changes a notification preference, admins can see the change in the audit view.
-   - Demo / verification path: change a preference as a user, open the admin audit view, and verify the change is visible.
-   - Blocked by: first preference slice that emits the audit event
-   - Acceptance summary: event is recorded, admin view shows who changed what and when, tests cover the audit path.
+   - End-to-end behavior: admin sees preference changes in audit history.
+   - Demo / verification path: change preference, open admin audit view, verify change appears.
+   - Blocked by: first preference slice that emits audit events.
+   - Tracer-bullet: yes - change flows from user action to admin audit view.
+   - Acceptance summary: event records who/what/when; admin view shows it; tests cover audit path.
 ```
 
-The first slice may include the minimal schema, API, UI, send-path, and test work needed for marketing opt-out. Later slices reuse or extend that path instead of creating separate layer tickets.
+First slice may include minimal schema, API, UI, send-path, and tests. Later slices reuse or extend it. Do not create separate layer tickets.

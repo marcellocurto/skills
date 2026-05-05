@@ -4,11 +4,11 @@
 
 ## What to build
 
-<Concise end-to-end behavior this slice delivers. Describe behavior, not a layer-by-layer task list.>
+<End-to-end behavior this slice delivers. Do not list layer tasks.>
 
 ## Demo / verification path
 
-<How someone can verify this slice works after merge without waiting for another same-story layer ticket.>
+<How to verify this works after merge.>
 
 ## Acceptance criteria
 

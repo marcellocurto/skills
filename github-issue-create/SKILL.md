@@ -1,56 +1,65 @@
 ---
 name: github-issue-create
-description: Draft and create GitHub issues with `gh`. Use for filing bugs/tasks/features, turning PRDs/specs/plans/epics into issues or tickets, creating sub-issues, setting blockers, or splitting work into tracer-bullet vertical slices. Draft first; after approval create the issues and any approved native GitHub parent/sub-issue or blocked-by relationships in the same turn.
+description: Draft and create GitHub issues with `gh`. Use for bugs, tasks, features, PRDs, specs, epics, sub-issues, blockers, and tracer-bullet vertical issue breakdowns. Draft first. After approval, create issues and approved native GitHub relationships in the same turn.
 ---
 
 # GitHub Issue Create
 
-Draft GitHub issues, get approval, then create them with `gh`, including approved native GitHub relationships.
+Draft issues, get approval, then create them with `gh`.
 
 `AFK` = implementable end-to-end without human input. `HITL` = blocked on a human decision such as design, product, or architecture.
 
 ## Rules
 
-- Create only after explicit approval; never duplicate or modify parent/source issues unless asked.
+- Create only after explicit approval.
+- Never duplicate or modify parent/source issues unless asked.
 - Use facts from the user, repo, or fetched source issue. Do not invent requirements, metadata, or acceptance criteria.
 - Prefer existing labels; draft new labels only with approval.
 - Keep titles under 80 characters when practical; keep acceptance criteria observable and proportional.
 - Add tests, docs, rollout, analytics, migrations, or follow-up work only when useful.
 - Bugs need repro, expected/actual behavior, environment, and impact when known.
 - Search duplicates; ask how to proceed on likely matches.
-- For issue sets, use tracer-bullet vertical slices. Layer-only issue sets are wrong by default.
-- Prefer `AFK`; mark `HITL` only when implementation is blocked by a real human decision, design review, product call, or architecture choice.
-- Body links are not enough for approved parent/sub-issue or blocked-by relationships. Create the native GitHub relationships before the final response.
+- Multi-issue implementation plans must use tracer-bullet vertical slices. Do not create layer-only issue sets.
+- Prefer `AFK`. Use `HITL` only for a real design, product, or architecture decision.
+- Body links do not satisfy approved parent/sub-issue or blocked-by relationships. Create native GitHub relationships.
 
 ## Tracer-Bullet Issue Architecture
 
-For any plan, spec, PRD, epic, or multi-issue request, first design the issue architecture as tracer-bullet vertical slices. Do not draft final issue bodies until the breakdown passes this check.
+Use this for any plan, spec, PRD, epic, or multi-issue request. Design the breakdown before drafting final issue bodies.
 
-A valid implementation slice:
+Each implementation issue must:
 
-- Delivers one narrow user-visible or operational behavior end-to-end.
-- Cuts through every relevant integration point needed for that behavior: data, API, worker, UI, docs, tests, or analytics as applicable.
-- Is demoable or verifiable after merge without waiting for another same-story layer ticket.
-- Has acceptance criteria that prove behavior, not completion of implementation chores.
-- Can be owned, reviewed, and merged independently.
+- Deliver one narrow user-visible or operational behavior end-to-end.
+- Include every needed layer for that behavior: data, API, worker, UI, docs, tests, analytics.
+- Be demoable or verifiable after merge.
+- Prove behavior in acceptance criteria, not implementation chores.
+- Be independently ownable, reviewable, and mergeable.
 
-Rewrite the breakdown if an implementation issue is mainly `create schema`, `add endpoint`, `build UI`, `write tests`, `wire service`, or another horizontal layer. Those tasks belong inside the first vertical slice that needs them.
+Reject implementation issues that are mainly `create schema`, `add endpoint`, `build UI`, `write tests`, `wire service`, or another horizontal layer. Fold that work into the first slice that needs it.
 
-Horizontal/enabler issues are exceptions. Use one only when the work is independently valuable or cannot be safely folded into a vertical slice, such as discovery, a required architecture decision, a broad migration, or a mechanical refactor. In the breakdown, mark it `Architecture exception: <why this is not a vertical slice>`.
+Horizontal/enabler issues are exceptions. Use them only for discovery, required decisions, broad migrations, mechanical refactors, or work that is independently valuable. Mark each one:
 
-Before showing the user a multi-issue breakdown, run this self-check: "If this issue merged alone, what behavior could be demonstrated or verified?" If the answer is "none", split or reshape it.
+`Architecture exception: <why this is not a vertical slice>`
 
-Issue architecture check format: for each implementation issue, include `Tracer-bullet: yes - <demoable behavior>` or `Architecture exception: <reason>`.
+Self-check every implementation issue before showing it:
+
+`If this merged alone, what behavior could be demonstrated or verified?`
+
+Required check line:
+
+- `Tracer-bullet: yes - <demoable behavior>`
+- or `Architecture exception: <reason>`
 
 ## Native Relationship Contract
 
-If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blocking`, that approval includes the GitHub relationship mutations. Do not ask for separate approval after issue creation.
+Approval of `Parent`, `Sub-issues`, `Blocked by`, or `Blocking` includes approval to create the native GitHub relationship. Do not ask again after issue creation.
 
-- Parent/sub-issue: create the child issue, resolve the child issue REST `id`, then call `POST repos/$repo/issues/$parent_number/sub_issues` with `sub_issue_id`.
-- Blocked-by/blocking: create both issues, resolve the blocking issue REST `id`, then call `POST repos/$repo/issues/$blocked_number/dependencies/blocked_by` with `issue_id` = the blocking issue.
-- Existing parent issues count too when the user approved a parent/sub-issue relationship to that issue. Do not mutate a source issue that was only used as context unless the user asked for it to be the parent.
-- `## Parent` and `## Blocked by` sections in issue bodies are only an audit trail. They do not satisfy the request by themselves.
-- A multi-issue create is not complete until all approved relationship mutations have been attempted and verified, or exact failures are reported.
+- Parent/sub-issue: identify parent, create child, resolve child REST `id`, then `POST repos/$repo/issues/$parent_number/sub_issues` with `sub_issue_id`.
+- Blocked-by/blocking: identify/create both issues, resolve blocking issue REST `id`, then `POST repos/$repo/issues/$blocked_number/dependencies/blocked_by` with `issue_id`.
+- Existing parent issues count when approved as parents.
+- Source/context issues do not count as parents unless the user says so.
+- Body sections are audit trail only.
+- Multi-issue creation is complete only after relationship mutations are attempted and verified, or exact failures are reported.
 
 ## Workflow
 
@@ -62,7 +71,7 @@ If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blockin
    gh repo view --json nameWithOwner --jq .nameWithOwner
    ```
 
-   If `gh` is missing or auth fails, stop and tell the user to install `gh` or run `gh auth login`. If repo is unclear, ask for `owner/name` and pass `--repo owner/name`.
+   If `gh` is missing or auth fails, stop and report the fix. If repo is unclear, ask for `owner/name` and pass `--repo owner/name`.
 
 2. Resolve context and metadata:
 
@@ -72,11 +81,11 @@ If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blockin
    gh issue list --search "<keywords>" --state all --limit 5
    ```
 
-   Gather only missing essentials: repo, issue type, title/summary, completion criteria, bug repro details, and explicit relationships. Use mentioned assignees; otherwise default to the current `gh` user.
+   Gather only missing essentials: repo, issue type, title/summary, completion criteria, bug repro details, and explicit relationships. Use mentioned assignees; otherwise use the current `gh` user.
 
    Duplicate search: use 2-4 distinctive nouns from the title, retry broader terms if empty, and ask whether to use/link/proceed on likely matches.
 
-   Source issue/path: fetch full body and comments. Implementation issue sets: briefly inspect relevant code, docs, or ADRs when available so titles use project language and slices match real integration paths.
+   Source issue/path: fetch full body and comments. For implementation issue sets, inspect relevant code, docs, or ADRs so titles use project language and slices match real integration paths.
 
    If `gh issue view --comments` fails, use REST:
 
@@ -92,11 +101,11 @@ If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blockin
 
    For one issue, follow the template. Show repo, title, body, assignee, labels/new labels, duplicate candidates, milestone/project metadata, and relationships.
 
-   For a plan/spec, draft a numbered tracer-bullet breakdown before final bodies. Read `examples/tracer-bullet-breakdown.md` before drafting any multi-issue implementation breakdown. Each item must show title, kind (`Tracking` or `Implementation`), type (`AFK`/`HITL` for implementation only), parent/source, blockers, end-to-end behavior, demo/verification path, user stories when present, and acceptance summary. For any horizontal exception, include `Architecture exception`. Ask about granularity, dependencies, merge/split choices, and `AFK`/`HITL`; iterate until approved. Use `templates/vertical-slice.md` for approved implementation slices.
+   For a plan/spec, read `examples/tracer-bullet-breakdown.md`, then draft a numbered tracer-bullet breakdown before final bodies. Each item must show: title, kind, `AFK`/`HITL`, parent/source, blockers, end-to-end behavior, demo/verification path, user stories when present, acceptance summary, and architecture check. Iterate on granularity, dependencies, merge/split choices, and `AFK`/`HITL`. Use `templates/vertical-slice.md` for approved implementation slices.
 
-   Relationship plan: explicitly list native GitHub relationships that will be created after approval, for example `Parent: #12 -> #14 via sub_issues` and `Blocked by: #18 blocked by #17 via dependencies/blocked_by`. For not-yet-created issues, list titles and say IDs will be resolved after creation.
+   Relationship plan: list native relationships to create after approval, e.g. `Parent: #12 -> #14 via sub_issues` and `Blocked by: #18 blocked by #17 via dependencies/blocked_by`. For new issues, use titles and say IDs will be resolved after creation.
 
-   Approval format: repo/title header, fenced full body, metadata block, issue architecture check, relationship plan, then `Reply "create" to proceed, or tell me what to change.`
+   Approval format: repo/title header, fenced full body, metadata block, relationship plan, then `Reply "create" to proceed, or tell me what to change.` For multi-issue drafts, include the issue architecture check before the relationship plan.
 
 4. Publish after approval:
 
@@ -116,7 +125,7 @@ If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blockin
 
    On label failure, report the reason and ask whether to drop or retry. On partial multi-issue failure, list created URLs, uncreated issues, and pending relationships; do not retry destructively.
 
-   Relationship step, before final response: if the approved draft or relationship plan contains parent/sub-issue, blocked-by, or blocking relationships, create the issues first, then read `examples/multiple-related-issues.md` and run the REST `gh api` follow-up commands. Verify sub-issues with `GET repos/$repo/issues/$parent_number/sub_issues`; verify blockers with `GET repos/$repo/issues/$blocked_number/dependencies/blocked_by`. If a relationship command fails, report exactly which relationships were not created; keep textual issue links in the bodies.
+   Relationship step before final response: if the approved draft or plan contains parent/sub-issue, blocked-by, or blocking relationships, create issues first, then read `examples/multiple-related-issues.md` and run the REST `gh api` commands. Verify sub-issues with `GET repos/$repo/issues/$parent_number/sub_issues`; verify blockers with `GET repos/$repo/issues/$blocked_number/dependencies/blocked_by`. Report exact failures.
 
 ## Output
 
