@@ -29,7 +29,7 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 
    If the target repo is unclear, ask for `owner/name` and pass `--repo owner/name`.
 
-2. Gather only missing essentials: repo, issue type, title/summary, completion criteria, and bug repro details when relevant.
+2. Gather only missing essentials: repo, issue type, title/summary, completion criteria, bug repro details when relevant, and any explicit relationships between issues.
 
 3. Choose structure:
 
@@ -53,7 +53,7 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
    gh api "repos/$repo/issues/<number>/comments" --paginate
    ```
 
-5. Draft the issue. Show repo, title, body, assignee, labels/new labels, duplicate candidates, and any milestone/project metadata. Ask for approval. For multiple issues, draft all first.
+5. Draft the issue. Show repo, title, body, assignee, labels/new labels, duplicate candidates, any milestone/project metadata, and any parent/sub-issue or blocking relationships. Ask for approval. For multiple issues, draft all first.
 
 6. After approval, create missing labels first, then create the issue:
 
@@ -71,6 +71,8 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 
    Add `--repo`, `--assignee`, repeated `--label`, `--milestone`, or `--project` only when resolved and approved.
 
+   If creating multiple issues that should have parent/sub-issue or blocked-by relationships with one another, read `examples/multiple-related-issues.md` for the `gh api graphql` follow-up commands.
+
 ## Output
 
 Return the issue URL, title, assignee, labels, and milestone/project metadata used.
@@ -79,3 +81,4 @@ Return the issue URL, title, assignee, labels, and milestone/project metadata us
 
 - Templates: `templates/bug.md`, `templates/feature.md`, `templates/task.md`
 - Example: `examples/settings-crash-bug.md`
+- Related issue example: `examples/multiple-related-issues.md`
