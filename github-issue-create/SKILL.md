@@ -1,6 +1,6 @@
 ---
 name: github-issue-create
-description: Draft and create GitHub issues with `gh`. Use for filing bugs/tasks/features, turning PRDs/specs/plans/epics into issues or tickets, creating sub-issues, setting blockers, or splitting work into vertical slices. Draft first; after approval create the issues and any approved native GitHub parent/sub-issue or blocked-by relationships in the same turn.
+description: Draft and create GitHub issues with `gh`. Use for filing bugs/tasks/features, turning PRDs/specs/plans/epics into issues or tickets, creating sub-issues, setting blockers, or splitting work into tracer-bullet vertical slices. Draft first; after approval create the issues and any approved native GitHub parent/sub-issue or blocked-by relationships in the same turn.
 ---
 
 # GitHub Issue Create
@@ -18,9 +18,29 @@ Draft GitHub issues, get approval, then create them with `gh`, including approve
 - Add tests, docs, rollout, analytics, migrations, or follow-up work only when useful.
 - Bugs need repro, expected/actual behavior, environment, and impact when known.
 - Search duplicates; ask how to proceed on likely matches.
-- For issue sets, use vertical slices: the smallest end-to-end behavior that can be implemented, verified, and reviewed independently. Avoid layer-only tickets unless the layer work is independently valuable.
+- For issue sets, use tracer-bullet vertical slices. Layer-only issue sets are wrong by default.
 - Prefer `AFK`; mark `HITL` only when implementation is blocked by a real human decision, design review, product call, or architecture choice.
 - Body links are not enough for approved parent/sub-issue or blocked-by relationships. Create the native GitHub relationships before the final response.
+
+## Tracer-Bullet Issue Architecture
+
+For any plan, spec, PRD, epic, or multi-issue request, first design the issue architecture as tracer-bullet vertical slices. Do not draft final issue bodies until the breakdown passes this check.
+
+A valid implementation slice:
+
+- Delivers one narrow user-visible or operational behavior end-to-end.
+- Cuts through every relevant integration point needed for that behavior: data, API, worker, UI, docs, tests, or analytics as applicable.
+- Is demoable or verifiable after merge without waiting for another same-story layer ticket.
+- Has acceptance criteria that prove behavior, not completion of implementation chores.
+- Can be owned, reviewed, and merged independently.
+
+Rewrite the breakdown if an implementation issue is mainly `create schema`, `add endpoint`, `build UI`, `write tests`, `wire service`, or another horizontal layer. Those tasks belong inside the first vertical slice that needs them.
+
+Horizontal/enabler issues are exceptions. Use one only when the work is independently valuable or cannot be safely folded into a vertical slice, such as discovery, a required architecture decision, a broad migration, or a mechanical refactor. In the breakdown, mark it `Architecture exception: <why this is not a vertical slice>`.
+
+Before showing the user a multi-issue breakdown, run this self-check: "If this issue merged alone, what behavior could be demonstrated or verified?" If the answer is "none", split or reshape it.
+
+Issue architecture check format: for each implementation issue, include `Tracer-bullet: yes - <demoable behavior>` or `Architecture exception: <reason>`.
 
 ## Native Relationship Contract
 
@@ -56,7 +76,7 @@ If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blockin
 
    Duplicate search: use 2-4 distinctive nouns from the title, retry broader terms if empty, and ask whether to use/link/proceed on likely matches.
 
-   Source issue/path: fetch full body and comments. Implementation issue sets: briefly inspect relevant code, docs, or ADRs when available so titles use project language.
+   Source issue/path: fetch full body and comments. Implementation issue sets: briefly inspect relevant code, docs, or ADRs when available so titles use project language and slices match real integration paths.
 
    If `gh issue view --comments` fails, use REST:
 
@@ -72,11 +92,11 @@ If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blockin
 
    For one issue, follow the template. Show repo, title, body, assignee, labels/new labels, duplicate candidates, milestone/project metadata, and relationships.
 
-   For a plan/spec, draft a numbered breakdown before final bodies. Each item must show title, kind (`Tracking` or `Implementation`), type (`AFK`/`HITL` for implementation only), parent/source, blockers, user stories when present, and acceptance summary. Ask about granularity, dependencies, merge/split choices, and `AFK`/`HITL`; iterate until approved. Use `templates/vertical-slice.md` for approved implementation slices.
+   For a plan/spec, draft a numbered tracer-bullet breakdown before final bodies. Read `examples/tracer-bullet-breakdown.md` before drafting any multi-issue implementation breakdown. Each item must show title, kind (`Tracking` or `Implementation`), type (`AFK`/`HITL` for implementation only), parent/source, blockers, end-to-end behavior, demo/verification path, user stories when present, and acceptance summary. For any horizontal exception, include `Architecture exception`. Ask about granularity, dependencies, merge/split choices, and `AFK`/`HITL`; iterate until approved. Use `templates/vertical-slice.md` for approved implementation slices.
 
    Relationship plan: explicitly list native GitHub relationships that will be created after approval, for example `Parent: #12 -> #14 via sub_issues` and `Blocked by: #18 blocked by #17 via dependencies/blocked_by`. For not-yet-created issues, list titles and say IDs will be resolved after creation.
 
-   Approval format: repo/title header, fenced full body, metadata block, relationship plan, then `Reply "create" to proceed, or tell me what to change.`
+   Approval format: repo/title header, fenced full body, metadata block, issue architecture check, relationship plan, then `Reply "create" to proceed, or tell me what to change.`
 
 4. Publish after approval:
 
@@ -105,4 +125,4 @@ Return one line per issue: `#N - title - URL - labels`. For multi-issue runs, ad
 ## References
 
 - Templates: `templates/bug.md`, `templates/feature.md`, `templates/task.md`, `templates/vertical-slice.md`
-- Examples: `examples/settings-crash-bug.md`, `examples/multiple-related-issues.md`
+- Examples: `examples/settings-crash-bug.md`, `examples/multiple-related-issues.md`, `examples/tracer-bullet-breakdown.md`
