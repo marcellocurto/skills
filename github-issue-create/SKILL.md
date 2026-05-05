@@ -9,14 +9,13 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 
 ## Rules
 
-- Use the target repo's templates, labels, and conventions when available.
-- Do not invent requirements, labels, assignees, milestones, projects, or acceptance criteria.
-- Use only labels returned by `gh label list`.
+- Do not invent requirements, assignees, milestones, projects, or acceptance criteria.
+- Labels: use a fitting existing label; if none fits, draft and create a new one after approval.
 - Keep titles concise, ideally under 80 characters.
-- Keep acceptance criteria observable, testable, and proportional to the user's input.
-- Do not add tests, docs, rollout, analytics, migrations, or follow-up work unless requested or required by the repo template.
-- For bugs, anchor the issue in repro, expected behavior, actual behavior, and environment when available.
-- Search for duplicates before creating; if likely duplicates exist, ask whether to stop, update, or continue.
+- Keep acceptance criteria observable, testable, and proportional.
+- Add tests, docs, rollout, analytics, migrations, or follow-up work only when useful, not as boilerplate.
+- For bugs, include repro, expected/actual behavior, and environment when known.
+- Search for duplicates before creating; ask how to proceed if likely duplicates exist.
 
 ## Workflow
 
@@ -34,11 +33,7 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
 
 3. Choose structure:
 
-   ```bash
-   find .github/ISSUE_TEMPLATE -maxdepth 1 -type f 2>/dev/null
-   ```
-
-   Prefer matching repo templates. Otherwise use `templates/bug.md`, `templates/feature.md`, or `templates/task.md`.
+   Use `templates/bug.md`, `templates/feature.md`, or `templates/task.md` by default. Use repo templates only when requested.
 
 4. Resolve metadata:
 
@@ -48,7 +43,7 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
    gh issue list --search "<keywords>" --state all --limit 5
    ```
 
-   Use mentioned assignees; otherwise use the current `gh` user. Omit labels when none match.
+   Use mentioned assignees; otherwise use the current `gh` user. Select existing labels or draft new label metadata (`name`, `color`, `description`) when needed.
 
    If inspecting duplicate candidates, prefer REST when `gh issue view --comments` fails:
 
@@ -58,11 +53,14 @@ Create one or more GitHub issues from the user's context. Draft first; run `gh i
    gh api "repos/$repo/issues/<number>/comments" --paginate
    ```
 
-5. Draft the issue. Show repo, title, body, assignee, labels, duplicate candidates, and any milestone/project metadata. Ask for approval. For multiple issues, draft all first, then create sequentially after approval.
+5. Draft the issue. Show repo, title, body, assignee, labels/new labels, duplicate candidates, and any milestone/project metadata. Ask for approval. For multiple issues, draft all first.
 
-6. Create after approval using a temp body file:
+6. After approval, create missing labels first, then create the issue:
 
    ```bash
+   # If needed:
+   gh label create "<name>" --color "<hex>" --description "<description>"
+
    body_file="$(mktemp -t gh-issue-body.XXXXXX.md)"
    cat > "$body_file" <<'EOF'
    <approved issue body>
