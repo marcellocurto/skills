@@ -1,11 +1,11 @@
 ---
 name: github-issue-create
-description: Draft and create GitHub issues with `gh`. Use for filing bugs/tasks/features, turning PRDs/specs/plans/epics into issues or tickets, creating sub-issues, setting blockers, or splitting work into vertical slices. Draft first; create only after explicit approval.
+description: Draft and create GitHub issues with `gh`. Use for filing bugs/tasks/features, turning PRDs/specs/plans/epics into issues or tickets, creating sub-issues, setting blockers, or splitting work into vertical slices. Draft first; after approval create the issues and any approved native GitHub parent/sub-issue or blocked-by relationships in the same turn.
 ---
 
 # GitHub Issue Create
 
-Draft GitHub issues, get approval, then create them with `gh`.
+Draft GitHub issues, get approval, then create them with `gh`, including approved native GitHub relationships.
 
 `AFK` = implementable end-to-end without human input. `HITL` = blocked on a human decision such as design, product, or architecture.
 
@@ -20,6 +20,17 @@ Draft GitHub issues, get approval, then create them with `gh`.
 - Search duplicates; ask how to proceed on likely matches.
 - For issue sets, use vertical slices: the smallest end-to-end behavior that can be implemented, verified, and reviewed independently. Avoid layer-only tickets unless the layer work is independently valuable.
 - Prefer `AFK`; mark `HITL` only when implementation is blocked by a real human decision, design review, product call, or architecture choice.
+- Body links are not enough for approved parent/sub-issue or blocked-by relationships. Create the native GitHub relationships before the final response.
+
+## Native Relationship Contract
+
+If the approved draft includes `Parent`, `Sub-issues`, `Blocked by`, or `Blocking`, that approval includes the GitHub relationship mutations. Do not ask for separate approval after issue creation.
+
+- Parent/sub-issue: create the child issue, resolve the child issue REST `id`, then call `POST repos/$repo/issues/$parent_number/sub_issues` with `sub_issue_id`.
+- Blocked-by/blocking: create both issues, resolve the blocking issue REST `id`, then call `POST repos/$repo/issues/$blocked_number/dependencies/blocked_by` with `issue_id` = the blocking issue.
+- Existing parent issues count too when the user approved a parent/sub-issue relationship to that issue. Do not mutate a source issue that was only used as context unless the user asked for it to be the parent.
+- `## Parent` and `## Blocked by` sections in issue bodies are only an audit trail. They do not satisfy the request by themselves.
+- A multi-issue create is not complete until all approved relationship mutations have been attempted and verified, or exact failures are reported.
 
 ## Workflow
 
@@ -63,7 +74,9 @@ Draft GitHub issues, get approval, then create them with `gh`.
 
    For a plan/spec, draft a numbered breakdown before final bodies. Each item must show title, kind (`Tracking` or `Implementation`), type (`AFK`/`HITL` for implementation only), parent/source, blockers, user stories when present, and acceptance summary. Ask about granularity, dependencies, merge/split choices, and `AFK`/`HITL`; iterate until approved. Use `templates/vertical-slice.md` for approved implementation slices.
 
-   Approval format: repo/title header, fenced full body, metadata block, then `Reply "create" to proceed, or tell me what to change.`
+   Relationship plan: explicitly list native GitHub relationships that will be created after approval, for example `Parent: #12 -> #14 via sub_issues` and `Blocked by: #18 blocked by #17 via dependencies/blocked_by`. For not-yet-created issues, list titles and say IDs will be resolved after creation.
+
+   Approval format: repo/title header, fenced full body, metadata block, relationship plan, then `Reply "create" to proceed, or tell me what to change.`
 
 4. Publish after approval:
 
@@ -83,11 +96,11 @@ Draft GitHub issues, get approval, then create them with `gh`.
 
    On label failure, report the reason and ask whether to drop or retry. On partial multi-issue failure, list created URLs, uncreated issues, and pending relationships; do not retry destructively.
 
-   If the user requested parent/sub-issue, blocked-by, or blocking relationships, create the issues first, then read `examples/multiple-related-issues.md` and run the `gh api graphql` follow-up commands. If a relationship command fails, report exactly which relationships were not created; keep textual issue links in the bodies.
+   Relationship step, before final response: if the approved draft or relationship plan contains parent/sub-issue, blocked-by, or blocking relationships, create the issues first, then read `examples/multiple-related-issues.md` and run the REST `gh api` follow-up commands. Verify sub-issues with `GET repos/$repo/issues/$parent_number/sub_issues`; verify blockers with `GET repos/$repo/issues/$blocked_number/dependencies/blocked_by`. If a relationship command fails, report exactly which relationships were not created; keep textual issue links in the bodies.
 
 ## Output
 
-Return one line per issue: `#N - title - URL - labels`. For multi-issue runs, add relationships and skipped metadata.
+Return one line per issue: `#N - title - URL - labels`. For multi-issue runs, add `Relationships created:` and `Relationships failed/skipped:`. Do not omit this relationship status.
 
 ## References
 

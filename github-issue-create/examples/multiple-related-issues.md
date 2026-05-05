@@ -44,44 +44,42 @@ headers_url="$(gh issue create --repo "$repo" --title "Validate CSV headers befo
 retries_url="$(gh issue create --repo "$repo" --title "Add resumable import retries" --body-file "$retries_body_file")"
 ```
 
-Resolve GitHub node IDs from the URLs:
+Resolve issue numbers and REST IDs from the URLs:
 
 ```bash
-epic_id="$(gh issue view "$epic_url" --repo "$repo" --json id --jq .id)"
-headers_id="$(gh issue view "$headers_url" --repo "$repo" --json id --jq .id)"
-retries_id="$(gh issue view "$retries_url" --repo "$repo" --json id --jq .id)"
+epic_number="${epic_url##*/}"
+headers_number="${headers_url##*/}"
+retries_number="${retries_url##*/}"
+
+headers_id="$(gh api "repos/$repo/issues/$headers_number" --jq .id)"
+retries_id="$(gh api "repos/$repo/issues/$retries_number" --jq .id)"
 ```
 
 Add the sub-issues:
 
 ```bash
 for child_id in "$headers_id" "$retries_id"; do
-  gh api graphql \
-    -f query='
-      mutation($parent: ID!, $child: ID!) {
-        addSubIssue(input: { issueId: $parent, subIssueId: $child }) {
-          issue { number url }
-          subIssue { number url }
-        }
-      }' \
-    -f parent="$epic_id" \
-    -f child="$child_id"
+  gh api \
+    -X POST \
+    "repos/$repo/issues/$epic_number/sub_issues" \
+    -f sub_issue_id="$child_id"
 done
 ```
 
 Add the dependency. GitHub models this as "blocked issue is blocked by blocking issue":
 
 ```bash
-gh api graphql \
-  -f query='
-    mutation($blocked: ID!, $blocking: ID!) {
-      addBlockedBy(input: { issueId: $blocked, blockingIssueId: $blocking }) {
-        issue { number url }
-        blockingIssue { number url }
-      }
-    }' \
-  -f blocked="$retries_id" \
-  -f blocking="$headers_id"
+gh api \
+  -X POST \
+  "repos/$repo/issues/$retries_number/dependencies/blocked_by" \
+  -f issue_id="$headers_id"
 ```
 
-For "A is blocking B", call `addBlockedBy` with `blocked=B` and `blocking=A`.
+Verify before the final response:
+
+```bash
+gh api "repos/$repo/issues/$epic_number/sub_issues" --jq '.[].number'
+gh api "repos/$repo/issues/$retries_number/dependencies/blocked_by" --jq '.[].number'
+```
+
+For "A is blocking B", add a blocked-by relationship on B with A's REST issue `id`.
