@@ -5,28 +5,26 @@ description: Quickly draft one straightforward GitHub issue with minimal metadat
 
 # GitHub Issue Quick Create
 
-Draft one straightforward GitHub issue with minimal ceremony, then create it with `gh` only after explicit approval.
+Draft one straightforward GitHub issue, then create it with `gh` after explicit approval.
 
-Use this skill when the user wants to file one simple bug, task, chore, or feature issue and does not need issue architecture, duplicate research, relationships, projects, milestones, or rich metadata.
-
-If the request is complex, use `github-issue-create` instead.
+Use this for one simple bug, task, chore, or feature. Use `github-issue-create` for complex issue work.
 
 ## Success Criteria
 
 - The user sees one clear draft with repo, title, body, and any explicit labels or assignees.
-- The draft contains only grounded details from the user, repository, or narrowly inspected code.
-- Missing details are requested only when the issue would otherwise be unusable.
-- No GitHub issue is created until the user explicitly approves the draft.
-- The final response reports the created issue number, title, and URL.
+- The draft uses only details from the user, repository, or narrowly inspected code.
+- Missing details are requested only when the draft would be unusable.
+- No issue is created until the user explicitly approves the draft.
+- The final response includes the issue number, title, and URL.
 
 ## Rules
 
 - Create only after explicit approval such as `create`, `ship it`, or `looks good, create it`.
 - Handle exactly one issue.
-- Ask for missing essentials before drafting.
 - Do not search for duplicates unless the user explicitly asks.
-- Do not infer labels, assignees, milestones, projects, priorities, severity, relationships, or new labels.
-- Use explicit metadata only. If the user provides a label or assignee, pass it to `gh issue create`; do not validate it up front unless needed.
+- Ask for missing essentials before drafting.
+- Use explicit metadata only. Do not infer labels, assignees, milestones, projects, priority, severity, or relationships.
+- If the user provides a label or assignee, pass it to `gh issue create`; do not validate it up front unless needed.
 - Do not create labels.
 - Inspect code only when the user points at a file, function, failing test, stack trace, error, or repo-specific behavior.
 - Keep code inspection narrow. Do not perform broad architecture discovery.
@@ -38,20 +36,19 @@ Use `github-issue-create` instead when the request includes:
 - Multiple issues, ticket breakdowns, epics, PRDs, specs, or implementation plans.
 - Parent issues, sub-issues, blockers, dependencies, or native GitHub relationships.
 - Duplicate search unless the user only wants a quick manual check for one issue.
-- Label creation, milestone/project planning, or broad metadata cleanup.
-- Tracer-bullet slicing, architecture decisions, or source issue decomposition.
+- Label creation, milestone or project planning, broad metadata cleanup, tracer-bullet slicing, architecture decisions, or source issue decomposition.
 
 ## Essentials
 
-Ask concise follow-up questions only for details that would make the issue unusable:
+Ask only for details that would make the draft unusable:
 
 - Target repository, if `gh repo view` cannot resolve it.
 - Issue type, if it is unclear whether this is a bug, task, chore, or feature.
-- One-sentence expected outcome, if the request is too vague to title or verify.
+- Expected outcome, if the request is too vague to title or verify.
 - For bugs: expected and actual behavior, if either is missing.
 - For tasks/features: at least one observable completion criterion, if none can be derived.
 
-Do not ask for labels, assignees, milestones, projects, severity, priority, non-goals, rollout, analytics, tests, docs, or relationships unless the user already mentions them.
+Do not ask for metadata, non-goals, rollout, analytics, tests, docs, or relationships unless the user mentions them.
 
 ## Workflow
 
@@ -65,7 +62,7 @@ Do not ask for labels, assignees, milestones, projects, severity, priority, non-
 
    If `gh` is missing or auth fails, stop and report the fix. If the repo is unclear, ask for `owner/name` and pass `--repo owner/name`.
 
-2. Resolve only what is needed. Use the current repo unless the user named another repo. Resolve `assign me` with `gh api user --jq .login`. If the user explicitly asks for duplicate search, run one targeted `gh issue list --search "<2-4 distinctive terms>" --state all --limit 5`, show likely matches, and ask how to proceed.
+2. Resolve only what is needed. Use the current repo unless the user named another repo. Resolve `assign me` with `gh api user --jq .login`. If asked to search duplicates, run one targeted `gh issue list --search "<2-4 distinctive terms>" --state all --limit 5`, show likely matches, and ask how to proceed.
 
 3. Draft for approval:
 
