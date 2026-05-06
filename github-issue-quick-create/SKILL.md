@@ -11,6 +11,14 @@ Use this skill when the user wants to file one simple bug, task, chore, or featu
 
 If the request is complex, use `github-issue-create` instead.
 
+## Success Criteria
+
+- The user sees one clear draft with repo, title, body, and any explicit labels or assignees.
+- The draft contains only grounded details from the user, repository, or narrowly inspected code.
+- Missing details are requested only when the issue would otherwise be unusable.
+- No GitHub issue is created until the user explicitly approves the draft.
+- The final response reports the created issue number, title, and URL.
+
 ## Rules
 
 - Create only after explicit approval such as `create`, `ship it`, or `looks good, create it`.
@@ -57,22 +65,7 @@ Do not ask for labels, assignees, milestones, projects, severity, priority, non-
 
    If `gh` is missing or auth fails, stop and report the fix. If the repo is unclear, ask for `owner/name` and pass `--repo owner/name`.
 
-2. Resolve only what is needed:
-
-   - Use the current repo from `gh repo view` unless the user named another repo.
-   - If the user says `assign me`, resolve the current login:
-
-     ```bash
-     gh api user --jq .login
-     ```
-
-   - If the user asks for duplicate search, run one targeted search:
-
-     ```bash
-     gh issue list --search "<2-4 distinctive terms>" --state all --limit 5
-     ```
-
-     Show likely matches and ask how to proceed.
+2. Resolve only what is needed. Use the current repo unless the user named another repo. Resolve `assign me` with `gh api user --jq .login`. If the user explicitly asks for duplicate search, run one targeted `gh issue list --search "<2-4 distinctive terms>" --state all --limit 5`, show likely matches, and ask how to proceed.
 
 3. Draft for approval:
 
@@ -122,20 +115,9 @@ Do not ask for labels, assignees, milestones, projects, severity, priority, non-
 
    End with: `Reply "create" to create this issue, or tell me what to change.`
 
-4. Publish after approval:
+4. Publish after approval. Write the approved body to a temporary file and run `gh issue create --title "<title>" --body-file "$body_file"`. Add `--repo`, `--assignee`, and repeated `--label` only when explicit and approved. Remove the temporary file after creation.
 
-   ```bash
-   body_file="$(mktemp -t gh-issue-body.XXXXXX.md)"
-   cat > "$body_file" <<'EOF'
-   <approved issue body>
-   EOF
-   gh issue create --title "<title>" --body-file "$body_file"
-   rm -f "$body_file"
-   ```
-
-   Add `--repo`, `--assignee`, and repeated `--label` only when explicit and approved.
-
-   If creation fails because provided metadata is invalid, report the exact failure and ask what to change.
+   If creation fails because provided metadata is invalid, report the exact failure and ask what to change. Do not retry with different metadata unless the user approves the change.
 
 ## Output
 
