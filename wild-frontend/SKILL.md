@@ -1,7 +1,6 @@
 ---
 name: wild-frontend
 description: Explicit-only skill for unconstrained, highly creative frontend design. Use only when the user explicitly says to use wild-frontend or asks to invoke this exact skill. Do not trigger automatically for normal frontend, styling, beautification, product UI, design-system, or production polish requests.
-disable-model-invocation: true
 ---
 
 # Wild Frontend
