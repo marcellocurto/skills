@@ -16,6 +16,7 @@ npx skills add marcellocurto/skills
 | [`design-system-ui`](design-system-ui/SKILL.md) | Designs and implements polished frontend UI that feels native to the existing product, codebase, component library, and design system. |
 | [`github-issue-create`](github-issue-create/SKILL.md) | Drafts and creates GitHub issues with `gh`, including bugs, tasks, features, PRD/spec breakdowns, sub-issues, blockers, and vertical slices after explicit approval. |
 | [`github-issue-quick-create`](github-issue-quick-create/SKILL.md) | Quickly drafts one straightforward GitHub issue with minimal metadata, then creates it with `gh` after explicit approval. |
+| [`nextjs-setup`](nextjs-setup/SKILL.md) | Sets up a default Next.js app with `bunx create-next-app@latest`, asking for the target path before running setup. |
 | [`relentless-review`](relentless-review/SKILL.md) | Stress-tests work by asking whether it is actually the best path, challenging assumptions, edge cases, and failure modes without forcing unnecessary changes. |
 | [`simplify-code-solution`](simplify-code-solution/SKILL.md) | Simplifies code fixes and feature proposals by grounding them in real requirements, existing code, and the smallest complete solution. |
 | [`test-quality-audit`](test-quality-audit/SKILL.md) | Audits tests for real bug-finding value and classifies what to keep, fix, cut, or add. |
@@ -46,6 +47,12 @@ It handles both single issues and issue sets: bugs, tasks, features, PRD/spec br
 For filing one straightforward issue without the full planning machinery. This skill keeps the useful safety rail from the full workflow: draft first, create only after explicit approval.
 
 It asks only for essentials that would make the issue unusable, skips duplicate search unless requested, honors only explicit labels or assignees, and escalates to `github-issue-create` for multi-issue work, relationships, PRDs, specs, epics, blockers, or tracer-bullet breakdowns.
+
+### [`nextjs-setup`](nextjs-setup/SKILL.md)
+
+For creating a new Next.js app with the preferred default flow. It asks for the target path first, resolves it to an app directory, then runs `bunx create-next-app@latest` from the parent directory.
+
+For now it keeps the setup deliberately plain: use the default `create-next-app` prompts unless the user explicitly provides more preferences.
 
 ### [`relentless-review`](relentless-review/SKILL.md)
 
