@@ -112,9 +112,11 @@ Show:
 
 - Repo
 - Title
-- Full body
+- Full body in one fenced `markdown` block containing only the exact issue body
 - Explicit labels/assignees only
 - Duplicate results only if requested
+
+Close the body fence before labels, assignees, duplicate results, or the approval prompt. Metadata and the approval prompt must be normal Markdown, never inside a code fence or indented code block.
 
 End with: `Reply "create" to create this issue, or tell me what to change.`
 
