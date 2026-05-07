@@ -45,7 +45,9 @@ gh repo view --json nameWithOwner --jq .nameWithOwner
 
 Use the current repo unless the user names another repo. If `gh` is missing, auth fails, or the repo cannot be resolved, stop and report the exact missing prerequisite.
 
-Inspect only the minimum context needed to produce a usable issue. If the user asks for duplicate search, run one targeted search using 2-4 distinctive terms and show likely matches before proceeding.
+Inspect only the minimum context needed to produce a usable issue. Search or read code only when a required title, behavior, repo fact, label/assignee, or acceptance criterion is missing.
+
+If the user asks for duplicate search, run one targeted search using 2-4 distinctive terms and show likely matches before proceeding.
 
 ## Escalate To Full Issue Creation
 

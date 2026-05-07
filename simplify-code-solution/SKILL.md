@@ -27,7 +27,7 @@ Prefer direct, boring changes that meet every real requirement. Simpler is valid
 
 ## Context Budget
 
-Inspect the minimum relevant code needed to understand the current path, contract, and risk. Continue reading only when a requirement, behavior boundary, local pattern, or validation path is unclear.
+Inspect the minimum relevant code needed to understand the current path, contract, local patterns, and risk. Continue reading only when a requirement, behavior boundary, local pattern, or validation path is unclear.
 
 ## Simplicity Checks
 
@@ -52,4 +52,4 @@ For implementation, make the scoped change and verify it.
 
 ## Stop Rules
 
-Stop once the smallest complete path is clear and either implemented or recommended with validation. Ask only when the missing information would materially change the solution.
+Stop once the smallest complete path is clear and either implemented or recommended with validation. Ask only when missing information would materially change the solution.

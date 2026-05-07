@@ -5,13 +5,13 @@ description: Plan a concrete fix for a specific bug, regression, crash, failing 
 
 # Bug Fix Planner
 
-Create an evidence-based fix plan for one specific defect.
+Plan the smallest credible fix for one specific defect.
 
 Plan only. Do not edit files, apply patches, commit, or implement unless the user explicitly asks.
 
 ## Goal
 
-A good plan lets another engineer fix the bug without rereading the conversation. It identifies what is broken, why it is likely broken, the smallest safe fix, and how to prove it works.
+Give another engineer enough evidence and direction to fix the bug without rereading the conversation.
 
 ## Success Criteria
 
@@ -30,7 +30,9 @@ A good plan lets another engineer fix the bug without rereading the conversation
 
 ## Evidence Budget
 
-Use the minimum evidence needed to make a useful plan. Inspect issue text, logs, stack traces, screenshots, repro steps, failing tests, referenced files, and relevant source. Continue looking only when a required fact, failing path, root-cause check, or validation path is missing.
+Start with the user's evidence: issue text, logs, stack traces, screenshots, repro steps, failing tests, and referenced files. Inspect source when repo access exists and the failing path, likely cause, or validation path is unclear.
+
+Use the minimum evidence needed to name a leading cause, one primary fix, and validation. Continue looking only when a required fact, failing path, root-cause check, or validation path is missing.
 
 Ask only when missing information prevents a useful plan. Otherwise state assumptions and continue.
 
@@ -50,4 +52,4 @@ Use concise Markdown. Include only relevant sections.
 
 ## Stop Rules
 
-Stop when the plan has enough evidence to identify the leading cause, one primary fix, and validation. If repo access or reproduction is unavailable, say so and make closing that gap the first step.
+Stop when the plan identifies the leading cause, one primary fix, and checks that would prove the defect is gone. If repo access or reproduction is unavailable, say so and make closing that gap the first step.

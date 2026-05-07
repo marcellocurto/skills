@@ -7,7 +7,7 @@ description: Relentlessly stress-test proposals, plans, implementations, designs
 
 Answer the underlying question: **Is this actually the best we can do?**
 
-Push harder than a normal review. Challenge assumptions, explore edge cases, and think through failure modes. Recommend changes only when they materially improve the outcome.
+Challenge assumptions, explore edge cases, and think through failure modes. Recommend changes only when they materially improve the outcome.
 
 ## Goal
 
@@ -24,7 +24,11 @@ Give a direct verdict on whether the current work, plan, design, or answer is th
 
 ## Review Focus
 
-Choose the edge cases that matter for the artifact: empty, malformed, duplicate, large, slow, partial failure, race, stale state, permissions, versions, accessibility, timezone/localization, dependency failure, detectability, recovery, blast radius, and rollback.
+Choose only the edge cases that matter for the artifact: empty, malformed, duplicate, large, slow, partial failure, race, stale state, permissions, versions, accessibility, timezone/localization, dependency failure, detectability, recovery, blast radius, and rollback.
+
+## Evidence Budget
+
+Use the available artifact and context first. Inspect more only when a material assumption, failure mode, alternative, or validation claim cannot be judged from what is already provided.
 
 ## Output
 

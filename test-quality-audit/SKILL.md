@@ -13,7 +13,7 @@ If the answer is vague, trivial, controlled by the test, or unrelated to user/ca
 
 ## Goal
 
-Keep tests that protect meaningful behavior. Fix or cut tests that mostly prove mocks, fixtures, snapshots, implementation details, or coverage.
+Identify which tests protect meaningful behavior and which mostly prove mocks, fixtures, snapshots, implementation details, or coverage.
 
 Do not ask for more tests by default. Prefer a smaller suite that fails for the right reasons.
 
@@ -27,7 +27,7 @@ Do not ask for more tests by default. Prefer a smaller suite that fails for the 
 
 ## Context Budget
 
-Do not audit tests in isolation when code is available. Inspect:
+Do not audit tests in isolation when code is available. Start with the tests under review, then inspect only the code and nearby tests needed to judge signal:
 
 - implementation under test
 - public API or user-visible behavior
@@ -96,7 +96,7 @@ When editing:
 - rewrite weak tests around observable behavior
 - remove tests that are redundant, misleading, brittle, or low-signal
 - add focused regression coverage for important risks
-- run or recommend the most relevant test command
+- run the most relevant test command when available; otherwise explain the next best check
 
 ## Constraints
 
