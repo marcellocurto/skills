@@ -12,7 +12,7 @@ The goal is to make the UI feel like the **best-designed version of this product
 
 Avoid generic SaaS defaults. Existing components are raw material, not an excuse for visually flat output.
 
-## Design Principle
+## Goal
 
 Use the existing product as the creative material.
 
@@ -26,7 +26,16 @@ A great result should feel:
 
 Do not default to bland consistency. Extend the system with taste. Bold maximalism and refined minimalism can both work, but inside a product system the key is intentional extension, not visual rebellion.
 
-## Design Discovery
+## Success Criteria
+
+- The UI works as real code in the requested or existing stack.
+- It feels native to the app while improving hierarchy, composition, interaction quality, and polish.
+- Existing components, tokens, typography, layout conventions, icon sets, and accessibility patterns are reused when they fit.
+- The result includes the states a user naturally expects for the task: loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens when relevant.
+- Responsive behavior is checked for common viewport sizes.
+- Validation is run when available; if visual quality matters, render or screenshot before finalizing.
+
+## Context Budget
 
 Before coding, inspect the project when available.
 
@@ -46,7 +55,9 @@ Look for:
 
 Build from these patterns first. If the codebase already has usable primitives, compose them into something stronger instead of replacing them with one-off markup.
 
-## Design Thinking
+Stop discovery once the product context, reusable primitives, styling system, and validation path are clear enough to implement. Continue only when a missing pattern would materially affect correctness, visual fit, or accessibility.
+
+## Product Direction
 
 Before implementing, form a short product-aware direction.
 
@@ -74,9 +85,9 @@ Choose a clear direction that belongs in the product, for example:
 - a command-center interface for high-information workflows
 - a warm onboarding flow with better progression and reassurance
 
-## Creative Moves to Use
+## Creative Moves
 
-Use creativity through product-aware design moves.
+Choose only the design moves that serve the product direction. These are options, not a checklist.
 
 ### Typography
 
@@ -209,7 +220,7 @@ Match implementation complexity to the surface:
 
 Do not add complexity for its own sake. Elegance comes from executing the product-appropriate direction well.
 
-## Implementation Guidelines
+## Constraints
 
 Write real, working frontend code that follows the project’s conventions.
 
@@ -229,6 +240,8 @@ Prefer:
 
 Add new visual primitives only when they improve the design and can fit naturally into the system. If adding a new style pattern, make it look like something the product could adopt elsewhere.
 
+Do not add arbitrary custom styles that fight existing tokens, decoration without product purpose, extra components when existing primitives fit, centered-card layouts by default, timid evenly distributed color, or purple-gradient polish pasted onto unrelated products.
+
 ## When the Codebase Has No Clear Design System
 
 If the project is greenfield or visually inconsistent, create a small local design direction.
@@ -245,35 +258,16 @@ Define:
 
 Keep it coherent and reusable. Make the design distinctive through a few strong choices rather than many unrelated effects.
 
-## Avoid
+## Output
 
-- generic AI/SaaS aesthetics
-- bland CRUD screens
-- unstyled dumps of available components
-- arbitrary custom styles that fight existing tokens
-- decoration without product purpose
-- adding new components when existing primitives fit
-- matching the system so literally that the result has no hierarchy or point of view
-- centered-card layouts by default
-- timid, evenly distributed color usage
-- purple-gradient polish pasted onto unrelated products
-- changing typography, radius, shadows, or spacing without system-aware rationale
-- ignoring loading, empty, error, disabled, focus, hover, or mobile states
-
-## Output Expectations
-
-When implementing, provide scoped code that is ready to run in the user’s stack.
-
-When explaining the result, briefly mention:
-
-- the design direction
-- which existing patterns or components it uses
-- what visual upgrades were made
-- any assumptions about the design system
-- any follow-up refinements worth considering
+When implementing, provide scoped code that is ready to run in the user’s stack. When explaining the result, briefly name the product-aware direction, the main files changed, the validation performed, and any assumptions that materially affect the design system. Keep the explanation shorter than the implementation work deserves unless the user asks for design rationale.
 
 ## Quality Bar
 
 The finished UI should feel like it belongs in the product, but with better composition, clearer hierarchy, more thoughtful states, and stronger visual polish than a default implementation.
 
-It should look like a senior product designer refined the existing system — not like an engineer merely assembled available components, and not like an unrelated concept pasted into the app.
+It should look like a senior product designer refined the existing system, not like an unrelated concept pasted into the app.
+
+## Stop Rules
+
+Stop when the interface is implemented, expected states and responsive behavior are handled for the task, and the most relevant validation has run. If validation cannot run, report why and name the next best check.

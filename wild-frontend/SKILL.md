@@ -9,15 +9,24 @@ Create highly original, production-grade frontend artifacts that avoid generic A
 
 Use this skill only when explicitly invoked. Build real working code, not just a description. Push the art direction hard, but keep the result functional, responsive, and usable.
 
-## Core Principle
+## Goal
 
 Treat the interface as a designed artifact, not a default product surface.
 
 Choose one strong concept and execute it with discipline. Bold maximalism and refined minimalism both work — the key is intentionality, not intensity. The result should feel like a specific visual world brought to life in code.
 
-Do not hold back. Claude is capable of unusually creative frontend work; show what can be made when the design direction is clear and fully committed.
+Do not hold back. Strong creative frontend work is possible when the desired outcome, constraints, and concept are clear.
 
-## Creative Direction Before Coding
+## Success Criteria
+
+- The result is real working code, not a design description.
+- One distinct visual concept drives typography, color, layout, surface, texture, and motion.
+- The interface is surprising, cohesive, functional, memorable, responsive, and usable.
+- Important text is readable, core controls are accessible enough for the task, and decorative effects do not block usability.
+- The result includes relevant interaction states and works at common viewport sizes.
+- Visual output is rendered or inspected when the environment allows it.
+
+## Creative Direction
 
 Before implementing, commit to a distinct direction:
 
@@ -54,7 +63,7 @@ Do not mix every idea together. Pick one and make every visual choice serve it.
 
 ## Design Moves
 
-Use bold, intentional choices across the full interface.
+Use bold, intentional choices across the full interface. These are possible moves, not a checklist; choose the few that best express the concept.
 
 ### Typography
 
@@ -168,7 +177,7 @@ Match implementation complexity to the chosen aesthetic.
 
 Elegance comes from executing the concept well, not from adding more effects.
 
-## Functional Standard
+## Constraints
 
 Wild does not mean careless. Ensure:
 
@@ -181,6 +190,8 @@ Wild does not mean careless. Ensure:
 - keyboard-accessible controls when interactive
 - no broken layout at common viewport sizes
 - no decorative effect that blocks usability
+
+Avoid generic AI aesthetics, safe SaaS dashboard defaults, bland centered cards, predictable hero sections, timid palettes, overused purple/blue gradients on white, generic font choices without intent, cookie-cutter component layouts, random decoration without a concept, copying the existing codebase style unless requested, apologizing for being bold, or making every generated design feel the same.
 
 ## Implementation Style
 
@@ -198,21 +209,10 @@ When producing code:
 
 When explaining the result, briefly name the concept and signature design moves.
 
-## Avoid
+## Output
 
-- generic AI slop aesthetics
-- safe SaaS dashboard defaults
-- bland centered cards
-- predictable hero sections
-- timid palettes
-- overused purple/blue gradients on white
-- generic font choices without intent
-- cookie-cutter component layouts
-- random decoration without a concept
-- copying the existing codebase style unless requested
-- apologizing for being bold
-- making every generated design feel the same
+Briefly report the concept, signature design moves, changed files, and validation performed.
 
-## Quality Bar
+## Stop Rules
 
-The result should be surprising, cohesive, functional, and memorable — a clear art direction executed precisely in frontend code.
+Stop when the concept is implemented as working code, common viewport behavior is checked, and the artifact has been rendered or the best available validation has run. If validation cannot run, report why and name the next best check.

@@ -11,13 +11,21 @@ The core question is: **What realistic bug or regression would this catch?**
 
 If the answer is vague, trivial, controlled by the test, or unrelated to user/caller/system behavior, the test is weak.
 
-## Standard
+## Goal
 
 Keep tests that protect meaningful behavior. Fix or cut tests that mostly prove mocks, fixtures, snapshots, implementation details, or coverage.
 
 Do not ask for more tests by default. Prefer a smaller suite that fails for the right reasons.
 
-## Inspect
+## Success Criteria
+
+- Each judgment is tied to realistic bug-finding value.
+- Meaningful behavior currently protected by the tests is identified.
+- Weak, redundant, tautological, brittle, or overfit tests are named concretely.
+- Recommendations classify tests as **Keep**, **Fix**, **Cut**, or **Add**.
+- The highest-value next changes are small and behavior-oriented.
+
+## Context Budget
 
 Do not audit tests in isolation when code is available. Inspect:
 
@@ -28,6 +36,8 @@ Do not audit tests in isolation when code is available. Inspect:
 - existing tests for the same behavior
 - PR intent, bug report, or known regression when available
 - external boundaries: database, API, auth, queue, filesystem, time, randomness, network
+
+Use the minimum code and test context needed to judge signal. Continue reading only when a test’s claimed behavior, real dependency, risky branch, or nearby stronger coverage is unclear.
 
 ## Method
 
@@ -88,7 +98,7 @@ When editing:
 - add focused regression coverage for important risks
 - run or recommend the most relevant test command
 
-## Rules
+## Constraints
 
 - Be honest; do not defend tests because they exist.
 - Tie every judgment to bug-finding value.
@@ -96,3 +106,7 @@ When editing:
 - Do not require tests for every line or helper.
 - Do not confuse unit tests with mocking everything.
 - If the tests are strong, say so and name the remaining blind spots.
+
+## Stop Rules
+
+Stop when the audit explains what real bugs the tests would catch, what could still break, and the smallest useful improvement. Ask only when missing context prevents judging the tests’ behavior.

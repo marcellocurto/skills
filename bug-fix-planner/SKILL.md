@@ -9,37 +9,30 @@ Create an evidence-based fix plan for one specific defect.
 
 Plan only. Do not edit files, apply patches, commit, or implement unless the user explicitly asks.
 
-## Standard
+## Goal
 
 A good plan lets another engineer fix the bug without rereading the conversation. It identifies what is broken, why it is likely broken, the smallest safe fix, and how to prove it works.
 
-## Workflow
+## Success Criteria
 
-1. Define the broken behavior, expected behavior, impact, and affected area.
-2. Inspect available evidence: issue text, logs, stack traces, screenshots, repro steps, failing tests, referenced files, and relevant source.
-3. Trace the failing path in real code when repository access exists.
-4. Classify important claims:
-   - **Confirmed**: directly supported by code, logs, tests, issue text, or repro.
-   - **Likely**: strongly suggested but not proven.
-   - **Unknown**: must be verified before implementation.
-5. Identify the root cause or the first verification step needed to confirm it.
-6. Recommend one primary fix path. Avoid loose option lists.
-7. Keep scope limited to the defect.
-8. Include validation and acceptance criteria.
+- The broken behavior, expected behavior, impact, and affected area are clear.
+- Important claims are classified as **Confirmed**, **Likely**, or **Unknown**.
+- The plan traces the failing path in real code when repository access exists.
+- The recommendation names one primary fix path, not a loose option list.
+- Validation and acceptance criteria prove the original defect is gone.
+
+## Constraints
+
+- Keep scope limited to the defect.
+- Prefer the smallest change that fixes the root cause and matches existing code patterns.
+- Do not recommend redesigns, unrelated cleanup, broad refactors, migrations, or workaround-only fixes unless the evidence shows a local fix cannot work.
+- Do not recommend tests that only mirror implementation.
+
+## Evidence Budget
+
+Use the minimum evidence needed to make a useful plan. Inspect issue text, logs, stack traces, screenshots, repro steps, failing tests, referenced files, and relevant source. Continue looking only when a required fact, failing path, root-cause check, or validation path is missing.
 
 Ask only when missing information prevents a useful plan. Otherwise state assumptions and continue.
-
-## Fix Choice
-
-Prefer the smallest change that fixes the root cause and matches existing code patterns.
-
-Do not recommend:
-
-- a redesign when a local fix resolves the defect
-- unrelated cleanup or refactors
-- a workaround when the root cause can be fixed directly
-- a migration before proving the current model cannot work
-- tests that only mirror implementation
 
 ## Output
 
@@ -55,4 +48,6 @@ Use concise Markdown. Include only relevant sections.
 - **Risks**: blast radius, compatibility concerns, rollback if relevant.
 - **Acceptance criteria**: short checklist proving the bug is fixed.
 
-When repo access or reproduction is unavailable, say so and make closing that gap the first step.
+## Stop Rules
+
+Stop when the plan has enough evidence to identify the leading cause, one primary fix, and validation. If repo access or reproduction is unavailable, say so and make closing that gap the first step.

@@ -7,19 +7,27 @@ description: Simplify code fixes and feature proposals by grounding them in real
 
 Find the smallest complete solution to a code problem.
 
-## Principle
+## Goal
 
 Prefer direct, boring changes that meet every real requirement. Simpler is valid only when it preserves behavior, fits existing patterns, and can be verified.
 
-## Workflow
+## Success Criteria
 
-1. Define the actual problem and success criteria.
-2. Separate requirements from assumptions and nice-to-haves.
-3. Inspect relevant code before judging the approach.
-4. For each abstraction, refactor, dependency, or state change, ask: "What requirement forces this?"
-5. Reuse existing paths, helpers, types, components, and APIs before adding new ones.
-6. Recommend or implement the smallest change that works.
-7. State tradeoffs and validation.
+- The actual problem and success criteria are explicit.
+- Requirements are separated from assumptions and nice-to-haves.
+- Relevant code has been inspected before judging the approach.
+- Every proposed abstraction, refactor, dependency, or state change is justified by a real requirement.
+- The recommendation or implementation is the smallest complete change that preserves behavior and fits local patterns.
+- Tradeoffs and validation are stated.
+
+## Constraints
+
+- Reuse existing paths, helpers, types, components, and APIs before adding new ones.
+- Avoid rewrites for localized bugs, state machines for simple state, generic frameworks for one caller, speculative migrations, unnecessary dependencies, wide API changes for internal convenience, and tests that only mirror implementation.
+
+## Context Budget
+
+Inspect the minimum relevant code needed to understand the current path, contract, and risk. Continue reading only when a requirement, behavior boundary, local pattern, or validation path is unclear.
 
 ## Simplicity Checks
 
@@ -42,12 +50,6 @@ For recommendations:
 
 For implementation, make the scoped change and verify it.
 
-## Avoid
+## Stop Rules
 
-- rewrites for localized bugs
-- state machines for simple state
-- generic frameworks for one caller
-- migrations before proving the current model fails
-- dependencies for logic the stack already has
-- wide API changes for internal convenience
-- tests that only mirror implementation
+Stop once the smallest complete path is clear and either implemented or recommended with validation. Ask only when the missing information would materially change the solution.

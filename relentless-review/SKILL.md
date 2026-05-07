@@ -9,15 +9,22 @@ Answer the underlying question: **Is this actually the best we can do?**
 
 Push harder than a normal review. Challenge assumptions, explore edge cases, and think through failure modes. Recommend changes only when they materially improve the outcome.
 
-## Review
+## Goal
 
-1. Define what good enough requires.
-2. Identify assumptions and what breaks if they are false.
-3. Test edge cases: empty, malformed, duplicate, large, slow, partial failure, race, stale state, permissions, versions, accessibility, timezone/localization, dependency failure.
-4. Analyze failure modes: detectability, recovery, blast radius, rollback.
-5. Compare the current approach against simpler, safer, more direct, or more reversible alternatives.
-6. Recommend the best path. If the current path is best, say so and do not invent changes.
-7. State what proof would change the verdict.
+Give a direct verdict on whether the current work, plan, design, or answer is the best available path under the known constraints.
+
+## Success Criteria
+
+- Define what good enough requires.
+- Identify assumptions that materially affect the verdict.
+- Test relevant edge cases and failure modes.
+- Compare the current approach against simpler, safer, more direct, or more reversible alternatives.
+- Recommend the best path. If the current path is best, say so and do not invent changes.
+- State what proof would change the verdict.
+
+## Review Focus
+
+Choose the edge cases that matter for the artifact: empty, malformed, duplicate, large, slow, partial failure, race, stale state, permissions, versions, accessibility, timezone/localization, dependency failure, detectability, recovery, blast radius, and rollback.
 
 ## Output
 
@@ -27,7 +34,7 @@ Push harder than a normal review. Challenge assumptions, explore edge cases, and
 - **Better path**: concrete recommendation.
 - **Validation**: tests, checks, metrics, rollout guardrails, or evidence needed.
 
-## Rules
+## Constraints
 
 - Be candid, specific, and evidence-based.
 - Critique the work, not the person.
@@ -36,3 +43,7 @@ Push harder than a normal review. Challenge assumptions, explore edge cases, and
 - Do not nitpick unless it changes the outcome.
 - Do not make suggestions for their own sake.
 - If the work is strong, say so and name its real limits.
+
+## Stop Rules
+
+Stop when the verdict, material risks, best path, and validation evidence are clear. Ask only when missing information would materially change the verdict.

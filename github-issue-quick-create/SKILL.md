@@ -9,6 +9,10 @@ Draft one straightforward GitHub issue, then create it with `gh` after explicit 
 
 Use this for one simple bug, task, chore, or feature. Use `github-issue-create` for complex issue work.
 
+## Goal
+
+Give the user one usable issue draft with minimal metadata, then create it only after explicit approval.
+
 ## Success Criteria
 
 - The user sees one clear draft with repo, title, body, and any explicit labels or assignees.
@@ -17,7 +21,7 @@ Use this for one simple bug, task, chore, or feature. Use `github-issue-create` 
 - No issue is created until the user explicitly approves the draft.
 - The final response includes the issue number, title, and URL.
 
-## Rules
+## Constraints
 
 - Create only after explicit approval such as `create`, `ship it`, or `looks good, create it`.
 - Handle exactly one issue.
@@ -28,6 +32,20 @@ Use this for one simple bug, task, chore, or feature. Use `github-issue-create` 
 - Do not create labels.
 - Inspect code only when the user points at a file, function, failing test, stack trace, error, or repo-specific behavior.
 - Keep code inspection narrow. Do not perform broad architecture discovery.
+
+## Context And Tool Budget
+
+Preflight `gh` before drafting or publishing:
+
+```bash
+gh --version
+gh auth status
+gh repo view --json nameWithOwner --jq .nameWithOwner
+```
+
+Use the current repo unless the user names another repo. If `gh` is missing, auth fails, or the repo cannot be resolved, stop and report the exact missing prerequisite.
+
+Inspect only the minimum context needed to produce a usable issue. If the user asks for duplicate search, run one targeted search using 2-4 distinctive terms and show likely matches before proceeding.
 
 ## Escalate To Full Issue Creation
 
@@ -50,71 +68,59 @@ Ask only for details that would make the draft unusable:
 
 Do not ask for metadata, non-goals, rollout, analytics, tests, docs, or relationships unless the user mentions them.
 
-## Workflow
+## Draft Shape
 
-1. Preflight:
+Use a compact body. For most issues:
 
-   ```bash
-   gh --version
-   gh auth status
-   gh repo view --json nameWithOwner --jq .nameWithOwner
-   ```
+```markdown
+## Summary
 
-   If `gh` is missing or auth fails, stop and report the fix. If the repo is unclear, ask for `owner/name` and pass `--repo owner/name`.
+<One or two sentences describing the requested change.>
 
-2. Resolve only what is needed. Use the current repo unless the user named another repo. Resolve `assign me` with `gh api user --jq .login`. If asked to search duplicates, run one targeted `gh issue list --search "<2-4 distinctive terms>" --state all --limit 5`, show likely matches, and ask how to proceed.
+## Acceptance Criteria
 
-3. Draft for approval:
+- [ ] <Observable completion criterion.>
+```
 
-   Use a compact body. For most issues:
+For bugs with known reproduction details:
 
-   ```markdown
-   ## Summary
+```markdown
+## Summary
 
-   <One or two sentences describing the requested change.>
+<Brief defect summary.>
 
-   ## Acceptance Criteria
+## Reproduction
 
-   - [ ] <Observable completion criterion.>
-   ```
+<Steps, command, or scenario that shows the problem.>
 
-   For bugs with known reproduction details:
+## Expected
 
-   ```markdown
-   ## Summary
+<Expected behavior.>
 
-   <Brief defect summary.>
+## Actual
 
-   ## Reproduction
+<Actual behavior.>
 
-   <Steps, command, or scenario that shows the problem.>
+## Acceptance Criteria
 
-   ## Expected
+- [ ] <The reproduction path now produces the expected behavior.>
+```
 
-   <Expected behavior.>
+Show:
 
-   ## Actual
+- Repo
+- Title
+- Full body
+- Explicit labels/assignees only
+- Duplicate results only if requested
 
-   <Actual behavior.>
+End with: `Reply "create" to create this issue, or tell me what to change.`
 
-   ## Acceptance Criteria
+## Publish
 
-   - [ ] <The reproduction path now produces the expected behavior.>
-   ```
+After approval, write the approved body to a temporary file and run `gh issue create --title "<title>" --body-file "$body_file"`. Add `--repo`, `--assignee`, and repeated `--label` only when explicit and approved. Remove the temporary file after creation.
 
-   Show:
-
-   - Repo
-   - Title
-   - Full body
-   - Explicit labels/assignees only
-   - Duplicate results only if requested
-
-   End with: `Reply "create" to create this issue, or tell me what to change.`
-
-4. Publish after approval. Write the approved body to a temporary file and run `gh issue create --title "<title>" --body-file "$body_file"`. Add `--repo`, `--assignee`, and repeated `--label` only when explicit and approved. Remove the temporary file after creation.
-
-   If creation fails because provided metadata is invalid, report the exact failure and ask what to change. Do not retry with different metadata unless the user approves the change.
+If creation fails because provided metadata is invalid, report the exact failure and ask what to change. Do not retry with different metadata unless the user approves the change.
 
 ## Output
 
@@ -123,3 +129,7 @@ Return one line:
 `#N - title - URL`
 
 Include labels or assignees only if they were explicitly provided and successfully applied.
+
+## Stop Rules
+
+Stop after showing the draft and wait for approval. After publishing, stop once the created issue number, title, and URL are reported. Ask only when a missing essential would make the draft unusable.
