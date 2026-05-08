@@ -16,6 +16,7 @@ Reusable:
 - shadcn defaults.
 - Explicit non-default Next.js dev/start port.
 - `bun run check` as the combined validation command.
+- App Router metadata conventions.
 - `AGENTS.md` working rules.
 - Frontend component ownership rules.
 
@@ -222,6 +223,60 @@ Prefer this `components.json` baseline:
 }
 ```
 
+## Next.js Metadata
+
+Use the App Router Metadata API instead of manually managing `<head>` tags.
+
+Baseline root layout metadata:
+
+```tsx
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://example.com"),
+  title: {
+    default: "App Name",
+    template: "%s - App Name",
+  },
+  description: "Short product description.",
+};
+```
+
+Rules:
+
+- Use static `export const metadata: Metadata` for metadata that does not depend on route params, request data, or fetched content.
+- Use `export async function generateMetadata(...): Promise<Metadata>` only when metadata is dynamic.
+- Keep `metadata` and `generateMetadata` in Server Components only. If a page needs client interactivity, keep the page/server layout as the metadata owner and move interactive UI into child `"use client"` components.
+- Do not export both `metadata` and `generateMetadata` from the same route segment.
+- In Next.js 15+ style code, type `params` and `searchParams` as promises and await them inside `generateMetadata`.
+- Prefer `metadataBase` at the root so URL-based metadata fields resolve predictably.
+- Remember metadata merges shallowly from root to leaf. Nested fields such as `openGraph` and `robots` are replaced by later segments, so intentionally extend parent metadata when needed.
+- Use `React.cache` or cached data helpers when the same non-`fetch` data is needed by both metadata and the page. `fetch` calls are automatically memoized by Next.js across metadata, layouts, pages, and static params.
+- Use file-based metadata for assets and special routes when possible: `favicon.ico`, `icon.*`, `apple-icon.*`, `opengraph-image.*`, `twitter-image.*`, `robots.ts`, `sitemap.ts`, and `manifest.ts`.
+- Use `next/og` for generated Open Graph images, not `@vercel/og`.
+- Keep viewport concerns separate with `viewport` or `generateViewport` when customizing viewport/theme color.
+- For localized apps, set the `html lang` attribute in layout and generate localized titles/descriptions from the server-side i18n layer.
+
+Dynamic metadata pattern:
+
+```tsx
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPost(slug);
+
+  return {
+    title: post.title,
+    description: post.description,
+  };
+}
+```
+
 ## AGENTS.md
 
 Create or update `AGENTS.md` with these reusable rules:
@@ -238,6 +293,7 @@ Create or update `AGENTS.md` with these reusable rules:
 - After edits, run `bun run check` when available; otherwise run the smallest relevant validation: targeted test, typecheck, lint, or script.
 - Final responses should include changed files, validation, and risks or follow-ups.
 - Before Next.js work, read relevant docs in `node_modules/next/dist/docs/` when available.
+- Use Next.js App Router metadata APIs for page metadata; do not hand-roll `<head>` management.
 
 ## Frontend Architecture
 

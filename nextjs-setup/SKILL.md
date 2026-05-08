@@ -40,6 +40,7 @@ bunx create-next-app@latest <app-directory-name>
    - explicit non-default Next.js dev/start port, preferably `6474` unless it conflicts
    - `bun run check` as the main combined validation script
    - Tailwind 4, typography, animation, and shadcn defaults when Tailwind/shadcn are used
+   - App Router metadata conventions using Next.js `metadata`, `generateMetadata`, and file-based metadata
    - baseline `AGENTS.md` rules when absent or clearly weaker
 
 ## Path Handling
@@ -57,6 +58,7 @@ When the user asks what should be used everywhere, suggest these defaults from t
 - ESLint: use Next core web vitals/typescript, `typescript-eslint` strict type-checked rules, React Compiler/hooks rules, Tailwind rules, Playwright rules for e2e folders, and `eslint-config-prettier`.
 - Prettier: store strict formatting preferences in `package.json`, including `prettier-plugin-tailwindcss`.
 - Scripts: prefer an explicit non-default Next.js port, usually `6474`, and include `bun run check` as the canonical combined validation command.
+- Metadata: use the App Router Metadata API; put root defaults and title templates in layout metadata, page-specific dynamic titles in `generateMetadata`, and icons/OG/robots/sitemap in file-based metadata where possible.
 - Tailwind/shadcn: prefer Tailwind 4 with `@tailwindcss/postcss`, `@tailwindcss/typography`, `tw-animate-css`, shadcn `new-york`, CSS variables, zinc base color, and lucide icons.
 - Project guidance: include an `AGENTS.md` that leads with concise response style, Bun rules, scoped changes, validation expectations, and Next.js docs-as-source-of-truth.
 - Frontend architecture: thin `app/` routes; reusable UI under `components/ui`, `components/shared`, `components/shells`, and `components/features/<feature>`; avoid runtime barrels and keep client boundaries narrow.
