@@ -32,6 +32,8 @@ Give the user one usable issue draft with minimal metadata, then create it only 
 - Do not create labels.
 - Inspect code only when the user points at a file, function, failing test, stack trace, error, or repo-specific behavior.
 - Keep code inspection narrow. Do not perform broad architecture discovery.
+- Do not include a generic `Relevant files` section or static file inventory. File paths become stale quickly; include only user-provided or essential code references as `Starting point` or `Current reference`.
+- Do not compress away a detailed user-provided plan. Preserve concrete requirements, constraints, edge cases, and implementation notes in the issue body, or escalate to `github-issue-create` if the request is really a plan/spec.
 
 ## Context And Tool Budget
 
@@ -54,6 +56,7 @@ If the user asks for duplicate search, run one targeted search using 2-4 distinc
 Use `github-issue-create` instead when the request includes:
 
 - Multiple issues, ticket breakdowns, epics, PRDs, specs, or implementation plans.
+- A long or comprehensive single-issue plan whose details would be lost by the quick draft format.
 - Parent issues, sub-issues, blockers, dependencies, or native GitHub relationships.
 - Duplicate search unless the user only wants a quick manual check for one issue.
 - Label creation, milestone or project planning, broad metadata cleanup, tracer-bullet slicing, architecture decisions, or source issue decomposition.
@@ -72,9 +75,11 @@ Do not ask for metadata, non-goals, rollout, analytics, tests, docs, or relation
 
 ## Draft Shape
 
-Use a compact body. For most issues, include Summary and Acceptance Criteria sections.
+Use a compact body only when the source request is compact. For most issues, include Summary and Acceptance Criteria sections.
 
 For bugs with known reproduction details, include Summary, Reproduction, Expected, Actual, and Acceptance Criteria sections.
+
+If the user provides detailed task context, add a `Notes` or `Implementation plan` section and preserve those details instead of reducing them to a short summary.
 
 Show:
 

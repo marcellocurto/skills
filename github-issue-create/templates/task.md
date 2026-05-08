@@ -6,6 +6,10 @@
 
 <Clarify what should be changed. Include non-goals only if provided or needed to prevent ambiguity.>
 
+## Implementation Plan / Context
+
+<Optional user-provided plan details, constraints, edge cases, sequencing, and current starting points. Omit if unnecessary. Do not add a generic Relevant files list.>
+
 ## Acceptance Criteria
 
 - [ ] <Observable/testable completion criterion derived from the user's request.>

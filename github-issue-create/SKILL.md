@@ -29,6 +29,8 @@ Produce issue drafts a maintainer can act on, get explicit approval, then publis
 - Create only after explicit approval.
 - Never duplicate or modify parent/source issues unless asked.
 - Do not invent requirements, metadata, labels, relationships, priority, or acceptance criteria.
+- Do not include a generic `Relevant files` section or static file inventory. File paths become stale quickly; include only specific code references the user provided or that are necessary to disambiguate the task, and phrase them as current starting points, not authoritative scope.
+- Do not dumb down, shorten away, or genericize a user-provided implementation plan, spec, PRD, or issue breakdown. Preserve concrete details, constraints, edge cases, sequencing, non-goals, and rationale in the drafted issue bodies.
 - Prefer existing labels; draft new labels only with approval.
 - Keep titles under 80 characters when practical.
 - Bugs need repro, expected/actual behavior, environment, and impact when known.
@@ -38,7 +40,9 @@ Produce issue drafts a maintainer can act on, get explicit approval, then publis
 
 Preflight `gh`, auth, and repo before drafting or publishing. If `gh` is missing, auth fails, or the repo is unclear, stop and report the smallest fix or ask for `owner/name`.
 
-Gather only the context needed to draft correctly: repo, issue type, title/summary, completion criteria, bug repro details, explicit relationships, source issue text/comments, and relevant code/docs/ADRs for implementation issue sets.
+Gather only the context needed to draft correctly: repo, issue type, title/summary, completion criteria, bug repro details, explicit relationships, source issue text/comments, and current repo constraints that affect implementation issue sets.
+
+When inspecting code/docs/ADRs, extract durable constraints and domain facts. Do not turn inspected paths into a `Relevant files` checklist unless the user explicitly asks for that section.
 
 Use duplicate search with 2-4 distinctive nouns from the title. Retry broader terms only when empty or ambiguous. Search again only when a required fact, owner, date, source issue, code path, relationship, label, or acceptance criterion is missing.
 
@@ -61,6 +65,17 @@ Every implementation issue must include one of:
 - `Tracer-bullet: yes - <demoable behavior>`
 - `Architecture exception: <reason>`
 
+## Plan Fidelity Contract
+
+When the user provides a long or comprehensive plan, the issue draft is a transport format for that plan, not a rewrite to a smaller idea.
+
+- Preserve every actionable detail by placing it in the relevant issue body, a parent/tracking issue, or a clearly labeled `Implementation plan` / `Source context` / `Notes` section.
+- If splitting into multiple issues, distribute plan details to the issue that owns them and keep cross-cutting context on the parent/tracking issue. Do not drop details because they are too specific.
+- Keep user-provided wording when it carries intent, nuance, constraints, or sequencing. Tighten only for readability.
+- Convert checklist items into acceptance criteria only when they are observable outcomes; keep implementation steps, design constraints, and caveats as plan/context notes.
+- If a detail is stale-prone, such as a file path, line number, branch name, dependency version, or current UI location, include it only when essential and label it `Starting point` or `Current reference`, not `Relevant files`.
+- When a plan is too large to fit cleanly in one issue body, create or propose a parent/tracking issue that preserves the full plan, then reference that parent from child issues.
+
 ## Native Relationship Contract
 
 Approval of `Parent`, `Sub-issues`, `Blocked by`, or `Blocking` includes approval to create the native GitHub relationship. Do not ask again after issue creation.
@@ -78,7 +93,7 @@ Read the relevant template before drafting: `templates/bug.md`, `templates/featu
 
 For one issue, follow the template. Show repo, title, body, assignee, labels/new labels, duplicate candidates, milestone/project metadata, and relationships.
 
-For a plan/spec, read `examples/tracer-bullet-breakdown.md`, then draft a numbered tracer-bullet breakdown before final bodies. Each item must show title, kind, `AFK`/`HITL`, parent/source, blockers, end-to-end behavior, demo/verification path, user stories when present, acceptance summary, and architecture check.
+For a plan/spec, read `examples/tracer-bullet-breakdown.md`, then draft a numbered tracer-bullet breakdown before final bodies. Each item must show title, kind, `AFK`/`HITL`, parent/source, blockers, end-to-end behavior, demo/verification path, user stories when present, acceptance summary, retained plan/context details, and architecture check.
 
 Relationship plan: list native relationships to create after approval, such as `Parent: #12 -> #14 via sub_issues` or `Blocked by: #18 blocked by #17 via dependencies/blocked_by`. For new issues, use titles and say IDs will be resolved after creation.
 

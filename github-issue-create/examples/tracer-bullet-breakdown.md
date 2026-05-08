@@ -7,6 +7,8 @@ Break down notification preferences:
 - Users can opt out of marketing emails.
 - Users can opt out of product update emails.
 - Admins can see when a preference changed.
+- Preserve the existing unsubscribe-token behavior.
+- Do not send preference audit events for system-initiated backfills.
 ```
 
 ## Bad: horizontal layers
@@ -33,6 +35,7 @@ No issue is demoable alone.
    - Blocked by: None
    - Tracer-bullet: yes - preference works from UI through send path.
    - Acceptance summary: preference persists; UI reflects it; send path checks it; tests cover behavior.
+   - Retained plan/context details: preserve existing unsubscribe-token behavior.
 
 2. Let users opt out of product update emails
    - Kind: Implementation
@@ -42,6 +45,7 @@ No issue is demoable alone.
    - Blocked by: marketing opt-out, if it establishes the shared preference path.
    - Tracer-bullet: yes - second preference works through the same path.
    - Acceptance summary: preference persists; UI reflects it; send path checks it; tests cover behavior.
+   - Retained plan/context details: reuse the shared preference path without changing marketing unsubscribe behavior.
 
 3. Show admins preference change history
    - Kind: Implementation
@@ -51,6 +55,7 @@ No issue is demoable alone.
    - Blocked by: first preference slice that emits audit events.
    - Tracer-bullet: yes - change flows from user action to admin audit view.
    - Acceptance summary: event records who/what/when; admin view shows it; tests cover audit path.
+   - Retained plan/context details: do not emit preference audit events for system-initiated backfills.
 ```
 
 First slice may include minimal schema, API, UI, send-path, and tests. Later slices reuse or extend it. Do not create separate layer tickets.
