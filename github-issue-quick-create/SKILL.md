@@ -72,53 +72,21 @@ Do not ask for metadata, non-goals, rollout, analytics, tests, docs, or relation
 
 ## Draft Shape
 
-Use a compact body. For most issues:
+Use a compact body. For most issues, include Summary and Acceptance Criteria sections.
 
-```markdown
-## Summary
-
-<One or two sentences describing the requested change.>
-
-## Acceptance Criteria
-
-- [ ] <Observable completion criterion.>
-```
-
-For bugs with known reproduction details:
-
-```markdown
-## Summary
-
-<Brief defect summary.>
-
-## Reproduction
-
-<Steps, command, or scenario that shows the problem.>
-
-## Expected
-
-<Expected behavior.>
-
-## Actual
-
-<Actual behavior.>
-
-## Acceptance Criteria
-
-- [ ] <The reproduction path now produces the expected behavior.>
-```
+For bugs with known reproduction details, include Summary, Reproduction, Expected, Actual, and Acceptance Criteria sections.
 
 Show:
 
 - Repo
 - Title
-- Full body in one fenced `markdown` block containing only the exact issue body
+- Full body under a Body: label
 - Explicit labels/assignees only
 - Duplicate results only if requested
 
-Close the body fence before labels, assignees, duplicate results, or the approval prompt. Metadata and the approval prompt must be normal Markdown, never inside a code fence or indented code block.
+Do not wrap the draft, body, metadata, duplicate results, or approval prompt in code fences.
 
-End with: `Reply "create" to create this issue, or tell me what to change.`
+End with: Reply "create" to create this issue, or tell me what to change.
 
 ## Publish
 

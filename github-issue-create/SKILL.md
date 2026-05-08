@@ -82,17 +82,15 @@ For a plan/spec, read `examples/tracer-bullet-breakdown.md`, then draft a number
 
 Relationship plan: list native relationships to create after approval, such as `Parent: #12 -> #14 via sub_issues` or `Blocked by: #18 blocked by #17 via dependencies/blocked_by`. For new issues, use titles and say IDs will be resolved after creation.
 
-Approval format: repo/title header, a single fenced `markdown` block containing only the exact issue body, then close the fence before any metadata, relationship plan, or approval prompt. Put metadata and the approval prompt in normal Markdown, never inside a code fence or indented code block. For multi-issue drafts, include the issue architecture check before the relationship plan.
+Approval format: repo/title header, issue body under a Body: label, metadata block, relationship plan, then Reply "create" to proceed, or tell me what to change. Do not wrap the draft, body, metadata, relationship plan, or approval prompt in code fences. For multi-issue drafts, include the issue architecture check before the relationship plan.
 
 Use this shape for each draft:
 
-````markdown
 Repo: owner/name
 Title: <issue title>
 
-```markdown
+Body:
 <exact issue body>
-```
 
 Metadata:
 - Assignee: <none or username>
@@ -105,7 +103,6 @@ Relationship plan:
 - <none or native relationships to create after approval>
 
 Reply "create" to proceed, or tell me what to change.
-````
 
 ## Publish
 
