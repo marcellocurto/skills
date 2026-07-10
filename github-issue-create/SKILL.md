@@ -1,36 +1,31 @@
 ---
 name: github-issue-create
-description: Draft and create GitHub issues with `gh`. Use for bugs, tasks, features, PRDs, specs, epics, sub-issues, blockers, and tracer-bullet vertical issue breakdowns. Draft first. After approval, create issues and approved native GitHub relationships in the same turn.
+description: Draft and create complex GitHub issues or issue sets with `gh` after explicit approval. Use for detailed bugs, PRDs, specs, epics, relationships, duplicate checks, label creation, or implementation breakdowns.
 ---
 
 # GitHub Issue Create
 
 Turn user, repo, or source-issue context into actionable GitHub issue drafts, then create approved issues and approved native GitHub relationships with `gh`.
 
-`AFK` = implementable end-to-end without human input. `HITL` = blocked on a real human decision such as design, product, or architecture.
-
-For multi-step work, start with a short user-visible update that says what repository or source context you are checking first.
-
 ## Goal
 
-Produce issue drafts a maintainer can act on, get explicit approval, then publish exactly the approved issue set.
+Produce issue drafts a maintainer can act on, then publish exactly the approved issue set.
 
 ## Success Criteria
 
 - Drafts use facts from the user, repo, or fetched source issue.
 - Each issue has a clear title, observable acceptance criteria, useful metadata, and proportional scope.
-- Multi-issue implementation plans are tracer-bullet vertical slices unless an architecture exception is justified.
+- Multi-issue implementation plans favor independently verifiable vertical slices when they fit the work.
 - Likely duplicates are surfaced before creation.
-- No issue, label, or native relationship is created before explicit approval.
 - After creation, issue URLs and native relationship status are reported.
 
 ## Hard Constraints
 
 - Create only after explicit approval.
 - Never duplicate or modify parent/source issues unless asked.
-- Do not invent requirements, metadata, labels, relationships, priority, or acceptance criteria.
+- Do not present unsupported requirements, metadata, labels, relationships, or priority as fact. Derive acceptance criteria only from stated requirements or verified repository behavior, and label material unknowns.
 - Do not include a generic `Relevant files` section or static file inventory. File paths become stale quickly; include only specific code references the user provided or that are necessary to disambiguate the task, and phrase them as current starting points, not authoritative scope.
-- Do not dumb down, shorten away, or genericize a user-provided implementation plan, spec, PRD, or issue breakdown. Preserve concrete details, constraints, edge cases, sequencing, non-goals, and rationale in the drafted issue bodies.
+- Preserve concrete details, constraints, edge cases, sequencing, non-goals, and rationale from a user-provided implementation plan, spec, PRD, or issue breakdown.
 - Prefer existing labels; draft new labels only with approval.
 - Keep titles under 80 characters when practical.
 - Bugs need repro, expected/actual behavior, environment, and impact when known.
@@ -38,7 +33,9 @@ Produce issue drafts a maintainer can act on, get explicit approval, then publis
 
 ## Context And Tool Budget
 
-Preflight `gh`, auth, and repo before drafting or publishing. If `gh` is missing, auth fails, or the repo is unclear, stop and report the smallest fix or ask for `owner/name`.
+Resolve the target repository from the request or current repo when possible. Draft from the user's context without requiring `gh` or authentication when enough information is already available.
+
+Before a GitHub read or write, preflight `gh`, authentication, and the target repo. GitHub reads include source issues, comments, labels, duplicate searches, and relationship verification. If preflight fails, continue any draft that does not depend on the missing read and report which lookup or publication step remains blocked. Ask for `owner/name` only when the repository cannot otherwise be resolved.
 
 Gather only the context needed to draft correctly: repo, issue type, title/summary, completion criteria, bug repro details, explicit relationships, source issue text/comments, and current repo constraints that affect implementation issue sets.
 
@@ -48,22 +45,15 @@ Use duplicate search with 2-4 distinctive nouns from the title. Retry broader te
 
 Read command details from [references/gh-commands.md](references/gh-commands.md) when you need exact `gh` commands, REST endpoints, or relationship verification.
 
-## Tracer-Bullet Issue Architecture
+## Issue Architecture
 
-Use this for any plan, spec, PRD, epic, or multi-issue request. Design the breakdown before drafting final issue bodies.
+For plans, specs, PRDs, epics, and multi-issue requests, design the breakdown before drafting final issue bodies.
 
 Each implementation issue should deliver one narrow user-visible or operational behavior end-to-end. Include every needed layer for that behavior, such as data, API, worker, UI, docs, tests, and analytics, so the issue is demoable or verifiable after merge.
 
-Avoid layer-only issues such as `create schema`, `add endpoint`, `build UI`, `write tests`, or `wire service`. Fold that work into the first vertical slice that needs it.
+Prefer vertical slices over layer-only issues such as `create schema`, `add endpoint`, `build UI`, `write tests`, or `wire service` when a slice can be implemented and verified independently.
 
-Horizontal/enabler issues are exceptions. Use them only for discovery, required decisions, broad migrations, mechanical refactors, or work that is independently valuable. Mark each one:
-
-`Architecture exception: <why this is not a vertical slice>`
-
-Every implementation issue must include one of:
-
-- `Tracer-bullet: yes - <demoable behavior>`
-- `Architecture exception: <reason>`
+Use horizontal or enabling issues when discovery, a required decision, a broad migration, a mechanical refactor, or independently valuable infrastructure work cannot form a credible vertical slice. Explain the reason in the breakdown; do not add `Tracer-bullet` or `Architecture exception` labels unless the user requests them.
 
 ## Plan Fidelity Contract
 
@@ -93,7 +83,7 @@ Read the relevant template before drafting: `templates/bug.md`, `templates/featu
 
 For one issue, follow the template. Show repo, title, body, assignee, labels/new labels, duplicate candidates, milestone/project metadata, and relationships.
 
-For a plan/spec, read `examples/tracer-bullet-breakdown.md`, then draft a numbered tracer-bullet breakdown before final bodies. Each item must show title, kind, `AFK`/`HITL`, parent/source, blockers, end-to-end behavior, demo/verification path, user stories when present, acceptance summary, retained plan/context details, and architecture check.
+For a plan/spec, read `examples/tracer-bullet-breakdown.md`, then draft a numbered breakdown before final bodies. Each item should show title, kind, parent/source, blockers, end-to-end behavior, demo/verification path, user stories when present, acceptance summary, and retained plan/context details. Explain why any horizontal issue cannot be a useful vertical slice.
 
 Relationship plan: list native relationships to create after approval, such as `Parent: #12 -> #14 via sub_issues` or `Blocked by: #18 blocked by #17 via dependencies/blocked_by`. For new issues, use titles and say IDs will be resolved after creation.
 
@@ -108,6 +98,7 @@ Body:
 <exact issue body>
 
 Metadata:
+
 - Assignee: <none or username>
 - Labels: <none or labels>
 - New labels: <none or labels requiring approval>
@@ -115,6 +106,7 @@ Metadata:
 - Relationships: <none or planned native relationships>
 
 Relationship plan:
+
 - <none or native relationships to create after approval>
 
 Reply "create" to proceed, or tell me what to change.

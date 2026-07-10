@@ -54,18 +54,9 @@ Users can crash the settings page while editing their profile.
 ## Example command after approval
 
 ```bash
-body_file="$(mktemp -t gh-issue-body.XXXXXX.md)"
-cat > "$body_file" <<'EOF'
-<drafted body here>
-EOF
-
 gh issue create \
   --title "Fix settings crash on empty display name" \
-  --body-file "$body_file" \
-  --assignee "$(gh api user --jq .login)" \
-  --label "bug"
-
-rm -f "$body_file"
+  --body-file - <<'EOF'
+<drafted body here>
+EOF
 ```
-
-Only include `--label "bug"` if `bug` exists in `gh label list` for the target repository.

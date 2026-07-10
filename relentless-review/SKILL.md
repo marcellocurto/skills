@@ -1,6 +1,6 @@
 ---
 name: relentless-review
-description: Relentlessly stress-test proposals, plans, implementations, designs, strategies, or answers. Use when the user asks "is this actually the best we can do?", wants assumptions challenged, edge cases explored, failure modes examined, or asks to push harder, red-team, find holes, or be relentless. The answer may be that the current work is already the best path and should not change. Do not use for proofreading, encouragement-only feedback, minor style review, or requests where the user only wants implementation.
+description: Stress-test proposals, plans, implementations, designs, strategies, or answers. Use when the user asks to push harder, red-team, find holes, challenge assumptions, explore failure modes, or decide whether the current path is genuinely best. Not for proofreading or implementation-only requests.
 ---
 
 # Relentless Review

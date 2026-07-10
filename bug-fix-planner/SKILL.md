@@ -1,6 +1,6 @@
 ---
 name: bug-fix-planner
-description: Plan a concrete fix for a specific bug, regression, crash, failing test, error, or broken behavior without changing code. Use when the user wants a path forward from a bug report, GitHub issue, stack trace, logs, screenshots, repro steps, or failing test. Do not use for new features, broad refactors, general debugging advice, or requests to directly implement the fix.
+description: Plan a concrete fix for one bug, regression, crash, failing test, error, or broken behavior without changing code. Use for bug reports, issues, stack traces, logs, screenshots, repro steps, or failures that need an implementation-ready plan. Not for direct fixes or feature/refactor planning.
 ---
 
 # Bug Fix Planner
@@ -38,7 +38,7 @@ Ask only when missing information prevents a useful plan. Otherwise state assump
 
 ## Output
 
-Use concise Markdown. Include only relevant sections.
+Include the evidence, uncertainty, validation, and material caveats needed to make the plan implementable. Omit unused sections and repeated background.
 
 - **Goal**: what fixed means.
 - **Evidence**: confirmed facts, likely facts, unknowns.

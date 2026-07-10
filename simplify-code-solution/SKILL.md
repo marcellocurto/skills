@@ -1,6 +1,6 @@
 ---
 name: simplify-code-solution
-description: Simplify code fixes and feature proposals by grounding them in real requirements and existing code. Use when a coding plan feels overbuilt, speculative, too abstract, or needs assumptions challenged before implementation.
+description: Simplify overbuilt or speculative code fixes and feature proposals by grounding them in real requirements and existing code. Use before implementation when a coding plan needs the smallest complete solution.
 ---
 
 # Simplify Code Solution
@@ -48,7 +48,7 @@ For recommendations:
 - **Tradeoffs**
 - **Validation**
 
-For implementation, make the scoped change and verify it.
+Use only the headings that add decision value. For implementation, make the scoped change and verify it.
 
 ## Stop Rules
 

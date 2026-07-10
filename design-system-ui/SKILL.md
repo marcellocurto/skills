@@ -1,7 +1,6 @@
 ---
 name: design-system-ui
-description: Design and implement polished frontend UI that feels native to the existing product, codebase, component library, and design system. Use for normal production frontend work where the result should extend real project patterns rather than invent a disconnected visual direction.
-disable-model-invocation: true
+description: Design and implement production frontend UI that extends an existing product, codebase, component library, or design system. Use when explicitly invoked for polished product UI that should preserve local patterns.
 ---
 
 # Design System UI
@@ -19,7 +18,7 @@ Use the existing product as the creative material. The result should feel native
 - The UI works as real code in the requested or existing stack.
 - Existing components, tokens, typography, layout conventions, icon sets, and accessibility patterns are reused when they fit.
 - The design has a clear product-aware direction instead of generic SaaS defaults.
-- Relevant states are handled: loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens.
+- States the task can reach are handled, such as loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens.
 - Responsive behavior is checked for common viewport sizes.
 - Validation is run when available; if visual quality matters, render or screenshot before finalizing.
 
@@ -62,7 +61,7 @@ Make it coherent through a few strong choices rather than many unrelated effects
 
 ## Output
 
-When implementing, provide scoped code that is ready to run in the user's stack. In the final response, briefly name the product-aware direction, main files changed, validation performed, and assumptions that materially affect the design system.
+When implementing, provide scoped code that is ready to run in the user's stack. In the final response, lead with the completed result, then name the product-aware direction, main files changed, validation performed, and assumptions that materially affect the design system.
 
 ## Stop Rules
 

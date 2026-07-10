@@ -18,21 +18,17 @@ Create issues for import reliability:
    - Blocked by: None
 2. Validate CSV headers before upload
    - Kind: Implementation
-   - Type: AFK
    - Parent: Make CSV imports reliable
    - End-to-end behavior: invalid CSV headers fail before upload work starts.
    - Demo / verification path: upload a CSV with missing headers and verify actionable errors.
    - Blocked by: None
-   - Tracer-bullet: yes - validation runs from upload path to user-facing error.
    - Acceptance summary: invalid or missing headers produce actionable errors
 3. Add resumable import retries
    - Kind: Implementation
-   - Type: AFK
    - Parent: Make CSV imports reliable
    - End-to-end behavior: failed imports resume without manual restart.
    - Demo / verification path: interrupt an import, retry it, verify it resumes from the last safe point.
    - Blocked by: Validate CSV headers before upload
-   - Tracer-bullet: yes - retry behavior runs through import state and operator workflow.
    - Acceptance summary: failed imports resume from the last safe point
 ```
 

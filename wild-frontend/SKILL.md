@@ -1,13 +1,13 @@
 ---
 name: wild-frontend
-description: Explicit-only skill for unconstrained, highly creative frontend design. Use only when the user explicitly says to use wild-frontend or asks to invoke this exact skill. Do not trigger automatically for normal frontend, styling, beautification, product UI, design-system, or production polish requests.
+description: Create unconstrained, highly original frontend designs. Use only when the user explicitly invokes wild-frontend. Not for normal product UI, styling, beautification, design-system work, or production polish.
 ---
 
 # Wild Frontend
 
 Create highly original, production-grade frontend artifacts where memorability, concept, and visual ambition matter more than product consistency.
 
-Use this skill only when explicitly invoked. Build real working code, not just a description.
+Build real working code, not just a description.
 
 For multi-step work, start with a short user-visible update that names the concept or first implementation surface you are checking.
 
@@ -21,7 +21,7 @@ Choose one strong visual concept and execute it with discipline. The result shou
 - One concept drives typography, color, layout, surface, texture, and motion.
 - The interface is surprising and memorable without blocking usability.
 - Important text is readable, core controls are accessible enough for the task, and decorative effects do not interfere.
-- Relevant interaction states and common viewport sizes are handled.
+- Interaction states the task can reach and common viewport sizes are handled.
 - Visual output is rendered or inspected when the environment allows it.
 
 ## Creative Direction
@@ -57,7 +57,7 @@ You may create one-off components, custom CSS, unusual layout systems, decorativ
 
 ## Output
 
-Briefly report the concept, signature design moves, changed files, and validation performed.
+Lead with the completed result, then report the concept, signature design moves, changed files, and validation performed.
 
 ## Stop Rules
 

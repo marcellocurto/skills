@@ -1,6 +1,6 @@
 ---
 name: test-quality-audit
-description: Audit tests for real bug-finding value. Use when the user asks whether tests are useful, trivial, redundant, over-mocked, implementation-coupled, snapshot-heavy, coverage-padding, only passing because the test controls both sides, or whether tests should be kept, fixed, cut, or added. Also use when reviewing test changes in a PR and the user wants honest judgment about whether the tests earn their place.
+description: Audit tests for real bug-finding value. Use to judge trivial, redundant, over-mocked, implementation-coupled, snapshot-heavy, or coverage-padding tests; review test changes; and decide what to keep, fix, cut, or add. Not for editing tests unless explicitly requested.
 ---
 
 # Test Quality Audit
@@ -77,7 +77,7 @@ Snapshots and mocks are acceptable only when they preserve signal. They are bad 
 
 ## Output
 
-Use concise Markdown:
+Lead with the verdict and highest-value changes. Keep the evidence needed to justify each classification; omit repeated test summaries and generic testing advice.
 
 - **Verdict**: high-signal, mixed, weak, overfit, under-tested, mostly noise, or good enough.
 - **What is protected**: meaningful behavior currently covered.
