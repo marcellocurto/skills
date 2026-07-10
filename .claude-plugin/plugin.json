@@ -1,0 +1,13 @@
+{
+  "name": "marcello-curto-skills",
+  "skills": [
+    "./bug-fix-planner",
+    "./design-system-ui",
+    "./github-issue-create",
+    "./github-issue-quick-create",
+    "./relentless-review",
+    "./simplify-code-solution",
+    "./test-quality-audit",
+    "./wild-frontend"
+  ]
+}
