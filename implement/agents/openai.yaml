@@ -1,0 +1,6 @@
+interface:
+  display_name: "Implement"
+  short_description: "Implement and verify scoped software work"
+  default_prompt: "Use $implement to complete and verify the supplied spec or tickets without committing unless explicitly requested."
+policy:
+  allow_implicit_invocation: false
