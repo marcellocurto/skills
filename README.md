@@ -56,6 +56,8 @@ For implementing an already-defined spec or set of tickets. This skill keeps fee
 
 It finishes with a code review and leaves changes uncommitted unless the user explicitly requests a commit.
 
+This version is based on and inspired by Matt Pocock's [`implement` skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md), adapted for the GPT-5.6 family and this repository's workflow conventions.
+
 ### [`relentless-review`](relentless-review/SKILL.md)
 
 For the moment when "looks reasonable" is not enough. This skill asks whether the work is actually the best path, then pushes on assumptions, edge cases, failure modes, reversibility, and proof.
