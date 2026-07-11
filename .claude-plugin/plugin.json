@@ -5,6 +5,7 @@
     "./design-system-ui",
     "./github-issue-create",
     "./github-issue-quick-create",
+    "./implement",
     "./relentless-review",
     "./simplify-code-solution",
     "./test-quality-audit",
