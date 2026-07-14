@@ -29,7 +29,7 @@ npx skills add marcellocurto/skills
 
 ### [`audit-code-complexity`](audit-code-complexity/SKILL.md)
 
-For auditing a diff, feature, module, or codebase that may have accumulated more machinery than the problem requires. It traces the actual behavior and usage before judging abstractions, control flow, state, data ownership, APIs, dependencies, defensive code, and local implementation quality.
+For auditing a diff, feature, module, or codebase that may have accumulated more machinery than the problem requires. A current-state audit judges the requested target regardless of its history; a change-scoped audit reports only complexity introduced or materially worsened by the specified changes. Both inspect actual behavior, usage, and local conventions before judging abstractions, control flow, state, data ownership, APIs, dependencies, defensive code, and local implementation quality.
 
 The skill separates essential domain complexity from accidental implementation complexity. Every finding must name a concrete cost, point to evidence, and offer a smaller behavior-preserving shape; unfamiliarity, line count, and personal style preferences are not findings by themselves.
 

@@ -1,6 +1,6 @@
 ---
 name: audit-code-complexity
-description: Audit existing code and tests for unnecessary complexity, overengineering, poor patterns, awkward control or data flow, unjustified abstractions, inelegant implementations, and low-value tests that restate configuration or implementation instead of protecting behavior. Use when reviewing a diff, feature, module, or codebase for maintainability, simplification opportunities, code smells, test value, or accidental complexity. Report findings without editing code unless the user explicitly asks for fixes.
+description: Audit existing code and tests for unnecessary complexity, overengineering, poor patterns, awkward control or data flow, unjustified abstractions, inelegant implementations, and low-value tests that restate configuration or implementation instead of protecting behavior. Use for either a current-state audit of a feature, module, or codebase, or a change-scoped audit limited to complexity introduced or worsened by a diff, PR, branch, or working changes. Report findings without editing code unless the user explicitly asks for fixes.
 ---
 
 # Audit Code Complexity
@@ -25,13 +25,22 @@ Produce a prioritized, evidence-based audit of actual code. Distinguish essentia
 
 ## Audit Workflow
 
-### 1. Establish the Review Boundary
+### 1. Choose the Audit Mode and Target
 
-Determine whether the target is a diff, branch, feature, module, file set, or codebase. When reviewing changes, inspect the fixed comparison point and the intent behind the change when available.
+Use the user's wording to choose one mode:
 
-Read applicable repository instructions and the minimum documentation needed to understand local conventions. Do not ask for context that can be recovered from the repository.
+- **Current-state audit**: evaluate the requested feature, module, file set, tests, or codebase as it exists now, regardless of when the complexity was introduced.
+- **Change-scoped audit**: evaluate only the diff, PR, branch, commit range, or working changes the user named. Report complexity caused or materially worsened by those changes. Inspect surrounding code for context, but do not turn pre-existing issues into findings.
 
-### 2. Recover the Required Behavior
+Do not default to change-scoped mode merely because the repository has uncommitted changes or history. State the chosen mode and target briefly. If the request is genuinely ambiguous and the modes would produce materially different results, ask; otherwise make the narrowest reasonable assumption and state it.
+
+If the user explicitly asks for both, report current-state findings and change-introduced findings separately; do not mix their scopes.
+
+The user may narrow either mode to a concern such as tests, abstractions, state, or a specific path. Honor that boundary.
+
+### 2. Recover Required Behavior and Constraints
+
+Recover the reason for the code before deciding that its complexity is unnecessary. Read applicable repository instructions and only the requirements, docs, callers, tests, configuration, and local conventions needed to understand the target. Do not ask for context that can be recovered from the repository.
 
 Trace enough of the real path to understand:
 
@@ -63,6 +72,21 @@ For suspicious tests, ask what behavior they claim to protect, what they actuall
 Configuration can itself be behavior when a consumer, installer, runtime, or published format depends on its exact shape. Keep a direct configuration or contract test when that exact representation is supported behavior. Otherwise prefer a test of the observable effect over a test that copies production literals into assertions.
 
 Treat line count, function length, nesting depth, and complexity metrics as investigation clues, not findings by themselves.
+
+Use named smells as labels for judgment calls when they make a finding clearer:
+
+- **Mysterious Name**: a name hides what the value or operation means.
+- **Duplicated Code**: the same policy or logic can drift in multiple places.
+- **Feature Envy**: behavior depends more on another module's data than its own.
+- **Data Clumps / Primitive Obsession**: recurring loose values represent one domain concept.
+- **Repeated Conditionals**: the same decision is spread across multiple branches or sites.
+- **Shotgun Surgery**: one conceptual change requires scattered edits.
+- **Divergent Change**: one module changes for unrelated reasons.
+- **Speculative Generality**: extension points or abstractions serve no current requirement.
+- **Message Chain / Middle Man**: navigation or delegation adds coupling without useful policy.
+- **Refused Abstraction**: an implementation inherits or conforms to machinery it mostly bypasses.
+
+Label these as possible smells, not automatic violations. Recommend the usual refactoring only when it fits the repository, preserves the domain model, and is simpler in this specific code.
 
 ### 4. Prove Each Finding
 
