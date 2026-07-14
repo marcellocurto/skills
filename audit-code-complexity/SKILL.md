@@ -1,6 +1,6 @@
 ---
 name: audit-code-complexity
-description: Audit existing code for unnecessary complexity, overengineering, poor patterns, awkward control or data flow, unjustified abstractions, and inelegant implementations. Use when reviewing a diff, feature, module, or codebase for maintainability, simplification opportunities, code smells, or accidental complexity. Report findings without editing code unless the user explicitly asks for fixes.
+description: Audit existing code and tests for unnecessary complexity, overengineering, poor patterns, awkward control or data flow, unjustified abstractions, inelegant implementations, and low-value tests that restate configuration or implementation instead of protecting behavior. Use when reviewing a diff, feature, module, or codebase for maintainability, simplification opportunities, code smells, test value, or accidental complexity. Report findings without editing code unless the user explicitly asks for fixes.
 ---
 
 # Audit Code Complexity
@@ -18,6 +18,7 @@ Produce a prioritized, evidence-based audit of actual code. Distinguish essentia
 - Inspect the relevant implementation, callers, tests, and repository conventions before judging it.
 - Explain the concrete cost of each finding: cognitive load, change amplification, hidden coupling, invalid states, duplicated policy, brittle control flow, or avoidable operational risk.
 - Show that a simpler alternative fits the real requirements and current usage.
+- Identify tests that add maintenance cost or false confidence without catching a realistic behavioral regression.
 - Preserve public behavior, data semantics, source of truth, identity, routing, security, accessibility, and compatibility unless the user explicitly authorizes a contract change.
 - Prioritize material findings and omit generic style advice.
 - Say clearly when the code is already appropriately simple.
@@ -39,7 +40,7 @@ Trace enough of the real path to understand:
 - data ownership and source of truth
 - error and recovery behavior
 - compatibility and performance constraints
-- tests that reveal intended behavior
+- tests and configuration that reveal intended behavior or a supported contract
 
 Do not infer that unfamiliar code is unnecessary. If intent or usage remains uncertain, state the uncertainty and reduce confidence rather than inventing a requirement.
 
@@ -55,6 +56,11 @@ Audit the dimensions that matter for the target:
 - **Dependencies and frameworks**: libraries, patterns, configuration, caching, concurrency, or infrastructure whose cost exceeds the requirement they serve.
 - **Defensive and compatibility code**: speculative fallbacks, unreachable guards, swallowed errors, redundant validation, or legacy paths with no verified consumer. Preserve necessary boundary validation and compatibility.
 - **Local implementation quality**: misleading names, distant cause and effect, mutation across broad scopes, dense expressions, comments compensating for opaque code, or cleverness that hides straightforward behavior.
+- **Test value and suite complexity**: tests that cannot name a realistic regression, merely restate configuration, constants, metadata, prompt prose, static content, or private implementation, assert calls or mocks instead of outcomes, duplicate stronger coverage, or require more harness machinery than the behavior warrants.
+
+For suspicious tests, ask what behavior they claim to protect, what they actually protect, whether real behavior could break while they still pass, and whether a harmless refactor would break them. Classify the recommendation as **Keep**, **Fix**, or **Cut**.
+
+Configuration can itself be behavior when a consumer, installer, runtime, or published format depends on its exact shape. Keep a direct configuration or contract test when that exact representation is supported behavior. Otherwise prefer a test of the observable effect over a test that copies production literals into assertions.
 
 Treat line count, function length, nesting depth, and complexity metrics as investigation clues, not findings by themselves.
 
@@ -78,6 +84,8 @@ For every finding, identify:
 
 If the alternative merely moves complexity elsewhere, shortens code without clarifying it, or depends on speculative future cleanup, do not recommend it.
 
+For a test finding, name the realistic bug the test should catch, explain why the current test would miss it or fail for the wrong reason, and recommend the smallest stronger behavioral assertion or removal when no valuable behavior exists.
+
 ### 5. Prioritize by Payoff
 
 Use these impact levels:
@@ -93,7 +101,7 @@ Order findings by impact, then confidence. Keep separate problems separate, but 
 Lead with the verdict and findings. Use only sections that add value.
 
 - **Verdict**: whether the implementation is appropriately simple, mildly overbuilt, materially overcomplicated, or structurally difficult to maintain.
-- **Findings**: prioritized findings with impact, confidence, file/line evidence, concrete cost, simpler alternative, and preservation constraints.
+- **Findings**: prioritized findings with impact, confidence, file/line evidence, concrete cost, simpler alternative, preservation constraints, and **Keep/Fix/Cut** when the finding concerns tests.
 - **What should stay**: complexity that is justified by the domain or operational requirements and should not be flattened.
 - **Simplification sequence**: the smallest safe order of work when findings depend on one another.
 - **Validation**: tests, checks, or observations that would prove behavior was preserved.
@@ -109,7 +117,8 @@ If no material findings exist, say so directly. Mention remaining uncertainty or
 - Do not collapse domain distinctions, ownership boundaries, validation, or explicit state merely to reduce lines.
 - Do not substitute personal taste for repository conventions or evidence.
 - Do not report formatter, naming, or style nits unless they materially obscure behavior.
-- Do not expand into a general bug, security, performance, or test audit. Report those issues only when they are caused or concealed by the complexity under review.
+- Do not reward coverage for its own sake or require tests for every helper, branch, configuration value, or line.
+- Do not expand into a general bug, security, or performance audit. Report those issues only when they are caused or concealed by the complexity under review.
 
 ## Stop Rules
 
