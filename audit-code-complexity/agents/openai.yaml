@@ -1,0 +1,4 @@
+interface:
+  display_name: "Audit Code Complexity"
+  short_description: "Find needless complexity and poor code patterns"
+  default_prompt: "Use $audit-code-complexity to audit this code for unnecessary complexity and recommend simpler, behavior-preserving alternatives."

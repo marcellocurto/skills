@@ -1,6 +1,7 @@
 {
   "name": "marcello-curto-skills",
   "skills": [
+    "./audit-code-complexity",
     "./bug-fix-planner",
     "./design-system-ui",
     "./github-issue-create",

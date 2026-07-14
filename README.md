@@ -14,6 +14,7 @@ npx skills add marcellocurto/skills
 
 | Skill                                                             | Description                                                                                                                                                          |
 | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`audit-code-complexity`](audit-code-complexity/SKILL.md)         | Audits existing code for accidental complexity, poor patterns, overengineering, and concrete behavior-preserving simplifications.                                   |
 | [`bug-fix-planner`](bug-fix-planner/SKILL.md)                     | Plans a concrete fix for a specific bug, regression, crash, failing test, error, or broken behavior without changing code.                                           |
 | [`design-system-ui`](design-system-ui/SKILL.md)                   | Designs and implements polished frontend UI that feels native to the existing product, codebase, component library, and design system.                               |
 | [`github-issue-create`](github-issue-create/SKILL.md)             | Drafts and creates GitHub issues with `gh`, including bugs, tasks, features, PRD/spec breakdowns, sub-issues, blockers, and vertical slices after explicit approval. |
@@ -25,6 +26,12 @@ npx skills add marcellocurto/skills
 | [`wild-frontend`](wild-frontend/SKILL.md)                         | Explicit-only skill for unconstrained, highly creative frontend artifacts outside normal product constraints.                                                        |
 
 ## Skill Details
+
+### [`audit-code-complexity`](audit-code-complexity/SKILL.md)
+
+For auditing a diff, feature, module, or codebase that may have accumulated more machinery than the problem requires. It traces the actual behavior and usage before judging abstractions, control flow, state, data ownership, APIs, dependencies, defensive code, and local implementation quality.
+
+The skill separates essential domain complexity from accidental implementation complexity. Every finding must name a concrete cost, point to evidence, and offer a smaller behavior-preserving shape; unfamiliarity, line count, and personal style preferences are not findings by themselves.
 
 ### [`bug-fix-planner`](bug-fix-planner/SKILL.md)
 
