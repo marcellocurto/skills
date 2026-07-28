@@ -23,9 +23,15 @@ Turn existing context into focused GitHub tickets that can be implemented and ve
 
 Work from the conversation and any referenced plan, spec, issue, comments, repository documentation, ADRs, domain glossary, or prior research. Inspect the codebase only as needed to make the tickets accurate. Ask only when unresolved ambiguity would materially change the ticket set, semantics, or dependency graph.
 
-Resolve the target repository before any GitHub read or write. Search for duplicates only when the user asks or when a likely duplicate would materially affect publication.
+Resolve the target repository and preflight `gh` and authentication before any GitHub read or write.
 
-### 2. Draft the ticket set
+### 2. Check for duplicates
+
+Before drafting new tickets, search both open and closed issues for likely duplicates of each intended outcome. Use the plan's plain-language concepts rather than relying on one exact title. Read plausible matches closely enough to compare their actual goals and scope.
+
+Surface likely duplicate URLs and explain the overlap. Do not treat a similar title as proof of duplication, and do not modify, close, or reuse an existing issue without the user's approval. If the search cannot run, report why; do not publish until it succeeds or the user explicitly approves proceeding without it.
+
+### 3. Draft the ticket set
 
 Give each ticket:
 
@@ -39,11 +45,11 @@ Default to substantial tickets with enough scope and context to be useful. Split
 
 For a wide mechanical refactor that cannot land safely in one change, prefer expand–migrate–contract: introduce the new form beside the old, migrate callers in independently safe batches, then remove the old form after the migrations finish. Do not assume a special branching strategy.
 
-Present the exact drafts, proposed native relationships, and labels. Apply `ready-for-agent` to actionable implementation tickets unless the user opts out; do not apply it to tracking-only issues.
+Present the exact drafts, duplicate candidates, proposed native relationships, and labels. Apply `ready-for-agent` to actionable implementation tickets unless the user opts out; do not apply it to tracking-only issues.
 
 Wait for explicit approval before creating anything. Approval of the drafts includes approval for their listed labels and native relationships.
 
-### 3. Publish
+### 4. Publish
 
 Preflight `gh`, authentication, the repository, and the existing `ready-for-agent` label. If the label is missing, report it and ask before creating it; do not silently substitute another label.
 
@@ -56,6 +62,6 @@ Create approved blockers before their dependents, then:
 
 Never propose, create, or assign a `blocked` label, including spelling or case variants. Never use a label or body link as a fallback for a failed native blocking relationship.
 
-### 4. Verify and report
+### 5. Verify and report
 
 Verify every created issue, label, and native relationship. Return the issue URLs and relationship status. If publication is partial, list what succeeded, what failed, and what remains; report the exact failure without destructive retries or semantic fallbacks.

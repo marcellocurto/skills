@@ -48,7 +48,7 @@ The aim is not bland consistency. Existing components are the starting material 
 
 ### [`to-tickets`](to-tickets/SKILL.md)
 
-For turning a plan, spec, issue, or conversation into a focused set of GitHub tickets. It preserves meaningful requirements and constraints, keeps cohesive work together, and splits only when scope or safe sequencing genuinely requires it. Publication always requires approval.
+For turning a plan, spec, issue, or conversation into a focused set of GitHub tickets. It checks open and closed issues for duplicates first, preserves meaningful requirements and constraints, keeps cohesive work together, and splits only when scope or safe sequencing genuinely requires it. Publication always requires approval.
 
 Each ticket uses a simple title, opens with a plain-language summary, states implementation goals without task-list checkboxes, and carries forward useful findings from prior research. Actionable tickets receive the existing `ready-for-agent` label. Parent and blocking edges use GitHub's native relationships; dependency state is never represented by a `blocked` label.
 
