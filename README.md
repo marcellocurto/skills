@@ -17,12 +17,11 @@ npx skills add marcellocurto/skills
 | [`audit-code-complexity`](audit-code-complexity/SKILL.md)         | Audits code and tests for accidental complexity, poor patterns, overengineering, low-value tests, and behavior-preserving simplifications.                           |
 | [`bug-fix-planner`](bug-fix-planner/SKILL.md)                     | Plans a concrete fix for a specific bug, regression, crash, failing test, error, or broken behavior without changing code.                                           |
 | [`design-system-ui`](design-system-ui/SKILL.md)                   | Designs and implements polished frontend UI that feels native to the existing product, codebase, component library, and design system.                               |
-| [`github-issue-create`](github-issue-create/SKILL.md)             | Drafts and creates GitHub issues with `gh`, including bugs, tasks, features, PRD/spec breakdowns, sub-issues, blockers, and vertical slices after explicit approval. |
-| [`github-issue-quick-create`](github-issue-quick-create/SKILL.md) | Quickly drafts one straightforward GitHub issue with minimal metadata, then creates it with `gh` after explicit approval.                                            |
 | [`implement`](implement/SKILL.md)                                 | Implements scoped work from a spec or tickets, then verifies and reviews the completed changes without committing automatically.                                  |
 | [`relentless-review`](relentless-review/SKILL.md)                 | Stress-tests work by asking whether it is actually the best path, challenging assumptions, edge cases, and failure modes without forcing unnecessary changes.        |
 | [`simplify-code-solution`](simplify-code-solution/SKILL.md)       | Simplifies code fixes and feature proposals by grounding them in real requirements, existing code, and the smallest complete solution.                               |
 | [`test-quality-audit`](test-quality-audit/SKILL.md)               | Audits tests for real bug-finding value and classifies what to keep, fix, cut, or add.                                                                               |
+| [`to-tickets`](to-tickets/SKILL.md)                               | Turns plans, specs, issues, or conversations into approved GitHub ticket sets with native relationships and `ready-for-agent` labels.                              |
 | [`wild-frontend`](wild-frontend/SKILL.md)                         | Explicit-only skill for unconstrained, highly creative frontend artifacts outside normal product constraints.                                                        |
 
 ## Skill Details
@@ -47,17 +46,11 @@ For production UI work that needs taste without drifting away from the product. 
 
 The aim is not bland consistency. Existing components are the starting material for something sharper: an interface that feels native, intentional, and more refined than the default version the product would otherwise get.
 
-### [`github-issue-create`](github-issue-create/SKILL.md)
+### [`to-tickets`](to-tickets/SKILL.md)
 
-For turning scattered context into GitHub issues a maintainer can actually act on. It can draft from supplied context without GitHub authentication, then resolves required repository reads, duplicate checks, and publication through `gh` only when needed.
+For turning a plan, spec, issue, or conversation into a focused set of GitHub tickets. It preserves meaningful requirements and constraints, keeps cohesive work together, and splits only when scope or safe sequencing genuinely requires it. Publication always requires approval.
 
-It handles both single issues and issue sets: bugs, tasks, features, PRD/spec breakdowns, sub-issues, blockers, and vertical slices. The important restraint is scope control: capture what is known, ask for what is missing, and avoid inventing metadata or acceptance criteria.
-
-### [`github-issue-quick-create`](github-issue-quick-create/SKILL.md)
-
-For filing one straightforward issue without the full planning machinery. This skill keeps the useful safety rail from the full workflow: draft first, create only after explicit approval.
-
-It asks only for essentials that would make the issue unusable, honors only explicit labels or assignees, and escalates to `github-issue-create` for duplicate investigation, multi-issue work, relationships, PRDs, specs, epics, blockers, or implementation breakdowns.
+Each ticket uses a simple title, opens with a plain-language summary, states implementation goals without task-list checkboxes, and carries forward useful findings from prior research. Actionable tickets receive the existing `ready-for-agent` label. Parent and blocking edges use GitHub's native relationships; dependency state is never represented by a `blocked` label.
 
 ### [`implement`](implement/SKILL.md)
 
