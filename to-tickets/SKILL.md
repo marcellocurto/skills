@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Turn a plan, spec, issue, or conversation into an approved set of actionable GitHub tickets, then publish them with `gh`, the `ready-for-agent` label, and native parent and blocking relationships. Use when implementation work needs to be broken into dependency-aware GitHub issues or a tracking issue with sub-issues.
+description: Turn a plan, spec, issue, or conversation into an approved set of actionable GitHub tickets, then publish them with `gh`, appropriate repository labels, and native parent and blocking relationships. Use when implementation work needs to be broken into dependency-aware GitHub issues or a tracking issue with sub-issues.
 ---
 
 # To Tickets
@@ -25,6 +25,8 @@ Work from the conversation and any referenced plan, spec, issue, comments, repos
 
 Resolve the target repository and preflight `gh` and authentication before any GitHub read or write.
 
+List the repository's existing labels with their descriptions. Use descriptions and established usage on comparable issues to understand the repository's label vocabulary; do not infer semantics from a label name alone when its meaning is ambiguous.
+
 ### 2. Check for duplicates
 
 Before drafting new tickets, search both open and closed issues for likely duplicates of each intended outcome. Use the plan's plain-language concepts rather than relying on one exact title. Read plausible matches closely enough to compare their actual goals and scope.
@@ -45,18 +47,30 @@ Default to substantial tickets with enough scope and context to be useful. Split
 
 For a wide mechanical refactor that cannot land safely in one change, prefer expand–migrate–contract: introduce the new form beside the old, migrate callers in independently safe batches, then remove the old form after the migrations finish. Do not assume a special branching strategy.
 
-Present the exact drafts, duplicate candidates, proposed native relationships, and labels. Apply `ready-for-agent` to actionable implementation tickets unless the user opts out; do not apply it to tracking-only issues.
+Choose the smallest useful set of existing labels for each ticket. Select labels that accurately describe its type, affected area, or other established repository dimensions. Add priority, workflow, or ownership labels only when the source material and repository convention support them. Do not invent labels, force a label from an unsuitable taxonomy, or apply labels merely because their names share words with the ticket. If no existing label fits, leave that dimension unlabeled and surface the taxonomy gap.
+
+Treat `ready-for-agent` as a readiness state, not a default ticket category. Apply it only when all of the following are true:
+
+- the ticket calls for a concrete implementation or repository change, rather than research as its outcome
+- the relevant decisions, constraints, context, and completion signals are sufficient to begin
+- the work specified by the ticket does not depend on live human judgment, conversation, approval, access provisioning, or manual action
+
+Do not apply `ready-for-agent` to tracking issues; research, investigation, discovery, or spike tickets; decision or coordination work; human-owned tasks; or underspecified implementation. Normal codebase exploration needed while implementing a well-specified change does not by itself make a ticket a research task.
+
+Treat readiness and dependency status as separate dimensions. A fully specified, agent-executable ticket may carry `ready-for-agent` while an open native blocked-by relationship prevents it from starting. Represent that dependency only with the native relationship; do not withhold `ready-for-agent` merely because the ticket is blocked.
+
+Present the exact drafts, duplicate candidates, proposed native relationships, and labels, with a short rationale for each ticket's proposed labels and for including or omitting `ready-for-agent`.
 
 Wait for explicit approval before creating anything. Approval of the drafts includes approval for their listed labels and native relationships.
 
 ### 4. Publish
 
-Preflight `gh`, authentication, the repository, and the existing `ready-for-agent` label. If the label is missing, report it and ask before creating it; do not silently substitute another label.
+Preflight `gh`, authentication, the repository, and every approved label. If an approved label is missing, report it and ask before creating anything; do not create or silently substitute a label.
 
 Create approved blockers before their dependents, then:
 
 - create each approved issue
-- apply `ready-for-agent` to actionable tickets
+- apply exactly the approved labels for that issue
 - create approved parent/sub-issue relationships with GitHub's native relationship
 - create approved blocked-by/blocking relationships with GitHub's native relationship
 
