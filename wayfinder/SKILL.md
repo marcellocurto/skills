@@ -38,11 +38,11 @@ When durable coordination has been explicitly chosen, the map is a single issue 
 
 The map is an **index**, not a store. It shows the route at low resolution and points toward the detail. During an in-task journey, resolved detail is folded directly into the destination artifact. In a durable journey, ticket resolutions carry the investigative history while the finished destination artifact gathers the final decisions into one coherent whole.
 
-**Where the map, its child tickets, blocking, and frontier queries physically live is tracker-specific.** The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if not. Consult the tracker doc's "Wayfinding operations" section for how _this_ repo expresses them. If no tracker has been provided, default to the local-markdown tracker.
+For a durable map, **where the map, its child tickets, blocking, and frontier queries physically live is tracker-specific.** The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if not. Consult the tracker doc's "Wayfinding operations" section for how _this_ repo expresses them. If no tracker has been provided, default to the local-markdown tracker.
 
 ### The map body
 
-The whole map at low resolution, loaded once per session. In a durable map, open tickets are **not** listed — they are open child issues, found by query.
+The whole map at low resolution, loaded once per session. In a durable map, open tickets are **not** listed — they are open child issues, found by query. In the current task, keep live frontier decisions in the working plan rather than bloating the low-resolution map.
 
 ```markdown
 ## Destination
@@ -78,11 +78,11 @@ In the current task, a ticket is a named decision on the live frontier. In a dur
 <the decision or investigation this ticket resolves>
 ```
 
-Each ticket carries a `wayfinder:<type>` label — one of `research`, `prototype`, `grilling`, `task` (see [Ticket Types](#ticket-types)).
+Each durable ticket carries a `wayfinder:<type>` label — one of `research`, `prototype`, `grilling`, `task` (see [Ticket Types](#ticket-types)). A ticket held only in the current task still has one of these types, but needs no persisted label.
 
 A session **claims** a durable ticket by assigning it to the dev driving the map, **first**, before any work, so concurrent sessions skip it. That assignee _is_ the claim: an open, unassigned ticket is unclaimed. A ticket held only in the current task needs no tracker claim.
 
-Blocking uses the tracker's **native** dependency relationship — essential because it renders the frontier _visually_ in the tracker's own UI, so the human sees what's takeable without opening the map. Only a tracker that lacks native blocking falls back to a body convention. A ticket is **unblocked** when every ticket blocking it is closed; the **frontier** is the open, unblocked, unclaimed children — the edge of the known.
+In a durable map, blocking uses the tracker's **native** dependency relationship — essential because it renders the frontier _visually_ in the tracker's own UI, so the human sees what's takeable without opening the map. Only a tracker that lacks native blocking falls back to a body convention. A ticket is **unblocked** when every ticket blocking it is closed; the **frontier** is the open, unblocked, unclaimed children — the edge of the known. In the current task, express the same ordering in the working plan.
 
 In a durable map, the answer isn't part of the body — it's recorded on resolution (see [Work through the map](#work-through-the-map)). Assets created while resolving a durable ticket are linked from the issue, not pasted in. In the current task, record the answer directly in Decisions so far and the destination artifact.
 
