@@ -22,6 +22,7 @@ npx skills add marcellocurto/skills
 | [`simplify-code-solution`](simplify-code-solution/SKILL.md)       | Simplifies code fixes and feature proposals by grounding them in real requirements, existing code, and the smallest complete solution.                               |
 | [`test-quality-audit`](test-quality-audit/SKILL.md)               | Audits tests for real bug-finding value and classifies what to keep, fix, cut, or add.                                                                               |
 | [`to-tickets`](to-tickets/SKILL.md)                               | Turns plans, specs, issues, or conversations into approved GitHub ticket sets with native relationships and `ready-for-agent` labels.                              |
+| [`wayfinder`](wayfinder/SKILL.md)                                 | Maps large, multi-session work as a route of decisions, keeping it in the current task unless durable coordination is needed.                                      |
 | [`wild-frontend`](wild-frontend/SKILL.md)                         | Explicit-only skill for unconstrained, highly creative frontend artifacts outside normal product constraints.                                                        |
 
 ## Skill Details
@@ -52,6 +53,8 @@ For turning a plan, spec, issue, or conversation into a focused set of GitHub ti
 
 Each ticket uses a simple title, opens with a plain-language summary, states implementation goals without task-list checkboxes, and carries forward useful findings from prior research. Actionable tickets receive the existing `ready-for-agent` label. Parent and blocking edges use GitHub's native relationships; dependency state is never represented by a `blocked` label.
 
+This version is inspired by Matt Pocock's [`to-tickets` skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-tickets/SKILL.md), adapted for the GPT-5.6 family and this repository's workflow conventions.
+
 ### [`implement`](implement/SKILL.md)
 
 For implementing an already-defined spec or set of tickets. This skill keeps feedback loops proportional: use targeted checks when they help during development, then run linting, typechecking, relevant tests, and the full suite after the implementation is complete.
@@ -59,6 +62,14 @@ For implementing an already-defined spec or set of tickets. This skill keeps fee
 It finishes with a code review and leaves changes uncommitted unless the user explicitly requests a commit.
 
 This version is based on and inspired by Matt Pocock's [`implement` skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md), adapted for the GPT-5.6 family and this repository's workflow conventions.
+
+### [`wayfinder`](wayfinder/SKILL.md)
+
+For planning work too large or uncertain to see end-to-end in one task. It names the destination, charts the visible decisions and remaining fog, then resolves one frontier decision at a time until the route is clear.
+
+The map stays in the current task by default. It moves to the issue tracker only when durable coordination is genuinely needed across sessions, owners, or external blockers, where native parent and blocking relationships preserve the route.
+
+This version is inspired by Matt Pocock's [`wayfinder` skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md), adapted for the GPT-5.6 family and this repository's workflow conventions.
 
 ### [`relentless-review`](relentless-review/SKILL.md)
 
