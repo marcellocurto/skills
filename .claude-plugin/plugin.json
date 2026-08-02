@@ -9,6 +9,7 @@
     "./simplify-code-solution",
     "./test-quality-audit",
     "./to-tickets",
+    "./wayfinder",
     "./wild-frontend"
   ]
 }
