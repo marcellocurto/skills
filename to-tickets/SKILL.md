@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Turn a plan, spec, issue, or conversation into an approved set of actionable GitHub tickets, then publish them with `gh`, appropriate repository labels, and native parent and blocking relationships. Use when implementation work needs to be broken into dependency-aware GitHub issues or a tracking issue with sub-issues.
+description: Turn a plan, spec, issue, or conversation into an approved set of actionable GitHub tickets, then publish them with `gh`, appropriate repository labels, and native parent and blocking relationships. Use when implementation work needs to be broken into dependency-aware GitHub issues or explicitly requested research or investigation needs durable work items.
 ---
 
 # To Tickets
@@ -11,6 +11,7 @@ Turn existing context into focused GitHub tickets that can be implemented and ve
 
 - Use facts from the user, source material, and repository. Do not invent requirements, goals, metadata, relationships, or priority.
 - Preserve requirements, constraints, decisions, rationale, meaningful edge cases, and verified findings from prior research. Do not compress away technical detail that would force the implementation agent to repeat exploration.
+- Make each ticket self-contained enough to complete without reading a parent or sibling. Reference relevant existing specs, ADRs, or repository docs when they exist; do not require or invent one.
 - Keep cohesive work together. Do not split a useful ticket merely to make it smaller.
 - Split only when a ticket has become too broad to implement or review coherently, contains outcomes that can deliver value independently, or needs safety-driven sequencing. When splitting feature work, prefer end-to-end slices that include every layer needed for the behavior without inventing work.
 - Declare only genuine blocking dependencies. Sequence or preference alone is not a blocker.
@@ -41,9 +42,13 @@ Give each ticket:
 - a body that begins with `## Summary` and a short plain-language explanation of what the ticket is about and why it matters
 - a `## Goals` section with clear ordinary bullets describing the outcomes, constraints, and completion signals an implementation agent should follow; never use task-list checkboxes
 - a `## Research and findings` section when prior exploration exists, retaining verified findings, relevant evidence, decisions, rejected approaches, pitfalls, and useful technical detail so implementation does not repeat that work; distinguish confirmed facts from hypotheses
-- its proposed parent and blockers, when any
+- its proposed existing parent, when requested or required by repository convention, and blockers, when any
 
-Default to substantial tickets with enough scope and context to be useful. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, investigations, migrations, infrastructure, and mechanical refactors when those are the honest units of work. Add a tracking issue only when it provides useful shared context or the user requests one.
+Default to substantial tickets with enough scope and context to be useful. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, migrations, infrastructure, and mechanical refactors when those are the honest units of work.
+
+Allow research or investigation tickets when discovery is itself explicitly requested, independently useful work with a concrete question and completion signal. When the user asks for an actionable implementation ticket set for a feature believed to be ready, resolve material unknowns before drafting; do not turn them into research tickets that postpone implementation.
+
+Do not create a tracking, overview, epic, or coordination issue merely to organize the set or preserve shared context. Attach tickets to an existing parent only when the user explicitly requests it or established repository convention requires it.
 
 For a wide mechanical refactor that cannot land safely in one change, prefer expand–migrate–contract: introduce the new form beside the old, migrate callers in independently safe batches, then remove the old form after the migrations finish. Do not assume a special branching strategy.
 
@@ -55,7 +60,7 @@ Treat `ready-for-agent` as a readiness state, not a default ticket category. App
 - the relevant decisions, constraints, context, and completion signals are sufficient to begin
 - the work specified by the ticket does not depend on live human judgment, conversation, approval, access provisioning, or manual action
 
-Do not apply `ready-for-agent` to tracking issues; research, investigation, discovery, or spike tickets; decision or coordination work; human-owned tasks; or underspecified implementation. Normal codebase exploration needed while implementing a well-specified change does not by itself make a ticket a research task.
+Do not apply `ready-for-agent` to research, investigation, discovery, or spike tickets; decision or coordination work; human-owned tasks; or underspecified implementation. Normal codebase exploration needed while implementing a well-specified change does not by itself make a ticket a research task.
 
 Treat readiness and dependency status as separate dimensions. A fully specified, agent-executable ticket may carry `ready-for-agent` while an open native blocked-by relationship prevents it from starting. Represent that dependency only with the native relationship; do not withhold `ready-for-agent` merely because the ticket is blocked.
 
