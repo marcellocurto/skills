@@ -1,4 +1,4 @@
 interface:
   display_name: "Audit Code Complexity"
-  short_description: "Find needless code and low-value tests"
-  default_prompt: "Use $audit-code-complexity to audit this code and its tests for unnecessary complexity, poor patterns, and behavior-preserving simplifications."
+  short_description: "Find needless complexity in code"
+  default_prompt: "Use $audit-code-complexity to audit this code for unnecessary complexity and behavior-preserving simplifications. Inspect tests only where their harness, setup, or coupling creates or conceals complexity."
