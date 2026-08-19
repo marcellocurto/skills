@@ -1,11 +1,11 @@
 ---
 name: to-tickets
-description: Turn a plan, spec, issue, or conversation into an approved set of actionable GitHub tickets, then publish them with `gh`, appropriate repository labels, and native parent and blocking relationships. Use when implementation work needs to be broken into dependency-aware GitHub issues or explicitly requested research or investigation needs durable work items.
+description: Create one or more user-approved GitHub issues from a plan, spec, conversation, existing issue, or explicitly selected pull-request feedback. Use for durable implementation or research tickets with duplicate checks, labels, and native issue relationships; not for routine issue triage or pull-request remediation.
 ---
 
 # To Tickets
 
-Turn existing context into focused GitHub tickets that can be implemented and verified independently.
+Turn existing context into one or more focused GitHub tickets that can be implemented and verified independently.
 
 ## Principles
 
@@ -18,13 +18,20 @@ Turn existing context into focused GitHub tickets that can be implemented and ve
 - Do not modify or close a source or parent issue unless the user explicitly asks.
 - Avoid generic file inventories and speculative code paths. Include confirmed code locations as current starting points when they save meaningful exploration, but do not present them as authoritative scope.
 
+## GitHub access
+
+- Use `gh` for issue creation, labels, native relationships, and verification.
+- When a GitHub connector is already available, it may be used for repository, issue, pull-request, or review-thread reads. Use `gh` for all writes in one publication; do not mix connector and CLI writes.
+- Resolve the exact `OWNER/REPO` from an explicit identifier or the local remote. Ask only when the repository remains ambiguous after local inspection.
+- Before any `gh` operation, require the CLI and confirm `gh auth status`. If authentication fails, ask the user to run `gh auth login`.
+
 ## Process
 
 ### 1. Gather context
 
 Work from the conversation and any referenced plan, spec, issue, comments, repository documentation, ADRs, domain glossary, or prior research. Inspect the codebase only as needed to make the tickets accurate. Ask only when unresolved ambiguity would materially change the ticket set, semantics, or dependency graph.
 
-Resolve the target repository and preflight `gh` and authentication before any GitHub read or write.
+When the user explicitly asks to turn pull-request feedback into tickets, retrieve thread-aware review context through an available connector or `python "<skill-path>/scripts/fetch_review_context.py"`. Treat unresolved, non-outdated threads as candidates, but check them against the current code: unresolved feedback may already be addressed. Consult resolved, outdated, duplicate, top-level, and review-summary comments only as needed for context or unthreaded actionable feedback. Do not create implementation tickets for feedback that is already addressed, not actionable, or unclear; surface the disposition and use a research or decision ticket only when that outcome is itself explicitly requested.
 
 List the repository's existing labels with their descriptions. Use descriptions and established usage on comparable issues to understand the repository's label vocabulary; do not infer semantics from a label name alone when its meaning is ambiguous.
 
@@ -44,7 +51,7 @@ Give each ticket:
 - a `## Research and findings` section when prior exploration exists, retaining verified findings, relevant evidence, decisions, rejected approaches, pitfalls, and useful technical detail so implementation does not repeat that work; distinguish confirmed facts from hypotheses
 - its proposed existing parent, when requested or required by repository convention, and blockers, when any
 
-Default to substantial tickets with enough scope and context to be useful. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, migrations, infrastructure, and mechanical refactors when those are the honest units of work.
+Default to substantial tickets with enough scope and context to be useful. A ticket set may contain exactly one issue. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, migrations, infrastructure, and mechanical refactors when those are the honest units of work.
 
 Allow research or investigation tickets when discovery is itself explicitly requested, independently useful work with a concrete question and completion signal. When the user asks for an actionable implementation ticket set for a feature believed to be ready, resolve material unknowns before drafting; do not turn them into research tickets that postpone implementation.
 
@@ -70,7 +77,7 @@ Wait for explicit approval before creating anything. Approval of the drafts incl
 
 ### 4. Publish
 
-Preflight `gh`, authentication, the repository, and every approved label. If an approved label is missing, report it and ask before creating anything; do not create or silently substitute a label.
+Preflight `gh`, authentication, the repository, and every approved label. If an approved label is missing, report it and ask before creating anything; do not create or silently substitute a label. Use `gh issue create` with a body file so Markdown and real newlines are preserved.
 
 Create approved blockers before their dependents, then:
 
@@ -78,6 +85,11 @@ Create approved blockers before their dependents, then:
 - apply exactly the approved labels for that issue
 - create approved parent/sub-issue relationships with GitHub's native relationship
 - create approved blocked-by/blocking relationships with GitHub's native relationship
+
+For native relationships, run the bundled helper after both issues exist. It retrieves the required database IDs and verifies the relationship:
+
+- parent: `python "<skill-path>/scripts/set_issue_relationship.py" --repo OWNER/REPO --parent PARENT_NUMBER --sub-issue CHILD_NUMBER`
+- blocked by: `python "<skill-path>/scripts/set_issue_relationship.py" --repo OWNER/REPO --blocked BLOCKED_NUMBER --blocked-by BLOCKER_NUMBER`
 
 Never propose, create, or assign a `blocked` label, including spelling or case variants. Never use a label or body link as a fallback for a failed native blocking relationship.
 
