@@ -145,7 +145,7 @@ It tracks how data changes, where state lives, which runtime implementation is s
 
 For deciding whether one GitHub issue can proceed before anyone plans or implements it. The audit judges the issue's central claim, fit with accepted scope, readiness, and dependency state independently, then returns an evidence-backed outcome without changing the repository or issue.
 
-Reported statements stay separate from verified facts and inference. Rejection is limited to an already-satisfied, duplicate or superseded, disproven, or explicitly excluded request; missing information and maintainer decisions remain distinct outcomes. Readiness also stays separate from blocking dependencies, so a well-specified issue can remain ready even when external work prevents it from starting.
+Reported statements stay separate from verified facts and inference. Already-satisfied, duplicate, and superseded work produces a no-action outcome, while factual clarification, authoritative decisions, and genuine rejection remain distinct. Readiness also stays separate from blocking dependencies, so a well-specified issue can remain ready even when external work prevents it from starting.
 
 The decision model is adapted from [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent) without depending on Roark's structured artifacts or workflow runtime.
 
