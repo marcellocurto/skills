@@ -127,6 +127,8 @@ If a correct seam exists:
 4. Watch it pass.
 5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
 
+After confirming the fix, ask whether the bug exposed a stable invariant that can be enforced at the seam that owns it. Prefer an existing structural mechanism—such as a type or schema constraint, boundary validation, lint rule, or canonical entry point—when it prevents the demonstrated bug class. Keep the regression test as behavioral proof. Do not add machinery for an isolated failure with no credible recurrence, and do not expand the authorized scope to enforce the invariant.
+
 ## Phase 6: Cleanup
 
 Required before declaring done:
