@@ -65,6 +65,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 - **[`bug-fix-planner`](skills/bug-fix-planner/SKILL.md)**: Investigate one bug or regression and produce an implementation-ready fix plan without changing code.
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Diagnose hard bugs and performance regressions through a tight feedback loop. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md)
+- **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Explain how a code path, feature, or subsystem works by tracing its real runtime flow, data transformations, and module seams. Inspired by Cursor PStack's [`how` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/how/SKILL.md).
 - **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Reduce an overbuilt or speculative coding proposal to the smallest complete solution supported by real requirements.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn an approved plan, specification, or conversation into focused GitHub issues with duplicate checks and native relationships.
 - **[`implement`](skills/implement/SKILL.md)**: Implement and verify an existing specification or set of tickets, finishing with validation and code review.
@@ -124,6 +125,12 @@ It works poorly when there is no unified design system or to try create such a s
 This is good for mature codebases.
 
 Before finishing, the skill renders the actual route when accessible, checks representative data volume and content length, compares the result with adjacent product screens, and verifies that every new surface, loader, icon, badge, card, and state communicates something necessary. Static content must not acquire artificial loading UI or layout shifts.
+
+### [`explain-codebase`](skills/explain-codebase/SKILL.md)
+
+For code walkthroughs and onboarding questions that need a reliable working mental model rather than an annotated file tour. The skill starts at a real caller, route, event, job, command, or user action and follows each material handoff to the final output, state change, side effect, or external call.
+
+It tracks how data changes, where state lives, which runtime implementation is selected, and where responsibility crosses module seams. Every material connection is grounded in code, wiring, configuration, tests, or another exact source; unresolved handoffs and historical rationale without evidence remain explicit instead of being guessed. Debugging and architectural critique stay in their dedicated skills.
 
 ### [`to-tickets`](skills/to-tickets/SKILL.md)
 

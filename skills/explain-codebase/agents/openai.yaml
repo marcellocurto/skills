@@ -1,0 +1,4 @@
+interface:
+  display_name: "Explain Codebase"
+  short_description: "Trace how code works from trigger to effect"
+  default_prompt: "Use $explain-codebase to explain how this code path works from its real entry point through its final effect."
