@@ -15,14 +15,17 @@
     "./skills/product-ui-audit",
     "./skills/prototype",
     "./skills/relentless-review",
+    "./skills/research",
     "./skills/simplify-code-solution",
     "./skills/spec-conformance-audit",
     "./skills/tdd",
     "./skills/test-quality-audit",
     "./skills/to-spec",
     "./skills/to-tickets",
+    "./skills/triage",
     "./skills/user-journey-verifier",
     "./skills/wayfinder",
-    "./skills/wild-frontend"
+    "./skills/wild-frontend",
+    "./skills/wizard"
   ]
 }
