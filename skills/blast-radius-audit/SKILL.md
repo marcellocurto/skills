@@ -1,6 +1,6 @@
 ---
 name: blast-radius-audit
-description: Audit a proposed or completed code change for downstream breakage that direct diff inspection and symbol search may miss. Use for "what could this break?", blast-radius analysis, risky small diffs, dependency upgrades, or changes to shared schemas, serialization, persistence, lifecycle timing, or cross-service contracts. Read-only; not a standards, specification, or general code-quality review.
+description: Find downstream breakage a code change could cause beyond the files it directly touches.
 ---
 
 # Blast Radius Audit

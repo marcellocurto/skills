@@ -1,6 +1,6 @@
 ---
 name: explain-codebase
-description: Explain how an existing code path, feature, or subsystem works by tracing runtime flow, data transformations, and module seams. Use for code walkthroughs, onboarding, and "how does X work?" questions. Read-only; use diagnosing-bugs for failures and an audit skill for critique.
+description: Trace and explain how an existing code path or subsystem works.
 ---
 
 # Explain Codebase

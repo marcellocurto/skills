@@ -1,6 +1,6 @@
 ---
 name: test-quality-audit
-description: Audit tests for real bug-finding value. Use to judge trivial, redundant, over-mocked, implementation-coupled, snapshot-heavy, or coverage-padding tests; review test changes; and decide what to keep, fix, cut, or add. Not for editing tests unless explicitly requested.
+description: Judge whether tests catch realistic regressions and recommend what to keep, change, or remove.
 ---
 
 # Test Quality Audit

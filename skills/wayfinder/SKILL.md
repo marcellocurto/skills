@@ -1,6 +1,6 @@
 ---
 name: wayfinder
-description: Plan a huge chunk of work — possibly more than one agent session can hold — as a shared map of decision tickets, and resolve them one at a time until the way to the destination is clear. Keep the map in the current task by default; publish it to an issue tracker only when the user wants durable coordination or the work genuinely requires separate owners, sessions, or external blockers.
+description: Break a large, uncertain effort into decision steps and resolve them until the path is clear.
 disable-model-invocation: true
 ---
 

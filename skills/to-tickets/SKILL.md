@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Create one or more user-approved GitHub issues from a plan, spec, conversation, existing issue, or explicitly selected pull-request feedback. Use for durable implementation or research tickets with duplicate checks, labels, and native issue relationships; not for routine issue triage or pull-request remediation.
+description: Turn approved work into well-scoped GitHub issues after checking for duplicates and dependencies.
 ---
 
 # To Tickets

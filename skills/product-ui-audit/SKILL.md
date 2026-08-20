@@ -1,6 +1,6 @@
 ---
 name: product-ui-audit
-description: Audit an existing product interface and propose a product-native UX direction without editing code. Use for screenshots, live pages, navigation, information density, hierarchy, workflow clarity, and high-scale operational views. Not for implementation or unconstrained visual experimentation.
+description: Review an existing product interface and recommend a product-specific UX direction without changing code.
 ---
 
 # Product UI Audit

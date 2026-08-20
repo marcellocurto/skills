@@ -1,6 +1,6 @@
 ---
 name: simplify-code-solution
-description: Simplify overbuilt or speculative code fixes and feature proposals by grounding them in real requirements and existing code. Use before implementation when a coding plan needs the smallest complete solution.
+description: Reduce a proposed code change to the smallest solution that fully meets the real requirements.
 ---
 
 # Simplify Code Solution

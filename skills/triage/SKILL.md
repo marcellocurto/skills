@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.
+description: Classify and verify issues and external pull requests, then prepare them for the right next step.
 disable-model-invocation: true
 ---
 

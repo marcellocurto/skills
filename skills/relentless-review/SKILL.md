@@ -1,6 +1,6 @@
 ---
 name: relentless-review
-description: Stress-test proposals, plans, implementations, designs, strategies, or answers. Use when the user asks to push harder, red-team, find holes, challenge assumptions, explore failure modes, or decide whether the current path is genuinely best. Not for proofreading or implementation-only requests.
+description: Challenge an existing proposal or result to find material risks and a better path.
 ---
 
 # Relentless Review

@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Audit a pinned code change through independent correctness and maintainability axes covering specification fidelity, defects, repository standards, and code health. Use for branches, pull requests, commits, working changes, or review requests. Add same-brief reviewers for adversarial or blind-spot review.
+description: Review a specific code change for correctness, requirements, maintainability, and repository standards.
 ---
 
 # Code Review

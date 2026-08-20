@@ -1,6 +1,6 @@
 ---
 name: design-system-ui
-description: Design and implement polished production frontend UI that extends an existing product, codebase, component library, or design system while preserving local patterns.
+description: Build polished production UI that extends a product's existing design system and patterns.
 disable-model-invocation: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: create-pull-request
-description: Create a ready-for-review GitHub pull request from completed local changes. Use when the user asks to open or publish a PR, including any required commit and push; not for reviewing, merging, or only drafting PR copy.
+description: Open a ready-for-review GitHub pull request for completed local changes, including any needed commit and push.
 ---
 
 # Create Pull Request

@@ -1,6 +1,6 @@
 ---
 name: spec-conformance-audit
-description: Audit an implementation against its originating specification, issue, plan, or explicit decisions. Use to find missing requirements, partial compliance, contradicted constraints, and unauthorized scope expansion. Read-only; not a general code-quality review.
+description: Check whether an implementation matches its source specification and agreed decisions.
 ---
 
 # Spec Conformance Audit

@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Implement scoped software work from an existing spec or set of tickets. Use when the requirements are defined and the requested outcome is completed, verified code rather than planning or review alone.
+description: Implement and verify clearly scoped software work from an existing spec or tickets.
 ---
 
 # Implement

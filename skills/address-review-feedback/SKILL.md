@@ -1,6 +1,6 @@
 ---
 name: address-review-feedback
-description: Audit GitHub pull-request feedback against current code and requirements, recommend handling for each concern, and implement only user-approved current-PR fixes. Use for review follow-up when comments must be validated before changes are made.
+description: Validate pull-request feedback against the current code and requirements, then apply only the fixes the user approves.
 ---
 
 # Address Review Feedback

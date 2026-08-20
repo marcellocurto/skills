@@ -1,6 +1,6 @@
 ---
 name: wild-frontend
-description: Create unconstrained, highly original frontend designs. Not for normal product UI, styling, beautification, design-system work, or production polish.
+description: Create bold, unconventional frontend designs when product conventions are intentionally not the goal.
 disable-model-invocation: true
 ---
 

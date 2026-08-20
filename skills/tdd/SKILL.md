@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Test-driven development for features and bug fixes. Use when the user requests test-first development, a red-green cycle, or a regression test for changed behavior.
+description: Build features and bug fixes test-first around meaningful behavior.
 ---
 
 # Test-Driven Development

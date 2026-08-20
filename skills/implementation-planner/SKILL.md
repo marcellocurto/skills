@@ -1,6 +1,6 @@
 ---
 name: implementation-planner
-description: Plan implementation-ready feature or refactor work by inspecting the existing code, bounding the change, and refining the proposed approach before edits. Use when requirements are sufficiently defined and the user wants a code plan. Not for bugs, open-ended specification work, large uncertain programs, or direct implementation.
+description: Turn a defined feature or refactor into a bounded, implementation-ready plan without changing code.
 ---
 
 # Implementation Planner

@@ -1,6 +1,6 @@
 ---
 name: user-journey-verifier
-description: Verify completed software through the exact user-visible workflow and resulting artifact. Use for browser flows, exports, PDFs, spreadsheets, uploads, and other outcomes where code checks alone do not prove success. Verification only; do not fix unless explicitly requested.
+description: Verify completed software through the exact user workflow and resulting output, without fixing it.
 ---
 
 # User Journey Verifier

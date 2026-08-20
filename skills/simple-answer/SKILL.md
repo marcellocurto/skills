@@ -1,6 +1,6 @@
 ---
 name: simple-answer
-description: Restate the assistant's immediately previous answer in plain, concise language without jargon.
+description: Rewrite the previous answer in short, plain language.
 disable-model-invocation: true
 ---
 

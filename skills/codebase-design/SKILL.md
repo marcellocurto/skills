@@ -1,6 +1,6 @@
 ---
 name: codebase-design
-description: Design deep modules, type-safe interfaces, and domain-shaped structures. Use when improving an interface, placing a seam, modeling correctness-critical state, finding a structural home for repeated domain logic, exploring competing architectural shapes, or making code more testable or AI-navigable.
+description: Design small, type-safe interfaces that hide complexity and give domain logic a clear home.
 ---
 
 # Codebase Design

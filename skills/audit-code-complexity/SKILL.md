@@ -1,6 +1,6 @@
 ---
 name: audit-code-complexity
-description: Audit code for accidental complexity, overengineering, and behavior-preserving simplifications. Use for current-state audits of a feature, module, or codebase, or change-scoped audits of a diff, PR, branch, or working changes. Inspect tests only when their harness, setup, or coupling creates or conceals complexity. Use test-quality-audit when tests are the main subject. Read-only unless fixes are explicitly requested.
+description: Find needless code complexity and suggest simpler designs that preserve behavior.
 ---
 
 # Audit code complexity

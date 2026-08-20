@@ -1,6 +1,6 @@
 ---
 name: github-issue-audit
-description: Audit one GitHub issue against its discussion, repository evidence, prior decisions, duplicates, and dependencies. Use to decide whether the issue can proceed, needs factual clarification or an authoritative decision, is blocked, requires no action, or should be rejected; not for pull requests, issue mutation, fix planning, or implementation.
+description: Decide whether one GitHub issue is valid, unique, scoped, and ready to proceed.
 ---
 
 # GitHub Issue Audit

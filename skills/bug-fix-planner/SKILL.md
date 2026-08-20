@@ -1,6 +1,6 @@
 ---
 name: bug-fix-planner
-description: Plan a concrete fix for one bug, regression, crash, failing test, error, or broken behavior without changing code. Use for bug reports, issues, stack traces, logs, screenshots, repro steps, or failures that need an implementation-ready plan. Not for direct fixes or feature/refactor planning.
+description: Investigate one bug and produce an implementation-ready fix plan without changing code.
 ---
 
 # Bug Fix Planner
