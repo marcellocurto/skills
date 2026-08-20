@@ -75,6 +75,8 @@ I wrote this so the agent will first look at other design implementations in the
 It works poorly when there is no unified design system or to try create such a system.
 This is good for mature codebases.
 
+Before finishing, the skill renders the actual route when accessible, checks representative data volume and content length, compares the result with adjacent product screens, and verifies that every new surface, loader, icon, badge, card, and state communicates something necessary. Static content must not acquire artificial loading UI or layout shifts.
+
 ### [`to-tickets`](to-tickets/SKILL.md)
 
 This skill turns existing context into one or more GitHub issues and checks open and closed issues for overlapping work before drafting anything. Plans, specifications, conversations, existing issues, and explicitly selected pull-request feedback can all serve as sources.
@@ -87,9 +89,9 @@ This version is inspired by Matt Pocock's [`to-tickets` skill](https://github.co
 
 ### [`implement`](implement/SKILL.md)
 
-For implementing an already-defined spec or set of tickets. This skill keeps feedback loops proportional: use targeted checks when they help during development, then run linting, typechecking, relevant tests, and the full suite after the implementation is complete.
+For implementing an already-defined spec or set of tickets. Before editing, it establishes the source of truth, authorized outcome, affected and protected surfaces, external mutations, and acceptance path. If the user corrects a premise, work derived from that premise is re-evaluated before implementation continues.
 
-It finishes with a code review and leaves changes uncommitted unless the user explicitly requests a commit.
+After implementation and repository checks, it audits conformance against the scope contract, verifies the real user journey when observable behavior or artifacts matter, and finishes with a code review. Changes remain uncommitted unless the user explicitly requests a commit.
 
 This version is based on and inspired by Matt Pocock's [`implement` skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md), adapted for the GPT-5.6 family and this repository's workflow conventions.
 
@@ -117,7 +119,7 @@ It is not criticism for its own sake. Sometimes the answer is that the current a
 
 For code problems where the proposed solution has started to grow extra machinery. This skill grounds the work in the actual requirements and current code before accepting new abstractions, refactors, dependencies, or state.
 
-Simple only wins when it is complete. The target is the smallest solution that still satisfies the requirements, preserves behavior, fits local patterns, and has a clear way to verify it.
+Simple only wins when it is complete. The target is the smallest solution that still satisfies the requirements, preserves behavior, fits local patterns, and has a clear way to verify it. The skill compares total lifecycle complexity rather than initial code size, preserving justified infrastructure, explicit state, domain distinctions, durability, and recovery behavior.
 
 ### [`spec-conformance-audit`](spec-conformance-audit/SKILL.md)
 

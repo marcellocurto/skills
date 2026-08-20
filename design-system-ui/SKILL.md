@@ -20,7 +20,8 @@ Use the existing product as the creative material. The result should feel native
 - The design has a clear product-aware direction instead of generic SaaS defaults.
 - States the task can actually reach are handled, such as loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens. States are not invented merely for completeness.
 - Responsive behavior is checked for common viewport sizes.
-- Validation is run when available. When visual quality matters and the environment allows it, inspect the result through the real application route and interaction at the relevant viewports before finalizing.
+- The actual route is rendered with representative data volume and content length, then compared with adjacent product screens when the environment allows it.
+- Every new surface, loader, icon, badge, card, and state communicates something necessary for the user's task.
 
 ## Context Budget
 
@@ -61,6 +62,18 @@ Use [references/design-moves.md](references/design-moves.md) only when you need 
 Create a small local design direction: compact color system, type hierarchy, spacing rhythm, radius and shadow rules, button/input/card treatment, responsive layout, and interaction states.
 
 Make it coherent through a few strong choices rather than many unrelated effects.
+
+## Final Verification
+
+Before finalizing, inspect the implementation through the real application route and interaction when accessible:
+
+- Use representative data volume, realistic localized copy, long values, and the scale conditions that could change the layout or interaction model.
+- Check the relevant viewport sizes and every reachable state introduced or affected by the work.
+- Compare the result with adjacent product screens for hierarchy, density, typography, spacing, surfaces, control treatment, and interaction language.
+- Review every new surface, loader, icon, badge, card, and state. Keep it only when it communicates necessary grouping, status, action, or feedback better than the simpler composition.
+- Confirm static or immediately available content does not gain unnecessary loading UI, asynchronous behavior, empty placeholders, or layout shifts.
+
+Run applicable code validation as well, but do not treat a build, typecheck, or component-level test as proof of visual quality. If the real route cannot be inspected, report the gap and the next best verification instead of claiming the UI is fully verified.
 
 ## Output
 

@@ -25,7 +25,7 @@ Prefer direct, boring changes that meet every real requirement. Simpler is valid
 
 - Reuse existing paths, helpers, types, components, and APIs before adding new ones.
 - Avoid rewrites for localized bugs, state machines for simple state, generic frameworks for one caller, speculative migrations, unnecessary dependencies, wide API changes for internal convenience, and tests that only mirror implementation.
-- Complexity is not a defect merely because it is unfamiliar, wide, or front-loaded. Preserve complexity that encodes real domain distinctions, durability, failure recovery, or an evidenced investment that simplifies downstream work.
+- Compare total lifecycle complexity, not merely initial implementation size. Do not reject justified infrastructure, durable queues, explicit state, or domain distinctions simply because they add code. Complexity is removable only when requirements, operational guarantees, and failure modes remain covered.
 - Do not recommend removing a mechanism until its consumers, operational role, failure behavior, and replacement path are understood. Require a concrete cost and a behavior-preserving alternative.
 
 ## Context Budget
