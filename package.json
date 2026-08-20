@@ -1,0 +1,22 @@
+{
+  "name": "marcello-curto-skills",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "bun run typecheck && bun run lint && bun run format:check && bun run validate:skills",
+    "format": "oxfmt --ignore-path .oxfmtignore",
+    "format:check": "oxfmt --check --ignore-path .oxfmtignore",
+    "lint": "oxlint --deny-warnings",
+    "lint:fix": "oxlint --fix",
+    "typecheck": "tsc --noEmit",
+    "validate:skills": "bun run scripts/validate-skills.ts",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "oxfmt": "^0.64.0",
+    "oxlint": "^1.79.0",
+    "typescript": "^7.0.2"
+  },
+  "packageManager": "bun@1.3.14"
+}

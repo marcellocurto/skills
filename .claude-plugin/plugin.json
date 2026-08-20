@@ -1,19 +1,19 @@
 {
   "name": "marcello-curto-skills",
   "skills": [
-    "./address-review-feedback",
-    "./audit-code-complexity",
-    "./bug-fix-planner",
-    "./design-system-ui",
-    "./implement",
-    "./product-ui-audit",
-    "./relentless-review",
-    "./simplify-code-solution",
-    "./spec-conformance-audit",
-    "./test-quality-audit",
-    "./to-tickets",
-    "./user-journey-verifier",
-    "./wayfinder",
-    "./wild-frontend"
+    "./skills/address-review-feedback",
+    "./skills/audit-code-complexity",
+    "./skills/bug-fix-planner",
+    "./skills/design-system-ui",
+    "./skills/implement",
+    "./skills/product-ui-audit",
+    "./skills/relentless-review",
+    "./skills/simplify-code-solution",
+    "./skills/spec-conformance-audit",
+    "./skills/test-quality-audit",
+    "./skills/to-tickets",
+    "./skills/user-journey-verifier",
+    "./skills/wayfinder",
+    "./skills/wild-frontend"
   ]
 }
