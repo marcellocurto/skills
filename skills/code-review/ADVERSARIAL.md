@@ -1,6 +1,6 @@
 # Adversarial Review Mode
 
-Use this mode for requests to interrogate code changes, run a multi-agent or adversarial review, find blind spots, or tear an implementation apart. It supplements the ordinary Standards and Spec axes; it does not replace them.
+Use this mode for requests to interrogate code changes, run a multi-agent or adversarial review, find blind spots, or tear an implementation apart. It supplements the ordinary **Spec and Correctness** and **Standards and Maintainability** axes; it does not replace them.
 
 ## State the Intent
 
@@ -36,9 +36,11 @@ Use two or three read-only sub-agents in parallel, proportionate to the change a
 Each reviewer returns only:
 
 - severity and concise title
+- confidence
 - exact location
 - concrete finding and evidence
-- optional correction when a clear scope-safe alternative exists
+- current-change impact
+- smallest credible fix when one is clear
 
 The reviewers do not edit code or apply fixes.
 
@@ -49,20 +51,22 @@ The lead agent has the full conversation and repository context. It must verify 
 1. Trace each claimed failure or cost against the actual code and constraints.
 2. Deduplicate findings that describe the same mechanism.
 3. Record agreement and disagreement. Agreement raises investigation priority; it is not proof.
-4. Categorize each reviewed finding:
-   - **Act on:** a verified correctness, security, or material maintainability issue within the change's actual goals
-   - **Consider:** a credible concern whose evidence or trade-off does not justify blocking yet
+4. Categorize each reviewed finding using the main review contract:
+   - **Must fix in current change:** a verified defect that prevents approval
+   - **Follow-up:** valid work outside the current change
+   - **Suggestion:** an optional improvement
    - **Dismissed:** unsupported, unreachable, preference-only, already handled, out of scope, or contradicted by fuller context
 
 Do not inflate minor observations to fill the report. A classification recommends a disposition; it does not authorize implementation.
 
 ## Output
 
-Add an `## Adversarial` section after the Standards and Spec axes with only the useful subsections:
+Add an `## Adversarial` section after the two axes with only the useful subsections:
 
 - **Intent**
-- **Act on**
-- **Consider**
+- **Must fix in current change**
+- **Follow-up**
+- **Suggestions**
 - **Dismissed**
 - **Agreement map**
 
