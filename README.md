@@ -137,7 +137,7 @@ It tracks how data changes, where state lives, which runtime implementation is s
 
 This skill turns existing context into one or more GitHub issues and checks open and closed issues for overlapping work before drafting anything. Plans, specifications, conversations, existing issues, and explicitly selected pull-request feedback can all serve as sources.
 
-Tickets are written for human review and independent implementation, preserving relevant decisions, evidence, constraints, and completion signals. Publication requires approval and uses existing labels plus GitHub's native parent and blocking relationships.
+Tickets are written as compact arguments for human review and independent implementation: current situation, evidence, impact, desired outcome, verifiable acceptance criteria, and meaningful scope boundaries. The structure stays proportional to the work, while relevant decisions and prior findings are preserved when they prevent repeated exploration. Publication requires approval and uses existing labels plus GitHub's native parent and blocking relationships.
 
 The workflow remains portable without the GitHub plugin. `gh` provides the complete read and publication path, while an available connector may improve contextual reads. Explicitly requested research can become a durable research ticket, but unknowns are not used to postpone implementation work that should already be ready.
 

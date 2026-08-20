@@ -43,15 +43,23 @@ Surface likely duplicate URLs and explain the overlap. Do not treat a similar ti
 
 ### 3. Draft the ticket set
 
-Give each ticket:
+Write each ticket as a compact argument that lets a busy maintainer understand the situation, judge its importance, and act without reconstructing the surrounding conversation. Use simple technical language and a specific, outcome-oriented title that makes sense on its own. Avoid shorthand, clever wording, and jargon that does not improve precision.
 
-- a simple, specific title that explains the outcome in plain language and makes sense without the surrounding plan; avoid terse shorthand, clever wording, and unnecessary jargon
-- a body that begins with `## Summary` and a short plain-language explanation of what the ticket is about and why it matters
-- a `## Goals` section with clear ordinary bullets describing the outcomes, constraints, and completion signals an implementation agent should follow; never use task-list checkboxes
-- a `## Research and findings` section when prior exploration exists, retaining verified findings, relevant evidence, decisions, rejected approaches, pitfalls, and useful technical detail so implementation does not repeat that work; distinguish confirmed facts from hypotheses
-- its proposed existing parent, when requested or required by repository convention, and blockers, when any
+Use only sections that add information. A simple ticket may need only a summary, desired outcome, and acceptance criteria; omit empty sections and do not create both a simple summary and a second summary. Choose from these sections as the work requires:
 
-Default to substantial tickets with enough scope and context to be useful. A ticket set may contain exactly one issue. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, migrations, infrastructure, and mechanical refactors when those are the honest units of work.
+- `## Summary`: explain in a short paragraph what is currently true, why it matters, and what should happen next; do not merely restate the title
+- `## Why this issue exists`: when the ticket is derived from other work or needs justification as a separate unit, explain why it is distinct and worthwhile rather than only naming its source or classification
+- `## Evidence` or `## Current behavior`: record verified observations, relevant code locations, constraints, and decisions; distinguish confirmed facts from hypotheses
+- `## Impact`: state the concrete user, operational, or maintenance consequence and calibrate urgency honestly, including when the work is non-blocking or protects only against a future regression
+- `## Desired outcome`: describe what should become true without prescribing files, code, or implementation details unless the source material already decided them
+- `## Acceptance criteria`: use ordinary bullets describing independently verifiable behavior; do not use task-list checkboxes, implementation steps, code locations, generic “tests pass” statements, or bullets that merely restate the desired outcome
+- `## Research and findings`: use this instead of a basic evidence section when prior exploration is substantial, preserving rejected approaches, pitfalls, and technical detail that would otherwise have to be rediscovered
+- `## Risks / non-goals`: capture meaningful compatibility risks, scope boundaries, and nearby work that must remain untouched; omit generic boilerplate
+- `## Context`: place source issues, pull requests, specifications, ADRs, and other provenance at the end so they support rather than interrupt the issue
+
+Add another section only when important maintainer-facing information does not fit these concepts. Calibrate the language to the status of the work: state confirmed requirements directly, but present optional suggestions as tradeoffs rather than pretending implementation has already been decided. When the honest outcome is a maintainer decision, state the decision and evidence needed and allow the suggestion to be closed with a clear rationale.
+
+Prefer cohesive, independently useful vertical slices with enough scope and context to act on. A ticket set may contain exactly one issue. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, migrations, infrastructure, and mechanical refactors when those are the honest units of work. For a genuinely wide migration, describe the expand, consumer-migration, and old-path-removal stages in that order.
 
 Allow research or investigation tickets when discovery is itself explicitly requested, independently useful work with a concrete question and completion signal. When the user asks for an actionable implementation ticket set for a feature believed to be ready, resolve material unknowns before drafting; do not turn them into research tickets that postpone implementation.
 
