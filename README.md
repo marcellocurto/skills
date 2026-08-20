@@ -30,6 +30,12 @@ bun run check
 Installable skills live in [`skills/`](skills/). Repository-level automation lives in [`scripts/`](scripts/).
 The tooling uses TypeScript 7, Oxlint, and Oxfmt. Run `bun run format` to format repository files and `bun run lint:fix` to apply safe lint fixes.
 
+Install every published skill globally for Codex and Claude Code with symlinks:
+
+```bash
+bun run skills:install
+```
+
 ## Available Skills
 
 ### Engineering

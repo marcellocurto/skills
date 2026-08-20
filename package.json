@@ -8,6 +8,7 @@
     "format:check": "oxfmt --check --ignore-path .oxfmtignore",
     "lint": "oxlint --deny-warnings",
     "lint:fix": "oxlint --fix",
+    "skills:install": "bunx skills add marcellocurto/skills --skill '*' --global --agent codex --agent claude-code --yes",
     "typecheck": "tsc --noEmit",
     "validate:skills": "bun run scripts/validate-skills.ts",
     "test": "bun test"
