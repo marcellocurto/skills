@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Conformance Audit"
+  short_description: "Check implementation against its real contract"
+  default_prompt: "Use $spec-conformance-audit to check this implementation against its originating requirements and protected constraints."

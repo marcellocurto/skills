@@ -1,0 +1,4 @@
+interface:
+  display_name: "User Journey Verifier"
+  short_description: "Verify the exact user-visible path end to end"
+  default_prompt: "Use $user-journey-verifier to verify this outcome through the exact path the user takes."
