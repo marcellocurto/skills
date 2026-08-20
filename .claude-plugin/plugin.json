@@ -7,6 +7,7 @@
     "./skills/bug-fix-planner",
     "./skills/code-review",
     "./skills/codebase-design",
+    "./skills/create-pull-request",
     "./skills/design-system-ui",
     "./skills/diagnosing-bugs",
     "./skills/domain-modeling",

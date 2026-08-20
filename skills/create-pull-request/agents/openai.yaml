@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Pull Request"
+  short_description: "Publish a clear, ready-for-review GitHub PR"
+  default_prompt: "Use $create-pull-request to publish the completed local work as a clear, ready-for-review GitHub pull request."

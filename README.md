@@ -69,6 +69,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Reduce an overbuilt or speculative coding proposal to the smallest complete solution supported by real requirements.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn an approved plan, specification, or conversation into focused GitHub issues with duplicate checks and native relationships.
 - **[`implement`](skills/implement/SKILL.md)**: Implement and verify an existing specification or set of tickets, finishing with validation and code review.
+- **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish completed local work as a clear, ready-for-review GitHub pull request.
 - **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Audit pull-request feedback against the current code, recommend dispositions, and implement only approved fixes.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Audit an implementation against its originating requirements, protected constraints, and authorized scope.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Audit code for accidental complexity, overengineering, and behavior-preserving simplifications.
@@ -149,6 +150,14 @@ For implementing an already-defined spec or set of tickets. Before editing, it e
 After implementation and repository checks, it audits conformance against the scope contract, verifies the real user journey when observable behavior or artifacts matter, and finishes with a code review. Changes remain uncommitted unless the user explicitly requests a commit.
 
 This version is based on and inspired by Matt Pocock's [`implement` skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md), adapted for the GPT-5.6 family and this repository's workflow conventions.
+
+### [`create-pull-request`](skills/create-pull-request/SKILL.md)
+
+For publishing completed local work as a real, ready-for-review GitHub pull request. The skill verifies the complete change and repository checks, then writes a simple outcome-based title, a plain-language summary, and a detailed reviewer guide grounded in the actual diff.
+
+It uses explicit repository, base, head, title, and body-file arguments; never creates draft pull requests; and reads the result back from GitHub to verify its public state and contents. It does not merge, force-push, or silently add labels, reviewers, issue edits, or unrelated worktree changes.
+
+The workflow adapts the guarded PR-publication mechanics from [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent) into a standalone skill without depending on Roark's runtime artifacts.
 
 ### [`product-ui-audit`](skills/product-ui-audit/SKILL.md)
 
