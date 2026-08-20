@@ -19,6 +19,7 @@ Use the existing product as the creative material. The result should feel native
 - The UI works as real code in the requested or existing stack.
 - Existing components, tokens, typography, layout conventions, icon sets, and accessibility patterns are reused when they fit.
 - The design has a clear product-aware direction instead of generic SaaS defaults.
+- The composition is deliberate at both page and detail scale: hierarchy, alignment, proximity, rhythm, and negative space guide attention without accidental gaps or visual drift.
 - States the task can actually reach are handled, such as loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens. States are not invented merely for completeness.
 - Responsive behavior is checked for common viewport sizes.
 - The actual route is rendered with representative data volume and content length, then compared with adjacent product screens when the environment allows it.
@@ -48,6 +49,16 @@ Before implementing, choose a concise direction:
 
 Use [references/design-moves.md](references/design-moves.md) only when you need more examples for typography, layout, color, surface, motion, or states.
 
+## Craft Standard
+
+Work as a visual craftsperson. The design system supplies a vocabulary, not a finished composition; applying the right tokens is not a substitute for judgment.
+
+- Compose the whole page before polishing isolated components. Establish the focal point, reading order, dominant alignments, grouping, balance, and transitions between regions.
+- Treat space as active material. Outer margins, section gaps, internal padding, line spacing, and empty areas should create hierarchy and rhythm. Avoid leftover gaps, double padding, cramped edges, and mechanically uniform spacing where relationships differ.
+- Apply enduring graphic-design principles deliberately: hierarchy, alignment, proximity, repetition, contrast, scale, balance, rhythm, and figure-ground. Use them to clarify the product rather than as a checklist or stylistic overlay.
+- Tune visible relationships, not only numeric values. Check baselines, icon-and-label pairs, text blocks, control heights, border junctions, optical centering, line length, wrapping, and the way neighboring surfaces share an edge.
+- Review at both scales: zoom out for composition, density, and whitespace; zoom in for the small inconsistencies that make an interface feel unresolved. Continue refining until every prominent placement looks intentional.
+
 ## Constraints
 
 - Write real working frontend code that follows project conventions.
@@ -71,6 +82,7 @@ Before finalizing, inspect the implementation through the real application route
 - Use representative data volume, realistic localized copy, long values, and the scale conditions that could change the layout or interaction model.
 - Check the relevant viewport sizes and every reachable state introduced or affected by the work.
 - Compare the result with adjacent product screens for hierarchy, density, typography, spacing, surfaces, control treatment, and interaction language.
+- Inspect the page as a single composition and at detail scale. Check focal order, alignment lines, section rhythm, negative space, nested padding, text wrapping, baselines, optical balance, and responsive redistribution of space.
 - Review every new surface, loader, icon, badge, card, and state. Keep it only when it communicates necessary grouping, status, action, or feedback better than the simpler composition.
 - Confirm static or immediately available content does not gain unnecessary loading UI, asynchronous behavior, empty placeholders, or layout shifts.
 
