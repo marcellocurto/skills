@@ -86,7 +86,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`grilling`](skills/grilling/SKILL.md)**: Stress-test a plan or design through successive rounds of decision-tree questions. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)
 - **[`prototype`](skills/prototype/SKILL.md)**: Build a throwaway logic or UI prototype to answer a design question. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md)
 - **[`research`](skills/research/SKILL.md)**: Investigate a question using high-trust primary sources and save the findings in the repository. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/research/SKILL.md)
-- **[`tdd`](skills/tdd/SKILL.md)**: Build features and fix bugs through a test-first red-green loop. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md)
+- **[`tdd`](skills/tdd/SKILL.md)**: Develop features and fix bugs test-first with behavioral tests, practical regression checks, and red-green evidence. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md)
 - **[`wizard`](skills/wizard/SKILL.md)**: Generate an interactive Bash wizard for manual setup, credentials, migrations, or cutovers. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/SKILL.md)
 
 ## Skill Details
