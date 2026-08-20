@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
+description: "Review changes since a fixed point along separate Standards and Spec axes. Use for branches, pull requests, work-in-progress changes, or \"review since X\" requests. For adversarial, multi-agent, blind-spot, \"interrogate this code\", or tear-it-apart requests, add independent same-brief reviewers and lead synthesis."
 ---
 
 Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
@@ -9,6 +9,8 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 - **Spec**: does the code faithfully implement the originating issue / spec?
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+
+For adversarial, multi-agent, blind-spot, `interrogate`, or tear-it-apart review requests, also read and follow [ADVERSARIAL.md](ADVERSARIAL.md). That pass supplements the two axes without changing their standards or merging their verdicts.
 
 Resolve the issue tracker from explicit user context or the Git remote. Infer GitHub or GitLab from the remote and use the available CLI or connector. Ask only when tracker ambiguity prevents retrieving a referenced issue.
 
@@ -71,9 +73,17 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
-### 5. Aggregate
+### 5. Run the adversarial pass when applicable
 
-Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the two axes are deliberately separate (see _Why two axes_).
+When the request matches the adversarial routing above, run [ADVERSARIAL.md](ADVERSARIAL.md) after the Standards and Spec reviewers complete so their agent capacity can be reused. Its reviewers use a common brief and remain independent from the two axis-specific reviews.
+
+### 6. Apply lead judgment and report
+
+Treat every sub-agent finding as a lead to validate, not as evidence merely because a reviewer produced it. Check the cited code, governing source, reachability, and surrounding context. Deduplicate findings within an axis and reject anything unsupported, already handled, unrelated to the change, or based only on preference.
+
+Present the validated reports under `## Standards` and `## Spec`. Keep the axes separate: do **not** merge findings across them or rank one axis above the other. When a plausible material finding is dismissed, include a short `Dismissed` note under its original axis so the user can inspect or override the lead judgment; omit trivial rejected noise.
+
+When adversarial mode ran, append its `## Adversarial` section as specified in [ADVERSARIAL.md](ADVERSARIAL.md).
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
 
