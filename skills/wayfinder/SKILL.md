@@ -38,7 +38,7 @@ When durable coordination has been explicitly chosen, the map is a single issue 
 
 The map is an **index**, not a store. It shows the route at low resolution and points toward the detail. During an in-task journey, resolved detail is folded directly into the destination artifact. In a durable journey, ticket resolutions carry the investigative history while the finished destination artifact gathers the final decisions into one coherent whole.
 
-For a durable map, **where the map, its child tickets, blocking, and frontier queries physically live is tracker-specific.** The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if not. Consult the tracker doc's "Wayfinding operations" section for how _this_ repo expresses them. If no tracker has been provided, default to the local-markdown tracker.
+For a durable map, **where the map, its child tickets, blocking, and frontier queries physically live is tracker-specific.** Use the tracker named by the user or infer GitHub or GitLab from the Git remote. If no durable target is clear, keep the map in the current task; do not create tracker artifacts or local issue files merely as a fallback.
 
 ### The map body
 

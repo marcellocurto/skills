@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user; just synthesize what you already know.
 
-Resolve the publication target from explicit user context, existing repository conventions, `docs/agents/issue-tracker.md` when present, or the Git remote. If the target remains ambiguous, ask before publishing. Use the repository's existing triage label vocabulary; do not create or rename labels implicitly.
+Resolve the publication target from explicit user context, existing repository conventions, or the Git remote. If the target remains ambiguous, ask before publishing. Use the repository's existing triage label vocabulary; do not create or rename labels implicitly.
 
 ## Process
 

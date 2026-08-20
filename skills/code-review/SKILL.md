@@ -10,7 +10,7 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
-Resolve the issue tracker from explicit user context, repository documentation, or the Git remote. Follow `docs/agents/issue-tracker.md` when it exists; otherwise infer GitHub or GitLab from the remote and use the available CLI or connector. Ask only when tracker ambiguity prevents retrieving a referenced issue.
+Resolve the issue tracker from explicit user context or the Git remote. Infer GitHub or GitLab from the remote and use the available CLI or connector. Ask only when tracker ambiguity prevents retrieving a referenced issue.
 
 ## Process
 
