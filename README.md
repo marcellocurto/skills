@@ -52,6 +52,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 **User-invoked (explicit only)**
 
+- **[`simple-answer`](skills/simple-answer/SKILL.md)**: Restate the assistant's previous answer in plain, concise language while preserving its meaning and important qualifications. Inspired by Cursor PStack's [`bro` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/bro/SKILL.md).
 - **[`wayfinder`](skills/wayfinder/SKILL.md)**: Map work too large or uncertain to plan end-to-end, resolving one decision at a time until the route is clear.
 - **[`design-system-ui`](skills/design-system-ui/SKILL.md)**: Design and implement polished product UI that extends an existing codebase or design system.
 - **[`wild-frontend`](skills/wild-frontend/SKILL.md)**: Create an unconstrained, highly original frontend when visual ambition matters more than product consistency.
@@ -70,6 +71,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Audit pull-request feedback against the current code, recommend dispositions, and implement only approved fixes.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Audit an implementation against its originating requirements, protected constraints, and authorized scope.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Audit code for accidental complexity, overengineering, and behavior-preserving simplifications.
+- **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Audit a change for downstream breakage hidden beyond its diff and direct symbol references. Inspired by Cursor PStack's [`blast-radius` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/blast-radius/SKILL.md).
 - **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge tests by realistic bug-finding value and decide what to keep, fix, cut, or add.
 - **[`product-ui-audit`](skills/product-ui-audit/SKILL.md)**: Audit an existing interface and recommend one coherent, product-native UX direction without editing code.
 - **[`user-journey-verifier`](skills/user-journey-verifier/SKILL.md)**: Verify completed software through the exact user-visible workflow and resulting artifact.
@@ -107,6 +109,12 @@ It inspects tests only when their harness, setup, fixtures, mocks, or coupling c
 For bugs that need a real fix plan, not a grab bag of debugging ideas. This skill starts with the available evidence: issue text, logs, repro steps, failing tests, screenshots, and source code when the repo is available.
 
 It is deliberately conservative. The plan should separate confirmed facts from likely causes and unknowns, trace the failing path, choose one primary fix, and define the checks that prove the original bug is gone.
+
+### [`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)
+
+For finding downstream breakage that direct diff inspection and symbol search can miss. The audit follows relevant data, timing, runtime-selection, dependency, and operational edges, then identifies the smallest set of facts the change's safety depends on.
+
+Those facts are proven as far as safely practical through exact source, failure-path tracing, focused execution, or the real consumer journey. Unresolved claims remain explicitly unverified, while confirmed, credible, and cleared risks are reported separately. The audit does not authorize repository edits or permanent tests.
 
 ### [`design-system-ui`](skills/design-system-ui/SKILL.md)
 

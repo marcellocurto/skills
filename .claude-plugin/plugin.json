@@ -3,6 +3,7 @@
   "skills": [
     "./skills/address-review-feedback",
     "./skills/audit-code-complexity",
+    "./skills/blast-radius-audit",
     "./skills/bug-fix-planner",
     "./skills/code-review",
     "./skills/codebase-design",
@@ -18,6 +19,7 @@
     "./skills/relentless-review",
     "./skills/research",
     "./skills/shadcn",
+    "./skills/simple-answer",
     "./skills/simplify-code-solution",
     "./skills/spec-conformance-audit",
     "./skills/tdd",

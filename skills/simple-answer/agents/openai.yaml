@@ -1,0 +1,6 @@
+interface:
+  display_name: "Simple Answer"
+  short_description: "Rewrite the previous answer plainly"
+  default_prompt: "Use $simple-answer to restate your previous answer in plain, concise language."
+policy:
+  allow_implicit_invocation: false
