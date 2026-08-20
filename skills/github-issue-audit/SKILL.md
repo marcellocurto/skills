@@ -28,7 +28,7 @@ If the exact issue, matching repository context, or other minimum evidence canno
 
 ## Evaluate the issue
 
-Judge four dimensions independently before choosing the verdict. Start from the issue and short targeted searches, then stop once enough evidence exists to decide; do not expand into a general codebase audit.
+Judge five dimensions independently before choosing the verdict. Start from the issue and short targeted searches, then stop once enough evidence exists to decide; do not expand into a general codebase audit.
 
 ### Claim
 
@@ -61,6 +61,18 @@ Classify readiness as:
 
 An issue does not need an implementation design to be ready. Ordinary codebase exploration and reversible engineering choices remain implementation work. Escalate only when a choice could materially change user-visible behavior, public contracts, data semantics, security, identity, routing, scope, or acceptance criteria.
 
+### Feasibility
+
+Classify technical feasibility as:
+
+- `plausible`: repository and platform evidence show a credible path to the requested outcome
+- `unresolved`: the available evidence does not yet establish whether an in-scope implementation path exists
+- `not-implementable`: current repository or platform constraints prove that no in-scope change can achieve the requested outcome
+
+A plausible path does not require an implementation design. High effort, difficulty, unfamiliarity, or an unattractive approach are not evidence of impossibility. Use `not-implementable` only with concrete constraints and after checking relevant extension points or alternative paths already allowed by the issue.
+
+When feasibility is unresolved, continue only the targeted inspection needed to decide. Return `needs-factual-clarification` when a named source must provide a missing fact, `needs-authoritative-decision` when an authorized owner must choose a different feasible outcome, or `audit-incomplete` when access or tooling prevents the check.
+
 ### Dependencies
 
 Classify dependencies as:
@@ -87,14 +99,16 @@ If the current issue explicitly asks maintainers to reconsider an accepted decis
 
 ## Choose the outcome
 
+Resolve prior resolution before the remaining verdicts. If the request is already satisfied, duplicates another active issue, or has been superseded, return `no-action` even when the issue would otherwise satisfy `proceed`.
+
 Return exactly one semantic verdict when the audit has enough evidence:
 
-- `proceed`: scope is supported, readiness is sufficient, no active dependency prevents meaningful work, and the central claim is not contradicted
 - `no-action`: nothing remains for this issue because the request is already satisfied, duplicates another active issue, or has been superseded
+- `proceed`: no `no-action` reason applies, scope is supported, readiness is sufficient, feasibility is plausible, no active dependency prevents meaningful work, and the central claim is not contradicted
 - `blocked`: the issue is otherwise sound enough to assess, but a verified active external dependency prevents meaningful work
 - `needs-factual-clarification`: a named source must provide a specific fact before the issue can be assessed or implemented safely
 - `needs-authoritative-decision`: someone with authority must make a specific product, contract, scope, or risk decision
-- `reject`: the central premise is disproven or a current accepted repository decision explicitly excludes the requested outcome
+- `reject`: the central premise is disproven, a current accepted repository decision explicitly excludes the requested outcome, or repository evidence proves the requested outcome is not implementable
 
 Use `no-action` only with one of these reasons:
 
@@ -106,8 +120,9 @@ Use `reject` only with one of these reasons:
 
 - `premise-contradicted`
 - `conflicts-with-accepted-decision`
+- `not-implementable-in-repository`
 
-Each terminal recommendation needs direct evidence: `already-satisfied` cites the current implementation, `duplicate` or `superseded` cites the owning issue, `blocked` cites a verified active dependency, and `reject` cites the disproven premise or governing decision. Low perceived value, high effort, implementation difficulty, personal preference, or ordinary uncertainty are not rejection reasons.
+Each terminal recommendation needs direct evidence: `already-satisfied` cites the current implementation, `duplicate` or `superseded` cites the owning issue, `blocked` cites a verified active dependency, and `reject` cites the disproven premise, governing decision, or technical constraint. Low perceived value, high effort, implementation difficulty, personal preference, or ordinary uncertainty are not rejection reasons.
 
 Every information or decision request must name its owner, ask one or more specific actionable questions, and explain why the answers change the outcome. If several outcomes appear possible, choose the earliest unresolved input that must change before implementation; do not let an external blocker hide a more fundamental scope or readiness decision.
 
@@ -115,7 +130,7 @@ Every information or decision request must name its owner, ask one or more speci
 
 Lead with the verdict and a concise explanation. Include:
 
-- **Decision dimensions**: claim, scope, readiness, and dependencies
+- **Decision dimensions**: claim, scope, readiness, feasibility, and dependencies
 - **Evidence** separated into reported statements, verified facts, inferences, and unknowns; cite the issue, discussion, repository locations, executions, relationships, or prior decisions that support each material conclusion
 - **Prior resolution** when duplicates, superseding work, existing implementation, or earlier decisions are relevant
 - **Blocking questions** with a named owner and an explanation of why each answer changes the outcome

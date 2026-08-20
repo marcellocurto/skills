@@ -145,7 +145,7 @@ It tracks how data changes, where state lives, which runtime implementation is s
 
 ### [`github-issue-audit`](skills/github-issue-audit/SKILL.md)
 
-For deciding whether one GitHub issue can proceed before anyone plans or implements it. The audit judges the issue's central claim, fit with accepted scope, readiness, and dependency state independently, then returns an evidence-backed outcome without changing the repository or issue.
+For deciding whether one GitHub issue can proceed before anyone plans or implements it. The audit judges the issue's central claim, fit with accepted scope, readiness, technical feasibility, and dependency state independently, then returns an evidence-backed outcome without changing the repository or issue.
 
 Reported statements stay separate from verified facts and inference. Already-satisfied, duplicate, and superseded work produces a no-action outcome, while factual clarification, authoritative decisions, and genuine rejection remain distinct. Readiness also stays separate from blocking dependencies, so a well-specified issue can remain ready even when external work prevents it from starting.
 
