@@ -57,7 +57,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Pressure-test a design through conversation while keeping its glossary and architectural decisions up to date.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Surface the architecture changes most likely to improve maintainability, show them visually, and explore the strongest candidate together.
 - **[`to-spec`](skills/to-spec/SKILL.md)**: Publish the decisions already made in a conversation as a coherent project specification without reopening the interview.
-- **[`triage`](skills/triage/SKILL.md)**: Work through incoming issues and external pull requests until each has a verified category, state, and useful next step.
+- **[`triage`](skills/triage/SKILL.md)**: Assess one supplied GitHub issue, resolve only the questions blocking implementation, and update it after approval.
 
 **Model-invoked (implicit allowed)**
 
