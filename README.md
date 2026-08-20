@@ -58,10 +58,12 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Run a relentless design interview while building the project's glossary and ADRs. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md)
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them in a visual report, and grill through the selected candidate. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md)
 - **[`to-spec`](skills/to-spec/SKILL.md)**: Synthesize the current conversation into a spec and publish it to the project issue tracker. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md)
+- **[`triage`](skills/triage/SKILL.md)**: Move issues and external pull requests through the project's triage workflow. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/triage/SKILL.md)
 
 **Model-invoked (implicit allowed)**
 
 - **[`bug-fix-planner`](skills/bug-fix-planner/SKILL.md)**: Investigate one bug or regression and produce an implementation-ready fix plan without changing code.
+- **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Diagnose hard bugs and performance regressions through a tight feedback loop. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md)
 - **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Reduce an overbuilt or speculative coding proposal to the smallest complete solution supported by real requirements.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn an approved plan, specification, or conversation into focused GitHub issues with duplicate checks and native relationships.
 - **[`implement`](skills/implement/SKILL.md)**: Implement and verify an existing specification or set of tickets, finishing with validation and code review.
@@ -77,7 +79,9 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Build and sharpen a project's domain model, glossary, and architectural decisions. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md)
 - **[`grilling`](skills/grilling/SKILL.md)**: Stress-test a plan or design through successive rounds of decision-tree questions. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)
 - **[`prototype`](skills/prototype/SKILL.md)**: Build a throwaway logic or UI prototype to answer a design question. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md)
+- **[`research`](skills/research/SKILL.md)**: Investigate a question using high-trust primary sources and save the findings in the repository. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/research/SKILL.md)
 - **[`tdd`](skills/tdd/SKILL.md)**: Build features and fix bugs through a test-first red-green loop. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md)
+- **[`wizard`](skills/wizard/SKILL.md)**: Generate an interactive Bash wizard for manual setup, credentials, migrations, or cutovers. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/SKILL.md)
 
 ## Skill Details
 
