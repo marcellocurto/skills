@@ -1,8 +1,10 @@
 # Design It Twice
 
-When the user wants to explore alternative interfaces for a chosen deepening candidate, use this parallel sub-agent pattern. Based on "Design It Twice" (Ousterhout): your first idea is unlikely to be the best.
+Use this parallel sub-agent pattern when the user wants alternative interfaces for a deepening candidate or faces a novel architectural decision with multiple viable shapes and no established precedent. Based on "Design It Twice" (Ousterhout): your first idea is unlikely to be the best.
 
 Uses the vocabulary in [SKILL.md](SKILL.md): **module**, **interface**, **seam**, **adapter**, **leverage**.
+
+Skip this workflow for mechanical implementation, a localized bug or refactor with a clear target, or a decision whose constraints leave only one viable shape. For novel UI interactions that must be judged by feel, use the UI branch of `prototype` instead.
 
 ## Process
 

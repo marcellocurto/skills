@@ -1,6 +1,6 @@
 ---
 name: codebase-design
-description: Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.
+description: Design deep modules, type-safe interfaces, and domain-shaped structures. Use when improving an interface, placing a seam, modeling correctness-critical state, finding a structural home for repeated domain logic, exploring competing architectural shapes, or making code more testable or AI-navigable.
 ---
 
 # Codebase Design
@@ -60,6 +60,7 @@ When designing an interface, ask:
 ## Principles
 
 - **Design from caller usage inward.** Sketch representative call sites before types or methods, then derive the interface from what those callers need. Internal stages, representations, and coordination stay in the implementation unless callers genuinely need to control them.
+- **Separate the target design from its delivery.** When a structural requirement repeatedly fights the current shape, sketch the coherent design that would exist if the requirement had been foundational. Then choose the smallest authorized migration that reaches or approaches that target while preserving required compatibility. The day-one design is a diagnostic, not permission for a rewrite.
 - **Depth is a property of the interface, not the implementation.** A deep module can be internally composed of small, mockable, swappable parts; they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
 - **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
 - **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is probably the wrong shape.
@@ -112,4 +113,6 @@ Good interfaces make testing natural:
 ## Going deeper
 
 - **Deepening a cluster given its dependencies**, see [DEEPENING.md](DEEPENING.md): dependency categories, seam discipline, and replace-don't-layer testing.
-- **Exploring alternative interfaces**, see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md): spin up parallel sub-agents to design the interface several radically different ways, then compare on depth, locality, and seam placement.
+- **Designing correctness-critical types**, see [TYPE-DESIGN.md](TYPE-DESIGN.md) when signatures, variants, external data, or escape hatches carry load-bearing invariants.
+- **Finding a structural home for domain logic**, see [DOMAIN-STRUCTURE.md](DOMAIN-STRUCTURE.md) when stateful code repeats branches, lifecycle rules, shape assumptions, or access work.
+- **Exploring alternative interfaces or architectures**, see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md) when a novel decision has multiple viable shapes and no established precedent.
