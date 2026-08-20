@@ -1,0 +1,3 @@
+interface:
+  display_name: "Implementation Planner"
+  short_description: "Plan a bounded, implementation-ready code change"

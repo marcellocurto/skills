@@ -64,6 +64,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 **Model-invoked (implicit allowed)**
 
 - **[`bug-fix-planner`](skills/bug-fix-planner/SKILL.md)**: Investigate one bug or regression and produce an implementation-ready fix plan without changing code.
+- **[`implementation-planner`](skills/implementation-planner/SKILL.md)**: Plan a bounded feature or refactor against the current code, then refine it for simplicity before implementation.
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Diagnose hard bugs and performance regressions through a tight feedback loop. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md)
 - **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Explain how a code path, feature, or subsystem works by tracing its real runtime flow, data transformations, and module seams. Inspired by Cursor PStack's [`how` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/how/SKILL.md).
 - **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Reduce an overbuilt or speculative coding proposal to the smallest complete solution supported by real requirements.
@@ -111,6 +112,12 @@ It inspects tests only when their harness, setup, fixtures, mocks, or coupling c
 For bugs that need a real fix plan, not a grab bag of debugging ideas. This skill starts with the available evidence: issue text, logs, repro steps, failing tests, screenshots, and source code when the repo is available.
 
 It is deliberately conservative. The plan should separate confirmed facts from likely causes and unknowns, trace the failing path, choose one primary fix, and define the checks that prove the original bug is gone.
+
+### [`implementation-planner`](skills/implementation-planner/SKILL.md)
+
+For defined feature and refactor work that needs an implementation plan grounded in the current repository. The skill traces the relevant code path, establishes requirements and protected behavior, drafts the smallest complete change, and then taste-checks its file and abstraction surface before presenting one final plan.
+
+The output names concrete acceptance criteria, current-code evidence, expected files and symbols, ordered implementation steps, and validation with realistic regression value. It reports a precise blocker instead of silently resolving material ambiguity. The planning mechanics are adapted from [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent) without depending on Roark's structured artifacts or workflow runtime.
 
 ### [`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)
 
