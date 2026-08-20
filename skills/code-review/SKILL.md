@@ -85,6 +85,8 @@ Each reviewer returns one axis verdict: `Approved`, `Changes requested`, or `Blo
 
 Keep handling separate from severity and confidence:
 
+Severity measures the magnitude of the demonstrated impact. Confidence measures how strongly the available evidence establishes the finding. Do not use one to compensate for the other.
+
 - `must-fix-current`: the change cannot be approved without the fix; requires medium or high confidence
 - `follow-up`: valid work outside the current change; never blocks approval by itself
 - `suggestion`: optional improvement
