@@ -72,7 +72,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn an approved plan, specification, or conversation into focused GitHub issues with duplicate checks and native relationships.
 - **[`implement`](skills/implement/SKILL.md)**: Implement and verify an existing specification or set of tickets, finishing with validation and code review.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish completed local work as a clear, ready-for-review GitHub pull request.
-- **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Audit pull-request feedback against the current code, recommend dispositions, and implement only approved fixes.
+- **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Validate pull-request feedback against current code and requirements, then implement only approved current-PR fixes.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Audit an implementation against its originating requirements, protected constraints, and authorized scope.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Audit code for accidental complexity, overengineering, and behavior-preserving simplifications.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Audit a change for downstream breakage hidden beyond its diff and direct symbol references. Inspired by Cursor PStack's [`blast-radius` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/blast-radius/SKILL.md).
@@ -96,9 +96,11 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 ### [`address-review-feedback`](skills/address-review-feedback/SKILL.md)
 
-This skill audits pull-request review feedback against the current code before changing anything. It distinguishes actionable findings from feedback that is already addressed, not actionable, or unclear, then presents evidence and recommended dispositions for approval.
+This skill treats pull-request feedback as claims to validate rather than instructions. It judges the concern separately from the proposed remedy, distinguishes current PR blockers from follow-ups and suggestions, and identifies feedback that is already addressed, invalid, stale, or uncertain.
 
-Only approved actionable findings are implemented. The skill verifies the resulting changes and re-audits every approved finding, while GitHub replies, thread resolution, commits, pushes, and pull-request mutations remain separately authorized actions.
+Only approved, evidence-backed current-PR fixes are implemented. The skill verifies the resulting changes against the original concern, PR requirements, relevant callers, and authorized scope, while GitHub replies, thread resolution, commits, pushes, and pull-request mutations remain separately authorized actions.
+
+The disposition model is adapted from [Roark's pull-request revision workflow](https://github.com/marcellocurto/roark-coding-agent).
 
 ### [`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)
 
