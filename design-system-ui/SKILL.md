@@ -18,9 +18,9 @@ Use the existing product as the creative material. The result should feel native
 - The UI works as real code in the requested or existing stack.
 - Existing components, tokens, typography, layout conventions, icon sets, and accessibility patterns are reused when they fit.
 - The design has a clear product-aware direction instead of generic SaaS defaults.
-- States the task can reach are handled, such as loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens.
+- States the task can actually reach are handled, such as loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens. States are not invented merely for completeness.
 - Responsive behavior is checked for common viewport sizes.
-- Validation is run when available; if visual quality matters, render or screenshot before finalizing.
+- Validation is run when available. When visual quality matters and the environment allows it, inspect the result through the real application route and interaction at the relevant viewports before finalizing.
 
 ## Context Budget
 
@@ -49,9 +49,12 @@ Use [references/design-moves.md](references/design-moves.md) only when you need 
 ## Constraints
 
 - Write real working frontend code that follows project conventions.
+- Treat user-supplied copy, business claims, interaction meaning, screenshots, and existing information architecture as product constraints unless the user asks to reconsider them. Do not solve a presentation problem by deleting required content, weakening claims, or changing product semantics.
+- Keep changes within the requested screens and components. Change a shared primitive only when it is the demonstrated cause or the requested result genuinely requires it, then verify the affected consumers.
 - Prefer existing primitives, tokens, icon sets, animation utilities, accessible HTML, keyboard-friendly interactions, responsive behavior, clear component structure, and scoped styling.
 - Add new visual primitives only when they improve the design and could fit naturally into the product system.
-- Avoid arbitrary custom styles, decoration without product purpose, extra components when existing primitives fit, centered-card layouts by default, timid evenly distributed color, and purple-gradient polish pasted onto unrelated products.
+- Do not introduce asynchronous behavior, loading states, or layout shifts for static or synchronous content.
+- Avoid arbitrary custom styles, decoration without product purpose, extra components when existing primitives fit, centered-card layouts by default, turning every content group into a bordered card, false interaction affordances, timid evenly distributed color, and purple-gradient polish pasted onto unrelated products.
 
 ## When There Is No Clear Design System
 
@@ -65,4 +68,4 @@ When implementing, provide scoped code that is ready to run in the user's stack.
 
 ## Stop Rules
 
-Stop when the interface is implemented, expected states and responsive behavior are handled for the task, and the most relevant validation has run. If validation cannot run, report why and name the next best check.
+Stop when the interface is implemented, reachable states and responsive behavior are handled, and the most relevant validation has run through the real route and interaction when accessible. If validation cannot run, report why and name the next best check.

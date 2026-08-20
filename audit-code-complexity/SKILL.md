@@ -69,4 +69,4 @@ Add justified complexity, simplification order, and validation only when useful.
 - Preserve domain distinctions, data semantics, source of truth, identity, routing, validation, security, accessibility, and compatibility.
 - Skip formatter, linter, naming, and style nits unless they materially obscure behavior.
 - Do not expand the audit into a standalone test-quality review.
-- Report bugs, security, or performance issues only when caused or concealed by the complexity under review.
+- Do not present an ordinary correctness bug as a complexity or simplification finding. Report bugs, security, or performance issues only when caused or concealed by the complexity under review, and label them separately from simplification findings.

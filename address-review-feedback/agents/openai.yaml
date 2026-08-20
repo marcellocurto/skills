@@ -2,6 +2,3 @@ interface:
   display_name: "Address Review Feedback"
   short_description: "Audit and address pull request feedback"
   default_prompt: "Use $address-review-feedback to audit the unresolved feedback on this pull request before proposing fixes."
-
-policy:
-  allow_implicit_invocation: false

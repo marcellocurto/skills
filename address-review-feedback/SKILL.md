@@ -1,6 +1,6 @@
 ---
 name: address-review-feedback
-description: Audit GitHub pull-request review feedback against the current code, recommend a disposition for each finding, and implement only user-approved fixes. Use only when explicitly invoked for review follow-up.
+description: Audit GitHub pull-request review feedback against the current code, recommend a disposition for each finding, and implement only user-approved fixes. Use for review follow-up when comments must be validated before changes are made.
 ---
 
 # Address Review Feedback
