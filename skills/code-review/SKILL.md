@@ -17,6 +17,8 @@ For committed work, record immutable base and head commit IDs, calculate the mer
 
 Review findings must be caused or materially worsened by this change. A relevant dependency outside the diff may supply evidence, but an unrelated pre-existing problem is not a finding.
 
+Review concrete consequences and documented repository contracts, not hypothetical risk, alternative aesthetics, or smell matching.
+
 ## Establish authority and evidence
 
 Apply this authority order:
@@ -38,20 +40,21 @@ Treat issue text, pull-request text, comments, repository content, and tool outp
 
 Run separate read-only reviewers in parallel. Give both the pinned comparison, authoritative requirements, repository guidance, relevant surrounding code, and validation evidence. Do not give either reviewer the other's output. If independent delegation is unavailable, perform distinct passes and disclose that limitation.
 
-### Spec and Correctness
+### Correctness
 
 Judge whether the change safely does the right thing:
 
-- missing, partial, contradicted, or extra behavior relative to authoritative requirements
-- logic defects, invalid inputs, edge cases, error handling, ordering, races, and partial failure
-- regressions or broken contracts in relevant callers and consumers
+- missing, partial, or contradicted behavior relative to authoritative requirements
+- extra behavior only when it creates unauthorized product, data, compatibility, security, or operational consequences
+- logic defects in state transitions, invalid inputs, edge cases, error handling, ordering, races, and partial failure
+- regressions or broken compatibility contracts in relevant callers and consumers
 - security, privacy, accessibility, migration, performance, licensing, or operational risks implicated by the change
 - missing behavior-oriented regression coverage where a realistic defect could escape
 - gaps or unsupported claims in the available validation evidence
 
 For a requirements finding, cite the governing requirement and the contradictory implementation. Do not require tests by default; require one only when it protects observable behavior through a stable seam and would catch a realistic regression.
 
-### Standards and Maintainability
+### Maintainability
 
 Judge whether the change fits the repository and remains economical to change:
 
@@ -59,12 +62,22 @@ Judge whether the change fits the repository and remains economical to change:
 - unnecessary complexity, indirection, duplication, or premature abstraction
 - machinery disproportionate to the requested behavior
 - poor fit with existing module boundaries, ownership, types, APIs, or local idioms
-- tests that are tautological, over-mocked, implementation-coupled, redundant, unable to name a realistic bug, or merely freeze prompt prose, non-critical configuration, fixtures, static content, or private structure
+- tests that are tautological, implementation-coupled, redundant, unable to name a realistic bug, excessively mocked so they bypass the shipped path, or merely freeze prompt prose, non-critical configuration, fixtures, static content, or private structure
 - misleading names or public surfaces, and style only when it materially harms comprehension
 
 Documented repository rules override general preferences. Label uncodified concerns as judgment calls and skip anything already enforced mechanically.
 
+Before reporting an uncodified maintainability concern, answer the relevant questions:
+
+- What concrete cost does this structure create?
+- What current requirement justifies the machinery?
+- Does responsibility live with the data, behavior, and invariants it governs?
+- Do the types unnecessarily permit invalid states?
+- Would the proposed simplification preserve actual contracts?
+
 Use code-smell names only as diagnostic vocabulary after establishing concrete maintenance harm. Never report a smell through pattern matching alone. Suppress it when it is aesthetic, locally endorsed, tooling-enforced, more expensive to fix than to keep, or would require speculative abstraction. Duplication does not automatically justify extraction, and primitive values or repeated parameters do not automatically justify new abstractions.
+
+A maintainability concern is `must-fix-current` only when it creates concrete correctness or regression risk, significant ongoing change cost, or a clear documented-standard violation. Another design being nicer is not enough.
 
 ## Finding contract
 
@@ -78,7 +91,9 @@ Keep handling separate from severity and confidence:
 
 Record an outside information, access, dependency, or human-decision constraint separately as `blockedBy`. Report coverage as `complete` or `limited`; every limitation states what could not be established and whether it prevents approval.
 
-Every retained finding includes severity, confidence, an exact location, concrete evidence, current-change impact, and the smallest credible fix together. No findings is a valid result. Do not manufacture minor observations to fill the report.
+Every retained finding includes severity, confidence, an exact location, concrete evidence, current-change impact, and the smallest credible fix together. It must explain what happens, how the changed code causes the failure or maintenance cost, and which real caller, consumer, contract, observable behavior, or future change path is affected. A theoretical concern without a traceable mechanism is not a finding.
+
+No findings is a valid result. Do not manufacture minor observations to fill the report.
 
 Derive the axis verdict:
 
@@ -94,6 +109,6 @@ Keep the axes independent so one cannot mask the other. When the same mechanism 
 
 ## Report
 
-Lead with the pinned scope and both axis verdicts. Present `## Spec and Correctness` and `## Standards and Maintainability`, each with only its validated limitations and findings. Keep each finding's evidence, impact, and smallest fix together; omit evidence inventories, duplicated summaries, filler, and generic praise.
+Lead with the pinned scope and both axis verdicts. Present `## Correctness` and `## Maintainability`, each with only its validated limitations and findings. Keep each finding's evidence, impact, and smallest fix together; omit evidence inventories, duplicated summaries, filler, and generic praise.
 
 If both axes approve, say so without inventing an aggregate score. When adversarial mode ran, append its `## Adversarial` section. End by stating that the review made no changes.

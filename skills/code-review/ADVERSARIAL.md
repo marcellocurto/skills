@@ -1,6 +1,6 @@
 # Adversarial Review Mode
 
-Use this mode for requests to interrogate code changes, run a multi-agent or adversarial review, find blind spots, or tear an implementation apart. It supplements the ordinary **Spec and Correctness** and **Standards and Maintainability** axes; it does not replace them.
+Use this mode for requests to interrogate code changes, run a multi-agent or adversarial review, find blind spots, or tear an implementation apart. It supplements the ordinary **Correctness** and **Maintainability** axes; it does not replace them.
 
 ## State the Intent
 
