@@ -36,6 +36,12 @@ Install every published skill globally for Codex and Claude Code with symlinks:
 bun run skills:install
 ```
 
+List installed skills:
+
+```bash
+bunx skills ls -g
+```
+
 ## Available Skills
 
 ### Engineering
