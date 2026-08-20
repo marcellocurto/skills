@@ -6,10 +6,13 @@
     "./bug-fix-planner",
     "./design-system-ui",
     "./implement",
+    "./product-ui-audit",
     "./relentless-review",
     "./simplify-code-solution",
+    "./spec-conformance-audit",
     "./test-quality-audit",
     "./to-tickets",
+    "./user-journey-verifier",
     "./wayfinder",
     "./wild-frontend"
   ]

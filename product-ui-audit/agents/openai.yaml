@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product UI Audit"
+  short_description: "Audit product UI without generic redesign advice"
+  default_prompt: "Use $product-ui-audit to audit this interface and recommend one coherent product-native direction without editing code."
