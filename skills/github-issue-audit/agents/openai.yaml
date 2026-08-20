@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Issue Audit"
+  short_description: "Assess one issue against current evidence"
+  default_prompt: "Use $github-issue-audit to determine whether this GitHub issue can proceed without changing the repository or issue."

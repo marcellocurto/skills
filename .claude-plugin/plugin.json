@@ -14,6 +14,7 @@
     "./skills/explain-codebase",
     "./skills/grill-with-docs",
     "./skills/grilling",
+    "./skills/github-issue-audit",
     "./skills/implement",
     "./skills/implementation-planner",
     "./skills/improve-codebase-architecture",

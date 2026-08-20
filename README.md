@@ -67,6 +67,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`implementation-planner`](skills/implementation-planner/SKILL.md)**: Plan a bounded feature or refactor against the current code, then refine it for simplicity before implementation.
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Diagnose hard bugs and performance regressions through a tight feedback loop. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/diagnosing-bugs/SKILL.md)
 - **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Explain how a code path, feature, or subsystem works by tracing its real runtime flow, data transformations, and module seams. Inspired by Cursor PStack's [`how` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/how/SKILL.md).
+- **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Audit one GitHub issue against its discussion, current code, prior decisions, duplicates, and dependencies without changing anything. Inspired by [Roark's](https://github.com/marcellocurto/roark-coding-agent) triage mechanics.
 - **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Reduce an overbuilt or speculative coding proposal to the smallest complete solution supported by real requirements.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn an approved plan, specification, or conversation into focused GitHub issues with duplicate checks and native relationships.
 - **[`implement`](skills/implement/SKILL.md)**: Implement and verify an existing specification or set of tickets, finishing with validation and code review.
@@ -82,7 +83,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`shadcn`](skills/shadcn/SKILL.md)**: Add, search, debug, style, and compose shadcn components and registries using current project context. Source: [`shadcn/ui`](https://github.com/shadcn/ui/tree/main/skills/shadcn).
 - **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply scalable React composition patterns for reusable component APIs and state management. Source: [`vercel-labs/agent-skills`](https://github.com/vercel-labs/agent-skills/tree/main/skills/composition-patterns).
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance optimization guidelines. Source: [`vercel-labs/agent-skills`](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-best-practices).
-- **[`code-review`](skills/code-review/SKILL.md)**: Review a diff against repository standards and its originating specification, with an adversarial same-brief multi-agent mode for finding blind spots. [Forked from Matt Pocock](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md); adversarial mode inspired by Cursor PStack's [`interrogate` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/SKILL.md).
+- **[`code-review`](skills/code-review/SKILL.md)**: Audit a pinned change through independent **Spec and Correctness** and **Standards and Maintainability** axes, with evidence-based finding routing and an adversarial same-brief mode for blind spots. [Forked from Matt Pocock](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md); review lenses adapted from [`roark-coding-agent`](https://github.com/marcellocurto/roark-coding-agent); adversarial mode inspired by Cursor PStack's [`interrogate` skill](https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/SKILL.md).
 - **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design deep modules, type-safe interfaces, domain-shaped structures, and competing architectural alternatives. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/SKILL.md)
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Build and sharpen a project's domain model, glossary, and architectural decisions. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md)
 - **[`grilling`](skills/grilling/SKILL.md)**: Stress-test a plan or design through successive rounds of decision-tree questions. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)
@@ -139,6 +140,14 @@ Before finishing, the skill renders the actual route when accessible, checks rep
 For code walkthroughs and onboarding questions that need a reliable working mental model rather than an annotated file tour. The skill starts at a real caller, route, event, job, command, or user action and follows each material handoff to the final output, state change, side effect, or external call.
 
 It tracks how data changes, where state lives, which runtime implementation is selected, and where responsibility crosses module seams. Every material connection is grounded in code, wiring, configuration, tests, or another exact source; unresolved handoffs and historical rationale without evidence remain explicit instead of being guessed. Debugging and architectural critique stay in their dedicated skills.
+
+### [`github-issue-audit`](skills/github-issue-audit/SKILL.md)
+
+For deciding whether one GitHub issue can proceed before anyone plans or implements it. The audit judges the issue's central claim, fit with accepted scope, readiness, and dependency state independently, then returns an evidence-backed outcome without changing the repository or issue.
+
+Reported statements stay separate from verified facts and inference. Rejection is limited to an already-satisfied, duplicate or superseded, disproven, or explicitly excluded request; missing information and maintainer decisions remain distinct outcomes. Readiness also stays separate from blocking dependencies, so a well-specified issue can remain ready even when external work prevents it from starting.
+
+The decision model is adapted from [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent) without depending on Roark's structured artifacts or workflow runtime.
 
 ### [`to-tickets`](skills/to-tickets/SKILL.md)
 
