@@ -20,25 +20,37 @@ npx skills add marcellocurto/skills
 
 ## Available Skills
 
-| Skill                                                       | Description                                                                                                                                                   |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`address-review-feedback`](address-review-feedback/SKILL.md) | Explicitly audits pull-request feedback, recommends dispositions, and implements only approved fixes.                                                        |
-| [`audit-code-complexity`](audit-code-complexity/SKILL.md)   | Audits code for accidental complexity and behavior-preserving simplifications, including test infrastructure only when it creates or conceals complexity.   |
-| [`bug-fix-planner`](bug-fix-planner/SKILL.md)               | Plans a concrete fix for a specific bug, regression, crash, failing test, error, or broken behavior without changing code.                                    |
-| [`design-system-ui`](design-system-ui/SKILL.md)             | Designs and implements polished frontend UI that feels native to the existing product, codebase, component library, and design system.                        |
-| [`implement`](implement/SKILL.md)                           | Implements scoped work from a spec or tickets, then verifies and reviews the completed changes without committing automatically.                              |
-| [`relentless-review`](relentless-review/SKILL.md)           | Stress-tests work by asking whether it is actually the best path, challenging assumptions, edge cases, and failure modes without forcing unnecessary changes. |
-| [`simplify-code-solution`](simplify-code-solution/SKILL.md) | Simplifies code fixes and feature proposals by grounding them in real requirements, existing code, and the smallest complete solution.                        |
-| [`test-quality-audit`](test-quality-audit/SKILL.md)         | Audits tests for real bug-finding value and classifies what to keep, fix, cut, or add.                                                                        |
-| [`to-tickets`](to-tickets/SKILL.md)                         | Creates user-approved single or multi-issue GitHub ticket sets from existing context, including selected pull-request feedback.                              |
-| [`wayfinder`](wayfinder/SKILL.md)                           | Maps large, multi-session work as a route of decisions, keeping it in the current task unless durable coordination is needed.                                 |
-| [`wild-frontend`](wild-frontend/SKILL.md)                   | Explicit-only skill for unconstrained, highly creative frontend artifacts outside normal product constraints.                                                 |
+### Engineering
+
+Skills for planning, implementing, reviewing, and improving software work.
+
+All skills can be invoked manually. **User-invoked** skills run only when selected explicitly. **Model-invoked** skills may also be selected automatically when the request matches their description.
+
+**User-invoked (explicit only)**
+
+- **[`wayfinder`](wayfinder/SKILL.md)**: Map work too large or uncertain to plan end-to-end, resolving one decision at a time until the route is clear.
+- **[`design-system-ui`](design-system-ui/SKILL.md)**: Design and implement polished product UI that extends an existing codebase or design system.
+- **[`wild-frontend`](wild-frontend/SKILL.md)**: Create an unconstrained, highly original frontend when visual ambition matters more than product consistency.
+
+**Model-invoked (implicit allowed)**
+
+- **[`bug-fix-planner`](bug-fix-planner/SKILL.md)**: Investigate one bug or regression and produce an implementation-ready fix plan without changing code.
+- **[`simplify-code-solution`](simplify-code-solution/SKILL.md)**: Reduce an overbuilt or speculative coding proposal to the smallest complete solution supported by real requirements.
+- **[`to-tickets`](to-tickets/SKILL.md)**: Turn an approved plan, specification, or conversation into focused GitHub issues with duplicate checks and native relationships.
+- **[`implement`](implement/SKILL.md)**: Implement and verify an existing specification or set of tickets, finishing with validation and code review.
+- **[`address-review-feedback`](address-review-feedback/SKILL.md)**: Audit pull-request feedback against the current code, recommend dispositions, and implement only approved fixes.
+- **[`spec-conformance-audit`](spec-conformance-audit/SKILL.md)**: Audit an implementation against its originating requirements, protected constraints, and authorized scope.
+- **[`audit-code-complexity`](audit-code-complexity/SKILL.md)**: Audit code for accidental complexity, overengineering, and behavior-preserving simplifications.
+- **[`test-quality-audit`](test-quality-audit/SKILL.md)**: Judge tests by realistic bug-finding value and decide what to keep, fix, cut, or add.
+- **[`product-ui-audit`](product-ui-audit/SKILL.md)**: Audit an existing interface and recommend one coherent, product-native UX direction without editing code.
+- **[`user-journey-verifier`](user-journey-verifier/SKILL.md)**: Verify completed software through the exact user-visible workflow and resulting artifact.
+- **[`relentless-review`](relentless-review/SKILL.md)**: Stress-test a proposal, plan, implementation, or design by challenging assumptions and exploring meaningful failure modes.
 
 ## Skill Details
 
 ### [`address-review-feedback`](address-review-feedback/SKILL.md)
 
-This explicit-only skill audits pull-request review feedback against the current code before changing anything. It distinguishes actionable findings from feedback that is already addressed, not actionable, or unclear, then presents evidence and recommended dispositions for approval.
+This skill audits pull-request review feedback against the current code before changing anything. It distinguishes actionable findings from feedback that is already addressed, not actionable, or unclear, then presents evidence and recommended dispositions for approval.
 
 Only approved actionable findings are implemented. The skill verifies the resulting changes and re-audits every approved finding, while GitHub replies, thread resolution, commits, pushes, and pull-request mutations remain separately authorized actions.
 
@@ -81,6 +93,12 @@ It finishes with a code review and leaves changes uncommitted unless the user ex
 
 This version is based on and inspired by Matt Pocock's [`implement` skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement/SKILL.md), adapted for the GPT-5.6 family and this repository's workflow conventions.
 
+### [`product-ui-audit`](product-ui-audit/SKILL.md)
+
+For auditing an existing product interface without immediately implementing a redesign. The skill identifies the real user, dominant job, relevant information, realistic scale, and reachable states before judging the screen.
+
+It separates usability defects, missing product behavior, visual weaknesses, and defensible preferences. Recommendations converge on one coherent screen model and favor hierarchy, consolidation, and progressive disclosure over generic cards, badges, loaders, and dashboard chrome.
+
 ### [`wayfinder`](wayfinder/SKILL.md)
 
 For planning work too large or uncertain to see end-to-end in one task. It names the destination, charts the visible decisions and remaining fog, then resolves one frontier decision at a time until the route is clear.
@@ -101,11 +119,23 @@ For code problems where the proposed solution has started to grow extra machiner
 
 Simple only wins when it is complete. The target is the smallest solution that still satisfies the requirements, preserves behavior, fits local patterns, and has a clear way to verify it.
 
+### [`spec-conformance-audit`](spec-conformance-audit/SKILL.md)
+
+For checking whether completed work matches the contract that authorized it. The skill establishes requirements, protected behavior, exclusions, and unresolved decisions from the latest authoritative sources, then traces each one to implementation evidence.
+
+It reports missing, partial, contradicted, and unverified requirements separately from unauthorized expansion. Code quality and personal preference stay out of the audit unless the contract explicitly governs them.
+
 ### [`test-quality-audit`](test-quality-audit/SKILL.md)
 
 For judging whether tests are earning their keep. It asks the hard question first: what realistic bug or regression would this catch? Then it checks the implementation, public behavior, mocks, fixtures, snapshots, helpers, and nearby tests.
 
 The bias is toward signal over volume. A smaller suite that fails for the right reasons is better than broad coverage that mostly proves mocks, snapshots, fixtures, or private implementation details.
+
+### [`user-journey-verifier`](user-journey-verifier/SKILL.md)
+
+For proving an outcome through the same path the user actually takes. The skill defines the actor, entry point, actions, expected result, environment, and material states, then verifies the complete journey and final screen, record, download, or artifact.
+
+Substitute paths do not count as proof: a direct export function cannot verify a browser download button, and a passing build cannot verify a rendered PDF. Every acceptance check is reported as passed, failed, or explicitly unverified.
 
 ### [`wild-frontend`](wild-frontend/SKILL.md)
 
