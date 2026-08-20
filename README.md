@@ -55,6 +55,9 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`wayfinder`](skills/wayfinder/SKILL.md)**: Map work too large or uncertain to plan end-to-end, resolving one decision at a time until the route is clear.
 - **[`design-system-ui`](skills/design-system-ui/SKILL.md)**: Design and implement polished product UI that extends an existing codebase or design system.
 - **[`wild-frontend`](skills/wild-frontend/SKILL.md)**: Create an unconstrained, highly original frontend when visual ambition matters more than product consistency.
+- **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Run a relentless design interview while building the project's glossary and ADRs. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md)
+- **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them in a visual report, and grill through the selected candidate. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md)
+- **[`to-spec`](skills/to-spec/SKILL.md)**: Synthesize the current conversation into a spec and publish it to the project issue tracker. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md)
 
 **Model-invoked (implicit allowed)**
 
@@ -69,6 +72,12 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`product-ui-audit`](skills/product-ui-audit/SKILL.md)**: Audit an existing interface and recommend one coherent, product-native UX direction without editing code.
 - **[`user-journey-verifier`](skills/user-journey-verifier/SKILL.md)**: Verify completed software through the exact user-visible workflow and resulting artifact.
 - **[`relentless-review`](skills/relentless-review/SKILL.md)**: Stress-test a proposal, plan, implementation, or design by challenging assumptions and exploring meaningful failure modes.
+- **[`code-review`](skills/code-review/SKILL.md)**: Review a diff against repository standards and its originating specification in parallel. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/code-review/SKILL.md)
+- **[`codebase-design`](skills/codebase-design/SKILL.md)**: Provide the shared vocabulary and principles for designing deep modules. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/SKILL.md)
+- **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Build and sharpen a project's domain model, glossary, and architectural decisions. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md)
+- **[`grilling`](skills/grilling/SKILL.md)**: Stress-test a plan or design through successive rounds of decision-tree questions. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)
+- **[`prototype`](skills/prototype/SKILL.md)**: Build a throwaway logic or UI prototype to answer a design question. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/prototype/SKILL.md)
+- **[`tdd`](skills/tdd/SKILL.md)**: Build features and fix bugs through a test-first red-green loop. [Forked from Matt Pocock.](https://github.com/mattpocock/skills/blob/main/skills/engineering/tdd/SKILL.md)
 
 ## Skill Details
 
