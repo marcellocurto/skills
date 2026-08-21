@@ -18,30 +18,6 @@ bunx skills add marcellocurto/skills
 npx skills add marcellocurto/skills
 ```
 
-## Development
-
-This repository is a Bun project. Install its development dependencies and run all repository checks with:
-
-```bash
-bun install
-bun run check
-```
-
-Installable skills live in [`skills/`](skills/). Repository-level automation lives in [`scripts/`](scripts/).
-The tooling uses TypeScript 7, Oxlint, and Oxfmt. Run `bun run format` to format repository files and `bun run lint:fix` to apply safe lint fixes.
-
-Install every published skill globally for Codex and Claude Code with symlinks:
-
-```bash
-bun run skills:install
-```
-
-List installed skills:
-
-```bash
-bunx skills ls -g
-```
-
 ## Available Skills
 
 Skills for planning, building, reviewing, and improving software.
@@ -99,3 +75,27 @@ Several skills are forked, adapted, or inspired by other projects:
 - [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `address-review-feedback`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`.
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
+
+## Development
+
+This repository is a Bun project. Install its development dependencies and run all repository checks with:
+
+```bash
+bun install
+bun run check
+```
+
+Installable skills live in [`skills/`](skills/). Repository-level automation lives in [`scripts/`](scripts/).
+The tooling uses TypeScript 7, Oxlint, and Oxfmt. Run `bun run format` to format repository files and `bun run lint:fix` to apply safe lint fixes.
+
+Install every published skill globally for Codex and Claude Code with symlinks:
+
+```bash
+bun run skills:install
+```
+
+List installed skills:
+
+```bash
+bunx skills ls -g
+```
