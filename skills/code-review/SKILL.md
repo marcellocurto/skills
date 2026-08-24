@@ -61,6 +61,7 @@ Judge whether the change fits the repository and remains economical to change:
 - violations of documented repository guidance, citing the governing file and exact rule
 - unnecessary complexity, indirection, duplication, or premature abstraction
 - machinery disproportionate to the requested behavior
+- procedural accretion: a cohesive workflow, policy, state machine, or substantial composition appended to a caller or entry point that should only coordinate it
 - poor fit with existing module boundaries, ownership, types, APIs, or local idioms
 - tests that are tautological, implementation-coupled, redundant, unable to name a realistic bug, excessively mocked so they bypass the shipped path, or merely freeze prompt prose, non-critical configuration, fixtures, static content, or private structure
 - misleading names or public surfaces, and style only when it materially harms comprehension
@@ -72,12 +73,16 @@ Before reporting an uncodified maintainability concern, answer the relevant ques
 - What concrete cost does this structure create?
 - What current requirement justifies the machinery?
 - Does responsibility live with the data, behavior, and invariants it governs?
+- Is the diff minimizing changed files by increasing the unrelated context a caller must understand?
+- Would a focused single-use module hide meaningful existing complexity, or merely relocate code behind a shallow wrapper?
 - Do the types unnecessarily permit invalid states?
 - Would the proposed simplification preserve actual contracts?
 
 Use code-smell names only as diagnostic vocabulary after establishing concrete maintenance harm. Never report a smell through pattern matching alone. Suppress it when it is aesthetic, locally endorsed, tooling-enforced, more expensive to fix than to keep, or would require speculative abstraction. Duplication does not automatically justify extraction, and primitive values or repeated parameters do not automatically justify new abstractions.
 
 A maintainability concern is `must-fix-current` only when it creates concrete correctness or regression risk, significant ongoing change cost, or a clear documented-standard violation. Another design being nicer is not enough.
+
+A responsibility-placement finding can meet that threshold without a correctness bug when the change materially turns an entry point, form, controller, or composition module into the owner of another independently changing behavior. Predicted reuse is not required for the smaller module; require a reduction in caller knowledge, not merely fewer lines in the original file.
 
 ## Finding contract
 
@@ -93,7 +98,7 @@ Severity measures the magnitude of the demonstrated impact. Confidence measures 
 
 Record an outside information, access, dependency, or human-decision constraint separately as `blockedBy`. Report coverage as `complete` or `limited`; every limitation states what could not be established and whether it prevents approval.
 
-Every retained finding includes severity, confidence, an exact location, concrete evidence, current-change impact, and the smallest credible fix together. It must explain what happens, how the changed code causes the failure or maintenance cost, and which real caller, consumer, contract, observable behavior, or future change path is affected. A theoretical concern without a traceable mechanism is not a finding.
+Every retained finding includes severity, confidence, an exact location, concrete evidence, current-change impact, and a focused production-quality fix together. It must explain what happens, how the changed code causes the failure or maintenance cost, and which real caller, consumer, contract, observable behavior, or future change path is affected. A theoretical concern without a traceable mechanism is not a finding.
 
 No findings is a valid result. Do not manufacture minor observations to fill the report.
 
@@ -111,6 +116,6 @@ Keep the axes independent so one cannot mask the other. When the same mechanism 
 
 ## Report
 
-Lead with the pinned scope and both axis verdicts. Present `## Correctness` and `## Maintainability`, each with only its validated limitations and findings. Keep each finding's evidence, impact, and smallest fix together; omit evidence inventories, duplicated summaries, filler, and generic praise.
+Lead with the pinned scope and both axis verdicts. Present `## Correctness` and `## Maintainability`, each with only its validated limitations and findings. Keep each finding's evidence, impact, and focused fix together; omit evidence inventories, duplicated summaries, filler, and generic praise.
 
 If both axes approve, say so without inventing an aggregate score. When adversarial mode ran, append its `## Adversarial` section. End by stating that the review made no changes.

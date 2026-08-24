@@ -42,7 +42,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Debug stubborn failures by building a reproducible feedback loop, narrowing the cause, and proving the fix.
 - **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Get a reliable mental model of how a feature actually runs, from its entry point to its final effect.
 - **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Find out whether a GitHub issue is true, in scope, ready, duplicated, blocked, or already solved.
-- **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Challenge an oversized coding proposal and cut it back to the smallest complete solution the requirements justify.
+- **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Challenge an overbuilt coding proposal and reduce it to the simplest production-quality design the requirements justify.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Convert approved work into GitHub issues that are focused, self-contained, non-duplicative, and ready for the right owner.
 - **[`implement`](skills/implement/SKILL.md)**: Take an existing specification or ticket set through code changes, verification, conformance review, and final quality review.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.

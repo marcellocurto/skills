@@ -1,15 +1,15 @@
 ---
 name: simplify-code-solution
-description: Reduce a proposed code change to the smallest solution that fully meets the real requirements.
+description: Reduce an overbuilt code proposal to the simplest production-quality design that meets the real requirements.
 ---
 
 # Simplify Code Solution
 
-Find the smallest complete solution to a code problem.
+Find the simplest complete production design for a code problem.
 
 ## Goal
 
-Prefer direct, boring changes that meet every real requirement. Simpler is valid only when it preserves behavior, fits existing patterns, and can be verified.
+Prefer direct, boring changes that meet every real requirement. Simpler is valid only when it preserves behavior, keeps responsibilities coherent, fits sound existing patterns, and can be verified. Fewer files, functions, or modules do not by themselves make a solution simpler.
 
 ## Success Criteria
 
@@ -17,13 +17,13 @@ Prefer direct, boring changes that meet every real requirement. Simpler is valid
 - Requirements are separated from assumptions and nice-to-haves.
 - Relevant code has been inspected before judging the approach.
 - Essential complexity that represents real domain, durability, recovery, or operational requirements is identified and preserved.
-- Every proposed abstraction, refactor, dependency, or state change is justified by a real requirement.
-- The recommendation or implementation is the smallest complete change that preserves behavior and fits local patterns.
+- Every proposed generic abstraction, refactor, dependency, or state change is justified by a real requirement or by current complexity it meaningfully hides from callers.
+- The recommendation or implementation is the simplest production-quality change that preserves behavior and fits sound local patterns.
 - Tradeoffs and validation are stated.
 
 ## Constraints
 
-- Reuse existing paths, helpers, types, components, and APIs before adding new ones.
+- Reuse existing paths, helpers, types, components, and APIs when they can absorb the behavior without gaining an unrelated responsibility.
 - Avoid rewrites for localized bugs, state machines for simple state, generic frameworks for one caller, speculative migrations, unnecessary dependencies, wide API changes for internal convenience, and tests that only mirror implementation.
 - Compare total lifecycle complexity, not merely initial implementation size. Do not reject justified infrastructure, durable queues, explicit state, or domain distinctions simply because they add code. Complexity is removable only when requirements, operational guarantees, and failure modes remain covered.
 - Do not recommend removing a mechanism until its consumers, operational role, failure behavior, and replacement path are understood. Require a concrete cost and a behavior-preserving alternative.
@@ -34,13 +34,13 @@ Inspect the minimum relevant code needed to understand the current path, contrac
 
 ## Simplicity Checks
 
-- Can one existing code path change instead of adding a layer?
+- Can one existing code path absorb the behavior while remaining coherent, or would a focused module reduce the caller's required context?
 - Can current contracts and data shapes remain unchanged?
-- Is the abstraction serving repeated real use, not imagined future use?
+- Is genericity serving demonstrated variation? Separately, does a responsibility extraction hide meaningful existing complexity even if it has one caller?
 - What required behavior or operational guarantee does the apparent complexity encode?
 - Would removing local complexity move more complexity, risk, or manual work downstream?
-- Can the edge case be handled locally?
-- Will a maintainer understand it from nearby code?
+- Can the edge case be handled by its natural owner without making that owner responsible for an independent workflow or policy?
+- Will a maintainer understand the changed path without holding unrelated responsibilities in mind?
 - Does validation cover behavior users or callers rely on?
 
 ## Output
@@ -58,4 +58,4 @@ Use only the headings that add decision value. For implementation, make the scop
 
 ## Stop Rules
 
-Stop once the smallest complete path is clear and either implemented or recommended with validation. Ask only when missing information would materially change the solution.
+Stop once the simplest production-quality path is clear and either implemented or recommended with validation. Ask only when missing information would materially change the solution.

@@ -5,7 +5,7 @@ description: Build features and bug fixes test-first around meaningful behavior.
 
 # Test-Driven Development
 
-TDD is a sequence of small red → green cycles. Each cycle must make the intended behavior executable, demonstrate that the check fails for the intended reason, and make the smallest production change that passes it. The resulting tests must be worth keeping.
+TDD is a sequence of small red → green → refactor cycles. Each cycle must make the intended behavior executable, demonstrate that the check fails for the intended reason, and leave the affected path in a production-quality shape. The resulting tests must be worth keeping.
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) so test names and interface vocabulary match the project's domain language, and respect ADRs in the area you're touching.
 
@@ -38,9 +38,10 @@ Work in vertical slices:
 1. Choose the smallest observable behavior at an established or agreed seam.
 2. Write one focused test that specifies that behavior.
 3. Run it before changing production code. Confirm that it fails because the behavior is missing, not because the test is broken.
-4. Make the smallest production change that passes the test without anticipating later slices.
+4. Make the simplest production-quality change that passes the test without anticipating later slices. This does not require keeping a cohesive responsibility inline merely because extraction is not yet needed for reuse.
 5. Rerun the test and confirm that it passes.
-6. Repeat with the next behavior, allowing each cycle to inform the next.
+6. Refactor the affected path when needed to preserve clear ownership and cohesion, then confirm the test still passes.
+7. Repeat with the next behavior, allowing each cycle to inform the next.
 
 ## Bug-fix cycle
 
@@ -50,7 +51,7 @@ When a bug has a clear, practical regression path:
 2. Choose the narrowest executable check already used near that codepath.
 3. Add the smallest focused regression test that would have caught the bug.
 4. Run it before fixing the implementation. Confirm that it fails for the intended reason; correct the test or reproduction if it passes or fails for an unrelated reason.
-5. Make the smallest production change that restores the intended behavior while preserving nearby contracts.
+5. Make a focused production-quality change that restores the intended behavior while preserving nearby contracts and clear ownership.
 6. Rerun the regression test, then run relevant adjacent tests, type checks, lint, or scenario checks in proportion to the change's risk.
 
 ### When a failing test is impractical
@@ -61,14 +62,14 @@ Before fixing the bug, explain why a durable failing test is not worth its cost 
 
 ## Guardrails
 
-- **Red before green.** Write the failing test first, then only enough code to pass it. Don't anticipate future tests or add speculative features.
-- **One slice at a time.** One seam, one test, one minimal implementation per cycle.
+- **Red before green.** Write the failing test first, then implement the current behavior completely. Don't anticipate future tests or add speculative features.
+- **One slice at a time.** One seam, one test, and one complete production implementation per cycle.
 - Do not change tests merely to match an incorrect implementation.
 - Do not weaken existing assertions unless the intended behavior has genuinely changed and the reason is clear.
 - Keep a regression test focused on the reported bug; avoid unrelated coverage expansion or fixture churn.
 - If a bug is flaky, make the regression signal deterministic where practical and state what signal is being locked down.
 - If a bug exposes a broader class of failures, establish the focused regression path first, then consider sibling coverage.
-- **Refactoring is not part of the loop.** It belongs to the review stage (see the `code-review` skill), not the red → green implementation cycle.
+- **Refactor after green when the changed path needs it.** Preserve clear ownership and cohesion before starting the next slice. Keep the refactor within the affected behavior; do not turn the cycle into unrelated cleanup.
 
 ## Final response
 
