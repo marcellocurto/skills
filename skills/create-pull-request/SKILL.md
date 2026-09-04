@@ -9,6 +9,8 @@ Publish one completed change as a clear, accurate, ready-for-review GitHub pull 
 
 A direct request to create, open, or publish the PR authorizes the ordinary commit, push, and PR creation needed for that exact change. It does not authorize force-pushing, merging, issue edits, labels, reviewers, assignees, or unrelated local changes.
 
+Leave the published PR open for review. Merging requires a separate explicit user instruction after publication and delivery of the PR URL, even if the original request bundled creation and merging. Do not merge, enable auto-merge, or enqueue a merge during this workflow.
+
 ## Establish the change
 
 - Read the repository instructions for branches, commits, verification, and pull requests.
@@ -102,4 +104,4 @@ Read the PR back with `gh pr view` and verify:
 - GitHub's head commit matches local `HEAD`
 - title and body match the reviewed content
 
-Return the PR URL and number, base and head, published commit, verification commands and outcomes, and any disclosed limitation. Do not merge the PR or manually close its source issue.
+Return the PR URL and number, base and head, published commit, verification commands and outcomes, and any disclosed limitation, then stop with the PR open for review. Do not manually close its source issue.
