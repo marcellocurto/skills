@@ -29,7 +29,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`simple-answer`](skills/simple-answer/SKILL.md)**: Use this when an answer is technically correct but harder to understand than it needs to be.
 - **[`wayfinder`](skills/wayfinder/SKILL.md)**: Turn a large, foggy project into a shared sequence of decisions without pretending the whole plan is already known.
 - **[`design-system-ui`](skills/design-system-ui/SKILL.md)**: Add production UI to a mature product by learning and extending the design patterns already in its codebase.
-- **[`frontend-design`](skills/frontend-design/SKILL.md)**: Design and implement distinctive web interfaces with typography, composition, and visual identity grounded in the product and audience.
+- **[`frontend-design`](skills/frontend-design/SKILL.md)**: Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one.
 - **[`wild-frontend`](skills/wild-frontend/SKILL.md)**: Create visually ambitious frontend work that should feel original instead of blending into an existing product system.
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Pressure-test a design through conversation while keeping its glossary and architectural decisions up to date.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Surface the architecture changes most likely to improve maintainability, show them visually, and explore the strongest candidate together.
@@ -71,7 +71,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 Several skills are forked, adapted, or inspired by other projects:
 
-- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, independently rewritten from its design guidance for this repository.
+- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, preserved with only invocation metadata changed for Codex and Claude.
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `to-spec`, `triage`, `diagnosing-bugs`, `to-tickets`, `implement`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `prototype`, `research`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `simple-answer`, `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
 - [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `address-review-feedback`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
