@@ -28,6 +28,8 @@ Establish:
 
 If key context is unavailable, state which conclusions are provisional. Do not fabricate product requirements from familiar UI patterns.
 
+With screenshot-only evidence, direct observations cover only the visible state and viewport. Interaction, keyboard and screen-reader behavior, hidden states, and responsive behavior at other widths remain unverified. Label such claims as hypotheses and name the interaction or viewport check needed to establish them; do not present an unseen behavior as a confirmed defect or infer that it works from its appearance.
+
 ## Audit the Interface
 
 Prioritize findings that materially affect the job:

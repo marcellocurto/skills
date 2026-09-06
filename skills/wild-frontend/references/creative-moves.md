@@ -22,7 +22,7 @@ Load this reference only when a wild frontend task needs more concept or visual 
 - monochrome Swiss poster grid
 - tactile scrapbook interface
 
-Pick one direction and make every visual choice serve it.
+Follow the user's requested direction first. Use these examples to develop unspecified parts of the brief, not to replace its aesthetic. Choose a coherent direction and make the visual choices serve it.
 
 ## Typography
 
@@ -42,4 +42,6 @@ Use texture to make the screen feel specific: grain, glow, scanlines, paper text
 
 ## Motion
 
-Use a few memorable motions instead of constant noise: staged entrances, hover distortions, reveal masks, sliding panels, kinetic typography, parallax, pulsing status, cursor-follow effects, or cinematic transitions. Respect reduced-motion preferences when practical.
+Use a few memorable motions instead of constant noise: staged entrances, hover distortions, reveal masks, sliding panels, kinetic typography, parallax, pulsing status, cursor-follow effects, or cinematic transitions.
+
+Respect reduced-motion preferences. Reduce or replace nonessential movement, such as parallax or entrance sequences, while preserving content, controls, and understandable state changes. Verify the reduced-motion alternative when inspecting animated work.

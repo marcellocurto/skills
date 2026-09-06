@@ -4,19 +4,31 @@ description: Turn the current conversation into a specification and publish it t
 disable-model-invocation: true
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user; just synthesize what you already know.
+Synthesize the current conversation and codebase understanding into a spec. Reuse settled requirements, implementation choices, and testing decisions; do not reopen them for confirmation. Treat proposals and rejected approaches as context unless the user adopted them.
+
+Resolve routine uncertainty from repository evidence. Surface unresolved facts or decisions when they materially affect behavior, scope, contracts, or acceptance criteria. Ask a focused question only when the missing answer prevents an accurate spec; otherwise record the open decision and what it blocks. Complete the rest of the draft while waiting. Do not reopen the interview or invent a decision to make the spec appear complete.
 
 Resolve the publication target from explicit user context, existing repository conventions, or the Git remote. If the target remains ambiguous, ask before publishing. Use the repository's existing triage label vocabulary; do not create or rename labels implicitly.
 
 ## Process
 
-1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
+1. Reuse relevant repository findings already established in the conversation. Inspect additional code only where needed to ground the spec or resolve a material unknown. Use the project's domain glossary vocabulary throughout the spec, and respect applicable ADRs and the user's latest decisions.
 
-2. Sketch out the seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
+2. Reuse settled testing decisions. Where verification still needs definition, choose existing interfaces or user journeys that can demonstrate the required behavior and catch realistic regressions. Let the behavior determine the number and level of verification surfaces; do not force everything through one seam or the highest possible layer. Mark any new seam as a proposal unless already agreed. Seek a decision only when the choice would materially change scope or a contract; ordinary test mechanics can remain implementation choices.
 
-Check with the user that these seams match their expectations.
+3. Write the spec using the relevant sections below, then publish it to the resolved project issue tracker. Preserve material open questions explicitly rather than presenting them as settled requirements, and assess readiness before applying labels.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply `ready-for-agent` only when that label or a documented equivalent already exists; otherwise publish without it and report that no unambiguous readiness label was available.
+## Readiness
+
+Apply `ready-for-agent` or a documented equivalent only when the label exists, its repository meaning is established, and all of the following hold:
+
+- The spec calls for concrete implementation work, rather than research, discussion, or human coordination as its outcome.
+- Required behavior, material constraints, and observable acceptance criteria are settled enough to begin.
+- Execution does not depend on an unresolved human decision, approval, access provisioning, or manual action.
+
+Ordinary codebase exploration, reversible engineering choices, and test mechanics do not make a spec unready. Record verified implementation dependencies separately from readiness; a fully specified change may be ready while another issue blocks its start.
+
+If the work is not ready, omit the readiness label and state the missing decision or prerequisite. If the work is ready but no unambiguous readiness label exists, publish without it and report the unavailable label.
 
 <spec-template>
 
@@ -28,17 +40,11 @@ The problem that the user is facing, from the user's perspective.
 
 The solution to the problem, from the user's perspective.
 
-## User Stories
+## Acceptance Criteria
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+Write non-duplicated, independently verifiable outcomes that together cover the agreed scope. State the observable behavior and the conditions needed to check it, including material failure or recovery behavior established by the requirements.
 
-1. As an <actor>, I want a <feature>, so that <benefit>
-
-<user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
-</user-story-example>
-
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+Use as many criteria as the behavior requires. Do not inflate the list with restated goals, implementation steps, generic “tests pass” statements, or invented scenarios.
 
 ## Implementation Decisions
 
@@ -58,11 +64,13 @@ Exception: if a prototype produced a snippet that encodes a decision more precis
 
 ## Testing Decisions
 
-A list of testing decisions that were made. Include:
+Record settled verification decisions and distinguish any remaining recommendations from requirements. Include only what helps verify this feature:
 
-- A description of what makes a good test (only test external behavior, not implementation details)
-- Which modules will be tested
-- Prior art for the tests (i.e. similar types of tests in the codebase)
+- The behavior and realistic regressions the checks must distinguish
+- The existing interfaces or user journeys those checks exercise
+- Relevant prior art in the codebase
+
+Preserve verification through the actual user or consumer path when a lower-level check could bypass the promised behavior. Omit general testing advice and leave reversible test mechanics to implementation.
 
 ## Out of Scope
 
@@ -70,6 +78,6 @@ A description of the things that are out of scope for this spec.
 
 ## Further Notes
 
-Any further notes about the feature.
+State readiness and any material unresolved decisions or prerequisites, including what each gap blocks. Include other notes only when they affect implementation or verification.
 
 </spec-template>

@@ -1,7 +1,7 @@
 ---
 title: Rule Title Here
 impact: MEDIUM
-impactDescription: Optional description of impact (e.g., "20-50% improvement")
+impactDescription: Describe the avoidable cost and the conditions where it matters
 tags: tag1, tag2
 ---
 
@@ -9,7 +9,9 @@ tags: tag1, tag2
 
 **Impact: MEDIUM (optional impact description)**
 
-Brief explanation of the rule and why it matters. This should be clear and concise, explaining the performance implications.
+Explain the concrete mechanism, workload, and evidence that make this rule applicable. State when the existing approach is adequate and which contracts an optimization must preserve. Present library or cache additions as conditional options.
+
+Use qualitative impact descriptions by default. A numerical result needs its source and workload; label illustrative estimates explicitly and never present them as measurements of the reader's application.
 
 **Incorrect (description of what's wrong):**
 

@@ -5,63 +5,44 @@ description: Define and maintain the codebase's shared domain terms and architec
 
 # Domain Modeling
 
-Actively build and sharpen the project's domain model as you design. This is the *active* discipline: challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `CONTEXT.md` for vocabulary is not this skill: that's a one-line habit any skill can do. This skill is for when you're changing the model, not just consuming it.)
+Clarify the project's domain concepts and the decisions that shape them. Use this skill when defining or revising those meanings; merely reading an existing glossary does not require a modeling session.
 
-## File structure
+## Choose the working mode
 
-Most repos have a single context:
+- **Discussion or proposed edits:** For discussion, review, or read-only requests, keep definitions, decisions, and proposed document changes in the conversation. Do not create or edit files.
+- **Documentation updates:** When the user asks to create or maintain domain documentation, or requests a workflow that includes recording it, write settled terms and qualifying decisions within that scope. Honor authorization already given without asking again for each entry. If writes are limited to particular documents, keep other proposed records in the conversation.
 
-```
-/
-├── CONTEXT.md
-├── docs/
-│   └── adr/
-│       ├── 0001-event-sourced-orders.md
-│       └── 0002-postgres-for-write-model.md
-└── src/
-```
+Loading this skill alone does not authorize documentation writes. When the request does not establish write intent, continue in discussion mode. Recording a model does not authorize implementing it or renaming code.
 
-If a `CONTEXT-MAP.md` exists at the root, the repo has multiple contexts. The map points to where each one lives:
+## Find the existing documentation
 
-```
-/
-├── CONTEXT-MAP.md
-├── docs/
-│   └── adr/                          ← system-wide decisions
-├── src/
-│   ├── ordering/
-│   │   ├── CONTEXT.md
-│   │   └── docs/adr/                 ← context-specific decisions
-│   └── billing/
-│       ├── CONTEXT.md
-│       └── docs/adr/
-```
+Inspect repository guidance and relevant documentation for the current glossary, context map, ADR location, and document formats. Follow existing names, links, context ownership, and numbering before creating anything. A glossary or ADR directory with a different name is not missing documentation.
 
-Create files lazily: only when you have something to write. If no `CONTEXT.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
+If no convention exists, use `CONTEXT.md` for domain terms and `docs/adr/` for architectural decisions. Create them only in documentation-update mode when there is agreed content to record. Use an existing context map, whatever its filename, to locate domain-specific records; do not infer that the whole project has one context merely because a root `CONTEXT.md` exists.
 
 ## During the session
 
 ### Challenge against the glossary
 
-When the user uses a term that conflicts with the existing language in `CONTEXT.md`, call it out immediately. "Your glossary defines 'cancellation' as X, but you seem to mean Y. Which is it?"
+Compare the intended meaning with the glossary. Ask about a conflict when it changes a domain distinction, behavior, ownership, or contract. Ordinary synonyms or wording variations that clearly refer to the same concept do not need an interruption; use the established term in your response.
 
 ### Sharpen fuzzy language
 
-When the user uses vague or overloaded terms, propose a precise canonical term. "You're saying 'account': do you mean the Customer or the User? Those are different things."
+Use context and available evidence to interpret an overloaded term. If materially different meanings remain plausible, explain the distinction and ask a focused question. Recommend a canonical term when useful, but do not treat that recommendation as an agreed change or police wording for consistency alone.
 
 ### Discuss concrete scenarios
 
-When domain relationships are being discussed, stress-test them with specific scenarios. Invent scenarios that probe edge cases and force the user to be precise about the boundaries between concepts.
+Use concrete scenarios when they distinguish plausible meanings or expose an unresolved domain rule. Focus on cases that could change the current decision; do not generate edge cases merely to prolong the discussion.
 
 ### Cross-reference with code
 
-When the user states how something works, check whether the code agrees. If you find a contradiction, surface it: "Your code cancels entire Orders, but you just said partial cancellation is possible. Which is right?"
+Check relevant code when it can establish current behavior or clarify a material distinction. Keep implemented behavior separate from the user's intended model. If they differ, establish whether the user is describing a planned change, correcting stale documentation, or resolving an inconsistency; do not reopen an explicit decision merely because the code has not caught up.
 
-### Update CONTEXT.md inline
+### Record settled meanings
 
-When a term is resolved, update `CONTEXT.md` right there. Don't batch these up: capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
+In documentation-update mode, record a resolved term in the existing glossary as its meaning settles. In discussion mode, retain the agreed definition or proposed text in the response. Use [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md) only when the project has no established format.
 
-`CONTEXT.md` should be totally devoid of implementation details. Do not treat `CONTEXT.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
+Keep glossary entries focused on domain meaning. Put implementation decisions in the appropriate architectural record rather than a definition. Preserve unrelated sections of existing documents; do not reshape a multipurpose `CONTEXT.md` into a glossary-only file. Keep unresolved proposals and assumptions distinct from agreed content.
 
 ### Offer ADRs sparingly
 
@@ -71,4 +52,8 @@ Only offer to create an ADR when all three are true:
 2. **Surprising without context**: a future reader will wonder "why did they do it this way?"
 3. **The result of a real trade-off**: there were genuine alternatives and you picked one for specific reasons
 
-If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+If any of the three is missing, skip the unsolicited ADR. When documentation updates are already authorized, record qualifying settled decisions without requesting approval again. Otherwise propose the record in the conversation. Follow the project's ADR format; use [ADR-FORMAT.md](./ADR-FORMAT.md) when no convention exists.
+
+## Finish
+
+Summarize the resolved meanings and decisions, material open questions, and documents updated or proposed. Read back written changes to confirm they express the agreed meaning and preserve existing context. Do not claim proposed text was saved in discussion mode.

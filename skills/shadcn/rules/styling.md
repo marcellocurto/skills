@@ -2,24 +2,26 @@
 
 See [customization.md](../customization.md) for theming, CSS variables, and adding custom colors.
 
+These are styling defaults, not API or accessibility requirements. Follow the requested design and established project conventions when they justify another approach. Compare examples for fit with those defaults; do not rewrite valid existing styles solely to match them.
+
 ## Contents
 
 - Semantic colors
 - Built-in variants first
-- className for layout only
-- No space-x-* / space-y-*
+- className for layout and local styling
+- Prefer gap for flex and grid layouts
 - Prefer size-* over w-* h-* when equal
 - Prefer truncate shorthand
-- No manual dark: color overrides
+- Prefer semantic theme colors
 - Use cn() for conditional classes
-- No manual z-index on overlay components
-- Use shimmer / scroll-fade utilities, not custom animations
+- Inspect overlay stacking before overriding it
+- Reuse available shimmer and scroll-fade utilities
 
 ---
 
 ## Semantic colors
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <div className="bg-blue-500 text-white">
@@ -27,7 +29,7 @@ See [customization.md](../customization.md) for theming, CSS variables, and addi
 </div>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 <div className="bg-primary text-primary-foreground">
@@ -37,11 +39,11 @@ See [customization.md](../customization.md) for theming, CSS variables, and addi
 
 ---
 
-## No raw color values for status/state indicators
+## Prefer semantic status colors
 
-For positive, negative, or status indicators, use Badge variants, semantic tokens like `text-destructive`, or define custom CSS variables — don't reach for raw Tailwind colors.
+For positive, negative, or status indicators, prefer existing Badge variants, semantic tokens like `text-destructive`, or the project's custom CSS variables. Match established meaning and contrast; a direct color value may be appropriate for an explicitly requested design or existing convention.
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <span className="text-emerald-600">+20.1%</span>
@@ -49,7 +51,7 @@ For positive, negative, or status indicators, use Badge variants, semantic token
 <span className="text-red-600">-3.2%</span>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 <Badge variant="secondary">+20.1%</Badge>
@@ -57,13 +59,13 @@ For positive, negative, or status indicators, use Badge variants, semantic token
 <span className="text-destructive">-3.2%</span>
 ```
 
-If you need a success/positive color that doesn't exist as a semantic token, use a Badge variant or ask the user about adding a custom CSS variable to the theme (see [customization.md](../customization.md)).
+If a needed semantic color is missing, inspect existing theme conventions and make a scoped token addition when the task authorizes it. Ask only if the choice changes product meaning or exceeds the requested design scope (see [customization.md](../customization.md)).
 
 ---
 
 ## Built-in variants first
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <Button className="border border-input bg-transparent hover:bg-accent">
@@ -71,7 +73,7 @@ If you need a success/positive color that doesn't exist as a semantic token, use
 </Button>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 <Button variant="outline">Click me</Button>
@@ -79,11 +81,11 @@ If you need a success/positive color that doesn't exist as a semantic token, use
 
 ---
 
-## className for layout only
+## className for layout and local styling
 
-Use `className` for layout (e.g. `max-w-md`, `mx-auto`, `mt-4`), **not** for overriding component colors or typography. To change colors, use semantic tokens, built-in variants, or CSS variables.
+Use `className` for layout and justified local styling. Prefer existing variants and tokens before overriding a component's colors or typography. A scoped override is appropriate when it expresses the requested design without breaking the component's behavior, contrast, or theme states.
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <Card className="bg-blue-100 text-blue-900 font-bold">
@@ -91,7 +93,7 @@ Use `className` for layout (e.g. `max-w-md`, `mx-auto`, `mt-4`), **not** for ove
 </Card>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 <Card className="max-w-md mx-auto">
@@ -106,9 +108,9 @@ To customize a component's appearance, prefer these approaches in order:
 
 ---
 
-## No space-x-* / space-y-*
+## Prefer gap for flex and grid layouts
 
-Use `gap-*` instead. `space-y-4` → `flex flex-col gap-4`. `space-x-2` → `flex gap-2`.
+Prefer `gap-*` when the container uses flex or grid. Preserve an intentional block layout using `space-y-*` or `space-x-*`; changing display mode merely to replace a utility can change behavior.
 
 ```tsx
 <div className="flex flex-col gap-4">
@@ -122,33 +124,33 @@ Use `gap-*` instead. `space-y-4` → `flex flex-col gap-4`. `space-x-2` → `fle
 
 ## Prefer size-* over w-* h-* when equal
 
-`size-10` not `w-10 h-10`. Applies to icons, avatars, skeletons, etc.
+Prefer `size-10` over `w-10 h-10` when equal dimensions are intended. This shorthand alone does not justify rewriting existing classes.
 
 ---
 
 ## Prefer truncate shorthand
 
-`truncate` not `overflow-hidden text-ellipsis whitespace-nowrap`.
+Prefer `truncate` when it expresses the intended single-line behavior. Preserve another combination when the layout needs different overflow or wrapping.
 
 ---
 
-## No manual dark: color overrides
+## Prefer semantic theme colors
 
-Use semantic tokens — they handle light/dark via CSS variables. `bg-background text-foreground` not `bg-white dark:bg-gray-950`.
+Prefer semantic tokens such as `bg-background text-foreground` for shared light/dark roles. Explicit `dark:` overrides are appropriate when the requested treatment or project convention requires them; verify both themes.
 
 ---
 
 ## Use cn() for conditional classes
 
-Use the `cn()` utility from the project for conditional or merged class names. Don't write manual ternaries in className strings.
+Prefer the project's `cn()` utility for conditional or merged class names. A simple existing expression is not a defect solely because it uses a ternary.
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <div className={`flex items-center ${isActive ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 import { cn } from "@/lib/utils"
@@ -158,19 +160,19 @@ import { cn } from "@/lib/utils"
 
 ---
 
-## No manual z-index on overlay components
+## Inspect overlay stacking before overriding it
 
-`Dialog`, `Sheet`, `Drawer`, `AlertDialog`, `DropdownMenu`, `Popover`, `Tooltip`, `HoverCard` handle their own stacking. Never add `z-50` or `z-[999]`.
+Overlay components usually own their stacking. Inspect the installed styles and portal behavior before adding a z-index override. Make one only for a demonstrated layering need and verify that related overlays and focus behavior still work.
 
 ---
 
-## Use shimmer / scroll-fade utilities, not custom animations
+## Reuse available shimmer and scroll-fade utilities
 
-For a live "thinking…" or loading-text shimmer, apply the `shimmer` utility. Don't author a custom `@keyframes` or a `bg-clip-text` gradient sweep.
+For a live "thinking…" or loading-text shimmer, prefer the existing `shimmer` utility when available and appropriate. Use a custom animation only when the requested effect or environment needs it.
 
-For scroll-aware edge fading on a scroll container, use `scroll-fade` (and the axis variants `scroll-fade-x` / `scroll-fade-b`). Don't hand-roll mask gradients. The chat components already apply these internally: `Attachment` shimmers its title during upload, and `MessageScrollerViewport` fades its edges.
+For scroll-aware edge fading, prefer an available `scroll-fade` utility and its axis variants. Inspect the installed chat components before duplicating effects they already provide.
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <span className="animate-pulse bg-gradient-to-r from-muted-foreground/40 via-foreground/70 to-muted-foreground/40 bg-clip-text text-transparent [animation:shimmer_1.6s_infinite]">
@@ -178,7 +180,7 @@ For scroll-aware edge fading on a scroll container, use `scroll-fade` (and the a
 </span>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 <span className="shimmer">Thinking…</span>

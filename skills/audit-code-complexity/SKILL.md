@@ -30,7 +30,7 @@ Look for:
 - speculative guards, fallbacks, compatibility paths, or dead machinery
 - test harnesses, fixtures, mocks, or setup that make production behavior harder to understand or change
 
-Useful smell labels include Mysterious Name, Duplicated Code, Feature Envy, Data Clumps, Primitive Obsession, Repeated Conditionals, Shotgun Surgery, Divergent Change, Speculative Generality, Message Chain, and Middle Man. Treat them as clues, not automatic violations.
+Smell names are optional vocabulary for explaining a concrete mechanism, not a checklist to exhaust or evidence of a violation. Use labels such as Feature Envy, Data Clumps, Shotgun Surgery, or Speculative Generality only when they make a finding clearer.
 
 Include a finding only when:
 
@@ -68,5 +68,4 @@ Add justified complexity, simplification order, and validation only when useful.
 - Do not create an abstraction solely to remove similar-looking code; require a shared concept.
 - Preserve domain distinctions, data semantics, source of truth, identity, routing, validation, security, accessibility, and compatibility.
 - Skip formatter, linter, naming, and style nits unless they materially obscure behavior.
-- Do not expand the audit into a standalone test-quality review.
 - Do not present an ordinary correctness bug as a complexity or simplification finding. Report bugs, security, or performance issues only when caused or concealed by the complexity under review, and label them separately from simplification findings.

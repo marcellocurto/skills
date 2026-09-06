@@ -1,14 +1,14 @@
 # Icons
 
-**Always use the project's configured `iconLibrary` for imports.** Check the `iconLibrary` field from project context: `lucide` → `lucide-react`, `tabler` → `@tabler/icons-react`, etc. Never assume `lucide-react`.
+Use the project's configured `iconLibrary` or established imports unless the user requests a change. Check project context rather than assuming `lucide-react`. Placement and sizing below are defaults for components that support them; the installed API and requested design govern customization.
 
 ---
 
 ## Icons in Button use data-icon attribute
 
-Add `data-icon="inline-start"` (prefix) or `data-icon="inline-end"` (suffix) to the icon. No sizing classes on the icon.
+Use `data-icon="inline-start"` (prefix) or `data-icon="inline-end"` (suffix) when the installed Button supports that convention. Prefer its built-in sizing before adding local overrides.
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <Button>
@@ -17,7 +17,7 @@ Add `data-icon="inline-start"` (prefix) or `data-icon="inline-end"` (suffix) to 
 </Button>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 <Button>
@@ -33,11 +33,11 @@ Add `data-icon="inline-start"` (prefix) or `data-icon="inline-end"` (suffix) to 
 
 ---
 
-## No sizing classes on icons inside components
+## Prefer component-owned icon sizing
 
-Components handle icon sizing via CSS. Don't add `size-4`, `w-4 h-4`, or other sizing classes to icons inside `Button`, `DropdownMenuItem`, `Alert`, `Sidebar*`, or other shadcn components. Unless the user explicitly asks for custom icon sizes.
+Inspect the component's CSS before specifying icon size. Use its default when it fits; add a scoped override when the requested design or existing convention needs another size, and verify alignment and control dimensions.
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 <Button>
@@ -51,7 +51,7 @@ Components handle icon sizing via CSS. Don't add `size-4`, `w-4 h-4`, or other s
 </DropdownMenuItem>
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 <Button>
@@ -69,9 +69,9 @@ Components handle icon sizing via CSS. Don't add `size-4`, `w-4 h-4`, or other s
 
 ## Pass icons as component objects, not string keys
 
-Use `icon={CheckIcon}`, not a string key to a lookup map.
+Prefer `icon={CheckIcon}` for component composition. Preserve identifier-based APIs when an existing data or serialization contract requires them; do not add lookup machinery solely to pass a component indirectly.
 
-**Incorrect:**
+**Less suitable default:**
 
 ```tsx
 const iconMap = {
@@ -87,7 +87,7 @@ function StatusBadge({ icon }: { icon: string }) {
 <StatusBadge icon="check" />
 ```
 
-**Correct:**
+**Preferred default:**
 
 ```tsx
 // Import from the project's configured iconLibrary (e.g. lucide-react, @tabler/icons-react).

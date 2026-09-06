@@ -1,11 +1,13 @@
 # Forms & Inputs
 
+Use the installed controls' API and accessibility semantics as requirements. Field wrappers, layout utilities, and component selection below are defaults that yield to the requested design and established form patterns.
+
 ## Contents
 
 - Forms use FieldGroup + Field
 - InputGroup requires InputGroupInput/InputGroupTextarea
 - Buttons inside inputs use InputGroup + InputGroupAddon
-- Option sets (2–7 choices) use ToggleGroup
+- Choose option controls by interaction meaning
 - FieldSet + FieldLegend for grouping related fields
 - Field validation and disabled states
 
@@ -13,7 +15,7 @@
 
 ## Forms use FieldGroup + Field
 
-Always use `FieldGroup` + `Field` — never raw `div` with `space-y-*`:
+Prefer `FieldGroup` + `Field` when available and consistent with the project. Existing semantic form markup is valid; do not replace it solely to adopt these wrappers:
 
 ```tsx
 <FieldGroup>
@@ -28,7 +30,7 @@ Always use `FieldGroup` + `Field` — never raw `div` with `space-y-*`:
 </FieldGroup>
 ```
 
-Use `Field orientation="horizontal"` for settings pages. Use `FieldLabel className="sr-only"` for visually hidden labels.
+Use `Field orientation="horizontal"` when that layout fits the settings page. Use `FieldLabel className="sr-only"` when a label should remain accessible but visually hidden.
 
 **Choosing form controls:**
 
@@ -38,7 +40,7 @@ Use `Field orientation="horizontal"` for settings pages. Use `FieldLabel classNa
 - Native HTML select (no JS) → `native-select`
 - Boolean toggle → `Switch` (for settings) or `Checkbox` (for forms)
 - Single choice from few options → `RadioGroup`
-- Toggle between 2–5 options → `ToggleGroup` + `ToggleGroupItem`
+- Related pressed/unpressed options → `ToggleGroup` + `ToggleGroupItem`
 - OTP/verification code → `InputOTP`
 - Multi-line text → `Textarea`
 
@@ -46,7 +48,7 @@ Use `Field orientation="horizontal"` for settings pages. Use `FieldLabel classNa
 
 ## InputGroup requires InputGroupInput/InputGroupTextarea
 
-Never use raw `Input` or `Textarea` inside an `InputGroup`.
+Use `InputGroupInput` or `InputGroupTextarea` where the installed InputGroup relies on their attributes or composition. Check a customized implementation before assuming its contract matches this example.
 
 **Incorrect:**
 
@@ -70,9 +72,9 @@ import { InputGroup, InputGroupInput } from "@/components/ui/input-group"
 
 ## Buttons inside inputs use InputGroup + InputGroupAddon
 
-Never place a `Button` directly inside or adjacent to an `Input` with custom positioning.
+Prefer InputGroup's addon composition for an input action. Existing custom placement can remain when it preserves accessible naming, focus, and control behavior.
 
-**Incorrect:**
+**Custom positioning:**
 
 ```tsx
 <div className="relative">
@@ -83,7 +85,7 @@ Never place a `Button` directly inside or adjacent to an `Input` with custom pos
 </div>
 ```
 
-**Correct:**
+**InputGroup composition:**
 
 ```tsx
 import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/input-group"
@@ -100,11 +102,11 @@ import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/in
 
 ---
 
-## Option sets (2–7 choices) use ToggleGroup
+## Choose option controls by interaction meaning
 
-Don't manually loop `Button` components with active state.
+Use ToggleGroup for related toggles, RadioGroup for a single mutually exclusive selection, and Checkbox or Switch for independent choices. Prefer a control that supplies the required semantics and keyboard behavior over manually managed button state; the number of options alone does not determine the control.
 
-**Incorrect:**
+**Manual button state:**
 
 ```tsx
 const [selected, setSelected] = useState("daily")
@@ -122,7 +124,7 @@ const [selected, setSelected] = useState("daily")
 </div>
 ```
 
-**Correct:**
+**ToggleGroup composition:**
 
 ```tsx
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -153,7 +155,7 @@ Combine with `Field` for labelled toggle groups:
 
 ## FieldSet + FieldLegend for grouping related fields
 
-Use `FieldSet` + `FieldLegend` for related checkboxes, radios, or switches — not `div` with a heading:
+Group related checkboxes, radios, or switches semantically. Prefer the project's `FieldSet` + `FieldLegend` components when available; native fieldset/legend or another established accessible grouping may also satisfy the requirement:
 
 ```tsx
 <FieldSet>
@@ -172,7 +174,7 @@ Use `FieldSet` + `FieldLegend` for related checkboxes, radios, or switches — n
 
 ## Field validation and disabled states
 
-Both attributes are needed — `data-invalid`/`data-disabled` styles the field (label, description), while `aria-invalid`/`disabled` styles the control.
+When using these Field components, `data-invalid` and `data-disabled` expose state for styling. They do not replace the control's accessible invalid state or disabled behavior. Use the installed control's supported props and attributes, and associate labels and error descriptions with the control.
 
 ```tsx
 // Invalid.

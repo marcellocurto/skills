@@ -14,17 +14,6 @@ For multi-step work, start with a short user-visible update that names the produ
 
 Use the existing product as the creative material. The result should feel native to the app, visually intentional, consistent with usable components and tokens, and improved through hierarchy, composition, interaction quality, and polish.
 
-## Success Criteria
-
-- The UI works as real code in the requested or existing stack.
-- Existing components, tokens, typography, layout conventions, icon sets, and accessibility patterns are reused when they fit.
-- The design has a clear product-aware direction instead of generic SaaS defaults.
-- The composition is deliberate at both page and detail scale: hierarchy, alignment, proximity, rhythm, and negative space guide attention without accidental gaps or visual drift.
-- States the task can actually reach are handled, such as loading, empty, error, disabled, selected, focused, hovered, active, success, destructive, long content, and small screens. States are not invented merely for completeness.
-- Responsive behavior is checked for common viewport sizes.
-- The actual route is rendered with representative data volume and content length, then compared with adjacent product screens when the environment allows it.
-- Every new surface, loader, icon, badge, card, and state communicates something necessary for the user's task.
-
 ## Context Budget
 
 Before coding, inspect only the context needed to make the UI fit:
@@ -39,25 +28,21 @@ Stop discovery once the product context, reusable primitives, styling system, an
 
 ## Product Direction
 
-Before implementing, choose a concise direction:
+For an ordinary production change, reuse the product's established direction and resolve only the choices needed for the requested surface. A small adjustment does not require a new concept, palette, or signature detail.
+
+For a new screen or substantial redesign, establish a concise direction from the available context:
 
 - **Purpose**: what job the interface does
 - **User**: who uses it and what they are deciding or accomplishing
 - **System language**: what the existing UI already communicates
-- **Upgrade move**: what can be made more distinctive while still fitting
-- **Signature detail**: the one detail that makes the result feel considered
+- **Upgrade move, when useful**: a visual improvement that materially helps the task while fitting the product
+- **Signature detail, when useful**: a distinctive detail supported by the brief, not a requirement to add decoration
 
 Use [references/design-moves.md](references/design-moves.md) only when you need more examples for typography, layout, color, surface, motion, or states.
 
 ## Craft Standard
 
-Work as a visual craftsperson. The design system supplies a vocabulary, not a finished composition; applying the right tokens is not a substitute for judgment.
-
-- Compose the whole page before polishing isolated components. Establish the focal point, reading order, dominant alignments, grouping, balance, and transitions between regions.
-- Treat space as active material. Outer margins, section gaps, internal padding, line spacing, and empty areas should create hierarchy and rhythm. Avoid leftover gaps, double padding, cramped edges, and mechanically uniform spacing where relationships differ.
-- Apply enduring graphic-design principles deliberately: hierarchy, alignment, proximity, repetition, contrast, scale, balance, rhythm, and figure-ground. Use them to clarify the product rather than as a checklist or stylistic overlay.
-- Tune visible relationships, not only numeric values. Check baselines, icon-and-label pairs, text blocks, control heights, border junctions, optical centering, line length, wrapping, and the way neighboring surfaces share an edge.
-- Review at both scales: zoom out for composition, density, and whitespace; zoom in for the small inconsistencies that make an interface feel unresolved. Continue refining until every prominent placement looks intentional.
+Use hierarchy, alignment, grouping, contrast, and space to make the requested surface clear in its product context. For page-level work, establish composition before polishing details; for a component change, inspect its fit with the surrounding page without redesigning that page. Applying the right tokens alone does not establish visual quality. Use the visual checks below to guide refinement.
 
 ## Constraints
 
@@ -71,27 +56,25 @@ Work as a visual craftsperson. The design system supplies a vocabulary, not a fi
 
 ## When There Is No Clear Design System
 
-Create a small local design direction: compact color system, type hierarchy, spacing rhythm, radius and shadow rules, button/input/card treatment, responsive layout, and interaction states.
+Define only the missing visual choices needed for the requested surface, such as color roles, type hierarchy, spacing, control treatment, and responsive or interaction behavior. A small task does not require a complete new design system.
 
 Make it coherent through a few strong choices rather than many unrelated effects.
 
-## Final Verification
+## Visual Verification
 
-Before finalizing, inspect the implementation through the real application route and interaction when accessible:
+Inspect the implementation through the real application route and interaction when accessible. Use these checks during refinement and for the final result; reuse observations when the relevant implementation, content, and state have not changed:
 
 - Use representative data volume, realistic localized copy, long values, and the scale conditions that could change the layout or interaction model.
-- Check the relevant viewport sizes and every reachable state introduced or affected by the work.
-- Compare the result with adjacent product screens for hierarchy, density, typography, spacing, surfaces, control treatment, and interaction language.
-- Inspect the page as a single composition and at detail scale. Check focal order, alignment lines, section rhythm, negative space, nested padding, text wrapping, baselines, optical balance, and responsive redistribution of space.
-- Review every new surface, loader, icon, badge, card, and state. Keep it only when it communicates necessary grouping, status, action, or feedback better than the simpler composition.
-- Confirm static or immediately available content does not gain unnecessary loading UI, asynchronous behavior, empty placeholders, or layout shifts.
+- Check responsive behavior at relevant viewport sizes and reachable states introduced or affected by the work, including keyboard and focus behavior. Do not invent states merely for completeness.
+- Inspect both composition and details: focal order, grouping, density, whitespace, alignment, nested padding, text wrapping, baselines, icon-and-label pairs, and control dimensions. Compare with adjacent product screens for consistent typography, surfaces, and interaction language.
+- Check that added surfaces, icons, badges, and feedback communicate a useful relationship or state. Resolve accidental gaps, layout shifts, false affordances, and decoration that interferes with the task.
 
 Run applicable code validation as well, but do not treat a build, typecheck, or component-level test as proof of visual quality. If the real route cannot be inspected, report the gap and the next best verification instead of claiming the UI is fully verified.
 
 ## Output
 
-When implementing, provide scoped code that is ready to run in the user's stack. In the final response, lead with the completed result, then name the product-aware direction, main files changed, validation performed, and assumptions that materially affect the design system.
+When implementing, provide scoped code that is ready to run in the user's stack. In the final response, lead with the completed result, then summarize material design choices, main files changed, validation performed, and assumptions that affect the result. Do not invent a new concept to describe a routine change.
 
 ## Stop Rules
 
-Stop when the interface is implemented, reachable states and responsive behavior are handled, and the most relevant validation has run through the real route and interaction when accessible. If validation cannot run, report why and name the next best check.
+Stop when the requested interface is implemented, material discrepancies affecting behavior, usability, accessibility, responsiveness, or product fit are resolved, and applicable verification is complete or its limits are stated. Further refinement needs a concrete remaining discrepancy; do not keep changing placements or adding embellishments merely to pursue subjective perfection.

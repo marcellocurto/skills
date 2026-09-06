@@ -10,6 +10,8 @@ Rewrite only your immediately previous answer so it sounds like one person expla
 
 Make it as short as possible without changing the meaning or removing qualifications that affect correctness, safety, or a decision. Do not add new claims, advice, or actions.
 
+Retain citations needed to support the claims, commands needed to act, and actionable links. Simplify the surrounding prose without changing command semantics or link destinations.
+
 Return the rewrite directly, without a preamble or commentary about what changed.
 
 If there is no previous assistant answer to rewrite, ask the user to provide the text.

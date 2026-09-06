@@ -1,41 +1,20 @@
 ---
 title: Cross-Request LRU Caching
 impact: HIGH
-impactDescription: caches across requests
+impactDescription: reuses costly reads when freshness and isolation permit
 tags: server, cache, lru, cross-request
 ---
 
 ## Cross-Request LRU Caching
 
-`React.cache()` only works within one request. For data shared across sequential requests (user clicks button A then button B), use an LRU cache.
+Consider a bounded cross-request cache only when repeated reads have meaningful cost and the data may be reused under an explicit freshness and isolation policy. Reuse an existing cache first. Define key identity, lifetime, size bounds, and invalidation ownership before adding an LRU dependency; ordinary sequential requests alone do not justify it.
 
-**Implementation:**
+An LRU cache can help when a bounded working set recurs and evicting entries is acceptable. Choose limits from the workload and memory budget. TTL and invalidation must match the data contract; do not copy example limits as application requirements.
 
-```typescript
-import { LRUCache } from 'lru-cache'
+Cache public data only when it has the same meaning for every caller. Include tenant, locale, version, or other relevant identity when results differ. Do not share authorization-dependent data or accept stale results when the contract requires fresh state. Choose a narrower scope or no cache when those guarantees cannot be preserved.
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 5 * 60 * 1000  // 5 minutes
-})
+Use precise cache value types and distinguish a cache miss from valid falsy values. Account for failed loads and concurrent fills when they affect correctness. The write path or another identified owner must invalidate entries when the freshness contract requires it.
 
-export async function getUser(id: string) {
-  const cached = cache.get(id)
-  if (cached) return cached
+A process-local cache is an optimization, not durable storage or a guarantee of reuse across replicas and restarts. Verify the deployment's process lifetime and measure hit rate, latency, and memory cost. A shared cache service needs its own demonstrated requirement; do not add one automatically when local reuse is limited.
 
-  const user = await db.user.findUnique({ where: { id } })
-  cache.set(id, user)
-  return user
-}
-
-// Request 1: DB query, result cached
-// Request 2: cache hit, no DB query
-```
-
-Use when sequential user actions hit multiple endpoints needing the same data within seconds.
-
-**With Vercel's [Fluid Compute](https://vercel.com/docs/fluid-compute):** LRU caching is especially effective because multiple concurrent requests can share the same function instance and cache. This means the cache persists across requests without needing external storage like Redis.
-
-**In traditional serverless:** Each invocation runs in isolation, so consider Redis for cross-process caching.
-
-Reference: [https://github.com/isaacs/node-lru-cache](https://github.com/isaacs/node-lru-cache)
+Reference: [lru-cache documentation](https://isaacs.github.io/node-lru-cache/)

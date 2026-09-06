@@ -73,4 +73,10 @@ Once the issue is ready, draft an update only when the answers or verified findi
 
 Write acceptance criteria as ordinary bullets describing independently verifiable behavior. Do not use task checkboxes, implementation steps, speculative file lists, or generic statements such as “tests pass.” Distinguish reported behavior from verified facts.
 
-Show the exact proposed title and body changes and wait for explicit approval. Approval authorizes only those changes. After approval, confirm `gh` authentication and the exact repository and issue, update it with `gh issue edit` using a body file, then read it back and verify the result. Do not change labels, assignees, milestones, relationships, state, or comments unless the user separately requests them.
+Reuse explicit authorization already given for the exact title and body changes to this repository and issue. If that authorization is missing, show the proposed changes and wait for approval. An assessment-only request does not authorize an update, and approval covers only the specified changes; do not require another approval turn when those changes are already authorized.
+
+Immediately before editing, confirm `gh` authentication and the exact target, then re-read the issue's current title, body, state, and relevant new discussion. Apply the approved changes to that fresh content, preserving unrelated edits made since the draft. If intervening changes conflict with the approved update or invalidate the readiness conclusion, explain the conflict and present any revised proposal before requesting the missing decision. If the approved changes are already present, report that and skip the write.
+
+Use `gh issue edit` for only the authorized fields, with a body file when the body changes. Read the issue back and verify the intended result and preservation of unrelated content. If the write's outcome is unclear, inspect current state before retrying rather than replaying a stale body.
+
+Do not change labels, assignees, milestones, relationships, state, or comments unless the user separately requests them.

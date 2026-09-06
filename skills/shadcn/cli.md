@@ -2,9 +2,9 @@
 
 Configuration is read from `components.json`.
 
-> **IMPORTANT:** Always run commands using the project's package runner: `npx shadcn@latest`, `pnpm dlx shadcn@latest`, or `bunx --bun shadcn@latest`. Check `packageManager` from project context to choose the right one. Examples below use `npx shadcn@latest` but substitute the correct runner for the project.
+Run commands using the project's package runner: `npx shadcn@latest`, `pnpm dlx shadcn@latest`, or `bunx --bun shadcn@latest`. Determine it from `package.json` and repository conventions before acquiring context. Examples below use `npx shadcn@latest`; substitute the project's runner.
 
-> **IMPORTANT:** Only use the flags documented below. Do not invent or guess flags — if a flag isn't listed here, it doesn't exist. The CLI auto-detects the package manager from the project's lockfile; there is no `--package-manager` flag.
+Do not invent flags. Use the references below and verify an unlisted flag against the CLI's current `--help` output before relying on it. The CLI auto-detects the package manager from the project's lockfile; do not assume a `--package-manager` flag.
 
 ## Contents
 
@@ -53,6 +53,7 @@ Applies a preset to an existing project, overwriting preset-driven config, fonts
 | Flag                | Short | Description                                | Default |
 | ------------------- | ----- | ------------------------------------------ | ------- |
 | `--preset <preset>` | —     | Preset configuration (named, code, or URL) | —       |
+| `--only [parts]`    | —     | Apply only `theme`, `font`, or both without reinstalling components | — |
 | `--yes`             | `-y`  | Skip confirmation prompt                   | `false` |
 | `--cwd <cwd>`       | `-c`  | Working directory                          | current |
 | `--silent`          | `-s`  | Mute output                                | `false` |
@@ -191,11 +192,12 @@ Do not use this command. Use `npx shadcn@latest add --diff` instead.
 npx shadcn@latest info [options]
 ```
 
-Displays project info and `components.json` configuration. Run this first to discover the project's framework, aliases, Tailwind version, and resolved paths.
+Displays project info and `components.json` configuration. Reuse applicable observed output; otherwise run it to discover the project's framework, aliases, Tailwind version, and resolved paths. If unavailable, use the local-file fallback in [SKILL.md](./SKILL.md#current-project-context).
 
 | Flag          | Short | Description       | Default |
 | ------------- | ----- | ----------------- | ------- |
 | `--cwd <cwd>` | `-c`  | Working directory | current |
+| `--json`      |       | Return JSON       | `false` |
 
 **Project Info fields:**
 
@@ -281,9 +283,10 @@ Three ways to specify a preset via `--preset`:
 
 ## Switching Presets
 
-Ask the user first: **overwrite**, **merge**, or **skip** existing components?
+Inspect the current and incoming presets, then use the operation already authorized by the request. Ask only when a material choice remains unresolved or the affected files and customization loss exceed that authorization. Follow [Updating Components](./SKILL.md#updating-components) for overwrite scope; an earlier approval of the exact replacement does not need to be repeated.
 
-- **Overwrite / Re-install** → `npx shadcn@latest apply --preset <code>`. Overwrites all detected component files with the new preset styles. Use when the user hasn't customized components.
+- **Overwrite / Re-install** → `npx shadcn@latest apply --preset <code>`. Overwrites detected component files with the new preset styles. Use only within the authorized replacement scope, including any customization loss.
+- **Partial** → `npx shadcn@latest apply <code> --only theme,font`. Apply only the requested theme/font parts without reinstalling components.
 - **Merge** → `npx shadcn@latest init --preset <code> --force --no-reinstall`, then run `npx shadcn@latest info` to get the list of installed components and use the [smart merge workflow](./SKILL.md#updating-components) to update them one by one, preserving local changes. Use when the user has customized components.
 - **Skip** → `npx shadcn@latest init --preset <code> --force --no-reinstall`. Only updates config and CSS variables, leaves existing components as-is.
 

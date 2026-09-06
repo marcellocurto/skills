@@ -11,7 +11,7 @@ Build a working mental model of current behavior at the altitude the user needs.
 
 - This skill is read-only. Do not edit code or documentation.
 - Explain observed behavior before judging it. If the request also asks for problems or improvements, finish a self-contained explanation first, then use the relevant audit skill and keep its findings separate.
-- Use `diagnosing-bugs` when the subject is broken, failing, incorrect, or slow. An explanation can orient diagnosis, but it does not establish a cause.
+- A failing, incorrect, or slow path can still be the subject of a read-only explanation. Use `diagnosing-bugs` when the user asks to investigate the cause of a reported problem or to fix it, rather than merely to explain the path. Preserve investigation-only and no-edit boundaries; a request to establish a cause does not authorize a fix.
 - State historical motivation only when an ADR, issue, commit, documentation, or another authoritative record supports it. Otherwise distinguish current purpose from inferred rationale.
 - Resolve minor ambiguity by stating the working interpretation and proceeding. Ask only when different interpretations would produce materially different explanations.
 

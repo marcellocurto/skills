@@ -60,7 +60,7 @@ A local, reversible assumption may remain when repository evidence supports it; 
 
 ## Output
 
-Keep the plan concise and use only headings that add decision value. A ready plan normally includes:
+Keep the plan concise and use only headings that add decision value. These are optional sections, not a fixed template: combine related elements when that is clearer, while preserving the concrete information required by the readiness criteria.
 
 - **Goal and requirements**: source of truth, required outcome, and verifiable acceptance criteria
 - **Current code findings**: relevant files, symbols, flow, constraints, and evidence

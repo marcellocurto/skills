@@ -1,6 +1,6 @@
 # Design It Twice
 
-Use this parallel sub-agent pattern when an architectural choice has at least two credible shapes and repository precedent does not settle it.
+Use a bounded comparison when an architectural choice has at least two credible shapes and repository precedent does not settle it. Parallel agents are optional; the goal is to resolve the design tradeoff.
 
 Uses the vocabulary in [SKILL.md](SKILL.md): **module**, **interface**, **seam**, **adapter**, **leverage**.
 
@@ -10,7 +10,7 @@ Skip the exploration cost when existing conventions or constraints already deter
 
 ### 1. Ground and frame the problem space
 
-Before spawning sub-agents, trace representative callers through the current system. Read the relevant interface, implementation, tests, domain glossary, and ADRs closely enough to distinguish real constraints from accidental shape. Do not infer the rationale for an ownership or layering decision from the code alone; label it as unknown when no source establishes it.
+Before comparing alternatives, trace representative callers through the current system. Read the relevant interface, implementation, tests, domain glossary, and ADRs closely enough to distinguish real constraints from accidental shape. Do not infer the rationale for an ownership or layering decision from the code alone; label it as unknown when no source establishes it.
 
 Then write a user-facing explanation of the problem space for the chosen candidate:
 
@@ -21,24 +21,21 @@ Then write a user-facing explanation of the problem space for the chosen candida
 - The current ownership and seam placement, including any established rationale
 - One representative current call trace to make the friction concrete
 
-Show this to the user, then immediately proceed to Step 2. The user reads and thinks while the sub-agents work in parallel.
+Share the framing briefly, then continue into the comparison without waiting unless a missing decision prevents it.
 
-### 2. Spawn sub-agents
+### 2. Develop credible alternatives
 
-Spawn 3+ sub-agents in parallel. Each must produce a **radically different** interface for the deepened module.
+Choose the smallest useful candidate set, usually two. Each candidate must satisfy the same known requirements and differ on a consequential design choice, such as ownership, caller responsibilities, or dependency handling. Include the existing approach when it remains viable. Add a candidate only when it exposes another material tradeoff or the user requests it; do not generate designs merely for novelty or a quota.
 
-Prompt each sub-agent with the grounding evidence, relevant file paths, coupling details, dependency category from [DEEPENING.md](DEEPENING.md), and what sits behind the seam. Give each agent a different design constraint:
+Develop the candidates directly, or use a bounded set of read-only sub-agents when available and independent exploration is likely to improve the comparison. Give each agent a grounded candidate to explore, the same requirements and evidence, relevant file paths, coupling details, and dependency context from [DEEPENING.md](DEEPENING.md). If delegation is unavailable or adds little value, compare locally.
 
-- Agent 1: "Minimize the interface: aim for 1–3 entry points max. Maximise leverage per entry point."
-- Agent 2: "Maximise flexibility: support many use cases and extension."
-- Agent 3: "Optimise for the most common caller: make the default case trivial."
-- Agent 4 (if applicable): "Design around ports & adapters for cross-seam dependencies."
+Evaluate actual caller needs and demonstrated variation. Do not ask a candidate to maximize flexibility, support hypothetical use cases, or hit an arbitrary number of entry points.
 
-Include both [SKILL.md](SKILL.md) vocabulary and CONTEXT.md vocabulary in the brief so each sub-agent names things consistently with the architecture language and the project's domain language.
+Use the architectural distinctions in [SKILL.md](SKILL.md) alongside the project's established vocabulary, explaining mappings where needed.
 
-Each sub-agent outputs:
+For each candidate, provide only the detail needed to compare it:
 
-1. **Caller usage first:** README-style usage plus two or three realistic call sites. Write these before designing types or methods.
+1. **Caller usage first:** representative call sites that cover the material needs. Sketch these before designing types or methods.
 2. **Interface:** types, methods, parameters, invariants, ordering, and error modes derived from that usage.
 3. **Module map:** ownership, seam placement, and the flow between modules.
 4. **Hidden implementation:** the knowledge, policy, and coordination callers no longer carry.
@@ -59,6 +56,6 @@ Before presenting a candidate, revise or reject it when:
 
 These are design evidence, not automatic bans. Keep a shape when a concrete requirement justifies it and make that trade-off explicit.
 
-Present designs sequentially so the user can absorb each one, then compare them in prose. Contrast by **depth** (leverage at the interface), **locality** (where change concentrates), and **seam placement**.
+Compare the candidates by caller effort, **depth** (leverage at the interface), **locality** (where change concentrates), **seam placement**, and material migration or verification costs.
 
-After comparing, give your own recommendation: which design you think is strongest and why. If elements from different designs would combine well, propose a hybrid. Be opinionated: the user wants a strong read, not a menu.
+Recommend the strongest design under the known constraints and explain the decisive tradeoff. Stop when the comparison supports a choice or identifies the specific evidence or user decision still needed. Do not keep generating alternatives after the decision is clear.

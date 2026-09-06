@@ -63,6 +63,8 @@ import { ThemeProvider } from "next-themes"
 
 ## Changing the Theme
 
+For a scoped styling change, prefer editing the existing theme variables. Preset commands can replace components and configuration as well; follow the authorized operation and overwrite scope in [SKILL.md](./SKILL.md#updating-components) before using them.
+
 ```bash
 # Apply a preset code from ui.shadcn.com.
 npx shadcn@latest apply --preset a2r6bw
@@ -86,7 +88,7 @@ Or edit CSS variables directly in `globals.css`.
 
 ## Adding Custom Colors
 
-Add variables to the file at `tailwindCssFile` from `npx shadcn@latest info` (typically `globals.css`). Never create a new CSS file for this.
+Add shared variables to the existing theme owner identified by `tailwindCssFile` or local configuration. Avoid a competing global stylesheet; follow a different layout only when the project convention or requested change calls for it.
 
 ```css
 /* 1. Define in the global CSS file. */

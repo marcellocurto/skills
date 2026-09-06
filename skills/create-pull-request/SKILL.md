@@ -13,7 +13,7 @@ Leave the published PR open for review. Merging requires a separate explicit use
 
 ## Establish the change
 
-- Read the repository instructions for branches, commits, verification, and pull requests.
+- Read the repository instructions for branches, commits, verification, and pull requests, including the applicable PR template.
 - Resolve the exact repository, push remote, base branch, and head branch from the user's request, repository instructions, Git remotes, and GitHub's default branch. Do not guess when these disagree.
 - Inspect the complete merge-base diff against the fetched base branch, its commits, staged and unstaged changes, untracked files, and `git diff --check`.
 - Refuse to publish from a detached HEAD or directly from the base or another protected branch. If completed work is still on the base branch, create a task-specific branch using repository naming rules.
@@ -27,11 +27,13 @@ If the intended change set is empty, mixed with changes of uncertain ownership, 
 Publish only when both gates pass:
 
 1. **Readiness:** the requested scope is complete, the base and head are correct, the full PR diff is coherent, and no known blocker is hidden.
-2. **Verification:** repository-required formatting, lint, type, test, build, or validation commands pass. Otherwise run the smallest deterministic checks that exercise the changed behavior, with `git diff --check` as the minimum repository check.
+2. **Verification:** passing evidence covers repository-required formatting, lint, type, test, build, or validation commands. If the repository specifies no checks for this change, use the smallest deterministic checks that exercise the changed behavior, with `git diff --check` as the minimum repository check.
+
+Reuse recorded verification results when they can be tied to the code being published and the relevant dependencies, configuration, and environment still match. Run only missing or invalidated checks; opening a PR is not itself a reason to repeat successful verification. Honor repository rules that require a check at a particular stage, such as after committing or immediately before publication.
 
 Record the exact commands and outcomes. Never claim a test, review, or user journey that was not run. If a required check fails, do not create the PR and do not change the implementation merely to force the gate green. Report the failure and leave the work recoverable.
 
-If local changes remain after the gates pass, stage the exact in-scope paths, inspect the staged diff, and create one clear commit for that completed work. Preserve existing commits unless the user explicitly requests a history change. Recompute the complete base-to-head diff after committing.
+If local changes remain after the gates pass, stage the exact in-scope paths, inspect the staged diff, and create one clear commit for that completed work. Preserve existing commits unless the user explicitly requests a history change. Recompute the complete base-to-head diff after committing and confirm that the published code matches the verified state. A commit with unchanged tested file contents does not invalidate evidence unless the check depends on Git metadata. If hooks change files, or verification depended on worktree changes absent from the commit, rerun the affected checks against the final revision.
 
 ## Author the pull request
 
@@ -46,30 +48,9 @@ Derive the title and body from the source issue or specification when available,
 
 ### Body
 
-Use this stable structure:
+Follow the applicable repository template or the user's requested format. Preserve required sections and answer them accurately; omit optional sections that add no information. Do not mark template checkboxes complete without supporting evidence.
 
-```markdown
-## Summary
-
-<Explain what changed, why it matters, and the resulting behavior in two or three clear sentences.>
-
-## Detailed description
-
-- <Important behavior change>
-- <Important implementation detail or design decision>
-
-## How to review
-
-- <Where the reviewer should start or what deserves close attention>
-
-## Verification
-
-- `<exact command>` — passed
-
-## Risks and non-goals
-
-- <Known risk, limitation, explicit non-goal, or "None identified.">
-```
+When no template governs, choose the structure the change warrants. A simple PR may need only a short explanation of the problem and resulting behavior, followed by verification commands and outcomes. Add implementation decisions, review pointers, compatibility risks, or non-goals only when they help assess the change. Avoid duplicate summaries, empty headings, and boilerplate such as a mandatory "None identified" risk section.
 
 Keep every claim traceable to repository evidence. Do not invent scope, files, tests, risks, follow-up work, or success. Remove secrets, absolute local paths, private command output, and internal agent artifacts. Use repository-relative paths and concise result summaries.
 

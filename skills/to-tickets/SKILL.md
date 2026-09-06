@@ -39,7 +39,7 @@ List the repository's existing labels with their descriptions. Use descriptions 
 
 Before drafting new tickets, search both open and closed issues for likely duplicates of each intended outcome. Use the plan's plain-language concepts rather than relying on one exact title. Read plausible matches closely enough to compare their actual goals and scope.
 
-Surface likely duplicate URLs and explain the overlap. Do not treat a similar title as proof of duplication, and do not modify, close, or reuse an existing issue without the user's approval. If the search cannot run, report why; do not publish until it succeeds or the user explicitly approves proceeding without it.
+Surface likely duplicate URLs and explain the overlap. Do not treat a similar title as proof of duplication, and do not modify, close, or substitute an existing issue without the user's approval. Issues already created for this same approved ticket set are reused when resuming publication, after verifying their identity and current state. If the duplicate search cannot run, report why; do not create new issues until it succeeds or the user explicitly approves proceeding without it.
 
 ### 3. Draft the ticket set
 
@@ -79,13 +79,15 @@ Do not apply `ready-for-agent` to research, investigation, discovery, or spike t
 
 Treat readiness and dependency status as separate dimensions. A fully specified, agent-executable ticket may carry `ready-for-agent` while an open native blocked-by relationship prevents it from starting. Represent that dependency only with the native relationship; do not withhold `ready-for-agent` merely because the ticket is blocked.
 
-Present the exact drafts, duplicate candidates, proposed native relationships, and labels, with a short rationale for each ticket's proposed labels and for including or omitting `ready-for-agent`.
+Check the current request and prior approvals for authorization to publish the concrete ticket set, including its repository, content, labels, and native relationships. Approval may already be supplied by a direct request to publish that set or by an earlier explicit approval of the drafts. Reuse that authorization when the set remains within its approved scope; do not require another turn solely because publication is the next step.
 
-Wait for explicit approval before creating anything. Approval of the drafts includes approval for their listed labels and native relationships.
+When content, metadata, duplicate handling, or publication authority still requires a decision, present the exact drafts and affected choices before asking for the missing approval. Include a short rationale for proposed labels and for including or omitting `ready-for-agent`. Approval of the drafts includes their listed labels and native relationships. Approval of an underlying feature alone is not permission to publish issues, and material changes to an approved set require approval of those changes.
 
 ### 4. Publish
 
-Preflight `gh`, authentication, the repository, and every approved label. If an approved label is missing, report it and ask before creating anything; do not create or silently substitute a label. Use `gh issue create` with a body file so Markdown and real newlines are preserved.
+If any part of this ticket set was already attempted, reconcile that state using [Resume partial publication](#5-resume-partial-publication) before making further writes.
+
+Preflight `gh`, authentication, the repository, and every approved label. If an approved label is missing, report the affected tickets and ask for the missing decision; do not create or silently substitute a label. Continue only operations whose content and metadata remain authorized. Use `gh issue create` with a body file so Markdown and real newlines are preserved.
 
 Create approved blockers before their dependents, then:
 
@@ -94,6 +96,8 @@ Create approved blockers before their dependents, then:
 - create approved parent/sub-issue relationships with GitHub's native relationship
 - create approved blocked-by/blocking relationships with GitHub's native relationship
 
+After each creation, retain a compact mapping from the approved draft to its repository, issue number, and URL, with pending label or relationship operations. Record uncertain outcomes as uncertain until read-back establishes what happened. Keep this progress in the task context or an explicitly requested record; do not add tracking comments or labels solely to support retries.
+
 For native relationships, run the bundled helper after both issues exist. It retrieves the required database IDs and verifies the relationship:
 
 - parent: `python "<skill-path>/scripts/set_issue_relationship.py" --repo OWNER/REPO --parent PARENT_NUMBER --sub-issue CHILD_NUMBER`
@@ -101,6 +105,16 @@ For native relationships, run the bundled helper after both issues exist. It ret
 
 Never propose, create, or assign a `blocked` label, including spelling or case variants. Never use a label or body link as a fallback for a failed native blocking relationship.
 
-### 5. Verify and report
+### 5. Resume partial publication
 
-Verify every created issue, label, and native relationship. Return the issue URLs and relationship status. If publication is partial, list what succeeded, what failed, and what remains; report the exact failure without destructive retries or semantic fallbacks.
+Resume the approved set rather than starting a new publication:
+
+1. Re-establish the latest approved content and metadata. Read back known issue numbers or URLs and their current bodies, labels, and native relationships. Verify that each issue belongs to the intended repository and approved draft.
+2. If a create request failed or returned no clear identifier, inspect current and recent repository issues to establish whether it succeeded. Compare the actual content and available creation context, not just the title. Reuse a verified match. If identity or creation status remains uncertain, report that gap instead of issuing another create request for the same ticket.
+3. Preserve issues already created for this set. Skip verified completed operations and finish only missing approved labels or native relationships. Preserve unrelated edits and metadata added by others. If an issue was closed or materially changed, reconcile that state before attempting a repair; do not reopen, overwrite, delete, or recreate it merely to restore the earlier draft.
+4. Create only tickets confirmed not to exist, retaining the duplicate checks and blocker-before-dependent ordering. Use the existing issue numbers for all remaining native relationships. Inspect a failed relationship operation before retrying it; never replace it with a label or body-only dependency.
+5. Verify each resumed write and update the progress mapping. Continue independent authorized operations when one ticket is blocked, and report the remaining decision or failure without claiming the entire set is complete.
+
+### 6. Verify and report
+
+Verify every created or reused issue, approved label, and native relationship. Return the issue URLs and relationship status. If publication is partial, identify created or reused issues, completed operations, confirmed pending work, and uncertain outcomes, with the exact failure. Do not discard successful work or use destructive retries or semantic fallbacks to make the report appear complete.

@@ -1,70 +1,18 @@
 ---
 title: Cache Storage API Calls
 impact: LOW-MEDIUM
-impactDescription: reduces expensive I/O
+impactDescription: avoids repeated synchronous reads when they are a meaningful cost
 tags: javascript, localStorage, storage, caching, performance
 ---
 
 ## Cache Storage API Calls
 
-`localStorage`, `sessionStorage`, and `document.cookie` are synchronous and expensive. Cache reads in memory.
+Consider caching storage reads only when repeated synchronous access is a demonstrated cost on the affected path. Reuse the application's existing state or storage owner first. A rare preference read does not justify another cache.
 
-**Incorrect (reads storage on every call):**
+Use a browser-scoped cache only when its owner can keep it consistent with relevant writes, removals, clears, and external changes. Same-tab writes and other-tab changes need appropriate handling; a storage-event listener alone does not cover every writer. If the application cannot maintain the required freshness, read the authoritative source instead.
 
-```typescript
-function getTheme() {
-  return localStorage.getItem('theme') ?? 'light'
-}
-// Called 10 times = 10 storage reads
-```
+Choose keys, lifetime, and memory limits from the actual access pattern. Avoid creating module-level browser state that is accidentally shared or accessed during server rendering. Preserve behavior when storage is unavailable or a write fails.
 
-**Correct (Map cache):**
+Cookies may change through server responses as well as client code. Do not infer authentication from the presence of a cached cookie string or assume a visibility event guarantees fresh session state. Prefer the established session or cookie owner and skip caching when its invalidation contract is unclear.
 
-```typescript
-const storageCache = new Map<string, string | null>()
-
-function getLocalStorage(key: string) {
-  if (!storageCache.has(key)) {
-    storageCache.set(key, localStorage.getItem(key))
-  }
-  return storageCache.get(key)
-}
-
-function setLocalStorage(key: string, value: string) {
-  localStorage.setItem(key, value)
-  storageCache.set(key, value)  // keep cache in sync
-}
-```
-
-Use a Map (not a hook) so it works everywhere: utilities, event handlers, not just React components.
-
-**Cookie caching:**
-
-```typescript
-let cookieCache: Record<string, string> | null = null
-
-function getCookie(name: string) {
-  if (!cookieCache) {
-    cookieCache = Object.fromEntries(
-      document.cookie.split('; ').map(c => c.split('='))
-    )
-  }
-  return cookieCache[name]
-}
-```
-
-**Important (invalidate on external changes):**
-
-If storage can change externally (another tab, server-set cookies), invalidate cache:
-
-```typescript
-window.addEventListener('storage', (e) => {
-  if (e.key) storageCache.delete(e.key)
-})
-
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    storageCache.clear()
-  }
-})
-```
+Measure whether avoided reads outweigh invalidation and bookkeeping cost. Verify updates and cross-tab behavior as well as repeated-read performance before claiming an improvement.

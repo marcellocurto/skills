@@ -7,9 +7,11 @@ tags: client, swr, deduplication, data-fetching
 
 ## Use SWR for Automatic Deduplication
 
-SWR enables request deduplication, caching, and revalidation across component instances.
+Apply request deduplication when several consumers make equivalent requests and the redundant work matters. Reuse the project's existing data layer first. SWR is one option when already adopted or when its caching and revalidation model meets a demonstrated need; this rule does not require installing or migrating to it.
 
-**Incorrect (no deduplication, each instance fetches):**
+Check request identity, cache scope, user-dependent data, and mutation freshness before sharing results. A one-off request without meaningful duplication does not justify a new data-fetching layer.
+
+**Potential repeated work when many instances mount:**
 
 ```tsx
 function UserList() {
@@ -22,7 +24,7 @@ function UserList() {
 }
 ```
 
-**Correct (multiple instances share one request):**
+**SWR option when it fits the project:**
 
 ```tsx
 import useSWR from 'swr'
@@ -32,7 +34,7 @@ function UserList() {
 }
 ```
 
-**For immutable data:**
+**For immutable data, when the project provides this helper:**
 
 ```tsx
 import { useImmutableSWR } from '@/lib/swr'
@@ -45,7 +47,7 @@ function StaticContent() {
 **For mutations:**
 
 ```tsx
-import { useSWRMutation } from 'swr/mutation'
+import useSWRMutation from 'swr/mutation'
 
 function UpdateButton() {
   const { trigger } = useSWRMutation('/api/user', updateUser)

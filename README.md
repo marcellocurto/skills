@@ -43,11 +43,11 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Debug stubborn failures by building a reproducible feedback loop, narrowing the cause, and proving the fix.
 - **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Get a reliable mental model of how a feature actually runs, from its entry point to its final effect.
 - **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Find out whether a GitHub issue is true, in scope, ready, duplicated, blocked, or already solved.
-- **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Challenge an overbuilt coding proposal and reduce it to the simplest production-quality design the requirements justify.
+- **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Recommend or implement a simpler code solution while preserving requirements, clear ownership, and necessary lifecycle complexity.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Convert approved work into GitHub issues that are focused, self-contained, non-duplicative, and ready for the right owner.
-- **[`implement`](skills/implement/SKILL.md)**: Take an existing specification or ticket set through code changes, verification, conformance review, and final quality review.
+- **[`implement`](skills/implement/SKILL.md)**: Implement an existing specification or ticket set, with verification against its requirements and review matched to the change's risk.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
-- **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Check whether review comments are correct before changing code, then implement only the fixes you approve.
+- **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Check review comments against the current code and requirements, then implement fixes within the scope you have authorized.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Check completed work against the decisions and requirements that authorized it without turning the audit into general code review.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find code that is harder to understand or change than the problem requires and identify safer, simpler shapes.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Trace what a change could break outside the obvious diff, especially across data, timing, persistence, dependencies, and runtime wiring.
@@ -61,9 +61,9 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`code-review`](skills/code-review/SKILL.md)**: Review a fixed change from independent correctness and maintainability perspectives, with focused adversarial review when the risk warrants it.
 - **[`codebase-design`](skills/codebase-design/SKILL.md)**: Shape code around deep modules, small type-safe interfaces, clear seams, and a natural home for domain logic.
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Keep the codebase's language, glossary, and lasting architectural decisions aligned with the domain people actually discuss.
-- **[`grilling`](skills/grilling/SKILL.md)**: Turn a vague plan or decision into shared understanding through structured questions that expose every important branch.
+- **[`grilling`](skills/grilling/SKILL.md)**: Resolve consequential assumptions and tradeoffs through focused rounds of questions, keeping the interview bounded by the decision at hand.
 - **[`prototype`](skills/prototype/SKILL.md)**: Build the cheapest useful artifact that can answer a design or behavior question before committing to a full implementation.
-- **[`research`](skills/research/SKILL.md)**: Delegate focused reading to a background agent and keep the resulting primary-source findings in the repository.
+- **[`research`](skills/research/SKILL.md)**: Answer a question from primary sources, reconcile conflicting evidence, and state what remains uncertain, saving findings when requested.
 - **[`tdd`](skills/tdd/SKILL.md)**: Drive a feature or bug fix from meaningful failing behavior through to a verified implementation.
 - **[`wizard`](skills/wizard/SKILL.md)**: Package setup steps that require a person—credentials, dashboards, migrations, or cutovers—into a guided interactive Bash flow.
 
@@ -71,11 +71,11 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 Several skills are forked, adapted, or inspired by other projects:
 
-- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, preserved with only invocation metadata changed for Codex and Claude.
+- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, self-contained typography guidance, and product-specific copy guidance. The original license is retained.
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `to-spec`, `triage`, `diagnosing-bugs`, `to-tickets`, `implement`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `prototype`, `research`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `simple-answer`, `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
 - [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `address-review-feedback`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
-- [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`.
+- [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
 
 ## Development
@@ -89,6 +89,8 @@ bun run check
 
 Installable skills live in [`skills/`](skills/). Repository-level automation lives in [`scripts/`](scripts/).
 The tooling uses TypeScript 7, Oxlint, and Oxfmt. Run `bun run format` to format repository files and `bun run lint:fix` to apply safe lint fixes.
+
+After editing the React performance rules, run `bun run react-guidance:build` to regenerate their compiled reference. `bun run check` includes `react-guidance:check` to catch drift between the rules and that reference.
 
 Install every published skill globally for Codex and Claude Code with symlinks:
 

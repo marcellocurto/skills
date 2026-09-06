@@ -9,6 +9,8 @@ Answer the underlying question: **Is this actually the best we can do?**
 
 Challenge assumptions, explore edge cases, and think through failure modes. Recommend changes only when they materially improve the outcome.
 
+A review request authorizes analysis and recommendations. Editing the artifact, implementing recommendations, or publishing changes requires authorization for those actions; reuse any authorization already given for the same scope.
+
 ## Goal
 
 Give a direct verdict on whether the current work, plan, design, or answer is the best available path under the known constraints.
@@ -31,6 +33,8 @@ Choose only the edge cases that matter for the artifact: empty, malformed, dupli
 Use the available artifact and context first. Inspect more only when a material assumption, failure mode, alternative, or validation claim cannot be judged from what is already provided.
 
 ## Output
+
+Lead with a direct verdict. The sections below are optional; include or combine only those that add decision value. Omit **Better path** when the current approach is strongest instead of inventing an alternative.
 
 - **Verdict**: direct judgment.
 - **Why it may fail**: prioritized concerns with severity and confidence when useful.

@@ -27,9 +27,13 @@ Use the user's stated path when one is provided. A substitute path cannot prove 
 
 If the authoritative environment, reference artifact, or required access is missing, report the gap rather than silently substituting another source.
 
+When supporting a conformance audit, use its specific acceptance criteria and evidence gaps to scope the journey. Report observations against those requirements without waiting for a conforming verdict; the journey supplies evidence needed to establish it.
+
 ## Verify End to End
 
-Exercise the narrowest complete journey. Use available browser, document, PDF, spreadsheet, image, log, or shell capabilities only as needed for the actual outcome.
+Reuse direct journey evidence already obtained within the same implementation task when it covers the same relevant implementation or artifact version, entry point, acceptance criteria, environment, inputs, and conditions. Identify the observations being reused and confirm that no intervening change invalidates them. Another skill invoking this verifier does not by itself require a rerun.
+
+When evidence is missing or invalidated by changes, failures, or new concerns, exercise the narrowest complete journey that resolves the gap. Retain applicable evidence for unaffected acceptance checks. Use available browser, document, PDF, spreadsheet, image, log, or shell capabilities only as needed for the actual outcome.
 
 Check the relevant layers:
 
@@ -50,6 +54,8 @@ Classify each acceptance check as:
 - `pass`: directly observed through the required path
 - `fail`: observed behavior contradicts acceptance
 - `unverified`: the required path or evidence could not be exercised
+
+Valid reused observations count as direct evidence. State when a verdict relies on them rather than implying that a new execution occurred.
 
 Automated tests, typechecks, builds, logs, and code inspection can support a verdict, but they cannot replace missing user-visible evidence when the outcome is visual, interactive, or artifact-based.
 

@@ -128,10 +128,10 @@ Every information or decision request must name its owner, ask one or more speci
 
 ## Report the audit
 
-Lead with the verdict and a concise explanation. Include:
+Lead with the verdict and a concise explanation. Assess all five decision dimensions internally, but combine settled dimensions into a brief sentence or compact status list. Expand the dimensions that determine the outcome or carry material uncertainty; readiness, feasibility, and dependencies remain distinct judgments even when summarized together. Include the following only as needed to support the decision:
 
 - **Decision dimensions**: claim, scope, readiness, feasibility, and dependencies
-- **Evidence** separated into reported statements, verified facts, inferences, and unknowns; cite the issue, discussion, repository locations, executions, relationships, or prior decisions that support each material conclusion
+- **Evidence** that distinguishes reported statements, verified facts, inferences, and unknowns; cite the issue, discussion, repository locations, executions, relationships, or prior decisions that support each material conclusion
 - **Prior resolution** when duplicates, superseding work, existing implementation, or earlier decisions are relevant
 - **Blocking questions** with a named owner and an explanation of why each answer changes the outcome
 - **Non-blocking uncertainties** that implementation may resolve without human input

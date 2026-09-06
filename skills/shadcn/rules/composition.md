@@ -1,28 +1,30 @@
 # Component Composition
 
+Required nesting and props depend on the installed component and primitive library. Preserve those contracts and accessibility behavior. Card sections, grouping wrappers, and reuse of presentation components are defaults; adapt them to the requested design and established project patterns.
+
 ## Contents
 
-- Items always inside their Group component
+- Group items where the API or content requires it
 - Callouts use Alert
 - Empty states use Empty component
 - Toast notifications follow the project base
 - Choosing between overlay components
 - Dialog, Sheet, and Drawer always need a Title
 - Card structure
-- Button has no isPending or isLoading prop
+- Loading behavior follows the installed Button API
 - TabsTrigger must be inside TabsList
-- Avatar always needs AvatarFallback
+- Provide an appropriate avatar fallback
 - Use Separator instead of raw hr or border divs
 - Use Skeleton for loading placeholders
 - Use Badge instead of custom styled spans
 
 ---
 
-## Items always inside their Group component
+## Group items where the API or content requires it
 
-Never render items directly inside the content container.
+Use grouping components when the installed API requires them or when related items need a shared label or grouping. The examples and table show common pairings, not a universal requirement to wrap every item in every base.
 
-**Incorrect:**
+**Ungrouped items:**
 
 ```tsx
 <SelectContent>
@@ -31,7 +33,7 @@ Never render items directly inside the content container.
 </SelectContent>
 ```
 
-**Correct:**
+**Grouped items:**
 
 ```tsx
 <SelectContent>
@@ -42,7 +44,7 @@ Never render items directly inside the content container.
 </SelectContent>
 ```
 
-This applies to all group-based components:
+Common item/group pairings:
 
 | Item | Group |
 |------|-------|
@@ -90,7 +92,7 @@ Chat components nest in a fixed order (`MessageScrollerProvider` → `MessageScr
 
 ## Toast notifications follow the project base
 
-For Base UI projects, use the `toast` component:
+Preserve the project's established toast implementation. For a Base UI project using the `toast` component:
 
 ```tsx
 import { toast } from "@/components/ui/toast"
@@ -100,7 +102,7 @@ toast.add({
 })
 ```
 
-For Radix and React Aria projects, use Sonner:
+For a Radix or React Aria project using Sonner:
 
 ```tsx
 import { toast } from "sonner"
@@ -145,7 +147,7 @@ toast("File deleted.", {
 
 ## Card structure
 
-Use full composition — don't dump everything into `CardContent`:
+Use the sections needed by the card's actual content. A heading belongs in CardHeader/CardTitle, body content in CardContent, and footer actions in CardFooter. Omit sections that have no purpose instead of inventing descriptions or actions to complete the example:
 
 ```tsx
 <Card>
@@ -162,9 +164,9 @@ Use full composition — don't dump everything into `CardContent`:
 
 ---
 
-## Button has no isPending or isLoading prop
+## Loading behavior follows the installed Button API
 
-Compose with `Spinner` + `data-icon` + `disabled`:
+Check the local Button API before using loading props; a customized version may support them. When it does not, compose pending behavior with `Spinner`, supported icon placement, and `disabled`:
 
 ```tsx
 <Button disabled>
@@ -191,9 +193,9 @@ Never render `TabsTrigger` directly inside `Tabs` — always wrap in `TabsList`:
 
 ---
 
-## Avatar always needs AvatarFallback
+## Provide an appropriate avatar fallback
 
-Always include `AvatarFallback` for when the image fails to load:
+Use AvatarFallback when an unavailable image would otherwise lose useful identity. Match existing fallback and accessible-label conventions; a decorative avatar may need a different treatment:
 
 ```tsx
 <Avatar>
@@ -205,6 +207,8 @@ Always include `AvatarFallback` for when the image fails to load:
 ---
 
 ## Use existing components instead of custom markup
+
+Prefer these components when their semantics and styling fit the task. Existing accessible markup does not need replacement solely to follow this table.
 
 | Instead of | Use |
 |---|---|

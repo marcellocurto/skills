@@ -1,59 +1,31 @@
 # When to Mock
 
-Mock at **system boundaries** only:
+Choose test doubles by the contract being tested, not whether a dependency is internal, external, or owned by the team. Prefer real collaborators when their behavior or integration is part of the claim and they are practical to exercise.
 
-- External APIs (payment, email, etc.)
-- Databases (sometimes - prefer test DB)
-- Time/randomness
-- File system (sometimes)
+## Useful isolation
 
-Don't mock:
+A stub, fake, or mock can help when it:
 
-- Your own classes/modules
-- Internal collaborators
-- Anything you control
+- controls time, randomness, latency, or a failure that would otherwise be difficult to reproduce
+- substitutes a dependency outside the current test's contract so the caller's policy can be exercised directly
+- records an interaction that is itself promised behavior, such as the payload sent to a service or the absence of a duplicate side effect
 
-## Designing for Mockability
+An internal collaborator may be substituted at a meaningful seam under the same criteria. Keep the subject's real behavior in the test; do not mock away the policy, transformation, or integration the test claims to verify.
 
-At system boundaries, design interfaces that are easy to mock:
+## Match the double to the claim
 
-**1. Use dependency injection**
+Model the dependency's relevant contract accurately, including failure and asynchronous behavior when they matter. A convenient mock response that the real dependency cannot produce gives misleading evidence.
 
-Pass external dependencies in rather than creating them internally:
+Use a real test database when verifying persistence, queries, schema constraints, or transaction semantics. A database double may still be useful for a separate test of caller behavior, such as recovery from a reported storage failure, but it does not prove that the real storage path behaves correctly.
 
-```typescript
-// Easy to mock
-function processPayment(order, paymentClient) {
-  return paymentClient.charge(order.total);
-}
+Assert calls, counts, or ordering only when they express a promised interaction. If the contract requires one payment request for duplicate submissions, assert that boundary interaction. Asserting that a private formatting helper ran once usually freezes implementation structure.
 
-// Hard to mock
-function processPayment(order) {
-  const client = new StripeClient(process.env.STRIPE_KEY);
-  return client.charge(order.total);
-}
-```
+## Keep the seam with its owner
 
-**2. Prefer SDK-style interfaces over generic fetchers**
+Prefer existing dependency interfaces and injection points. A focused internal seam is valid when it exposes a meaningful contract to tests while keeping implementation details hidden from application callers. Do not add public methods, wrappers, or generic configuration solely to make a mock easier to set up.
 
-Create specific functions for each external operation instead of one generic function with conditional logic:
+Shape dependency operations around the behavior their callers actually need. Domain-specific operations can hide transport details, while a generic transport interface may be appropriate when transport is the real contract. Mocking convenience alone does not justify replacing one with the other.
 
-```typescript
-// GOOD: Each function is independently mockable
-const api = {
-  getUser: (id) => fetch(`/users/${id}`),
-  getOrders: (userId) => fetch(`/users/${userId}/orders`),
-  createOrder: (data) => fetch('/orders', { method: 'POST', body: data }),
-};
+## State the evidence limits
 
-// BAD: Mocking requires conditional logic inside the mock
-const api = {
-  fetch: (endpoint, options) => fetch(endpoint, options),
-};
-```
-
-The SDK approach means:
-- Each mock returns one specific shape
-- No conditional logic in test setup
-- Easier to see which endpoints a test exercises
-- Type safety per endpoint
+A test with a double establishes behavior under that dependency model. It does not establish real wiring, serialization, database semantics, or remote service behavior that the double replaces. Use focused integration or contract coverage when the requirement or demonstrated risk depends on those properties; do not automatically add another broad suite.

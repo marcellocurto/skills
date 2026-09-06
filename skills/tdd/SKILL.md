@@ -11,15 +11,15 @@ When exploring the codebase, read `CONTEXT.md` (if it exists) so test names and 
 
 ## What a good test is
 
-Tests verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't. A good test reads like a specification: "user can checkout with valid cart" tells you exactly what capability exists, and it survives refactors because it doesn't care about internal structure.
+Tests protect a meaningful contract through an interface or observation that can detect a realistic regression. Prefer tests that survive implementation-only refactors of that contract. A test such as "user can checkout with valid cart" explains the capability it protects; changing the contract itself may legitimately require changing its tests.
 
 See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
 
 ## Seams: where tests go
 
-A **seam** is the public boundary you test at: the interface where you observe behavior without reaching inside. Tests live at seams, never against internals.
+A **seam** is a boundary where a test exercises behavior or controls a dependency. It may be a public API or an internal interface owned by a module. An internal module can have its own contract and meaningful tests without exposing that interface to application callers. Do not bypass encapsulation merely to assert on incidental private state.
 
-Before writing a test, identify the seam under test. Reuse an established public seam when the codebase and nearby tests make it clear. Ask the user only when introducing a new seam, changing the shape of an interface, or choosing among plausible seams would materially change the scope or contract.
+Before writing a test, name the contract and the realistic failure it should catch, then choose the seam that owns that behavior. Prefer an established interface and nearby testing conventions. Use an internal seam when it provides distinct signal for a meaningful invariant or complex behavior; do not expose internals or introduce a new abstraction solely to satisfy test mechanics. Ask only when the seam choice would materially change scope or a contract.
 
 Testing effort should land on critical paths and complex logic rather than every edge case.
 
@@ -27,8 +27,8 @@ When the shape of the interface is itself in question—how deep the module is, 
 
 ## Anti-patterns
 
-- **Implementation-coupled**: mocks internal collaborators, tests private methods, or verifies through a side channel (querying the database instead of using the interface). The tell: the test breaks when you refactor but behavior hasn't changed.
-- **Tautological**: the assertion recomputes the expected value the way the code does (`expect(add(a, b)).toBe(a + b)`, a snapshot derived by hand the same way, a constant asserted equal to itself), so it passes by construction and can never disagree with the code. Expected values must come from an independent source of truth: a known-good literal, a worked example, the spec.
+- **Implementation-coupled**: asserts incidental private state, helper calls, or ordering that the tested contract does not promise. Internal tests, collaborator doubles, and direct database observations are not inherently coupled; judge whether they detect a real contract failure or merely freeze the implementation's shape.
+- **Tautological or non-independent expectations**: an assertion that derives its expected value from the result under test cannot provide independent evidence. Copying production logic into the expected-value calculation can also reproduce the same bug. Use expectations grounded independently in the contract, a worked example, or a trusted oracle; a calculated expectation is not automatically tautological.
 - **Horizontal slicing**: writing all tests first, then all implementation. Bulk tests verify _imagined_ behavior: you test the _shape_ of things rather than user-facing behavior, the tests go insensitive to real changes, and you commit to test structure before understanding the implementation. Work in **vertical slices** instead: one test → one implementation → repeat, each test a **tracer bullet** that responds to what the last cycle taught you.
 
 ## Feature cycle
@@ -60,10 +60,16 @@ Do not create substantial test infrastructure, brittle mocks, slow end-to-end se
 
 Before fixing the bug, explain why a durable failing test is not worth its cost and choose the closest meaningful executable regression check. This may be a targeted script, manual reproduction command, browser workflow, log assertion, or focused integration check. The fallback must exercise the broken behavior closely enough to distinguish the fix from the prior failure.
 
+## Validation cadence
+
+Within each red → green → refactor cycle, run the focused check and any adjacent checks affected by the current change. Run broader validation when a shared contract, integration risk, failure, or repository rule makes it necessary, not automatically after every slice.
+
+At completion, satisfy applicable repository checks and meaningful regression coverage. Reuse results that still cover the final implementation and relevant conditions; rerun only invalidated or failed checks unless a repository rule requires otherwise. Do not repeat a full suite, build, or lint pass merely to mark another cycle complete.
+
 ## Guardrails
 
 - **Red before green.** Write the failing test first, then implement the current behavior completely. Don't anticipate future tests or add speculative features.
-- **One slice at a time.** One seam, one test, and one complete production implementation per cycle.
+- **One behavior at a time.** Keep each cycle focused on one coherent contract change. Use the observations and dependency controls needed to prove it without batching unrelated behavior into the same cycle.
 - Do not change tests merely to match an incorrect implementation.
 - Do not weaken existing assertions unless the intended behavior has genuinely changed and the reason is clear.
 - Keep a regression test focused on the reported bug; avoid unrelated coverage expansion or fixture churn.

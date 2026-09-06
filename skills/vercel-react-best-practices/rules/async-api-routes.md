@@ -1,13 +1,13 @@
 ---
 title: Prevent Waterfall Chains in API Routes
 impact: CRITICAL
-impactDescription: 2-10× improvement
+impactDescription: overlaps independent work when sequencing is unnecessary
 tags: api-routes, server-actions, waterfalls, parallelization
 ---
 
 ## Prevent Waterfall Chains in API Routes
 
-In API routes and Server Actions, start independent operations immediately, even if you don't await them yet.
+When a route's critical path contains avoidable sequential waits, start genuinely independent operations together. Do not move authorized work before its authorization check, or change ordering, failure, or resource-use semantics merely to overlap requests.
 
 **Incorrect (config waits for auth, data waits for both):**
 
@@ -35,4 +35,4 @@ export async function GET(request: Request) {
 }
 ```
 
-For operations with more complex dependency chains, use `better-all` to automatically maximize parallelism (see Dependency-Based Parallelization).
+For more complex dependency chains, compare existing scheduling facilities and direct promise composition before considering `better-all`. See [Dependency-Based Parallelization](./async-dependencies.md) for the conditions that justify it.

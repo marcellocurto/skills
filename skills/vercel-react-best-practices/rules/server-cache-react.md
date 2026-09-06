@@ -7,7 +7,7 @@ tags: server, cache, react-cache, deduplication
 
 ## Per-Request Deduplication with React.cache()
 
-Use `React.cache()` for server-side request deduplication. Authentication and database queries benefit most.
+Consider `React.cache()` when the same costly computation or read repeats during a React Server Component render and sharing its result within that request preserves behavior. Reuse existing deduplication first. It is not a general-purpose server cache or a reason to cache every authentication check or database query.
 
 **Usage:**
 
@@ -23,7 +23,7 @@ export const getCurrentUser = cache(async () => {
 })
 ```
 
-Within a single request, multiple calls to `getCurrentUser()` execute the query only once.
+During a supported server render, calls to the same memoized function can share the result. React invalidates this cache between server requests, and errors are cached too. Verify that those semantics fit the operation.
 
 **Avoid inline objects as arguments:**
 
@@ -63,14 +63,6 @@ getUser(params)  // Cache hit (same reference)
 
 **Next.js-Specific Note:**
 
-In Next.js, the `fetch` API is automatically extended with request memoization. Requests with the same URL and options are automatically deduplicated within a single request, so you don't need `React.cache()` for `fetch` calls. However, `React.cache()` is still essential for other async tasks:
-
-- Database queries (Prisma, Drizzle, etc.)
-- Heavy computations
-- Authentication checks
-- File system operations
-- Any non-fetch async work
-
-Use `React.cache()` to deduplicate these operations across your component tree.
+Check the installed Next.js version and execution context for existing request memoization before adding another layer. Consider `React.cache()` for repeated non-fetch work only when its request scope and result/error reuse fit the requirement. A single call or an already-deduplicated operation gains nothing merely from another wrapper.
 
 Reference: [React.cache documentation](https://react.dev/reference/react/cache)

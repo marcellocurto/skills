@@ -40,7 +40,7 @@ Ask only when missing information prevents a useful plan. Otherwise state assump
 
 ## Output
 
-Include the evidence, uncertainty, validation, and material caveats needed to make the plan implementable. Omit unused sections and repeated background.
+Include the evidence, uncertainty, validation, and material caveats needed to make the plan implementable. Omit unused sections and repeated background. For a small bug, combine reproduction, evidence, and root cause into one compact narrative, keeping confirmed facts distinct from the leading hypothesis and its remaining verification.
 
 - **Goal**: what fixed means.
 - **Evidence**: confirmed facts, likely facts, unknowns.

@@ -1,7 +1,9 @@
 # Chat & Messaging
 
-Components for conversation and chat UI. Compose these instead of hand-rolling
-bubbles, scroll containers, dividers, or attachment cards.
+Prefer these conversation primitives when available and suited to the task.
+Preserve established chat components when they already meet the requirements.
+The composition APIs below apply when choosing these primitives; presentation
+examples do not forbid other accessible designs.
 
 Install: `npx shadcn@latest add message-scroller message bubble attachment marker`
 
@@ -22,16 +24,16 @@ composition differs (`render` vs `asChild`). See [base-vs-radix.md](./base-vs-ra
 
 ## Scrollable threads use MessageScroller
 
-A conversation that scrolls, follows new messages, restores position, or jumps
-to a message uses `MessageScroller`. Don't build a raw overflow container with
-manual scroll wiring, and don't reach for `ScrollArea`.
+Prefer `MessageScroller` when its APIs cover the required scrolling, following,
+position restoration, or jump behavior. Avoid duplicating those features, but
+do not replace an existing implementation solely to follow this default.
 
 The parts nest in a fixed order. Every direct child of the content is wrapped in
 a `MessageScrollerItem` so the scroller can measure, anchor, preserve position,
 track visibility, and jump to it. `MessageScrollerButton` sits inside
 `MessageScroller`, after the viewport.
 
-**Incorrect:**
+**Custom implementation:**
 
 ```tsx
 // Hand-rolled scroll container with manual stick-to-bottom logic.
@@ -44,7 +46,7 @@ track visibility, and jump to it. `MessageScrollerButton` sits inside
 </div>
 ```
 
-**Correct:**
+**Component composition:**
 
 ```tsx
 <MessageScrollerProvider autoScroll>
@@ -101,17 +103,17 @@ rebuild the row from flex divs.
 
 ## Message surfaces use Bubble
 
-The colored message surface is `Bubble` + `BubbleContent`, never a styled `div`
-with `bg-muted` / `bg-primary` and hand-managed corners.
+Prefer `Bubble` + `BubbleContent` for a message surface when their variants fit
+the requested design. Existing custom surfaces may remain appropriate.
 
 - `variant`: `default`, `secondary`, `muted`, `tinted`, `outline`, `ghost`, `destructive`.
 - `align`: `start` or `end` (matches the `Message` side).
 
 `BubbleReactions` renders the reaction cluster. `side` (`top` | `bottom`) and
-`align` (`start` | `end`) position it against the bubble. Don't lay reactions out
-with absolutely-positioned `Badge`s.
+`align` (`start` | `end`) position it against the bubble. Prefer those APIs
+before adding custom positioning.
 
-**Incorrect:**
+**Custom implementation:**
 
 ```tsx
 <div className="w-fit rounded-2xl bg-primary px-3 py-2 text-primary-foreground">
@@ -119,7 +121,7 @@ with absolutely-positioned `Badge`s.
 </div>
 ```
 
-**Correct:**
+**Component composition:**
 
 ```tsx
 <Bubble variant="default" align="end">
@@ -134,9 +136,9 @@ with absolutely-positioned `Badge`s.
 
 ## Attachments use Attachment
 
-File and image attachments use `Attachment`, not `Item` or a custom card. It
-carries upload state, so wire `state` to the real status rather than rendering a
-separate spinner.
+Prefer `Attachment` for file and image attachments when its presentation and
+states fit. When using it, wire `state` to the real upload status rather than
+duplicating the component's feedback with a separate spinner.
 
 - `state`: `idle`, `uploading`, `processing`, `error`, `done`. `uploading` and
   `processing` apply the `shimmer` animation to the title automatically.
@@ -166,14 +168,14 @@ For an image, use `<AttachmentMedia variant="image">` with an `img` child.
 
 ## System notes and dividers use Marker
 
-Status lines ("Sarah joined the conversation"), date dividers ("Today"), and
-labeled separators are `Marker`, not a `Separator` plus a centered span.
+Prefer `Marker` for status lines ("Sarah joined the conversation"), date
+dividers ("Today"), and labeled separators when it matches the product pattern.
 
 - `variant`: `default` (plain row), `separator` (centered label with rules on
   each side), `border` (bottom-bordered row).
 - `MarkerIcon` holds a leading icon; `MarkerContent` holds the label.
 
-**Incorrect:**
+**Custom implementation:**
 
 ```tsx
 <div className="flex items-center gap-3 py-2">
@@ -183,7 +185,7 @@ labeled separators are `Marker`, not a `Separator` plus a centered span.
 </div>
 ```
 
-**Correct:**
+**Component composition:**
 
 ```tsx
 <Marker variant="separator">
@@ -195,8 +197,8 @@ labeled separators are `Marker`, not a `Separator` plus a centered span.
 
 ## Streaming, anchoring, and jump-to-latest are built in
 
-`MessageScroller` handles the behavior that chat UIs usually reinvent. Don't
-write a `useStickToBottom` hook, a `ResizeObserver`, or manual `scrollTop` math.
+When using `MessageScroller`, use its built-in behavior before introducing
+another follow-scroll hook, observer, or scroll-position calculation.
 
 - **Follow the live edge while streaming.** `MessageScrollerProvider` with
   `autoScroll` keeps the view pinned to new content and yields the moment the
@@ -209,8 +211,8 @@ write a `useStickToBottom` hook, a `ResizeObserver`, or manual `scrollTop` math.
   It is a self-managing control, so don't gate it behind your own scroll-position
   state.
 
-For a "thinking…" indicator while the model generates, apply the `shimmer`
-utility to text. Don't author a custom keyframe animation. See
+For a "thinking…" indicator while the model generates, prefer the available
+`shimmer` utility when it matches the requested treatment. See
 [styling.md](./styling.md).
 
 ---

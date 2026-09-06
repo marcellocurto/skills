@@ -5,22 +5,29 @@ description: Build a temporary prototype to answer a specific design or behavior
 
 # Prototype
 
-A prototype is **throwaway code that answers a question**. The question decides the shape.
+A prototype is a temporary artifact that answers a specific design or behavior question. Build only what makes that question possible to judge.
 
-## Pick a branch
+## Choose the artifact
 
-Identify which question is being answered, using the user's prompt, the surrounding code, or by asking if the user is around:
+Identify the question, who will judge the result, and which observation or comparison would help them decide. Use the user's prompt and relevant existing code. Ask only when unresolved ambiguity would materially change the artifact; otherwise state a reasonable assumption and proceed.
 
-- **"Does this logic / state model feel right?"** → [LOGIC.md](LOGIC.md). Build a single shareable HTML file (free-play buttons plus tabbed guided walkthroughs) that pushes the state machine through cases that are hard to reason about on paper, and that a non-developer can drive.
-- **"What should this look like?"** → [UI.md](UI.md). Generate several radically different UI variations on a single route, switchable via a URL search param and a floating bottom bar.
+- **Logic, state, or data shape:** [LOGIC.md](LOGIC.md) describes a shareable HTML demo with visible state and guided scenarios, useful when someone needs to explore behavior interactively.
+- **Appearance or interaction:** [UI.md](UI.md) describes previews in product context and ways to compare alternatives when a visual choice remains open.
 
-The two branches produce very different artifacts, so getting this wrong wastes the whole prototype. If the question is genuinely ambiguous and the user isn't reachable, default to whichever branch better matches the surrounding code (a backend module → logic; a page or component → UI) and state the assumption at the top of the prototype.
+These are defaults, not required formats. A script, fixture, runnable sample, or single mockup may answer a narrower question more directly. Preserve the user's requested medium and stack. Use one artifact or variant when it can answer the question; add alternatives only to compare meaningful choices, following any count the user requested.
 
-## Rules that apply to both
+## Build and demonstrate
 
-1. **Throwaway from day one, and clearly marked as such.** Locate the prototype code close to where it will actually be used (next to the module or page it's prototyping for) so context is obvious, but name it so a casual reader can see it's a prototype, not production. For throwaway UI routes, obey whatever routing convention the project already uses; don't invent a new top-level structure.
-2. **Trivial to run.** A UI prototype starts from one command in the project's task runner: `pnpm <name>`, `python <path>`, `bun <path>`, etc. A logic demo is a single HTML file the user double-clicks. Either way, no thinking required to start it.
-3. **No persistence by default.** State lives in memory. Persistence is the thing the prototype is _checking_, not something it should depend on. If the question explicitly involves a database, hit a scratch DB or a local file with a clear "PROTOTYPE, wipe me" name.
-4. **Skip the polish.** No tests, no error handling beyond what makes the prototype _runnable_, no abstractions. The point is to learn something fast.
-5. **Surface the state.** After every action (logic) or on every variant switch (UI), print or render the full relevant state so the user can see what changed.
-6. **Capture it when done.** Fold any validated decision into the real code, then capture the prototype itself as a **primary source**: commit it to a throwaway branch, out of main, and leave a context pointer to that branch on the implementation issue. Capture the answer too (the verdict and the question it settled) in the issue or a commit. The main branch keeps only the validated decision.
+1. **Keep it identifiable and contained.** Use the requested location or an existing prototype convention. Place it near the relevant module or page when product context helps; use a scratch location for an independent artifact. Mark it as a prototype and keep changes limited to what the experiment needs.
+2. **Make it easy to run.** Prefer one file to open or one existing project command. Give exact launch instructions appropriate to the chosen format.
+3. **Use temporary state.** Default to memory or fixtures. When persistence is the question, use a clearly identified scratch database or local file. A prototype request does not authorize production or external mutations.
+4. **Match fidelity to the question.** Build the behavior, visual detail, and error handling needed to judge it. Avoid production hardening, speculative abstractions, and test infrastructure that do not help the experiment.
+5. **Expose the evidence.** Show the state, output, or visual differences that matter. Exercise the relevant scenarios and record what they demonstrate. Distinguish observed results from assumptions and checks that could not run.
+
+## Finish within scope
+
+Deliver the artifact, how to run or inspect it, and the conclusion supported by the demonstration. If choosing a design or settling domain behavior still requires the user's judgment, explain the remaining decision rather than declaring it settled. Stop when the requested artifact and available evidence have been delivered.
+
+Production integration, commits, pushes, and issue updates require authorization for those actions. A prototype request or favorable feedback alone does not authorize them. Honor authorization already given without asking for it again. When promotion is authorized, adapt and verify the chosen design under the project's production requirements; a successful demonstration does not establish production readiness.
+
+Keep the delivered prototype available for inspection. Archive it to a branch, publish a context pointer, or remove it only when that disposition is part of the authorized work.

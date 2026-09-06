@@ -38,13 +38,13 @@ Verify the exact version, schema, contract, or external source whenever a conclu
 
 Identify the smallest set of load-bearing facts that must hold for the change to be safe. Do not force unrelated risks into one claim, and do not produce a long inventory of hypothetical concerns.
 
-For each claim, obtain the strongest proportionate evidence that is safely available:
+For each claim, describe the available proof using the applicable evidence levels below. These describe evidence, not a ladder every claim must climb. Obtain additional evidence only when needed to establish a material claim; a source-backed contract may be sufficient without execution.
 
-1. **Inferred:** reasoned from the change but not independently established
-2. **Source-backed:** supported by exact application, dependency, schema, or contract locations
-3. **Failure path excluded:** the suspected bad case was traced end to end and cannot reach an observable failure
-4. **Executed:** an existing test, focused command, or temporary probe exercised the real shipped path and would fail if the claim were false
-5. **Journey-proven:** reproduced through the real application, integration, or consumer workflow
+- **Inferred:** reasoned from the change but not independently established
+- **Source-backed:** supported by exact application, dependency, schema, or contract locations
+- **Failure path excluded:** the suspected bad case was traced end to end and cannot reach an observable failure
+- **Executed:** an existing test, focused command, or temporary probe exercised the real shipped path and would fail if the claim were false
+- **Journey-proven:** reproduced through the real application, integration, or consumer workflow
 
 Prefer existing tests and commands. A temporary probe must import the same code and dependency version the application ships, exercise the behavior in question rather than a mock of it, and fail loudly when the claim is false. Do not use a substitute path to overstate certainty.
 
@@ -60,7 +60,7 @@ Keep a risk only when there is a concrete failure mechanism and affected consume
 - whether it is `confirmed`, `credible`, `cleared`, or `unverified`
 - the cheapest decisive check
 
-List cleared risks separately so the user can see what was investigated without mistaking them for open problems. Do not pad the audit with generic possibilities.
+Report cleared risks only when they resolve a likely concern or explain the verdict; omit them when they add noise. When included, separate them from open problems. Do not pad the audit with generic possibilities.
 
 ## Output
 

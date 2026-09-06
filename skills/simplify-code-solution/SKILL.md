@@ -1,11 +1,20 @@
 ---
 name: simplify-code-solution
-description: Reduce an overbuilt code proposal to the simplest production-quality design that meets the real requirements.
+description: Simplify a proposed or existing code solution through recommendations or implementation while preserving requirements and clear ownership.
 ---
 
 # Simplify Code Solution
 
 Find the simplest complete production design for a code problem.
+
+## Choose the working mode
+
+Infer the mode from what the user wants changed and any authorization already given:
+
+- **Recommend:** For an assessment, proposal review, or question such as "Could this be simpler?", explain the simpler path, tradeoffs, and validation needed. A question about simplification does not authorize file edits. A request to revise a proposal applies to that proposal, not the production code it describes.
+- **Implement:** When the user asks to simplify or refactor the code, or to apply a recommended change, make the scoped change and verify it. Honor prior authorization without requesting approval again merely because the analysis produced a recommendation.
+
+When no implementation intent is established, stay in recommendation mode. A preferred design or favorable reaction alone does not authorize implementation. Ask only when a missing decision would materially change the solution or its scope.
 
 ## Goal
 
@@ -54,8 +63,8 @@ For recommendations:
 - **Tradeoffs**
 - **Validation**
 
-Use only the headings that add decision value. For implementation, make the scoped change and verify it.
+Use only the headings that add decision value. For implementation, report what changed, why it reduces complexity, the verification performed, and any material limitation.
 
 ## Stop Rules
 
-Stop once the simplest production-quality path is clear and either implemented or recommended with validation. Ask only when missing information would materially change the solution.
+In recommendation mode, finish when the simpler production-quality path and its validation plan are clear. In implementation mode, continue through the authorized change and verification; do not stop at a proposal. If a genuine blocker prevents completion, state the missing decision or evidence and what remains unfinished.

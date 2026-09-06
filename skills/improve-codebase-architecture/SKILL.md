@@ -8,10 +8,12 @@ disable-model-invocation: true
 
 Surface architectural friction and propose **deepening opportunities**: refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
 
+When the user has already selected a candidate or concrete target change, inspect that target and proceed directly to exploring it. Do not produce another candidate menu or ask them to select it again. A named subsystem may instead limit discovery when the user is still asking which change would help.
+
 This command is _informed_ by the project's domain model and built on a shared design vocabulary:
 
-- Call the Skill tool with "codebase-design" for the architecture vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and its principles (the deletion test, "the interface is the test surface", "one adapter = hypothetical seam, two = real"). Use these terms exactly in every suggestion, and don't drift into "component," "service," "API," or "boundary."
-- The domain language in `CONTEXT.md` gives names to good seams; ADRs in `docs/adr/` record decisions this command should not re-litigate.
+- Consult [codebase-design](../codebase-design/SKILL.md) for deep-module principles, caller contracts, and seam justification. Use its architectural distinctions alongside established product and repository vocabulary. Evaluate what an interface hides and what callers gain; adapter count alone does not justify or rule out a seam.
+- The project's glossary gives names to good seams; its ADRs record decisions this command should not re-litigate. Follow the existing documentation locations rather than assuming `CONTEXT.md` and `docs/adr/`.
 
 ## Process
 
@@ -20,11 +22,13 @@ This command is _informed_ by the project's domain model and built on a shared d
 **Scope before you scan: YAGNI.** Deepening a module pays off by making future changes to it easier, so put extra weight on the parts of the codebase that have recently changed. Decide *where* to look before you look:
 
 - If the user named a direction (a module, a subsystem, a pain point), take it, and skip the inference below.
-- Otherwise, walk back a good stretch of the commit history (`git log --oneline`) to find the codebase's hot spots, the files and areas that keep coming up, and let those paths pull your attention first. If the changes are scattered with no clear hot spot, widen the net.
+- Otherwise, use recent commit history (`git log --oneline`) to select an initial area where repeated change suggests maintenance cost. Broaden that area only when the evidence or requested coverage warrants it.
 
-Read the project's domain glossary (`CONTEXT.md`) and any ADRs in the area you're touching first.
+Read the project's existing domain glossary and any ADRs in the area you're touching first.
 
-Then spawn a sub-agent to walk the codebase. Don't follow rigid heuristics; explore organically and note where you experience friction:
+Explore the scoped area directly. Delegate a bounded, read-only slice when delegation is available and an independent investigation can improve evidence or save time alongside useful local work. Give the agent the question, target modules or paths, known requirements and constraints, and the expected result: concrete code locations or caller traces, the maintenance cost they demonstrate, a plausible improvement, and any uncertainty. If delegation is unavailable or adds little value, continue locally.
+
+Look for friction supported by the code:
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow**, with an interface nearly as complex as the implementation?
@@ -32,40 +36,44 @@ Then spawn a sub-agent to walk the codebase. Don't follow rigid heuristics; expl
 - Where do tightly-coupled modules leak across their seams?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
-Apply the **deletion test** to anything you suspect is shallow: would deleting it concentrate complexity, or just move it? A "yes, concentrates" is the signal you want.
+Use `codebase-design`'s deletion test to distinguish pass-through indirection from interfaces that hide work callers would otherwise repeat. Verify delegated findings against the code before presenting them. Stop discovery when the requested area has enough evidence to explain the material cost and a credible improvement, or when the remaining evidence gap is explicit. No worthwhile candidate is a valid result.
 
-### 2. Present candidates as an HTML report
+### 2. Present the findings in a useful format
 
-Write a self-contained HTML file to the OS temp directory so nothing lands in the repo. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (or `%TEMP%` on Windows), and write to `<tmpdir>/architecture-review-<timestamp>.html` so each run gets a fresh file. Open it for the user (`xdg-open <path>` on Linux, `open <path>` on macOS, `start <path>` on Windows) and tell them the absolute path.
+Follow the requested format and the environment's actual rendering capabilities. For a compact review, use concise prose with an inline diagram when the host can render it. For a portable report or a comparison that benefits from a separate artifact, use HTML. If visual rendering is unavailable, explain the relationships in text and state the limitation rather than blocking the analysis.
 
-The report uses **Tailwind via CDN** for layout and styling, and **Mermaid via CDN** for diagrams where a graph/flow/sequence reliably communicates the structure. Mix Mermaid with hand-crafted CSS/SVG visuals: use Mermaid when relationships are graph-shaped (call graphs, dependencies, sequences), and hand-built divs/SVG when you want something more editorial (mass diagrams, cross-sections, collapse animations). Each candidate gets a **before/after visualisation**. Be visual.
+Use visuals where they clarify ownership, dependencies, caller effort, or the proposed change. A before/after diagram is useful when the structural difference matters; do not invent several candidates or diagram types merely to fill a report. Use the host's supported Mermaid rendering, inline SVG, or simple HTML/CSS as appropriate.
 
-For each candidate, render a card with:
+When writing an HTML report, use inline CSS and SVG so it opens without network dependencies. Save it to the requested location, otherwise to a fresh file in the OS temp directory. Use an available artifact preview to show it, or provide its absolute path and a link when opening is unavailable. Do not require a particular OS command or external browser.
 
-- **Files**: which files/modules are involved
-- **Problem**: why the current architecture is causing friction
+For each candidate, provide the evidence needed to judge it:
+
+- **Evidence**: relevant files, symbols, and caller traces
+- **Problem**: the concrete friction and its consequence
 - **Solution**: plain English description of what would change
-- **Benefits**: explained in terms of locality and leverage, and how tests would improve
-- **Before / After diagram**: side-by-side, custom-drawn, illustrating the shallowness and the deepening
-- **Recommendation strength**: one of `Strong`, `Worth exploring`, `Speculative`, rendered as a badge
+- **Benefits**: concrete gains for callers and maintainers, including testability when affected
+- **Structural comparison**: a diagram or concise explanation of what callers and maintainers would need to know afterward
+- **Recommendation strength and uncertainty**: how strongly the evidence supports the change and what remains unverified
 
-End the report with a **Top recommendation** section: which candidate you'd tackle first and why.
+Recommend the strongest candidate when discovery was requested. For a selected target, explain whether the evidence supports that change and proceed with its design question. Use concise explanatory prose wherever a diagram alone cannot communicate the contract or tradeoff.
 
-**Use CONTEXT.md vocabulary for the domain, and the `/codebase-design` vocabulary for the architecture.** If `CONTEXT.md` defines "Order," talk about "the Order intake module," not "the FooBarHandler," and not "the Order service."
+Use the project's glossary vocabulary for domain concepts and preserve established names such as "Order service." Explain how those names map to the architectural roles under discussion when the distinction matters.
 
-**ADR conflicts**: if a candidate contradicts an existing ADR, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly in the card (e.g. a warning callout: _"contradicts ADR-0007, but worth reopening because…"_). Don't list every theoretical refactor an ADR forbids.
+**ADR conflicts**: if a candidate contradicts an existing ADR, only surface it when the friction is real enough to warrant revisiting the ADR. Explain the conflict and the evidence for reopening the decision in the report. Don't list every theoretical refactor an ADR forbids.
 
-See [HTML-REPORT.md](HTML-REPORT.md) for the full HTML scaffold, diagram patterns, and styling guidance.
+Read [HTML-REPORT.md](HTML-REPORT.md) only when producing an HTML artifact. Inspect the rendered report when the environment allows it and disclose any rendering gap; generating a file does not prove its diagrams are readable.
 
-Do NOT propose interfaces yet. After the file is written, ask the user: "Which of these would you like to explore?"
+For discovery-only requests, deliver the findings and stop. If further exploration is requested but several materially different candidates remain, ask which to explore after presenting the evidence. When the target is already clear, continue without that selection pause.
 
-### 3. Grilling loop
+### 3. Explore the selected change
 
-Once the user picks a candidate, call the Skill tool with "grilling" to walk the decision tree with them: constraints, dependencies, the shape of the deepened module, what sits behind the seam, what tests survive.
+Ground the selected candidate in its callers, constraints, dependencies, and existing tests. Reuse settled decisions and proceed directly to a concrete interface or migration recommendation when the evidence supports it. Use [grilling](../grilling/SKILL.md) for material unresolved choices; do not require an interview when no human decision is missing.
 
-Side effects happen inline as decisions crystallize; call the Skill tool with "domain-modeling" to keep the domain model current as you go:
+Use [domain-modeling](../domain-modeling/SKILL.md) to keep meanings and records aligned. Follow its working mode and existing documentation conventions: write only when documentation updates are authorized, and keep proposed text in the conversation for read-only or discussion work.
 
-- **Naming a deepened module after a concept not in `CONTEXT.md`?** Add the term to `CONTEXT.md`. Create the file lazily if it doesn't exist.
-- **Sharpening a fuzzy term during the conversation?** Update `CONTEXT.md` right there.
+- **Naming a deepened module after a new domain concept?** Record its agreed definition in the existing glossary, or propose the entry in discussion mode.
+- **Resolving a material ambiguity in a term?** Update or propose the definition once its meaning is settled; harmless wording variations do not need a new record.
 - **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing; skip ephemeral reasons ("not worth it right now") and self-evident ones.
-- **Want to explore alternative interfaces for the deepened module?** Call the Skill tool with "codebase-design" and use its design-it-twice parallel sub-agent pattern.
+- **Want to explore alternative interfaces for the deepened module?** Use the bounded comparison in [DESIGN-IT-TWICE.md](../codebase-design/DESIGN-IT-TWICE.md), with parallel agents when useful and available.
+
+Finish with the requested findings or design recommendation, its evidence, preserved contracts, and the verification or decision still needed. Implementation, commits, or external publication require authorization for that work; selecting a candidate alone does not authorize them.

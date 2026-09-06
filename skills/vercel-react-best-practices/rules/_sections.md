@@ -3,12 +3,14 @@
 This file defines all sections, their ordering, impact levels, and descriptions.
 The section ID (in parentheses) is the filename prefix used to group rules.
 
+Impact levels prioritize investigation when a mechanism applies; they are not measured application results or automatic review severity.
+
 ---
 
 ## 1. Eliminating Waterfalls (async)
 
 **Impact:** CRITICAL  
-**Description:** Waterfalls are the #1 performance killer. Each sequential await adds full network latency. Eliminating them yields the largest gains.
+**Description:** Remove sequential waits on the critical path when the operations are genuinely independent. The benefit depends on their durations and required ordering.
 
 ## 2. Bundle Size Optimization (bundle)
 
@@ -38,7 +40,7 @@ The section ID (in parentheses) is the filename prefix used to group rules.
 ## 7. JavaScript Performance (js)
 
 **Impact:** LOW-MEDIUM  
-**Description:** Micro-optimizations for hot paths can add up to meaningful improvements.
+**Description:** Investigate repeated work on demonstrated hot paths; keep direct code when runtime savings do not justify additional machinery.
 
 ## 8. Advanced Patterns (advanced)
 

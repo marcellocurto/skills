@@ -9,11 +9,11 @@ Judge tests by signal, not volume.
 
 The core question is: **What realistic bug or regression would this catch?**
 
-If the answer is vague, trivial, controlled by the test, or unrelated to user/caller/system behavior, the test is weak.
+Call a test weak only when evidence shows that its signal does not protect a meaningful contract or justify its maintenance cost. If missing context prevents that judgment, state the uncertainty rather than assuming the test has little value.
 
 ## Goal
 
-Identify which tests protect meaningful behavior and which mostly prove mocks, fixtures, snapshots, implementation details, or coverage.
+Identify the contracts and realistic regressions tests protect, and where their assertions, isolation, or duplication provide misleading evidence or unnecessary maintenance cost.
 
 Do not ask for more tests by default. Prefer a smaller suite that fails for the right reasons.
 
@@ -58,33 +58,33 @@ For each test or test group, answer:
 - **Cut**: little bug-finding value, redundant, tautological, brittle, or coverage-only.
 - **Add**: important behavior or risk is untested.
 
-## Smells
+## Investigate signals
 
-Flag tests that:
+Treat test patterns as leads, not verdicts. Establish the contract, the realistic regression the test catches or misses, and any concrete maintenance cost before recommending a change:
 
-- mock the thing being tested
-- assert calls instead of outcomes
-- generate expected values with the same logic as production
-- snapshot noisy output without semantic review
-- verify fixtures, constants, wrappers, getters, or framework behavior
-- duplicate another stronger test
-- couple to private structure
-- cover only happy paths where failure handling matters
-- use sleeps or uncontrolled async timing
-- pass even if the real dependency, persistence, or transformation breaks
+- **Call, count, and ordering assertions:** useful when an interaction is part of the contract, such as dispatching one message for duplicate submissions or following a required protocol sequence. Investigate whether the assertion instead freezes private helper calls while the promised outcome could still fail.
+- **Constants and fixtures:** can provide independent expectations for published formats, protocol values, or compatibility requirements. Distinguish those checks from assertions that compare fixture-controlled values with themselves or merely repeat non-critical configuration. Judge wrappers and getters by the behavior they own, not their size or name.
+- **Snapshots:** can protect a stable, meaningful output contract when changes receive semantic review. Investigate noisy incidental output, unnoticed contract changes, or bulk snapshot updates that accept a regression. Snapshot syntax alone does not make a test weak.
+- **Mocks and other doubles:** can isolate a meaningful contract or control failure conditions. Check whether they replace the behavior under test or conceal broken wiring, persistence, or transformation that the test claims to verify.
+- **Calculated expectations:** check whether the oracle is independent of the implementation. Repeating the same flawed calculation can hide a bug; a computed expectation grounded independently in the contract is not automatically tautological.
+- **Overlapping or internal tests:** compare the actual cases and invariants protected before declaring redundancy or coupling. Keep distinct signal at a useful internal seam; flag assertions on incidental private structure when they create false failures or miss real regressions.
+- **Failure and timing coverage:** examine missing failure paths, sleeps, or uncontrolled timing when they can hide a realistic defect or make results unreliable. Do not demand every edge case merely because it exists.
 
-Snapshots and mocks are acceptable only when they preserve signal. They are bad when they replace the behavior the test claims to verify.
+Keep a pattern when it provides useful evidence for the stated contract. Recommend a change only after establishing the weakness, rather than requiring the author to defend a pattern merely because it appears on this list.
 
 ## Output
 
 Lead with the verdict and highest-value changes. Keep the evidence needed to justify each classification; omit repeated test summaries and generic testing advice.
+
+Group repeated weaknesses by the mechanism that loses signal or adds maintenance cost. Cite representative examples and identify the affected test groups. Preserve separate classifications when their contracts or evidence differ; shared syntax alone is not a reason to merge findings.
+
+Use only the sections that add information:
 
 - **Verdict**: high-signal, mixed, weak, overfit, under-tested, mostly noise, or good enough.
 - **What is protected**: meaningful behavior currently covered.
 - **Biggest problems**: prioritized issues with examples and recommendations.
 - **Keep / Fix / Cut / Add**: concrete classifications.
 - **Highest-value next changes**: the smallest set of edits that improves confidence.
-- **Bottom line**: whether the tests earn their place.
 
 ## If Asked to Edit Tests
 

@@ -51,7 +51,7 @@ function avoidThrashing(element: HTMLElement) {
   const rect1 = element.getBoundingClientRect()
   const offsetWidth = element.offsetWidth
   const offsetHeight = element.offsetHeight
-  
+
   // Write phase - all style changes after
   element.style.width = '100px'
   element.style.height = '200px'
