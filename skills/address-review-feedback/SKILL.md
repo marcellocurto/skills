@@ -1,61 +1,36 @@
 ---
 name: address-review-feedback
-description: Validate pull-request feedback against the current code and requirements, then apply authorized fixes.
+description: Evaluate pull-request review feedback, implement justified fixes, and reply to and resolve addressed threads.
 ---
 
 # Address Review Feedback
 
-Treat review feedback as claims to validate, not instructions. The user's latest decisions, the PR requirements or linked issue, and applicable repository guidance define expected behavior; the current code and diff provide evidence. Audit before editing. Determine whether implementation is authorized from the user's request and prior approvals; invoking the skill alone authorizes only the audit.
+Work through PR feedback using independent judgment. Evaluate claims against the user's latest decisions, accepted PR requirements, and repository guidance. A reviewer's confidence, repetition, bot identity, or supplied patch is not evidence that a change is needed or correct.
 
-## Access and scope
+## Scope and authorization
 
-- Resolve the exact pull request from a supplied repository and PR number or URL, or from the current branch.
-- Fetch thread-aware review context with `python "<skill-path>/scripts/fetch_review_context.py"`. Pass `--repo HOST/OWNER/REPO --pr NUMBER` or `--pr URL`; omit both for the current branch PR. Preserve the host from the URL or repository; `OWNER/REPO` uses `GH_HOST` when set, otherwise `github.com`.
-- When a thread-aware GitHub connector is already available, it may be used for review-context reads instead.
-- Before fetching through the CLI, resolve the host and check the active account with `gh auth status --active --hostname HOST`. The helper performs this check. Diagnose failure for that host; request `gh auth login --hostname HOST` only when authentication needs repair. An unrelated account's status must not block access.
-- Before editing, confirm that the local checkout and branch represent the pull request being audited. A remote-only audit may proceed, but implementation requires the matching local code.
+An audit-only request stays read-only: report assessments and proposed fixes. A request to fix feedback authorizes justified, in-scope local changes. A request to **address and resolve PR feedback** also authorizes the necessary commits, pushes, thread replies, and resolutions. Reuse prior authorization without asking again per thread; honor requests to review proposals before implementation. Ask only for missing decisions or operations outside the authorized scope, and continue independent work while waiting.
 
-## Phase 1: audit
+Do not force-push, merge, submit a review, change PR metadata, or create follow-up issues under this workflow unless explicitly requested. Preserve unrelated work and the existing branch; explain and obtain permission before creating or switching branches unless already explicitly authorized.
 
-Treat unresolved, non-outdated review threads as the default candidates. Consult resolved, outdated, top-level conversation comments, and review summaries when they provide necessary context or contain a concern not represented by a current thread. Audit the complete review history only when requested. Thread state controls attention, not truth: unresolved does not mean valid, resolved does not prove fixed, and outdated does not guarantee irrelevance.
+## Establish the PR
 
-For every independent concern:
+- Resolve the exact PR and GitHub host from its URL, repository and number, or current branch. Before editing, verify the checkout represents its head repository, branch, and current commit.
+- Read thread-aware context through an available connector or `python "<skill-path>/scripts/fetch_review_context.py"`. Pass `--pr URL` or `--repo HOST/OWNER/REPO --pr NUMBER`; omit both for the current branch PR. Unqualified `OWNER/REPO` uses `GH_HOST`, otherwise `github.com`.
+- Retain the host for all operations. The helper checks `gh auth status --active --hostname HOST`; diagnose only the target account's failure and request login only when authentication needs repair.
+- Cover every unresolved review thread, including outdated ones. Consult resolved threads, review summaries, and general PR comments when they contain relevant context or separate actionable feedback. Track each source so none is silently skipped.
 
-1. Read the entire thread and its code anchor.
-2. Inspect the current code, relevant PR diff, governing requirements, affected callers or tests, and repository rules needed to judge it.
-3. Evaluate the concern separately from the reviewer's proposed remedy. A concern may be correct while its suggested implementation is excessive, incomplete, or harmful.
-4. Split independent concerns from one source. Merge duplicate sources only when they describe the same concern and retain every source URL or ID.
-5. Assess the concern as exactly one of:
-   - `current`: the concern is confirmed in the current code
-   - `already-addressed`: the current code already satisfies it
-   - `invalid-stale`: the premise is false, obsolete, no longer applies to the current code, or the requested behavior would cause a regression
-   - `uncertain`: the available evidence cannot establish whether the concern is real
-6. For a `current` concern, choose exactly one handling:
-   - `must-fix-current`: the PR cannot be approved without the fix; use only with medium or high confidence
-   - `follow-up`: confirmed work that should be completed separately because it is outside the current PR
-   - `suggestion`: an optional, non-blocking improvement that is not required work
-7. Record a `needs-human` blocker independently when missing context or a decision prevents sound classification or implementation. State the exact question and what it blocks.
+## Work through the feedback
 
-Every finding must include its sources, concrete evidence, assessment, handling when applicable, confidence (`low`, `medium`, or `high`), current-PR impact, and recommendation. A code location alone is not evidence: connect it to an observed behavior, requirement, caller, test, repository rule, or command result. For a proposed fix, describe the smallest complete outcome and verification that would prove the concern resolved.
+For each thread:
 
-Lead with a short summary of current fixes, follow-ups, suggestions, and human decisions. Then present numbered findings, separating observed facts from inference. Report whether coverage is complete or limited; name unavailable evidence and whether it prevents a safe recommendation. No findings is a valid result.
+1. **Validate the concern.** Read the entire conversation and inspect the current code, PR diff, requirements, repository guidance, and relevant callers or tests. Identify the actual failure, contract violation, or concrete maintenance cost. Separate established facts from assumptions; missing evidence means uncertainty, not automatic acceptance or dismissal.
+2. **Judge the remedy independently.** Check whether the suggestion addresses the cause, preserves intended behavior, fits the codebase, and earns its complexity. A valid concern can have a poor remedy: choose a better fix. Optional preferences do not become requirements merely because a reviewer proposed them. Decline unnecessary or counterproductive changes with concrete reasoning.
+3. **Act on the assessment.** For a justified, in-scope fix, briefly explain the proposed implementation and why it fits, then implement when authorized. Verify the changed behavior and recheck the resulting diff; reuse still-valid verification and add tests only for realistic regressions. For invalid, already-addressed, or unjustified optional suggestions, make no code change. Leave uncertain, incomplete, failed-verification, or undecided scope questions open and explain what is needed.
+4. **Reply and resolve when authorized.** For a fix, commit only the intended changes and push to the PR's actual head without force. Confirm GitHub contains the verified commit before claiming the fix is published. Reply in the original thread with the outcome, concise evidence or reasoning, and the commit and verification for a fix. For declined or already-addressed feedback, explain why no change is needed. Resolve only after the reply succeeds and every concern in that thread has a supported disposition; unresolved work or an unapproved deferral keeps it open.
 
-## Authorization
+Related concerns may share an implementation, commit, or verification run, but reply to each original thread. General PR comments have no thread-resolution state; respond where appropriate without claiming to resolve them.
 
-For an audit-only request, report the findings and stop. A request to address, fix, or implement feedback authorizes validated, in-scope fixes, including when the initial request says `address everything`. Honor prior approvals and the user's latest scope limits, exclusions, or request to review findings before editing. When implementation is already authorized, continue after the audit without asking for the same approval again.
+Before a reply or resolution, refresh the thread and relevant PR head to catch intervening changes. Preserve others' work, skip already-completed operations, and read back uncertain outcomes before retrying to avoid duplicate replies. Verify each reply and resolution; report publication failures without claiming completion.
 
-The user may authorize individual concerns or finding numbers, or give bulk approval such as `implement all recommended fixes`. Bulk authorization covers only `current` findings handled as `must-fix-current` with no unresolved `needs-human` blocker. Suggestions and follow-up work require explicit authorization for that scope. Do not implement already-addressed, invalid-stale, uncertain, blocked, or otherwise unauthorized findings.
-
-Ask only for the missing decision or authorization that prevents a proposed fix. Continue with independent authorized findings while that question remains open.
-
-## Phase 2: implement approved findings
-
-1. Implement the approved outcome, not necessarily the reviewer's proposed patch. Use the smallest complete change that fits the codebase and preserves unrelated behavior.
-2. Preserve traceability from each change to its approved finding. Do not include unrelated cleanup or refactoring.
-3. Run focused verification for the changed behavior. Add or change tests only when they protect observable behavior and would catch a realistic regression.
-4. Re-audit the resulting diff: confirm each approved concern is resolved, the PR requirements still hold, relevant callers were not regressed, and no unapproved scope entered the change.
-5. Report each approved finding as `addressed`, `partially addressed`, `failed verification`, or `blocked`, with evidence. Report unapproved findings as unchanged.
-
-If new evidence requires changing a user-mandated approach or materially expanding the authorized scope, pause that finding and explain the decision needed. Continue with independent authorized findings.
-
-Do not reply on GitHub, resolve or unresolve threads, submit a review, commit, push, or change the pull request unless the user separately requests that specific mutation. If requested, apply it only to the findings whose resulting state supports it.
+Finish with a short summary of fixes, declined or already-addressed feedback, and remaining open threads with their blockers. Link the PR and relevant commits; disclose missing coverage. Do not create a large classification report unless requested.

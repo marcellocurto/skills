@@ -47,7 +47,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Convert approved work into GitHub issues that are focused, self-contained, non-duplicative, and ready for the right owner.
 - **[`implement`](skills/implement/SKILL.md)**: Implement an existing specification or ticket set, with verification against its requirements and review matched to the change's risk.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
-- **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Check review comments against the current code and requirements, then implement fixes within the scope you have authorized.
+- **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Evaluate each review concern and proposed remedy, implement justified fixes, and reply to and resolve settled threads within the authorized scope.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Check completed work against the decisions and requirements that authorized it without turning the audit into general code review.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find code that is harder to understand or change than the problem requires and identify safer, simpler shapes.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Trace what a change could break outside the obvious diff, especially across data, timing, persistence, dependencies, and runtime wiring.
