@@ -1,6 +1,6 @@
 # Agent Instructions
 
-Design and maintain all skills in this repository for use with the GPT-5.6 model family. Follow current GPT-5.6 prompting guidance when creating or revising a skill.
+Design and maintain all skills in this repository for use with GPT-6. Follow current GPT-6 prompting guidance when creating or revising a skill.
 
 Skill descriptions should state the capability and semantic routing boundaries only. Put explicit-only behavior in supported invocation metadata—`disable-model-invocation: true` for Claude and `policy.allow_implicit_invocation: false` in `agents/openai.yaml` for Codex—and never repeat that policy as prose in the description or body.
 

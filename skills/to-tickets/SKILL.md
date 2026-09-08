@@ -13,7 +13,7 @@ Turn existing context into one or more focused GitHub tickets that can be implem
 - Preserve requirements, constraints, decisions, rationale, meaningful edge cases, and verified findings from prior research. Do not compress away technical detail that would force the implementation agent to repeat exploration.
 - Make each ticket self-contained enough to complete without reading a parent or sibling. Reference relevant existing specs, ADRs, or repository docs when they exist; do not require or invent one.
 - Keep cohesive work together. Do not split a useful ticket merely to make it smaller.
-- Split only when a ticket has become too broad to implement or review coherently, contains outcomes that can deliver value independently, or needs safety-driven sequencing. When splitting feature work, prefer end-to-end slices that include every layer needed for the behavior without inventing work.
+- Split when a ticket has become too broad to implement or review coherently, contains independently useful outcomes, requires separate agent and human ownership, or needs safety-driven sequencing. When splitting feature work, prefer end-to-end slices that include every layer needed for the behavior without inventing work.
 - Declare only genuine blocking dependencies. Sequence or preference alone is not a blocker.
 - Do not modify or close a source or parent issue unless the user explicitly asks.
 - Avoid generic file inventories and speculative code paths. Include confirmed code locations as current starting points when they save meaningful exploration, but do not present them as authoritative scope.
@@ -35,6 +35,8 @@ When the user explicitly asks to turn pull-request feedback into tickets, retrie
 
 List the repository's existing labels with their descriptions. Use descriptions and established usage on comparable issues to understand the repository's label vocabulary; do not infer semantics from a label name alone when its meaning is ambiguous.
 
+Establish the intended execution environment from repository instructions, runner configuration, or the user's context. Assess concrete tools, access, and permissions rather than model names; the ticket-writing session may differ from the implementing agent's environment. Browser interaction, computer use, and visual inspection are not inherently human-only work. Do not assume that the intended environment supports them merely because the model can use them.
+
 ### 2. Check for duplicates
 
 Before drafting new tickets, search both open and closed issues for likely duplicates of each intended outcome. Use the plan's plain-language concepts rather than relying on one exact title. Read plausible matches closely enough to compare their actual goals and scope.
@@ -53,11 +55,18 @@ Use only sections that add information. A simple ticket may need only a summary,
 - `## Impact`: state the concrete user, operational, or maintenance consequence and calibrate urgency honestly, including when the work is non-blocking or protects only against a future regression
 - `## Desired outcome`: describe what should become true without prescribing files, code, or implementation details unless the source material already decided them
 - `## Acceptance criteria`: use ordinary bullets describing independently verifiable behavior; do not use task-list checkboxes, implementation steps, code locations, generic “tests pass” statements, or bullets that merely restate the desired outcome
+- `## Execution requirements`: record tools, access, permissions, or fixtures needed beyond the repository's established agent environment; omit when the baseline suffices
 - `## Research and findings`: use this instead of a basic evidence section when prior exploration is substantial, preserving rejected approaches, pitfalls, and technical detail that would otherwise have to be rediscovered
 - `## Risks / non-goals`: capture meaningful compatibility risks, scope boundaries, and nearby work that must remain untouched; omit generic boilerplate
 - `## Context`: place source issues, pull requests, specifications, ADRs, and other provenance at the end so they support rather than interrupt the issue
 
 Add another section only when important maintainer-facing information does not fit these concepts. Calibrate the language to the status of the work: state confirmed requirements directly, but present optional suggestions as tradeoffs rather than pretending implementation has already been decided. When the honest outcome is a maintainer decision, state the decision and evidence needed and allow the suggestion to be closed with a clear rationale.
+
+For every acceptance criterion, establish who can perform the work and what evidence can verify it. Describe observable outcomes; prescribe a verification method only when the method itself matters. Consider equivalent verification routes before declaring a capability missing, but do not weaken the required evidence to fit available tools. An uncertain or unavailable capability is an execution gap, not proof that a human must own the work. Surface the specific gap and what would resolve it; do not assume readiness or create a human ticket merely to cover it.
+
+Separate required human decisions, approvals, or actions into human-owned tickets with a concrete completion signal. Keep agent-executable preparation and verification in the implementation ticket. Use the repository's established human-work label, based on its meaning, and never combine it with `ready-for-agent`. Do not invent approval requirements or separate tickets for ordinary PR review. Human authority remains a requirement even when an agent can operate the relevant interface.
+
+When a human must verify or approve completed implementation, make the human ticket blocked by the implementation ticket. When a human action is a prerequisite, reverse that relationship. The implementation ticket must be completable without waiting for its downstream human ticket; do not leave the same approval as a completion condition elsewhere in its body. Preserve any required approval before rollout as a dependency of the rollout work.
 
 Prefer cohesive, independently useful vertical slices with enough scope and context to act on. A ticket set may contain exactly one issue. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, migrations, infrastructure, and mechanical refactors when those are the honest units of work. For a genuinely wide migration, describe the expand, consumer-migration, and old-path-removal stages in that order.
 
@@ -69,15 +78,18 @@ Let consumer and rollout evidence determine how an interface replacement is tick
 
 Choose the smallest useful set of existing labels for each ticket. Select labels that accurately describe its type, affected area, or other established repository dimensions. Add priority, workflow, or ownership labels only when the source material and repository convention support them. Do not invent labels, force a label from an unsuitable taxonomy, or apply labels merely because their names share words with the ticket. If no existing label fits, leave that dimension unlabeled and surface the taxonomy gap.
 
-Treat `ready-for-agent` as a readiness state, not a default ticket category. Apply it only when all of the following are true:
+Treat `ready-for-agent` as a completion contract for the intended environment. Apply it only when all of the following are true after declared prerequisites are satisfied:
 
 - the ticket calls for a concrete implementation or repository change, rather than research as its outcome
-- the relevant decisions, constraints, context, and completion signals are sufficient to begin
-- the work specified by the ticket does not depend on live human judgment, conversation, approval, access provisioning, or manual action
+- the relevant decisions, constraints, context, and completion signals are sufficient to complete the work
+- the agent can perform and verify every acceptance criterion with tools, access, and permissions supported by the intended environment
+- no completion condition within the ticket requires human authority or participation
 
 Do not apply `ready-for-agent` to research, investigation, discovery, or spike tickets; decision or coordination work; human-owned tasks; or underspecified implementation. Normal codebase exploration needed while implementing a well-specified change does not by itself make a ticket a research task.
 
-Treat readiness and dependency status as separate dimensions. A fully specified, agent-executable ticket may carry `ready-for-agent` while an open native blocked-by relationship prevents it from starting. Represent that dependency only with the native relationship; do not withhold `ready-for-agent` merely because the ticket is blocked.
+Treat readiness and dependency status as separate dimensions. A fully specified, agent-executable ticket may carry `ready-for-agent` while an open native blocked-by relationship prevents it from starting, including a concrete prerequisite that supplies required access or tooling. An unresolved decision that determines implementation requirements, or an unconfirmed execution environment without such a prerequisite, does not qualify. Represent dependencies only with native relationships; do not withhold `ready-for-agent` merely because an otherwise ready ticket is blocked.
+
+Before publication, check all completion requirements throughout each issue against its owner, execution requirements, labels, and dependencies. Being able to start coding is insufficient. Where verification depends on a particular environment, make the handoff explicit: if that capability is unavailable at execution time and no equivalent evidence can be obtained, preserve completed work and report the unverified criteria and execution blocker rather than claiming completion or reclassifying the work as human-only.
 
 Check the current request and prior approvals for authorization to publish the concrete ticket set, including its repository, content, labels, and native relationships. Approval may already be supplied by a direct request to publish that set or by an earlier explicit approval of the drafts. Reuse that authorization when the set remains within its approved scope; do not require another turn solely because publication is the next step.
 

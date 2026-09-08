@@ -2,7 +2,7 @@
 
 This is a collection of agent skills I wrote to improve the outcome of working with LLMs.
 
-Since I mostly use GPT-5.6 Sol, these are optimizied for use with that model.
+These skills are maintained for use with GPT-6.
 
 Most of the skills I use on a daily basis and try to improve them whenever I find they could be better.
 
