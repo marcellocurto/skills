@@ -26,6 +26,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 **User-invoked (explicit only)**
 
+- **[`close-ticket`](skills/close-ticket/SKILL.md)**: Close the ticket being worked on or discussed with a concise comment explaining the implementation; stop if the intended ticket is unclear.
 - **[`simple-answer`](skills/simple-answer/SKILL.md)**: Use this when an answer is technically correct but harder to understand than it needs to be.
 - **[`wayfinder`](skills/wayfinder/SKILL.md)**: Turn a large, foggy project into a shared sequence of decisions without pretending the whole plan is already known.
 - **[`design-system-ui`](skills/design-system-ui/SKILL.md)**: Add production UI to a mature product by learning and extending the design patterns already in its codebase.

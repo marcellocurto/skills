@@ -5,6 +5,7 @@
     "./skills/audit-code-complexity",
     "./skills/blast-radius-audit",
     "./skills/bug-fix-planner",
+    "./skills/close-ticket",
     "./skills/code-review",
     "./skills/codebase-design",
     "./skills/create-pull-request",
