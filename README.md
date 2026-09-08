@@ -28,7 +28,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 - **[`close-ticket`](skills/close-ticket/SKILL.md)**: Close the ticket being worked on or discussed with a concise comment explaining the implementation; stop if the intended ticket is unclear.
 - **[`simple-answer`](skills/simple-answer/SKILL.md)**: Use this when an answer is technically correct but harder to understand than it needs to be.
-- **[`wayfinder`](skills/wayfinder/SKILL.md)**: Turn a large, foggy project into a shared sequence of decisions without pretending the whole plan is already known.
+- **[`wayfinder`](skills/wayfinder/SKILL.md)**: Resolve the decisions needed for a large or uncertain effort, using tracker issues when work needs coordination across people or sessions.
 - **[`design-system-ui`](skills/design-system-ui/SKILL.md)**: Add production UI to a mature product by learning and extending the design patterns already in its codebase.
 - **[`frontend-design`](skills/frontend-design/SKILL.md)**: Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one.
 - **[`wild-frontend`](skills/wild-frontend/SKILL.md)**: Create visually ambitious frontend work that should feel original instead of blending into an existing product system.
@@ -60,7 +60,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition techniques when component APIs become rigid, tangled, or overloaded with boolean props.
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
 - **[`code-review`](skills/code-review/SKILL.md)**: Review a fixed change from independent correctness and maintainability perspectives, with focused adversarial review when the risk warrants it.
-- **[`codebase-design`](skills/codebase-design/SKILL.md)**: Shape code around deep modules, small type-safe interfaces, clear seams, and a natural home for domain logic.
+- **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design type-safe interfaces that hide internal rules from callers and keep related behavior in one place.
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Keep the codebase's language, glossary, and lasting architectural decisions aligned with the domain people actually discuss.
 - **[`grilling`](skills/grilling/SKILL.md)**: Resolve consequential assumptions and tradeoffs through focused rounds of questions, keeping the interview bounded by the decision at hand.
 - **[`prototype`](skills/prototype/SKILL.md)**: Build the cheapest useful artifact that can answer a design or behavior question before committing to a full implementation.

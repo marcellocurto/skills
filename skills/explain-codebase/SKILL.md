@@ -5,7 +5,7 @@ description: Trace and explain how an existing code path or subsystem works.
 
 # Explain Codebase
 
-Build a working mental model of current behavior at the altitude the user needs. Trace what the system actually does; do not substitute annotated source code, architectural judgment, or an inferred history.
+Explain current behavior at the level of detail the user needs. Follow what the system actually does; do not replace the explanation with annotated code, design criticism, or invented history.
 
 ## Boundaries
 
@@ -17,9 +17,9 @@ Build a working mental model of current behavior at the altitude the user needs.
 
 ## Trace the System
 
-1. **Set the altitude.** Identify whether the user needs a narrow function walkthrough, a feature flow, or a subsystem map. Read `CONTEXT.md` and relevant ADRs when they exist, but verify their claims against current code.
+1. **Choose the level of detail.** Identify whether the user needs a function walkthrough, a feature flow, or a subsystem overview. Read `CONTEXT.md` and relevant ADRs when they exist, but verify their claims against current code.
 2. **Find the real entry point.** Start from the trigger: a caller, route, event, job, command, user action, or public function. Use repository search and runtime wiring; do not infer the starting point from filenames.
-3. **Follow trigger to effect.** Read each material handoff until the final output, state change, side effect, or external call. Track:
+3. **Follow the execution.** Read the calls and event handlers needed to explain how the trigger produces an output, state change, side effect, or external call. Track:
    - the module and function responsible for each step
    - the data entering, leaving, and changing at that step
    - important branches, validation, errors, retries, and asynchronous handoffs
@@ -34,7 +34,7 @@ Stop exploring when the requested path can be explained from trigger to effect w
 
 ## Explain the Result
 
-Lead with the answer at the user's requested altitude. Adapt the structure rather than filling a mandatory template; include only sections that improve the mental model:
+Lead with the answer at the requested level of detail. Use only the sections that help explain the behavior:
 
 - **Overview:** what the code path or subsystem does and where it begins and ends
 - **Flow:** the ordered runtime path, including material data transformations and decisions

@@ -1,27 +1,27 @@
 # Design It Twice
 
-Use a bounded comparison when an architectural choice has at least two credible shapes and repository precedent does not settle it. Parallel agents are optional; the goal is to resolve the design tradeoff.
+Compare alternatives when at least two designs could meet the requirements and repository conventions do not settle the choice. Parallel agents are optional.
 
-Uses the vocabulary in [SKILL.md](SKILL.md): **module**, **interface**, **seam**, **adapter**, **leverage**.
+Use the interface and responsibility checks in [SKILL.md](SKILL.md).
 
 Skip the exploration cost when existing conventions or constraints already determine the answer. Send visual questions that must be judged by feel to the UI branch of `prototype`.
 
 ## Process
 
-### 1. Ground and frame the problem space
+### 1. Explain the current problem
 
-Before comparing alternatives, trace representative callers through the current system. Read the relevant interface, implementation, tests, domain glossary, and ADRs closely enough to distinguish real constraints from accidental shape. Do not infer the rationale for an ownership or layering decision from the code alone; label it as unknown when no source establishes it.
+Before comparing alternatives, follow representative callers through the current code. Read the relevant interfaces, implementation, tests, glossary, and ADRs to establish what must stay unchanged and what can be redesigned. Do not invent a reason for the current structure when no source explains it.
 
-Then write a user-facing explanation of the problem space for the chosen candidate:
+Briefly explain:
 
 - The capabilities and realistic scenarios callers need
 - What callers currently have to know, coordinate, or repeat
 - The constraints any new interface would need to satisfy
 - The dependencies it would rely on, and which category they fall into (see [DEEPENING.md](DEEPENING.md))
-- The current ownership and seam placement, including any established rationale
+- Which modules own the behavior and dependencies, and any documented reasons
 - One representative current call trace to make the friction concrete
 
-Share the framing briefly, then continue into the comparison without waiting unless a missing decision prevents it.
+Continue into the comparison unless a missing decision prevents it.
 
 ### 2. Develop credible alternatives
 
@@ -35,27 +35,27 @@ Use the architectural distinctions in [SKILL.md](SKILL.md) alongside the project
 
 For each candidate, provide only the detail needed to compare it:
 
-1. **Caller usage first:** representative call sites that cover the material needs. Sketch these before designing types or methods.
+1. **Caller usage first:** call sites that cover the required behavior. Sketch these before designing types or methods.
 2. **Interface:** types, methods, parameters, invariants, ordering, and error modes derived from that usage.
-3. **Module map:** ownership, seam placement, and the flow between modules.
-4. **Hidden implementation:** the knowledge, policy, and coordination callers no longer carry.
+3. **Modules:** which module owns each responsibility and how callers reach it.
+4. **Internal work:** rules and coordination that callers no longer need to handle.
 5. **Dependency strategy:** dependencies and adapters, using [DEEPENING.md](DEEPENING.md).
-6. **Trade-offs:** where leverage is high, where it is thin, and what the design deliberately gives up.
+6. **Trade-offs:** what becomes easier for callers or maintainers, what becomes harder, and why.
 
-The usage and interface must agree. Reconcile the interface to the caller experience unless a real constraint makes that usage impossible; do not make callers inherit an internal structure merely because it was sketched first.
+Check that the proposed call sites work with the interface. Adjust the interface when they do not, unless a real requirement prevents it. Do not make callers coordinate internal steps merely because the interface was designed first.
 
 ### 3. Present and compare
 
 Before presenting a candidate, revise or reject it when:
 
 - Its interface exposes nearly as much complexity as its implementation, or callers must coordinate several methods to complete one operation.
-- A storage shape, framework object, wire type, policy, or protocol decision leaks across the seam without being part of the caller's real domain contract.
+- Callers must handle storage formats, framework objects, wire types, or protocol details that their task does not require.
 - Modules are split by execution order—such as load, validate, transform, and save—even though those stages protect the same knowledge and invariants.
 - A method merely forwards the same operation and arguments without adding policy, adaptation, or a distinct abstraction.
 - Callers must understand internal rules to use the interface correctly.
 
-These are design evidence, not automatic bans. Keep a shape when a concrete requirement justifies it and make that trade-off explicit.
+These are reasons to inspect a design, not automatic bans. Keep it when a concrete requirement justifies the cost and explain why.
 
-Compare the candidates by caller effort, **depth** (leverage at the interface), **locality** (where change concentrates), **seam placement**, and material migration or verification costs.
+Compare what callers must know, how many places must change when a rule changes, and how easily the behavior can be tested. Include the work and risk of migrating callers and checking the result.
 
 Recommend the strongest design under the known constraints and explain the decisive tradeoff. Stop when the comparison supports a choice or identifies the specific evidence or user decision still needed. Do not keep generating alternatives after the decision is clear.

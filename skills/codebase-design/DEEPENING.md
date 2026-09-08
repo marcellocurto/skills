@@ -1,38 +1,36 @@
-# Deepening
+# Combine Related Modules
 
-How to deepen a cluster of shallow modules safely, given its dependencies. Assumes the vocabulary in [SKILL.md](SKILL.md): **module**, **interface**, **seam**, **adapter**.
+Use this guide when combining related modules would let callers complete an operation without coordinating its internal steps. Preserve required dependency behavior and useful tests.
 
 ## Dependency categories
 
-When assessing a candidate for deepening, classify its dependencies. The category determines how the deepened module is tested across its seam.
+Check where each dependency runs and how tests can exercise it. Use the relevant approach below when designing the combined module.
 
 ### 1. In-process
 
-Pure computation, in-memory state, no I/O. Always deepenable: merge the modules and test through the new interface directly. No adapter needed.
+For pure calculations or in-memory state with no I/O, combine the related behavior and test it directly through the new interface. No dependency adapter is needed.
 
-### 2. Local-substitutable
+### 2. Dependencies with local test substitutes
 
-Dependencies that have local test stand-ins (PGLite for Postgres, in-memory filesystem). Deepenable if the stand-in exists. The deepened module is tested with the stand-in running in the test suite. The seam is internal; no port at the module's external interface.
+When a suitable local substitute exists, such as PGLite for Postgres or an in-memory filesystem, tests can run the combined module against it. Keep that dependency interface internal when application callers do not need to choose the dependency.
 
-### 3. Remote but owned (Ports & Adapters)
+### 3. Services owned by the team
 
-Your own services across a network boundary (microservices, internal APIs). Define a **port** (interface) at the seam. The deep module owns the logic; the transport is injected as an **adapter**. Tests use an in-memory adapter. Production uses an HTTP/gRPC/queue adapter.
+For a service reached through HTTP, gRPC, or a queue, keep business rules in the module and put transport details behind a dependency interface. Production uses the real transport; tests of the module's rules can use an in-memory implementation. Such tests do not establish that the real network integration works.
 
-Recommendation shape: *"Define a port at the seam, implement an HTTP adapter for production and an in-memory adapter for testing, so the logic sits in one deep module even though it's deployed across a network."*
+### 4. Third-party services
 
-### 4. True external (Mock)
+For services such as Stripe or Twilio, accept the service through a dependency interface. Tests of the module can provide a mock that represents the service's relevant behavior.
 
-Third-party services (Stripe, Twilio, etc.) you don't control. The deepened module takes the external dependency as an injected port; tests provide a mock adapter.
+## Keep dependency details with their owner
 
-## Seam discipline
+- Keep a dependency interface when it hides a protocol, side effects, or rules that callers should not have to handle. It may be useful with one adapter; having two adapters does not by itself justify it. Do not invent a second adapter to justify the design.
+- Tests may use internal dependency interfaces without exposing them to application callers. Do not add public methods just because tests need control over a dependency.
 
-- **Adapter count is evidence, not a rule.** Production and test adapters may demonstrate useful variation, but a single-adapter seam may still isolate meaningful protocol, side-effect, or policy knowledge. Judge what the seam hides and what its callers gain. Two adapters do not justify a shallow interface, and a second adapter should not be invented to satisfy a count.
-- **Internal seams vs external seams.** A deep module can have internal seams (private to its implementation, used by its own tests) as well as the external seam at its interface. Don't expose internal seams through the interface just because tests use them.
-
-## Testing strategy: preserve coverage and signal
+## Preserve useful tests
 
 - Compare the behavior and realistic regressions protected by existing tests with what the new interface tests actually exercise. Passing higher-level tests or coverage percentages alone do not establish that the same cases remain protected.
-- Keep lower-level tests that provide distinct signal, such as important edge cases, complex calculations, or dependency contracts. Their location below the new interface is not evidence that they are redundant.
-- Replace tests tied only to removed implementation details, and remove duplicates only when retained checks protect the same meaningful behavior with adequate signal. Preserve useful cases when adapting a test to the new structure.
-- Add tests through the deepened module's interface where they protect behavior or interactions that lower-level checks cannot establish. Assert observable outcomes and avoid adding another suite that merely repeats existing coverage.
+- Keep lower-level tests that catch important failures other tests would miss, such as edge cases, complex calculations, or broken dependency contracts. Being below the new interface does not make a test redundant.
+- Update tests tied to removed implementation details while preserving the behavior they check. Remove duplicates only when the retained tests would catch the same failures.
+- Add tests through the combined module's interface when they check behavior or interactions that lower-level tests cannot verify. Check observable results rather than adding another suite for the same cases.
 - During an authorized refactor, run the affected tests to verify retained coverage. For design-only work, state which tests should stay, move, or be removed and why; do not modify them.

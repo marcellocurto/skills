@@ -5,114 +5,54 @@ description: Design small, type-safe interfaces that hide complexity and give do
 
 # Codebase Design
 
-Design **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through that interface. Apply these principles when designing or restructuring code. The aim is leverage for callers, locality for maintainers, and testability for everyone.
+Put related rules and behavior in modules that callers can use without understanding their internals. Judge a design by what callers must know, how many places must change when a rule changes, and how easily its behavior can be tested.
 
-## Glossary
+## Terms
 
-Use these terms to clarify architectural roles while preserving established product and repository vocabulary. Names such as "component," "service," "API," and "boundary" are appropriate when they communicate the project's meaning. Explain the mapping when it matters; do not rename code or domain concepts merely to match this glossary.
+Use the project's existing names. These distinctions help explain a design; they are not a reason to rename code or domain concepts.
 
-**Module**: anything with an interface and an implementation. Deliberately scale-agnostic: a function, class, package, or tier-spanning slice.
+- **Module:** a function, class, package, or other unit with an interface and an implementation.
+- **Interface:** everything a caller must know to use a module correctly, including types, required call order, errors, configuration, and performance constraints. This means more than a TypeScript `interface` declaration.
+- **Implementation:** the code behind that interface.
+- **Adapter:** an implementation that connects an interface to a particular dependency, such as a database or external service. The term describes its role, not its size.
+- **Seam:** a place where behavior or a dependency can be substituted, including for a test. State whether it is internal to a module or exposed to application callers when that distinction matters.
 
-**Interface**: everything a caller must know to use the module correctly: the type signature, but also invariants, ordering constraints, error modes, required configuration, and performance characteristics.
+A **deep module** hides decisions that callers would otherwise have to make themselves. A **shallow wrapper** adds an interface without reducing that work. Code size, method count, and the ratio of interface to implementation lines do not establish either one.
 
-**Implementation**: what's inside a module, its body of code. Distinct from **Adapter**: a thing can be a small adapter with a large implementation (a Postgres repo) or a large adapter with a small implementation (an in-memory fake). Reach for "adapter" when the seam is the topic; "implementation" otherwise.
+## Design from callers
 
-**Depth**: leverage at the interface. The amount of behaviour a caller (or test) can exercise per unit of interface they have to learn. A module is **deep** when a large amount of behaviour sits behind a small interface, **shallow** when the interface is nearly as complex as the implementation.
+Sketch representative call sites before types or methods. Derive the interface from what those callers need. Keep processing stages, storage details, and coordination inside the module unless callers need to control them.
 
-**Seam** _(Michael Feathers)_: a place where you can alter behaviour without editing in that place; the *location* at which a module's interface lives. Where to put the seam is its own design decision, distinct from what goes behind it.
+For each proposed interface, ask:
 
-**Adapter**: a concrete thing that satisfies an interface at a seam. Describes *role* (what slot it fills), not substance (what's inside).
+- Can a caller complete its task without learning internal rules or coordinating unrelated operations?
+- Does each parameter represent a choice the caller needs to make?
+- When a rule changes, can it be updated in its owning module rather than across callers?
+- Would removing the module eliminate unnecessary forwarding, or force callers to handle its behavior themselves?
 
-**Leverage**: what callers get from depth. More capability per unit of interface they learn. One implementation pays back across N call sites and M tests.
+A module can be useful with one caller or one adapter. Keep it when it isolates a protocol, side effects, or rules that change independently. Do not invent another adapter, configuration option, or future use case to justify the module.
 
-**Locality**: what maintainers get from depth. Change, bugs, knowledge, and verification concentrate in one place rather than spreading across callers. Fix once, fixed everywhere.
+## Place behavior with its owner
 
-## Deep vs shallow
+Group code that maintains the same rules, data, or workflow. Split a module when that gives an independently changing responsibility a clear home. Do not extract a wrapper that merely moves code without reducing what callers must understand.
 
-**Deep module** = small interface + lots of implementation:
+A module may use smaller internal modules and dependency interfaces. Keep those details internal when application callers do not need them. Tests may use an internal module's interface to check its own behavior without making that interface part of the application's API.
 
-```
-┌─────────────────────┐
-│   Small Interface   │  ← Few methods, simple params
-├─────────────────────┤
-│                     │
-│  Deep Implementation│  ← Complex logic hidden
-│                     │
-└─────────────────────┘
-```
+When a requirement causes repeated workarounds, sketch the design that would meet it cleanly, then choose an authorized migration that preserves required compatibility. Existing structure is context, not a requirement to keep every layer. This comparison does not authorize unrelated rewrites.
 
-**Shallow module** = large interface + little implementation (avoid):
+## Make behavior testable
 
-```
-┌─────────────────────────────────┐
-│       Large Interface           │  ← Many methods, complex params
-├─────────────────────────────────┤
-│  Thin Implementation            │  ← Just passes through
-└─────────────────────────────────┘
-```
+Accept dependencies through an appropriate interface so tests can control them without replacing the behavior under test. For example, passing a payment gateway to order processing lets a test exercise payment failures without creating a real charge.
 
-When designing an interface, ask:
+Keep calculations separate from side effects when they have distinct responsibilities. Returning a calculated discount makes that rule testable without modifying a cart or invoking storage.
 
-- Can I reduce the number of methods?
-- Can I simplify the parameters?
-- Can I hide more complexity inside?
+Test behavior through the interface that owns it. Keep internal tests when they catch important failures that other tests would miss. Do not expose private state, add public methods, or make callers learn implementation details just to simplify test setup.
 
-## Principles
+Simplify methods and parameters when they remove choices callers do not need. Fewer methods do not necessarily mean fewer behaviors to test.
 
-- **Design from caller usage inward.** Sketch representative call sites before types or methods, then derive the interface from what those callers need. Internal stages, representations, and coordination stay in the implementation unless callers genuinely need to control them.
-- **Design the target separately from the migration.** When a new requirement causes repeated structural workarounds, sketch the clean end state without preserving accidental current shape. Then choose the smallest authorized path toward it while keeping required compatibility. This comparison does not authorize a rewrite.
-- **Depth is a property of the interface, not the implementation.** A deep module can be internally composed of small, mockable, swappable parts; they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
-- **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
-- **Test the contract at its owning interface.** Protect caller behavior through the module's interface. An internal module may also have its own interface and tests for distinct behavior or invariants. Keep those seams internal; do not make application callers learn implementation details merely to support tests.
-- **Justify seams by what they hide or vary.** Multiple adapters are evidence of real variation, not a prerequisite or proof of a useful interface. A single-adapter seam can earn its place by isolating a protocol, side effects, or independently changing policy. Require a concrete reduction in caller knowledge or testing cost; do not invent another adapter or speculative extension point to justify the seam.
+## Further guidance
 
-## Designing for testability
-
-Good interfaces make testing natural:
-
-1. **Accept dependencies, don't create them.**
-
-   ```typescript
-   // Testable
-   function processOrder(order, paymentGateway) {}
-
-   // Hard to test
-   function processOrder(order) {
-     const gateway = new StripeGateway();
-   }
-   ```
-
-2. **Return results, don't produce side effects.**
-
-   ```typescript
-   // Testable
-   function calculateDiscount(cart): Discount {}
-
-   // Hard to test
-   function applyDiscount(cart): void {
-     cart.total -= discount;
-   }
-   ```
-
-3. **Small surface area.** Fewer methods = fewer tests needed. Fewer params = simpler test setup.
-
-## Relationships
-
-- A **Module** has exactly one **Interface** (the surface it presents to callers and tests).
-- **Depth** is a property of a **Module**, measured against its **Interface**.
-- A **Seam** is where a **Module**'s **Interface** lives.
-- An **Adapter** sits at a **Seam** and satisfies the **Interface**.
-- **Depth** produces **Leverage** for callers and **Locality** for maintainers.
-
-## Rejected framings
-
-- **Depth as ratio of implementation-lines to interface-lines** (Ousterhout): rewards padding the implementation. We use depth-as-leverage instead.
-- **"Interface" as the TypeScript `interface` keyword or a class's public methods**: too narrow: interface here includes every fact a caller must know.
-- **Ambiguous use of "boundary"**: clarify whether a domain, deployment, or substitution boundary is meant when the distinction affects the design.
-
-## Going deeper
-
-- **Deepening a cluster given its dependencies**, see [DEEPENING.md](DEEPENING.md): dependency categories, seam discipline, and preserving useful test coverage.
-- **Designing correctness-critical types**, see [TYPE-DESIGN.md](TYPE-DESIGN.md) when signatures, variants, external data, or escape hatches carry load-bearing invariants.
-- **Finding a structural home for domain logic**, see [DOMAIN-STRUCTURE.md](DOMAIN-STRUCTURE.md) when stateful code repeats branches, lifecycle rules, shape assumptions, or access work.
-- **Exploring alternative interfaces or architectures**, see [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md) when several credible shapes remain after applying repository conventions and known constraints.
+- Read [DEEPENING.md](DEEPENING.md) when combining related modules while preserving dependency handling and useful tests.
+- Read [TYPE-DESIGN.md](TYPE-DESIGN.md) when types, external inputs, or casts affect rules the code must enforce.
+- Read [DOMAIN-STRUCTURE.md](DOMAIN-STRUCTURE.md) when stateful code repeats decisions, transition rules, or lookups without a clear owner.
+- Read [DESIGN-IT-TWICE.md](DESIGN-IT-TWICE.md) when several designs remain plausible after checking requirements and repository conventions.

@@ -5,73 +5,63 @@ description: Find downstream breakage a code change could cause beyond the files
 
 # Blast Radius Audit
 
-Find concrete ways a change could break behavior outside its visible diff, then establish the smallest set of facts its safety depends on.
+Find how a change could break behavior outside the edited files. Identify the facts that must be true for the change to be safe and check them against code, documentation, or execution.
 
-Audit only. Do not edit repository files, add permanent tests, apply fixes, commit, publish, or mutate production or external systems unless the user separately authorizes those actions. Read-only inspection and reversible local diagnostics are allowed. Put any throwaway probe outside the working tree and remove it when finished.
+Audit only. Do not edit repository files, add permanent tests, apply fixes, commit, publish, or change production or external systems unless separately authorized. Read-only inspection and reversible local diagnostics are allowed. Keep temporary probes outside the working tree and remove them when finished.
 
-## Establish the Change
+## Identify the change
 
-Resolve the exact change under review from the user's named pull request, branch, commit, diff, or working changes. Record the fixed point when one exists. Ask only when choosing the wrong target would materially change the audit.
+Resolve the pull request, branch, commit, diff, or working changes named by the user. Record exact commits when available. Ask only when the target remains unclear and choosing incorrectly would change the audit.
 
-Inspect:
+Read the complete diff and commits, added or removed symbols, relevant tests, callers, and repository instructions. Identify what behavior changes, including effects not obvious from the edited lines. Follow dependencies beyond direct callers when the change could affect them.
 
-- the complete diff and commits
-- added, changed, and deleted symbols
-- the behavior that changes, including semantic effects not obvious from the edited lines
-- relevant tests, callers, and repository instructions
+## Look for downstream effects
 
-Direct callers are the starting point, not the blast-radius result.
+Investigate only paths the change could affect:
 
-## Trace Hidden Edges
+- **Data:** stored records, database columns, serialized values, events, cache keys, exports, and consumers in other languages or repositories.
+- **Timing:** startup, cleanup, retries, ordering, concurrency, transactions, partial failures, and work that runs later or more than once.
+- **Runtime selection:** configuration, environment variables, feature flags, dependency injection, plugins, reflection, generated code, and dynamically loaded paths.
+- **Dependency behavior:** the installed library or runtime version, local patches, platform differences, and what the called code actually does.
+- **Deployment and recovery:** rollout order, compatibility with older versions, how failures would be detected, and how to recover or roll back.
 
-Follow only the edges that the change makes plausible:
+Verify versions, schemas, and documentation when a conclusion depends on them. Finding no references in a code search does not prove that a function or format is unused; configuration, generated code, or external systems may select or consume it.
 
-- **Data:** persisted records, database columns, serialized JSON, wire formats, events, cache keys, exported files, and consumers in other languages or repositories
-- **Time:** initialization, teardown, retries, ordering, concurrency, transactions, partial failure, and work that runs later or more than once
-- **Runtime selection:** configuration, environment variables, feature flags, dependency injection, plugins, reflection, generated code, and dynamically loaded paths
-- **Dependency semantics:** the exact pinned library or runtime version, local patches, platform differences, and behavior behind the called function rather than its name
-- **Operational contracts:** rollout order, backward compatibility, mixed-version operation, detectability, recovery, and rollback
+## Check the facts that safety depends on
 
-Verify the exact version, schema, contract, or external source whenever a conclusion materially depends on it. A search that finds no caller is evidence about the searched symbol graph, not proof that no implicit consumer exists.
+For each possible failure, state what must be true to prevent it. Keep unrelated failures separate. Do not list hypothetical concerns without a plausible path from the change to an affected caller or system.
 
-## Establish the Safety Claims
+Describe what you checked and what it establishes: exact code or documentation, a traced path that rules out the failure, an executed test or command, or an observed application workflow. Distinguish these observations from assumptions. Code or a documented contract may be enough; do not run a test merely to repeat proof already obtained.
 
-Identify the smallest set of load-bearing facts that must hold for the change to be safe. Do not force unrelated risks into one claim, and do not produce a long inventory of hypothetical concerns.
+Prefer existing tests and commands. A temporary probe must use the application's actual code and dependency version, exercise the behavior in question, and fail clearly if the safety assumption is false. Testing a mock or substitute path does not prove the shipped path works.
 
-For each claim, describe the available proof using the applicable evidence levels below. These describe evidence, not a ladder every claim must climb. Obtain additional evidence only when needed to establish a material claim; a source-backed contract may be sufficient without execution.
+If a necessary fact cannot be checked, state what is missing and how it could be established. Do not describe an assumption as verified.
 
-- **Inferred:** reasoned from the change but not independently established
-- **Source-backed:** supported by exact application, dependency, schema, or contract locations
-- **Failure path excluded:** the suspected bad case was traced end to end and cannot reach an observable failure
-- **Executed:** an existing test, focused command, or temporary probe exercised the real shipped path and would fail if the claim were false
-- **Journey-proven:** reproduced through the real application, integration, or consumer workflow
+## Classify each risk
 
-Prefer existing tests and commands. A temporary probe must import the same code and dependency version the application ships, exercise the behavior in question rather than a mock of it, and fail loudly when the claim is false. Do not use a substitute path to overstate certainty.
+Use one status per investigated risk:
 
-Mark a claim `unverified` when the available evidence does not establish it. State the exact missing proof; do not round an inference up to safety.
+- **Confirmed:** code, documentation, or execution establishes a failure under conditions that can occur. State those conditions and whether the failure was reproduced or established by inspection.
+- **Unresolved:** there is a plausible failure path, but a specific missing fact prevents confirming or ruling it out. Name that fact and the check needed.
+- **Ruled out:** the suspected failure cannot occur in the audited scenario, with supporting evidence.
 
-## Judge Material Risk
+For confirmed or unresolved risks, explain the affected behavior, cause, impact, and evidence about how likely the conditions are. Include detection, recovery, and rollback when they affect the recommendation. Name the simplest check that would resolve any remaining uncertainty.
 
-Keep a risk only when there is a concrete failure mechanism and affected consumer. For each material risk, state:
+Mention ruled-out risks only when they explain the verdict or answer a likely concern. Keep them separate from open problems. Do not add minor or hypothetical risks to fill a report.
 
-- where and how the failure reaches observable behavior
-- likelihood, supported by evidence rather than an adjective
-- impact, detectability, recovery, and rollback when relevant
-- whether it is `confirmed`, `credible`, `cleared`, or `unverified`
-- the cheapest decisive check
+## Report
 
-Report cleared risks only when they resolve a likely concern or explain the verdict; omit them when they add noise. When included, separate them from open problems. Do not pad the audit with generic possibilities.
+Choose the overall verdict in this order:
 
-## Output
+1. **Material risk found:** at least one confirmed failure would affect correctness, data, compatibility, or operation enough to require attention. Report any unresolved risks alongside it.
+2. **Unverified:** no confirmed failure determines the verdict, but an unresolved risk or unchecked safety requirement could change it.
+3. **Contained:** the relevant safety requirements have been checked and no material risk remains. State the scope covered; this is not a guarantee about uninspected parts of the system.
 
-Lead with a verdict: `contained`, `material risk found`, or `unverified`.
+Lead with the verdict and use only the detail needed to support it:
 
-Include only the sections that add evidence:
+- what behavior changes beyond the edited files
+- confirmed or unresolved risks, with their evidence and next checks
+- facts checked that explain why a likely concern was ruled out
+- any verification needed before merge
 
-- **Behavioral change:** what changes beyond the literal diff
-- **Safety claims:** each claim, evidence level, proof, and status
-- **Material risks:** concrete open or confirmed failure mechanisms
-- **Cleared:** plausible risks checked and ruled out
-- **Before merge:** the cheapest remaining test, probe, or real-world check
-
-If no material risk remains, say so directly while preserving any evidence limits. Stop when every load-bearing safety claim is either established or explicitly unverified and every material risk has a status.
+Stop when each safety requirement has been checked or identified as unverified, each investigated risk has a status, and the report explains any remaining work.

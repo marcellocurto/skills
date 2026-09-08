@@ -14,24 +14,20 @@ Prefer composition that helps the user understand what matters first. Avoid cent
 
 ## Color And Theme
 
-Use existing semantic tokens and palette first. Create polish through stronger contrast, one dominant surface language, one confident accent area, semantic status colors, subtle layering, restrained gradients when they fit, and color used to guide attention.
-
-Dominant surfaces with sharp accents usually outperform timid, evenly distributed palettes.
+Use the existing color tokens consistently. Give the primary action stronger emphasis than secondary actions, and reserve status colors for actual states. Use contrast and background treatments to distinguish groups or show what needs attention, without adding competing accents to every section.
 
 ## Surface And Detail
 
-Use visual detail to clarify structure: refined borders, shadows that match the product, inset panels, dividers, selected states, focus rings, metadata, badges, tasteful texture or pattern, and clear affordances.
+Use borders, shadows, panels, and dividers when they distinguish groups or layers. Make selected states and keyboard focus visible. Add badges or labels only when they communicate information the user needs.
 
 Decoration should make the interface easier to read, trust, or use.
 
 ## Motion And Interaction
 
-Use motion to explain state changes and add quality: fast subtle transitions, hover and press states, smooth expand/collapse, skeletons, optimistic feedback, existing animation utilities, and reduced-motion-friendly behavior.
-
-One polished interaction usually beats scattered micro-interactions.
+Use the product's existing animation utilities to show what changed, such as a section expanding or an action completing. Add loading feedback only for work that actually takes time. Respect reduced-motion preferences and remove animation that distracts from the task.
 
 ## States
 
 Design the complete experience when relevant: loading, empty, error, disabled, selected, focused, hovered, active, success, destructive action, long content, and small screens.
 
-Match implementation complexity to the product moment: dense expert workflows need scan paths and efficient controls; refined minimal surfaces need precision; marketing and onboarding can support richer visuals; high-risk flows need clarity and conservative interactions.
+Choose detail and density for the task: expert workflows may need compact rows and fast comparison, while onboarding may need more explanation and space. Make consequential actions and their results clear.

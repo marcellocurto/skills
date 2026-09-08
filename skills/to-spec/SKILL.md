@@ -14,7 +14,7 @@ Resolve the publication target from explicit user context, existing repository c
 
 1. Reuse relevant repository findings already established in the conversation. Inspect additional code only where needed to ground the spec or resolve a material unknown. Use the project's domain glossary vocabulary throughout the spec, and respect applicable ADRs and the user's latest decisions.
 
-2. Reuse settled testing decisions. Where verification still needs definition, choose existing interfaces or user journeys that can demonstrate the required behavior and catch realistic regressions. Let the behavior determine the number and level of verification surfaces; do not force everything through one seam or the highest possible layer. Mark any new seam as a proposal unless already agreed. Seek a decision only when the choice would materially change scope or a contract; ordinary test mechanics can remain implementation choices.
+2. Reuse settled testing decisions. Where checks still need to be chosen, use existing interfaces or user workflows that demonstrate the required behavior and catch realistic regressions. Choose where and how many checks to run based on what they must prove; do not force every check through one interface or the full application. Treat a proposed new test interface as a suggestion unless already agreed. Ask only when the choice would change scope or a contract; ordinary test mechanics can remain implementation choices.
 
 3. Write the spec using the relevant sections below, then publish it to the resolved project issue tracker. Preserve material open questions explicitly rather than presenting them as settled requirements, and assess readiness before applying labels.
 
@@ -60,7 +60,7 @@ A list of implementation decisions that were made. This can include:
 
 Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
 
-Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
+Exception: if prototype code expresses an agreed decision more precisely than prose, include that part beside the decision and identify it as prototype code. Keep only the relevant state machine, reducer, schema, or type definition, not the full demo.
 
 ## Testing Decisions
 

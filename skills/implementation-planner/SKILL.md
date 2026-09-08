@@ -38,7 +38,7 @@ Name the expected files and symbols to change and why. Treat that list as the ev
 
 When planning to replace an interface, find everything that uses it, including tests. Include steps to update those callers and remove the old interface. Plan to update tests while keeping the behavior they check. If external callers, mixed versions, or a gradual rollout require keeping the old interface, explain why and when any temporary adapter can be removed. Leaving tests unchanged is not enough reason to keep an old production API.
 
-Define validation through observable behavior or a durable module seam. Each proposed test must name the realistic regression it would catch. Include exact existing commands when they can be established from the repository; do not invent commands or require tests that merely mirror implementation details.
+Plan checks through a user action or a module interface expected to remain stable. Each proposed test must name the realistic regression it would catch. Include exact existing commands when they can be established from the repository; do not invent commands or require tests that merely mirror implementation details.
 
 ## Refine Before Presenting
 

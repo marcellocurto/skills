@@ -19,7 +19,7 @@ See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking g
 
 A **seam** is a boundary where a test exercises behavior or controls a dependency. It may be a public API or an internal interface owned by a module. An internal module can have its own contract and meaningful tests without exposing that interface to application callers. Do not bypass encapsulation merely to assert on incidental private state.
 
-Before writing a test, name the contract and the realistic failure it should catch, then choose the seam that owns that behavior. Prefer an established interface and nearby testing conventions. Use an internal seam when it provides distinct signal for a meaningful invariant or complex behavior; do not expose internals or introduce a new abstraction solely to satisfy test mechanics. Ask only when the seam choice would materially change scope or a contract.
+Before writing a test, name the behavior and the realistic failure it should catch, then choose where to call the code or control its dependencies. Prefer existing interfaces and nearby test conventions. Use an internal interface when its tests catch important failures that other tests would miss. Do not expose private state or add an abstraction just to make a test easier to write. Ask only when the choice would change the agreed scope or a contract.
 
 Testing effort should land on critical paths and complex logic rather than every edge case.
 
@@ -29,7 +29,7 @@ When the shape of the interface is itself in question—how deep the module is, 
 
 - **Implementation-coupled**: asserts incidental private state, helper calls, or ordering that the tested contract does not promise. Internal tests, collaborator doubles, and direct database observations are not inherently coupled; judge whether they detect a real contract failure or merely freeze the implementation's shape.
 - **Tautological or non-independent expectations**: an assertion that derives its expected value from the result under test cannot provide independent evidence. Copying production logic into the expected-value calculation can also reproduce the same bug. Use expectations grounded independently in the contract, a worked example, or a trusted oracle; a calculated expectation is not automatically tautological.
-- **Horizontal slicing**: writing all tests first, then all implementation. Bulk tests verify _imagined_ behavior: you test the _shape_ of things rather than user-facing behavior, the tests go insensitive to real changes, and you commit to test structure before understanding the implementation. Work in **vertical slices** instead: one test → one implementation → repeat, each test a **tracer bullet** that responds to what the last cycle taught you.
+- **Writing all tests before any implementation:** this can commit the tests to a design before trying it in working code. Write one test, implement its behavior, and use what you learn to choose the next test.
 
 ## Feature cycle
 
@@ -38,7 +38,7 @@ Work in vertical slices:
 1. Choose the smallest observable behavior at an established or agreed seam.
 2. Write one focused test that specifies that behavior.
 3. Run it before changing production code. Confirm that it fails because the behavior is missing, not because the test is broken.
-4. Make the simplest production-quality change that passes the test without anticipating later slices. This does not require keeping a cohesive responsibility inline merely because extraction is not yet needed for reuse.
+4. Make the simplest production-quality change that passes the test without adding future behavior. Extract a focused module when it makes responsibilities clearer, even if it has only one caller.
 5. Rerun the test and confirm that it passes.
 6. Refactor the affected path when needed to preserve clear ownership and cohesion, then confirm the test still passes.
 7. Repeat with the next behavior, allowing each cycle to inform the next.
@@ -58,7 +58,7 @@ When a bug has a clear, practical regression path:
 
 Do not create substantial test infrastructure, brittle mocks, slow end-to-end setup, production-only state, or broad fixture churn merely to satisfy the workflow. Prefer no new test over a test with weak or misleading signal.
 
-Before fixing the bug, explain why a durable failing test is not worth its cost and choose the closest meaningful executable regression check. This may be a targeted script, manual reproduction command, browser workflow, log assertion, or focused integration check. The fallback must exercise the broken behavior closely enough to distinguish the fix from the prior failure.
+Before fixing the bug, explain why a permanent regression test is not worth its cost and choose a check that can demonstrate the failure and the fix. This may be a script, manual command, browser workflow, log assertion, or integration check. It must exercise the broken behavior, not merely nearby code that already works.
 
 ## Validation cadence
 

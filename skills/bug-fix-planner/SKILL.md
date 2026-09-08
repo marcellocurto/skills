@@ -5,7 +5,7 @@ description: Investigate one bug and produce an implementation-ready fix plan wi
 
 # Bug Fix Planner
 
-Plan the smallest credible fix for one specific defect.
+Plan a focused fix for the cause of one specific defect.
 
 Plan only. Do not edit files, apply patches, commit, or implement unless the user explicitly asks.
 
@@ -24,7 +24,7 @@ Give another engineer enough evidence and direction to fix the bug without rerea
 ## Constraints
 
 - Keep scope limited to the defect.
-- Prefer the smallest change that fixes the root cause and matches existing code patterns.
+- Fix the cause and include the restructuring needed to keep responsibilities clear. Exclude unrelated cleanup and follow sound existing patterns.
 - Do not recommend redesigns, unrelated cleanup, broad refactors, migrations, or workaround-only fixes unless the evidence shows a local fix cannot work.
 - Do not replace the user's path with a more convenient lower-level reproduction or validation when it can bypass the reported failure.
 - Do not recommend removing the visible symptom when the evidence points to a deeper mismatch. Establish the mechanism and fix the root cause, or make verifying it the first plan step.

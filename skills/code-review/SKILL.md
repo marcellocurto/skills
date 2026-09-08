@@ -5,7 +5,7 @@ description: Review a specific code change for correctness, requirements, mainta
 
 # Code Review
 
-Audit one exact change through two independent axes. This skill is read-only: do not edit files, add tests, apply fixes, commit, push, publish comments, resolve threads, or mutate external systems. A later request to act on accepted findings is separate work.
+Review one exact change for correctness and maintainability, with a separate verdict for each. This skill is read-only: do not edit files, add tests, apply fixes, commit, push, publish comments, resolve threads, or mutate external systems. A later request to act on accepted findings is separate work.
 
 For adversarial, multi-agent, blind-spot, `interrogate`, or tear-it-apart requests, read [ADVERSARIAL.md](ADVERSARIAL.md) before dispatching reviewers. Incorporate its criteria into the same review effort rather than automatically adding a second reviewer group.
 
@@ -72,7 +72,7 @@ Judge whether the change fits the repository and remains economical to change:
 - violations of documented repository guidance, citing the governing file and exact rule
 - unnecessary complexity, indirection, duplication, or premature abstraction
 - machinery disproportionate to the requested behavior
-- procedural accretion: a cohesive workflow, policy, state machine, or substantial composition appended to a caller or entry point that should only coordinate it
+- entry points that have gained business rules or a workflow that should belong to another module
 - poor fit with existing module boundaries, ownership, types, APIs, or local idioms
 - tests that are tautological, implementation-coupled, redundant, unable to name a realistic bug, excessively mocked so they bypass the shipped path, or merely freeze prompt prose, non-critical configuration, fixtures, static content, or private structure
 - misleading names or public surfaces, and style only when it materially harms comprehension

@@ -6,13 +6,13 @@ disable-model-invocation: true
 
 # Design System UI
 
-Create production-grade frontend UI that feels native to the product and sharper than a default implementation.
+Build UI that fits the product's existing components, visual style, and interaction patterns.
 
 For multi-step work, start with a short user-visible update that names the product context you are inspecting first.
 
 ## Goal
 
-Use the existing product as the creative material. The result should feel native to the app, visually intentional, consistent with usable components and tokens, and improved through hierarchy, composition, interaction quality, and polish.
+Make the requested screen or component easier to read and use while keeping it consistent with the rest of the product. Use hierarchy, grouping, spacing, and interaction feedback to support its main task.
 
 ## Context Budget
 
@@ -34,9 +34,9 @@ For a new screen or substantial redesign, establish a concise direction from the
 
 - **Purpose**: what job the interface does
 - **User**: who uses it and what they are deciding or accomplishing
-- **System language**: what the existing UI already communicates
-- **Upgrade move, when useful**: a visual improvement that materially helps the task while fitting the product
-- **Signature detail, when useful**: a distinctive detail supported by the brief, not a requirement to add decoration
+- **Existing patterns**: layout, typography, colors, and interactions to reuse
+- **Useful improvement**: a specific change that helps the user complete the task
+- **Distinctive detail, when useful**: a detail requested or supported by the brief; do not add decoration just to make the screen different
 
 Use [references/design-moves.md](references/design-moves.md) only when you need more examples for typography, layout, color, surface, motion, or states.
 

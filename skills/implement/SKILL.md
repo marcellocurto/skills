@@ -9,18 +9,18 @@ description: Implement and verify clearly scoped software work from an existing 
 
 Implement every in-scope requirement from the supplied spec or tickets. Continue until the work is complete and verified, or until a genuine blocker requires user input.
 
-## Scope Contract
+## Agree on the work
 
-Before editing, establish a compact internal scope contract:
+Before editing, identify:
 
-- **Source of truth**: the controlling spec, tickets, repository instructions, explicit user decisions, and authoritative input versions
-- **Authorized outcome**: what must be true when the work is complete
-- **Affected surfaces**: the code, data, configuration, UI, and artifacts expected to change
-- **Protected surfaces**: behavior, contracts, data, and adjacent systems that must remain unchanged
-- **External mutations**: any writes outside the local working tree and whether the request authorizes them
-- **Acceptance path**: the user-visible or consumer-visible workflow and evidence that prove completion
+- **Requirements**: the spec, tickets, repository instructions, user decisions, and input versions that define the work
+- **Result**: what must be true when the work is complete
+- **What may change**: the code, data, configuration, UI, and artifacts included in the work
+- **What must stay unchanged**: existing behavior, contracts, data, and adjacent systems
+- **External writes**: writes outside the local working tree and whether the user authorized them
+- **How to verify it**: the user or caller workflow and the observations that would prove the result
 
-Keep the contract implicit for unambiguous work. Surface it and ask before editing only when uncertainty would materially change the solution, authority, or risk.
+For clear requests, use this as an internal check. Explain the uncertainty and ask before editing only when the answer would change the solution, require additional authorization, or affect an important risk.
 
 ## Constraints
 
@@ -31,18 +31,18 @@ Keep the contract implicit for unambiguous work. Surface it and ask before editi
 - Structural work needed to give the new behavior a clear home is part of the implementation, not unrelated cleanup. A focused module may have one caller when it hides meaningful decisions, state, workflow, policy, or composition behind a smaller interface. Do not add speculative genericity, configurability, extension points, pass-through wrappers, or unrelated refactors.
 - Do not infer authorization to change schemas, migrations, export formats, public APIs, external records, business claims, or unrelated shared infrastructure. When the implementation genuinely requires an unapproved expansion, report the dependency and smallest follow-up instead of silently expanding scope.
 - When replacing an interface, find everything that uses it, including tests. If you can update all callers together, update them and remove the old interface in the same change. Update tests to use the replacement while still checking the same behavior; do not keep an old production API just to leave tests unchanged. If external callers, mixed versions, or separate deployments require a gradual rollout, keep the old interface until those callers can move. State when each temporary adapter can be removed, and verify who uses an interface before calling it internal.
-- If the user corrects a premise or changes the task, stop the superseded work. Re-establish the scope contract and re-evaluate every planned or completed change derived from the invalidated premise before continuing. Preserve unrelated and user-authored changes.
+- If the user corrects an assumption or changes the task, stop work based on the old instruction. Recheck planned and completed changes that depended on it before continuing. Preserve unrelated and user-authored changes.
 - Resolve minor uncertainty with evidence from the repository and reasonable assumptions. Ask only when missing information would materially change the result or when the requested approach would create a significant risk.
 - Leave changes uncommitted unless the user explicitly requests a commit.
 
 ## Execution
 
-1. Confirm the scope contract, acceptance criteria, affected code paths, and applicable repository verification commands.
+1. Confirm the agreed requirements, what may change, what must stay unchanged, and the repository's verification commands.
 2. Identify the natural owner of each new responsibility. Inspect the containing function or module far enough to determine whether adding the behavior would give it another independent reason to change. Prefer an existing suitable owner; otherwise create a focused module when it materially reduces what the caller must understand. Predicted reuse is not required.
-3. Use the `tdd` skill at pre-agreed seams when test-first work provides useful design or regression feedback. Do not impose TDD where it adds ceremony without meaningful signal.
+3. Use `tdd` when writing a failing test first would help design the behavior or catch a realistic regression. Reuse agreed test interfaces. Do not require TDD when that test would provide little useful feedback.
 4. Implement the complete solution. Verify that edits were applied as intended and cover all affected paths, including relevant edge cases.
 5. Treat implementation friction as design feedback. A single mismatch may be local; repeated deviations of the same shape—unplanned parameters, recurring special cases, escape-hatch types, or callers needing internal rules—require stopping to determine whether the requirements were incomplete, the design is wrong, or the implementation is overreaching. Compare the current approach with a clean target design, then choose an authorized correction that restores a coherent design. Do not silently rewrite adjacent code, change compatibility, or accumulate workarounds.
-6. Use `blast-radius-audit` when the user requests it or the completed change genuinely crosses a hidden edge: persisted or serialized data, public or cross-service contracts, dependency semantics, lifecycle timing, runtime selection, or rollout compatibility. Do not invoke it merely because every change has callers.
+6. Use `blast-radius-audit` when requested or when the change could affect stored data, serialized formats, public or cross-service APIs, dependency behavior, startup or cleanup timing, runtime configuration, or compatibility during rollout. Do not invoke it merely because the changed code has callers.
 7. During implementation, run a narrow check only when its result is likely to influence the next change. Avoid repeatedly running broad lint, typecheck, build, or test commands while the implementation is still evolving.
 
 ## Verification
@@ -67,7 +67,7 @@ Validate audit and review findings, make confirmed in-scope corrections as part 
 Finish only when:
 
 - Every in-scope acceptance criterion is implemented.
-- The completed implementation conforms to the scope contract, with no unresolved unauthorized expansion.
+- The implementation matches the agreed scope, with no unresolved unauthorized changes.
 - The changed path remains coherent: entry points and composition modules do not own a new independent workflow, policy, state machine, or substantial implementation detail merely to keep the diff small.
 - New or changed wrappers do useful work or protect a required contract; they do not just add another call to follow.
 - The relevant user-visible or consumer-visible acceptance path has been verified when accessible; otherwise the missing verification is reported.

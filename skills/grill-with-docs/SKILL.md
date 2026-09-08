@@ -14,11 +14,9 @@ Use [grilling](../grilling/SKILL.md) for questions and decision dependencies, an
 
 If the skills were installed separately, look for local copies from this repository in the available skill catalog. If a dependency is unavailable, continue with the combined procedure below and disclose the missing guidance. Do not fetch or substitute an external skill.
 
-The persistence rules below govern this combined workflow. Recording an agreed decision is distinct from implementing it: this workflow authorizes scoped documentation updates as answers settle. A read-only request overrides `domain-modeling`'s inline-write instructions.
-
 ## Establish documentation scope
 
-A request to use this workflow includes scoped local glossary and architectural-decision updates as the user settles decisions. In read-only or proposed-edit mode, keep proposed text in the conversation and do not create or edit files. If the user limits writes to particular documents, update only those documents and keep any other proposed records in the conversation.
+A request to use this workflow includes updating the local glossary and architectural decision records as the user settles decisions. These documentation rules apply when using the supporting skills too. In read-only or proposed-edit mode, keep proposed text in the conversation and do not create or edit files. If the user limits writes to particular documents, update only those documents and keep other proposed records in the conversation.
 
 Inspect the existing glossary, context map, relevant ADRs, and only the code needed to ground the discussion. Follow established documentation locations and formats. When no convention exists, use `CONTEXT.md` for domain terms and `docs/adr/` for qualifying decisions; create them only when there is agreed content to record.
 

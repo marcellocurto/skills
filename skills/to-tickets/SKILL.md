@@ -12,8 +12,6 @@ Turn existing context into one or more focused GitHub tickets that can be implem
 - Use facts from the user, source material, and repository. Do not invent requirements, goals, metadata, relationships, or priority.
 - Preserve requirements, constraints, decisions, rationale, meaningful edge cases, and verified findings from prior research. Do not compress away technical detail that would force the implementation agent to repeat exploration.
 - Make each ticket self-contained enough to complete without reading a parent or sibling. Reference relevant existing specs, ADRs, or repository docs when they exist; do not require or invent one.
-- Keep cohesive work together. Do not split a useful ticket merely to make it smaller.
-- Split when a ticket has become too broad to implement or review coherently, contains independently useful outcomes, requires separate agent and human ownership, or needs safety-driven sequencing. When splitting feature work, prefer end-to-end slices that include every layer needed for the behavior without inventing work.
 - Declare only genuine blocking dependencies. Sequence or preference alone is not a blocker.
 - Do not modify or close a source or parent issue unless the user explicitly asks.
 - Avoid generic file inventories and speculative code paths. Include confirmed code locations as current starting points when they save meaningful exploration, but do not present them as authoritative scope.
@@ -29,9 +27,9 @@ Turn existing context into one or more focused GitHub tickets that can be implem
 
 ### 1. Gather context
 
-Work from the conversation and any referenced plan, spec, issue, comments, repository documentation, ADRs, domain glossary, or prior research. Inspect the codebase only as needed to make the tickets accurate. Ask only when unresolved ambiguity would materially change the ticket set, semantics, or dependency graph.
+Work from the conversation and any referenced plan, spec, issue, comments, repository documentation, ADRs, domain glossary, or prior research. Inspect the code needed to make the tickets accurate. Ask only when a missing answer would change what the tickets require, how the work is divided, or which work must finish first.
 
-When the user explicitly asks to turn pull-request feedback into tickets, retrieve thread-aware review context through an available connector or `python "<skill-path>/scripts/fetch_review_context.py"`. Treat unresolved, non-outdated threads as candidates, but check them against the current code: unresolved feedback may already be addressed. Consult resolved, outdated, duplicate, top-level, and review-summary comments only as needed for context or unthreaded actionable feedback. Do not create implementation tickets for feedback that is already addressed, not actionable, or unclear; surface the disposition and use a research or decision ticket only when that outcome is itself explicitly requested.
+When the user explicitly asks to turn pull-request feedback into tickets, retrieve review threads through an available connector or `python "<skill-path>/scripts/fetch_review_context.py"`. Check unresolved, non-outdated threads against the current code; the fix may already exist. Read other comments when they explain a concern or contain additional work. Do not create implementation tickets for feedback that is already addressed, has no useful action, or is unclear. Explain which concerns need work, which do not, and which need clarification. Create research or decision tickets only when the user requests that work.
 
 List the repository's existing labels with their descriptions. Use descriptions and established usage on comparable issues to understand the repository's label vocabulary; do not infer semantics from a label name alone when its meaning is ambiguous.
 
@@ -68,15 +66,15 @@ Separate required human decisions, approvals, or actions into human-owned ticket
 
 When a human must verify or approve completed implementation, make the human ticket blocked by the implementation ticket. When a human action is a prerequisite, reverse that relationship. The implementation ticket must be completable without waiting for its downstream human ticket; do not leave the same approval as a completion condition elsewhere in its body. Preserve any required approval before rollout as a dependency of the rollout work.
 
-Prefer cohesive, independently useful vertical slices with enough scope and context to act on. A ticket set may contain exactly one issue. Split only when the resulting tickets are easier to execute, verify, or sequence—not to meet an arbitrary size target. Allow enabling work, migrations, infrastructure, and mechanical refactors when those are the honest units of work. For a genuinely wide migration, describe the expand, consumer-migration, and old-path-removal stages in that order.
+Keep related work together when it delivers one useful outcome that can be implemented and reviewed as a whole. A ticket set may contain one issue. Split when parts can be completed independently, need separate human and agent owners, or must happen in order to avoid a concrete risk. For a feature, include the layers needed to make its behavior work. Setup work, migrations, infrastructure, and mechanical refactors can also be valid tickets. Do not split work merely to meet a size target.
 
 Allow research or investigation tickets when discovery is itself explicitly requested, independently useful work with a concrete question and completion signal. When the user asks for an actionable implementation ticket set for a feature believed to be ready, resolve material unknowns before drafting; do not turn them into research tickets that postpone implementation.
 
 Do not create a tracking, overview, epic, or coordination issue merely to organize the set or preserve shared context. Attach tickets to an existing parent only when the user explicitly requests it or established repository convention requires it.
 
-Let consumer and rollout evidence determine how an interface replacement is ticketed. When one coordinated change controls every consumer, keep the replacement cohesive and remove the old path in that ticket. When compatibility or rollout constraints require overlap, split the work into introduction, consumer migration, and removal. Record the removal condition for each temporary adapter and include the final cleanup ticket. Do not assume an interface is internal or invent a branching strategy without evidence.
+When replacing an interface, find who uses it and how those callers are deployed. If all callers can change together, update them and remove the old interface in one ticket. If old and new callers must coexist, create ordered tickets to add the new interface, move callers to it, and remove the old one. State when each temporary adapter can be removed and include the final cleanup ticket. Do not call an interface internal or prescribe branches without supporting evidence.
 
-Choose the smallest useful set of existing labels for each ticket. Select labels that accurately describe its type, affected area, or other established repository dimensions. Add priority, workflow, or ownership labels only when the source material and repository convention support them. Do not invent labels, force a label from an unsuitable taxonomy, or apply labels merely because their names share words with the ticket. If no existing label fits, leave that dimension unlabeled and surface the taxonomy gap.
+Choose existing labels that describe the ticket's type, affected area, or other categories the repository uses. Add priority, workflow, or ownership labels only when the source material and repository convention support them. Do not invent labels or choose one merely because its name shares words with the ticket. If no label fits a needed category, leave it unset and explain which label is missing.
 
 Treat `ready-for-agent` as a completion contract for the intended environment. Apply it only when all of the following are true after declared prerequisites are satisfied:
 
@@ -131,4 +129,4 @@ Resume the approved set rather than starting a new publication:
 
 ### 6. Verify and report
 
-Verify every created or reused issue, approved label, and native relationship. Return the issue URLs and relationship status. If publication is partial, identify created or reused issues, completed operations, confirmed pending work, and uncertain outcomes, with the exact failure. Do not discard successful work or use destructive retries or semantic fallbacks to make the report appear complete.
+Verify every created or reused issue, approved label, and native relationship. Return the issue URLs and relationship status. If publication is partial, state what succeeded, what still needs doing, and which outcomes remain uncertain, with the exact failure. Keep successful writes. Do not delete and recreate issues to retry a failed step, or replace a failed native relationship with a label or body link.

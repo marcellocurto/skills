@@ -24,7 +24,7 @@ Use authority carefully:
 - A later comment does not automatically override an earlier decision; authority, explicitness, and scope matter.
 - If governing sources conflict or the decision owner is unclear, return `needs-authoritative-decision` rather than choosing silently.
 
-If the exact issue, matching repository context, or other minimum evidence cannot be obtained because of access, tooling, or environment limitations, report `audit-incomplete`. This is an operational status, not a semantic verdict about the issue.
+If missing access, tools, or environment prevent reading the issue, checking the matching repository, or obtaining other required evidence, report `audit-incomplete`. This means the audit could not be completed; it does not mean the issue is invalid or unready.
 
 ## Evaluate the issue
 
@@ -99,9 +99,9 @@ If the current issue explicitly asks maintainers to reconsider an accepted decis
 
 ## Choose the outcome
 
-Resolve prior resolution before the remaining verdicts. If the request is already satisfied, duplicates another active issue, or has been superseded, return `no-action` even when the issue would otherwise satisfy `proceed`.
+First check whether work remains for this issue. If the request is already satisfied, duplicates another active issue, or has been replaced by other work, return `no-action` even when the issue would otherwise satisfy `proceed`.
 
-Return exactly one semantic verdict when the audit has enough evidence:
+When the audit has enough evidence, choose one conclusion about the issue:
 
 - `no-action`: nothing remains for this issue because the request is already satisfied, duplicates another active issue, or has been superseded
 - `proceed`: no `no-action` reason applies, scope is supported, readiness is sufficient, feasibility is plausible, no active dependency prevents meaningful work, and the central claim is not contradicted
@@ -137,6 +137,6 @@ Lead with the verdict and a concise explanation. Assess all five decision dimens
 - **Non-blocking uncertainties** that implementation may resolve without human input
 - **Recommended next step**: the smallest concrete triage action, not an implementation plan
 
-For `no-action` or `reject`, include the reason. For `blocked`, state whether the issue is otherwise ready and identify every active blocker. A `proceed` result has no blocking questions. For `audit-incomplete`, give no semantic verdict; state exactly which minimum evidence is unavailable and what would make the audit possible.
+For `no-action` or `reject`, include the reason. For `blocked`, state whether the issue is otherwise ready and identify every active blocker. A `proceed` result has no blocking questions. For `audit-incomplete`, state which required evidence is unavailable and how to obtain it, without claiming the issue is ready or should be rejected.
 
 Do not present issue assertions as verified facts. Passing tests, documentation, labels, or similar code are evidence only when they directly support the conclusion being drawn. Preserve material uncertainty instead of rounding it into confidence.

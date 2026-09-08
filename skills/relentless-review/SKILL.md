@@ -5,23 +5,21 @@ description: Challenge an existing proposal or result to find material risks and
 
 # Relentless Review
 
-Answer the underlying question: **Is this actually the best we can do?**
-
-Challenge assumptions, explore edge cases, and think through failure modes. Recommend changes only when they materially improve the outcome.
+Check whether the current proposal or result meets the requirements and whether a concrete alternative would improve it. Challenge assumptions and examine realistic failures. Recommend a different approach only when you can explain how it better meets the requirements or reduces a concrete risk.
 
 A review request authorizes analysis and recommendations. Editing the artifact, implementing recommendations, or publishing changes requires authorization for those actions; reuse any authorization already given for the same scope.
 
 ## Goal
 
-Give a direct verdict on whether the current work, plan, design, or answer is the best available path under the known constraints.
+Give a direct verdict on whether to keep or change the current approach under the known requirements and constraints.
 
 ## Success Criteria
 
-- Define what good enough requires.
+- State the requirements the result must meet.
 - Identify assumptions that materially affect the verdict.
 - Test relevant edge cases and failure modes.
 - Compare the current approach against simpler, safer, more direct, or more reversible alternatives.
-- Recommend the best path. If the current path is best, say so and do not invent changes.
+- Recommend keeping or changing the approach, with the reason.
 - State what proof would change the verdict.
 
 ## Review Focus
@@ -34,7 +32,7 @@ Use the available artifact and context first. Inspect more only when a material 
 
 ## Output
 
-Lead with a direct verdict. The sections below are optional; include or combine only those that add decision value. Omit **Better path** when the current approach is strongest instead of inventing an alternative.
+Lead with a direct verdict. Include or combine only the sections needed to explain it. Omit **Better path** when no alternative offers a concrete improvement.
 
 - **Verdict**: direct judgment.
 - **Why it may fail**: prioritized concerns with severity and confidence when useful.
@@ -44,15 +42,12 @@ Lead with a direct verdict. The sections below are optional; include or combine 
 
 ## Constraints
 
-- Be candid, specific, and evidence-based.
 - Critique the work, not the person.
 - Separate confirmed problems from plausible risks.
 - Treat explicit business, product, and domain decisions as authoritative constraints unless the user asks to challenge them. Do not override them merely because another choice appears safer, simpler, more conventional, or less aggressive; distinguish risk analysis from authority to change the decision.
 - Do not invent context or pad with generic warnings.
-- Do not nitpick unless it changes the outcome.
-- Do not make suggestions for their own sake.
-- If the work is strong, say so and name its real limits.
+- Skip preferences and minor observations that do not affect the outcome. If no change is justified, say so and state any remaining limits.
 
 ## Stop Rules
 
-Stop when the verdict, material risks, best path, and validation evidence are clear. Ask only when missing information would materially change the verdict.
+Stop when the recommendation, relevant risks, and checks needed to support it are clear. Continue investigating only when a missing fact could change the recommendation; ask the user only when that fact cannot be established from available evidence.

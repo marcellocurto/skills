@@ -11,11 +11,11 @@ Audit only. Do not edit files, apply fixes, commit, publish, or mutate external 
 
 ## Goal
 
-Trace every material requirement and protected constraint to observable implementation evidence, while identifying work that changed behavior beyond the agreed scope.
+Check each requirement and each rule about what must stay unchanged against the implementation. Identify behavior changed outside the agreed scope.
 
 ## Establish the Contract
 
-Use the smallest authoritative source set that defines the work:
+Establish the requirements from:
 
 - the user's latest explicit decisions and corrections
 - the named specification, issue, plan, or selected review feedback
@@ -27,7 +27,7 @@ Extract only what affects the verdict:
 
 - required outcomes and acceptance criteria
 - behavior, data, interfaces, and user flows that must remain unchanged
-- explicit exclusions and protected surfaces
+- work explicitly excluded from the change
 - unresolved decisions that were not authorized for implementation
 
 If sources materially conflict and their precedence cannot be established, report the conflict instead of inventing a merged requirement.
@@ -64,22 +64,24 @@ Journey verification may run before the audit or close a gap found during it; a 
 
 ## Output
 
-Lead with a direct verdict: `conforming`, `partially conforming`, `non-conforming`, or `unverified`.
+Choose the overall verdict in this order:
 
-Use `conforming` only when every material requirement and protected constraint is satisfied and no unauthorized expansion remains. Use `unverified` when material evidence gaps prevent establishing conformance and no confirmed deviation determines the verdict. Reserve `partially conforming` and `non-conforming` for demonstrated implementation gaps or contract violations, not checks that were never run.
+1. **Non-conforming:** at least one requirement or unchanged-behavior constraint has a confirmed implementation gap or violation, or the change includes unauthorized behavior. Use the per-requirement statuses to show what is partial, missing, or contradicted.
+2. **Unverified:** no confirmed violation determines the verdict, but a required check or fact is missing.
+3. **Conforming:** every requirement and unchanged-behavior constraint is satisfied, and no unauthorized expansion remains.
 
-When confirmed deviations coexist with verification gaps, report the supported partial or non-conformance verdict and list the unverified requirements separately. Missing evidence must not hide a known defect or be presented as one.
+When a confirmed violation and missing verification coexist, report non-conformance and list the unverified requirements separately. A check that was not run is not proof of a defect, and it must not hide one already established.
 
-Then provide the smallest useful traceability table:
+Lead with that verdict, then show the requirements and evidence in a compact table:
 
 | Requirement or constraint | Source | Implementation and verification evidence | Status |
 | --- | --- | --- | --- |
 
 After the table, include only applicable sections:
 
-- **Unauthorized expansion**: changed surfaces that were not approved
+- **Unauthorized expansion**: behavior changed outside the approved scope
 - **Evidence gaps**: claims that cannot yet be verified and the exact proof needed
-- **Scope-safe next step**: the smallest correction or verification step, without implementing it
+- **Next step**: the correction or check needed within the agreed scope, without implementing it
 
 If every material requirement and protected constraint is satisfied and no unauthorized expansion exists, say so directly without inventing findings.
 

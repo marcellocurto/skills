@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Improve Codebase Architecture
 
-Surface architectural friction and propose **deepening opportunities**: refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
+Find code that is hard to follow or change because callers must coordinate details that belong together. Propose modules that hide those details and make the behavior easier to test.
 
 When the user has already selected a candidate or concrete target change, inspect that target and proceed directly to exploring it. Do not produce another candidate menu or ask them to select it again. A named subsystem may instead limit discovery when the user is still asking which change would help.
 
@@ -36,7 +36,7 @@ Look for friction supported by the code:
 - Where do tightly-coupled modules leak across their seams?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
-Use `codebase-design`'s deletion test to distinguish pass-through indirection from interfaces that hide work callers would otherwise repeat. Verify delegated findings against the code before presenting them. Stop discovery when the requested area has enough evidence to explain the material cost and a credible improvement, or when the remaining evidence gap is explicit. No worthwhile candidate is a valid result.
+Before recommending removal of a module, check whether that removes unnecessary forwarding or makes callers handle its work themselves. Verify delegated findings against the code before presenting them. Stop when you can explain a concrete cost and a useful improvement in the requested area, or identify the facts still missing. No worthwhile candidate is a valid result.
 
 ### 2. Present the findings in a useful format
 
@@ -73,7 +73,7 @@ Use [domain-modeling](../domain-modeling/SKILL.md) to keep meanings and records 
 
 - **Naming a deepened module after a new domain concept?** Record its agreed definition in the existing glossary, or propose the entry in discussion mode.
 - **Resolving a material ambiguity in a term?** Update or propose the definition once its meaning is settled; harmless wording variations do not need a new record.
-- **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing; skip ephemeral reasons ("not worth it right now") and self-evident ones.
+- **User rejects the proposal for a reason future reviews would need?** Offer to record that reason in an ADR so later reviews do not repeat the proposal without its context. Skip temporary reasons such as “not worth it right now” and reasons already clear from the code or documentation.
 - **Want to explore alternative interfaces for the deepened module?** Use the bounded comparison in [DESIGN-IT-TWICE.md](../codebase-design/DESIGN-IT-TWICE.md), with parallel agents when useful and available.
 
 Finish with the requested findings or design recommendation, its evidence, preserved contracts, and the verification or decision still needed. Implementation, commits, or external publication require authorization for that work; selecting a candidate alone does not authorize them.
