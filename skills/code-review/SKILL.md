@@ -89,6 +89,8 @@ Before reporting an uncodified maintainability concern, answer the relevant ques
 - Do the types unnecessarily permit invalid states?
 - Would the proposed simplification preserve actual contracts?
 
+For wrappers added or materially changed by the diff, read their callers. Check what each wrapper handles that callers would otherwise need to handle themselves. Keep wrappers that own useful behavior or protect a required contract; question those that only add another call to follow. When an interface is replaced, check whether the old API remains only because tests still use it. Recommend updating those tests to use the replacement while checking the same behavior, unless other callers or rollout requirements still need the old API.
+
 Use code-smell names only as diagnostic vocabulary after establishing concrete maintenance harm. Never report a smell through pattern matching alone. Suppress it when it is aesthetic, locally endorsed, tooling-enforced, more expensive to fix than to keep, or would require speculative abstraction. Duplication does not automatically justify extraction, and primitive values or repeated parameters do not automatically justify new abstractions.
 
 A maintainability concern is `must-fix-current` only when it creates concrete correctness or regression risk, significant ongoing change cost, or a clear documented-standard violation. Another design being nicer is not enough.
@@ -122,6 +124,8 @@ Derive the axis verdict:
 ## Apply lead judgment
 
 Treat reviewer output as leads, not proof. Verify every plausible finding against the pinned diff, governing requirement or rule, reachability, surrounding code, and validation evidence. Reject claims that are unsupported, already handled, unrelated to the change, tooling-enforced, or preference-only. Deduplicate without using reviewer agreement as a vote.
+
+When you confirm a problem, check whether the same problem occurs elsewhere in the exact change under review. Report affected locations together when the same fix applies. Do not add findings for problems that already existed and were not made worse by this change.
 
 Keep the axes independent so one cannot mask the other. Incorporate validated adversarial findings into the relevant axis before deriving its final verdict. When the same mechanism appears in both, report it under the axis whose verdict it controls and note corroboration rather than repeating it. Mention a dismissed lead only when it was materially plausible and the user may want to override the judgment.
 

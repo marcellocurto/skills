@@ -41,6 +41,10 @@ Include a finding only when:
 
 Line count, nesting, complexity metrics, and unfamiliarity are clues, not findings.
 
+Before recommending removal of a wrapper, read its callers, including tests. Check what it handles that callers would otherwise need to handle themselves. Keep it when it owns useful behavior or protects a required contract. If it only forwards a call, consider putting that call in the appropriate existing module. File size and caller count alone do not decide this.
+
+When you find a problem, check whether the same problem occurs elsewhere in the code you were asked to audit. Report affected locations together when the same fix applies; keep cases separate when they must preserve different behavior. If you checked only part of the target, say so instead of presenting examples as a complete list.
+
 ## Test boundary
 
 Inspect tests when they establish a contract, explain intended behavior, or provide evidence for a complexity finding.

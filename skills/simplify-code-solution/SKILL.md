@@ -36,6 +36,7 @@ Prefer direct, boring changes that meet every real requirement. Simpler is valid
 - Avoid rewrites for localized bugs, state machines for simple state, generic frameworks for one caller, speculative migrations, unnecessary dependencies, wide API changes for internal convenience, and tests that only mirror implementation.
 - Compare total lifecycle complexity, not merely initial implementation size. Do not reject justified infrastructure, durable queues, explicit state, or domain distinctions simply because they add code. Complexity is removable only when requirements, operational guarantees, and failure modes remain covered.
 - Do not recommend removing a mechanism until its consumers, operational role, failure behavior, and replacement path are understood. Require a concrete cost and a behavior-preserving alternative.
+- When replacing an interface, find everything that uses it, including tests. Update tests to use the replacement while still checking the same behavior. Do not keep an old production API just to leave tests unchanged. Keep it when callers or rollout requirements still need it, and state when any temporary adapter can be removed.
 
 ## Context Budget
 
@@ -46,6 +47,7 @@ Inspect the minimum relevant code needed to understand the current path, contrac
 - Can one existing code path absorb the behavior while remaining coherent, or would a focused module reduce the caller's required context?
 - Can current contracts and data shapes remain unchanged?
 - Is genericity serving demonstrated variation? Separately, does a responsibility extraction hide meaningful existing complexity even if it has one caller?
+- Would removing a wrapper make the code easier to follow, or make callers handle rules, cleanup, or compatibility themselves? Read its callers before recommending removal.
 - What required behavior or operational guarantee does the apparent complexity encode?
 - Would removing local complexity move more complexity, risk, or manual work downstream?
 - Can the edge case be handled by its natural owner without making that owner responsible for an independent workflow or policy?
@@ -66,5 +68,7 @@ For recommendations:
 Use only the headings that add decision value. For implementation, report what changed, why it reduces complexity, the verification performed, and any material limitation.
 
 ## Stop Rules
+
+When you find a way to simplify the code, check whether the same problem occurs elsewhere in the requested scope. Include confirmed cases in the recommendation or authorized cleanup before calling the work complete. Report any known cases outside that scope separately.
 
 In recommendation mode, finish when the simpler production-quality path and its validation plan are clear. In implementation mode, continue through the authorized change and verification; do not stop at a proposal. If a genuine blocker prevents completion, state the missing decision or evidence and what remains unfinished.
