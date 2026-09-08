@@ -22,8 +22,8 @@ Turn existing context into one or more focused GitHub tickets that can be implem
 
 - Use `gh` for issue creation, labels, native relationships, and verification.
 - When a GitHub connector is already available, it may be used for repository, issue, pull-request, or review-thread reads. Use `gh` for all writes in one publication; do not mix connector and CLI writes.
-- Resolve the exact `OWNER/REPO` from an explicit identifier or the local remote. Ask only when the repository remains ambiguous after local inspection.
-- Before any `gh` operation, require the CLI and confirm `gh auth status`. If authentication fails, ask the user to run `gh auth login`.
+- Resolve the exact `HOST/OWNER/REPO` from an explicit identifier or the local remote and retain that host for CLI and API calls. The helpers accept `OWNER/REPO` using `GH_HOST` when set, otherwise `github.com`. Ask only when the repository remains ambiguous after local inspection.
+- Check the active account on the resolved host with `gh auth status --active --hostname HOST`. The helpers perform this check themselves. Diagnose failure for that host; request `gh auth login --hostname HOST` only when authentication needs repair. An unrelated account's status must not block publication.
 
 ## Process
 
@@ -100,8 +100,10 @@ After each creation, retain a compact mapping from the approved draft to its rep
 
 For native relationships, run the bundled helper after both issues exist. It retrieves the required database IDs and verifies the relationship:
 
-- parent: `python "<skill-path>/scripts/set_issue_relationship.py" --repo OWNER/REPO --parent PARENT_NUMBER --sub-issue CHILD_NUMBER`
-- blocked by: `python "<skill-path>/scripts/set_issue_relationship.py" --repo OWNER/REPO --blocked BLOCKED_NUMBER --blocked-by BLOCKER_NUMBER`
+- parent: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --parent PARENT_NUMBER --sub-issue CHILD_NUMBER`
+- blocked by: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --blocked BLOCKED_NUMBER --blocked-by BLOCKER_NUMBER`
+
+Both issue numbers in a helper call belong to the named repository. Relationship verification compares database IDs, including when existing relationships point to issues in other repositories. For an approved cross-repository relationship, use host-scoped `gh api` with each issue's verified database ID rather than passing another repository's issue number to the helper.
 
 Never propose, create, or assign a `blocked` label, including spelling or case variants. Never use a label or body link as a fallback for a failed native blocking relationship.
 

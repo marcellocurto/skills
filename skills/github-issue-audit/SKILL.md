@@ -81,7 +81,7 @@ Classify dependencies as:
 - `blocked`: a verified active external dependency prevents meaningful work now
 - `unverified`: a declared dependency is material but its current state cannot be established
 
-Prefer native GitHub relationships over body prose. Verify body-declared `Blocked by` or `Depends on` references against current GitHub state. Closed or completed dependencies are resolved; stale text does not keep an issue blocked. Do not confuse an issue this one blocks with an issue blocking this one.
+Prefer native GitHub relationships over body prose. Verify body-declared `Blocked by` or `Depends on` references against current GitHub state. A dependency is resolved when its required outcome is satisfied, replaced by a verified equivalent, or explicitly waived by an authorized decision. For a closed issue, inspect the closure reason and relevant resolution: cancellation, duplication, or closure as not planned does not by itself satisfy the prerequisite. Follow a replacement issue when one owns the remaining work. Do not let stale text preserve a satisfied blocker or confuse an issue this one blocks with an issue blocking this one.
 
 If a dependency is unverified because the reference itself is incomplete, return `needs-factual-clarification` and name the missing identifier. If access or tooling prevents verification, return `audit-incomplete`; do not turn an operational failure into a product decision.
 
