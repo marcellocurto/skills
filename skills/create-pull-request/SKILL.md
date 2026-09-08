@@ -14,9 +14,10 @@ Leave the published PR open for review. Merging requires a separate explicit use
 ## Establish the change
 
 - Read the repository instructions for branches, commits, verification, and pull requests, including the applicable PR template.
-- Resolve the exact repository, push remote, base branch, and head branch from the user's request, repository instructions, Git remotes, and GitHub's default branch. Do not guess when these disagree.
+- Resolve the exact repository and push remote from the user's request, repository instructions, and Git remotes. Ask when the intended destination remains ambiguous.
+- Use the user's requested head branch, otherwise the current branch. Use the requested base branch; consult repository instructions and GitHub's default branch only when the base is unspecified. A default or protected branch can be the PR head; respect restrictions on the actual push operation.
+- Do not create or switch branches by default. If publication requires creating or switching a branch, explain the concrete reason and proposed branch, ask for permission, and wait before proceeding unless the user has already explicitly authorized that action. A request to publish a PR alone is not permission to change branches. Resolve a detached HEAD or a head and base that identify the same branch under this rule.
 - Inspect the complete merge-base diff against the fetched base branch, its commits, staged and unstaged changes, untracked files, and `git diff --check`.
-- Refuse to publish from a detached HEAD or directly from the base or another protected branch. If completed work is still on the base branch, create a task-specific branch using repository naming rules.
 - Preserve unrelated worktree changes. Stage only clearly in-scope paths; never stash, discard, clean, reset, amend, rebase, or rewrite history merely to publish the PR.
 - Check for an existing open PR with the same repository, base, and head. Reuse and verify it instead of creating a duplicate. Do not reopen or reuse a closed or merged PR without explicit direction.
 
