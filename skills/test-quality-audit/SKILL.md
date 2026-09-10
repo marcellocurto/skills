@@ -35,6 +35,7 @@ Do not audit tests in isolation when code is available. Start with the tests und
 - fixtures, mocks, factories, snapshots, helpers
 - existing tests for the same behavior
 - PR intent, bug report, or known regression when available
+- relevant test changes and the commands, selection rules, and prerequisites that determine whether those tests run
 - external boundaries: database, API, auth, queue, filesystem, time, randomness, network
 
 Use the minimum code and test context needed to judge signal. Continue reading only when a test’s claimed behavior, real dependency, risky branch, or nearby stronger coverage is unclear.
@@ -50,6 +51,11 @@ For each test or test group, answer:
 5. Could real behavior break while this still passes?
 6. Could a harmless refactor break this?
 7. Is this the right level: unit, integration, contract, end-to-end, or none?
+8. Did the claimed validation actually run this test under the relevant conditions?
+
+When tests changed, compare the protected behavior before and after: what realistic failure would the previous test catch that the replacement now accepts? Inspect changed assertions, fixtures, mocks, snapshots, skips, and configuration together. Establish whether lost protection follows an authorized contract change or a demonstrated error in the old test. A changed interface alone does not authorize dropping its failure cases.
+
+For an important claim whose sensitivity is uncertain, use existing failing-before evidence or a focused check against a known broken version when practical. If a temporary defect would resolve that uncertainty, use an isolated disposable copy, preserve the test, restore the copy afterward, and report the observation. Do not mutate the reviewed checkout or require broad mutation infrastructure. A passing result against the defect disproves only the protection that experiment exercised.
 
 ## Classify
 
@@ -66,6 +72,8 @@ Treat test patterns as leads, not verdicts. Establish the contract, the realisti
 - **Constants and fixtures:** can provide independent expectations for published formats, protocol values, or compatibility requirements. Distinguish those checks from assertions that compare fixture-controlled values with themselves or merely repeat non-critical configuration. Judge wrappers and getters by the behavior they own, not their size or name.
 - **Snapshots:** can protect a stable, meaningful output contract when changes receive semantic review. Investigate noisy incidental output, unnoticed contract changes, or bulk snapshot updates that accept a regression. Snapshot syntax alone does not make a test weak.
 - **Mocks and other doubles:** can isolate a meaningful contract or control failure conditions. Check whether they replace the behavior under test or conceal broken wiring, persistence, or transformation that the test claims to verify.
+- **Setup and capability selection:** check whether fixtures initialize state, enable features, or supply configuration that the supported workflow does not guarantee. Keep tests of valid prepared states, but do not credit them as proof of readiness or availability. Error-handling tests can be valuable while successful use remains untested or broken.
+- **Execution gaps:** inspect opt-ins, skips, expected-failure markers, and required infrastructure. A suite excluded from the actual validation command cannot support its success claim. Recommend required deterministic coverage in the required command, with visible failure for unavailable prerequisites; keep optional live-service checks explicit.
 - **Calculated expectations:** check whether the oracle is independent of the implementation. Repeating the same flawed calculation can hide a bug; a computed expectation grounded independently in the contract is not automatically tautological.
 - **Overlapping or internal tests:** compare what the tests check before calling them redundant or tied to implementation details. Keep internal tests when they catch important failures that other tests would miss. Flag assertions on private structure when harmless refactors break them or real regressions still pass.
 - **Tests using an old API:** check whether a replaced production API or adapter remains only because tests still use it. Find other callers and check compatibility requirements before recommending removal. If the old API is no longer needed, classify useful tests as **Fix** and recommend updating them to use the replacement while checking the same behavior. An internal API used only by tests may still protect useful behavior; that alone is not a reason to remove it or its tests.
@@ -98,6 +106,8 @@ When editing:
 - remove tests that are redundant, misleading, brittle, or low-signal
 - add focused regression coverage for important risks
 - run the most relevant test command when available; otherwise explain the next best check
+
+Derive expectation changes from authorized requirements or evidence that the old test was wrong. Preserve meaningful cases when adapting interfaces or setup. If a corrected test exposes a production defect outside the authorized edit, leave it failing and report the defect; test cleanup does not authorize a production fix or weakening the expectation. State passed, failed, skipped, and unable-to-run outcomes separately.
 
 ## Constraints
 

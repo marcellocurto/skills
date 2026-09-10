@@ -29,6 +29,8 @@ Give another engineer enough evidence and direction to fix the bug without rerea
 - Do not replace the user's path with a more convenient lower-level reproduction or validation when it can bypass the reported failure.
 - Do not recommend removing the visible symptom when the evidence points to a deeper mismatch. Establish the mechanism and fix the root cause, or make verifying it the first plan step.
 - Do not recommend tests that only mirror implementation.
+- Put a practical regression test and observation of its meaningful failure before the fix. Preserve the reported starting conditions and derive its expected result from the required behavior. If automated reproduction is impractical, state the limitation and plan the closest meaningful executable check.
+- Identify prerequisites or unresolved decisions that may keep the regression red. Plan to preserve that failure if blocked; accepting the error, bypassing the path, or changing test data to avoid it does not fix the bug. Confirm that the proposed validation command actually selects the regression.
 
 ## Evidence Budget
 

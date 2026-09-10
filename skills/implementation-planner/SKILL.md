@@ -40,6 +40,10 @@ When planning to replace an interface, find everything that uses it, including t
 
 Plan checks through a user action or a module interface expected to remain stable. Each proposed test must name the realistic regression it would catch. Include exact existing commands when they can be established from the repository; do not invent commands or require tests that merely mirror implementation details.
 
+For behavioral changes, order each practical test before its implementation and state the expected failure and relevant starting conditions. If no meaningful automated check is practical, explain why and plan alternative evidence. For behavior-preserving refactors, plan baseline checks and preservation of existing failure cases. Identify any intended expectation change and the requirement authorizing it.
+
+Check that required coverage runs in the proposed validation command, including relevant opt-ins, exclusions, and infrastructure prerequisites. Do not plan setup that silently supplies readiness the supported workflow lacks. Name any decision or prerequisite that could prevent a valid regression from passing; direct implementation to preserve that failure and report the blocker rather than weaken acceptance.
+
 ## Refine Before Presenting
 
 Taste-check the draft and revise it in place:

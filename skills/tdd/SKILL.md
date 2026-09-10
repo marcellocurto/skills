@@ -5,7 +5,7 @@ description: Build features and bug fixes test-first around meaningful behavior.
 
 # Test-Driven Development
 
-TDD is a sequence of small red → green → refactor cycles. Each cycle must make the intended behavior executable, demonstrate that the check fails for the intended reason, and leave the affected path in a production-quality shape. The resulting tests must be worth keeping.
+TDD is a sequence of small red → green → refactor cycles. Make the intended behavior executable and observe its failure before implementing it. A completed cycle leaves the affected path in a production-quality shape; a blocked cycle preserves the valid failing test and reports what prevents completion.
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) so test names and interface vocabulary match the project's domain language, and respect ADRs in the area you're touching.
 
@@ -19,7 +19,7 @@ See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking g
 
 A **seam** is a boundary where a test exercises behavior or controls a dependency. It may be a public API or an internal interface owned by a module. An internal module can have its own contract and meaningful tests without exposing that interface to application callers. Do not bypass encapsulation merely to assert on incidental private state.
 
-Before writing a test, name the behavior and the realistic failure it should catch, then choose where to call the code or control its dependencies. Prefer existing interfaces and nearby test conventions. Use an internal interface when its tests catch important failures that other tests would miss. Do not expose private state or add an abstraction just to make a test easier to write. Ask only when the choice would change the agreed scope or a contract.
+Before writing a test, identify the requirement that establishes the expected outcome, the starting conditions, and the realistic failure it should catch. Then choose where to call the code or control its dependencies. Prefer existing interfaces and nearby test conventions. Use an internal interface when its tests catch important failures that other tests would miss. Do not expose private state or add an abstraction just to make a test easier to write. Ask only when the choice would change the agreed scope or a contract.
 
 Testing effort should land on critical paths and complex logic rather than every edge case.
 
@@ -54,11 +54,29 @@ When a bug has a clear, practical regression path:
 5. Make a focused production-quality change that restores the intended behavior while preserving nearby contracts and clear ownership.
 6. Rerun the regression test, then run relevant adjacent tests, type checks, lint, or scenario checks in proportion to the change's risk.
 
-### When a failing test is impractical
+## When a failing test is impractical
 
 Do not create substantial test infrastructure, brittle mocks, slow end-to-end setup, production-only state, or broad fixture churn merely to satisfy the workflow. Prefer no new test over a test with weak or misleading signal.
 
-Before fixing the bug, explain why a permanent regression test is not worth its cost and choose a check that can demonstrate the failure and the fix. This may be a script, manual command, browser workflow, log assertion, or integration check. It must exercise the broken behavior, not merely nearby code that already works.
+Before implementing the behavior, explain the concrete limitation and choose a check that can demonstrate the missing behavior and its correction. This may be a script, manual command, browser workflow, log assertion, or integration check. It must exercise the required behavior, not merely nearby code that already works. If execution is unavailable, report the evidence gap; do not substitute a test that bypasses it.
+
+A test added after implementation can protect against a regression, but is not evidence of test-first work. If it already passes, inspect whether the behavior exists or the check misses it. Do not manufacture a failure just to claim a red phase. Running a later regression against the old implementation can establish sensitivity; report that sequence accurately.
+
+## Preserve the expectation
+
+Change a test only when the authorized requirement changed, evidence shows the test was wrong against that requirement, or an interface/setup change preserves the same protected behavior. State the reason for a material expectation change. The implementation's new output is not authority to change its expected output.
+
+This applies to assertions, fixtures, mocks, snapshots, skips, expected-failure markers, and test selection. Do not make a failing case pass by removing its relevant starting conditions, accepting its error as success, or bypassing the failing collaborator. When replacing a test, retain its meaningful failure cases unless their contract was explicitly retired.
+
+Distinguish a test defect, unavailable execution, and a real contract failure. Fix a broken reproduction without changing the intended outcome. A setup or infrastructure error is not the required behavioral red; preserve and report it separately if it prevents reaching that behavior.
+
+## When green is blocked
+
+Continue authorized implementation and necessary restructuring while they can satisfy the expectation. Refactoring after green does not prohibit structural changes needed to reach green.
+
+If a valid failure requires an unresolved domain decision, unavailable prerequisite, or material scope expansion, preserve the failing test and completed work. Report the expected and actual behavior, the command and failure observed, and the smallest prerequisite or decision needed. Continue independent in-scope work where useful. Do not weaken the test or disable the feature to make validation pass.
+
+A pre-existing defect can still block the requested behavior; its age does not make acceptance optional. A blocked implementation is unfinished. A request only to reproduce a bug or add a failing regression can be complete with that test still red; it does not authorize fixing production code.
 
 ## Validation cadence
 
@@ -66,12 +84,12 @@ Within each red → green → refactor cycle, run the focused check and any adja
 
 At completion, satisfy applicable repository checks and meaningful regression coverage. Reuse results that still cover the final implementation and relevant conditions; rerun only invalidated or failed checks unless a repository rule requires otherwise. Do not repeat a full suite, build, or lint pass merely to mark another cycle complete.
 
+Verify that the relevant tests actually ran under the reported command. Report passed, failed, skipped, and unable-to-run checks distinctly. Required coverage hidden behind an opt-in or missing prerequisite remains a verification gap, even when the command exits successfully.
+
 ## Guardrails
 
 - **Red before green.** Write the failing test first, then implement the current behavior completely. Don't anticipate future tests or add speculative features.
 - **One behavior at a time.** Keep each cycle focused on one coherent contract change. Use the observations and dependency controls needed to prove it without batching unrelated behavior into the same cycle.
-- Do not change tests merely to match an incorrect implementation.
-- Do not weaken existing assertions unless the intended behavior has genuinely changed and the reason is clear.
 - Keep a regression test focused on the reported bug; avoid unrelated coverage expansion or fixture churn.
 - If a bug is flaky, make the regression signal deterministic where practical and state what signal is being locked down.
 - If a bug exposes a broader class of failures, establish the focused regression path first, then consider sibling coverage.
@@ -82,5 +100,5 @@ At completion, satisfy applicable repository checks and meaningful regression co
 Report the evidence, not only the outcome:
 
 - Name the failing-before test or executable check and the failure it produced.
-- Name the passing-after test run and any nearby validation performed.
+- Name the passing-after test run, or the still-failing regression and blocker, with any nearby validation performed.
 - If failing-before evidence could not be demonstrated, state why and describe the closest regression check used instead.

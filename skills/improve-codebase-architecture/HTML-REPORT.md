@@ -41,7 +41,7 @@ Use clear hierarchy, readable text, and enough space for labels and explanations
 
 Label nodes and relationships in the project's vocabulary. Distinguish observed structure from proposed structure. Use color as supporting emphasis, with text or line treatment conveying the same distinction. Include captions or accessible descriptions for diagrams whose meaning is not apparent from nearby prose.
 
-Use ordinary architectural terms, including component, service, API, and boundary, when they match the repository. The distinctions in [codebase-design](../codebase-design/SKILL.md) should clarify the explanation without replacing established names.
+Use ordinary architectural terms, including component, service, API, and boundary, when they match the repository. When using the `codebase-design` skill, let its distinctions clarify the explanation without replacing established names.
 
 ## Verify the delivered artifact
 

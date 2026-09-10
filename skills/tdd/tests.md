@@ -37,6 +37,8 @@ Judge these mechanisms by what they prove:
 | Failed work rolls back atomically | Observe the relevant database state after rollback | A rollback helper was invoked |
 | Duplicate submissions dispatch one payment request | Observe requests at the payment boundary | A private deduplication helper ran a particular number of times |
 | An internal policy enforces a domain invariant | Exercise that policy's interface with a case that violates the invariant | Assert its private fields or intermediate helper sequence |
+| Existing recipients can save invoices after an upgrade | Call the invoice save operation with representative existing assignments and observe the saved number | Initialize a new allocator in setup when the upgrade does not guarantee initialization |
+| A deployed capability is available | Exercise its selected configuration and required outcome | Verify only that missing configuration produces a graceful error |
 
 Direct database observations are appropriate when persistence, schema, or transaction behavior is the subject. If the promise is committed state visible to another consumer, observe it after commit through an independent connection or the actual consumer path. A public read method may be the better observation for a user-facing retrieval contract:
 
@@ -50,7 +52,15 @@ test("createUser makes user retrievable", async () => {
 
 Do not create a public API merely to avoid testing an existing internal contract. Equally, do not reach into private state when the same contract can be tested through its owning interface.
 
-**Shared-bug risk**: Repeating the production calculation in a test can reproduce its mistakes. That is a reason to seek an independent oracle, not proof that every calculated expectation is tautological.
+## When a regression should stay red
+
+Suppose two existing recipients legitimately share customer number `25081`. A regression calls the real invoice creation operation for each and checks that both saved invoices retain `25081`. If the implementation rejects the second recipient, expecting that rejection would encode the defect. Giving the recipients different numbers, running an unguaranteed import first, or stubbing number assignment would remove the case the test must protect.
+
+Keep the expectation while fixing the assignment model within scope. If that requires an unresolved domain decision or unapproved migration, retain the failure and report the blocker. If the user instead explicitly changes the contract to require distinct numbers, update the test against that decision and explain which former behavior is being retired.
+
+## Independent expectations
+
+Repeating the production calculation in a test can reproduce its mistakes. That is a reason to seek an independent oracle, not proof that every calculated expectation is tautological.
 
 ```typescript
 // Weak oracle if it duplicates the production calculation and its assumptions.

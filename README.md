@@ -46,13 +46,13 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Find out whether a GitHub issue is true, in scope, ready, duplicated, blocked, or already solved.
 - **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Recommend or implement a simpler code solution while preserving requirements, clear ownership, and necessary lifecycle complexity.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Convert approved work into GitHub issues that are focused, self-contained, non-duplicative, and ready for the right owner.
-- **[`implement`](skills/implement/SKILL.md)**: Implement an existing specification or ticket set, with verification against its requirements and review matched to the change's risk.
+- **[`implement`](skills/implement/SKILL.md)**: Implement an existing specification or ticket set using meaningful test-first checks for behavioral changes, with explicit blockers when required behavior cannot be verified.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
 - **[`address-review-feedback`](skills/address-review-feedback/SKILL.md)**: Evaluate each review concern and proposed remedy, implement justified fixes, and reply to and resolve settled threads within the authorized scope.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Check completed work against the decisions and requirements that authorized it without turning the audit into general code review.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find code that is harder to understand or change than the problem requires and identify safer, simpler shapes.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Trace what a change could break outside the obvious diff, especially across data, timing, persistence, dependencies, and runtime wiring.
-- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Separate tests that catch realistic regressions from tests that mostly add maintenance cost or reassuring coverage numbers.
+- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge realistic regression protection, lost coverage in test changes, and whether claimed validation actually runs the relevant tests.
 - **[`product-ui-audit`](skills/product-ui-audit/SKILL.md)**: Evaluate an existing interface in its real product context and converge on one practical UX direction before implementation.
 - **[`user-journey-verifier`](skills/user-journey-verifier/SKILL.md)**: Prove that completed software works through the exact path and artifact a real user experiences.
 - **[`relentless-review`](skills/relentless-review/SKILL.md)**: Ask whether a proposal or result is genuinely the best path by pushing on its risks, assumptions, and alternatives.
@@ -65,10 +65,12 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`grilling`](skills/grilling/SKILL.md)**: Resolve consequential assumptions and tradeoffs through focused rounds of questions, keeping the interview bounded by the decision at hand.
 - **[`prototype`](skills/prototype/SKILL.md)**: Build the cheapest useful artifact that can answer a design or behavior question before committing to a full implementation.
 - **[`research`](skills/research/SKILL.md)**: Answer a question from primary sources, reconcile conflicting evidence, and state what remains uncertain, saving findings when requested.
-- **[`tdd`](skills/tdd/SKILL.md)**: Drive a feature or bug fix from meaningful failing behavior through to a verified implementation.
+- **[`tdd`](skills/tdd/SKILL.md)**: Drive a feature or bug fix from meaningful failing behavior to a verified implementation, preserving valid failing regressions when a decision or prerequisite blocks completion.
 - **[`wizard`](skills/wizard/SKILL.md)**: Package setup steps that require a person—credentials, dashboards, migrations, or cutovers—into a guided interactive Bash flow.
 
 ## Sources and Attribution
+
+Skill maintenance follows [OpenAI's GPT-6 prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices), with repository-owned instructions for task boundaries and proportionate verification.
 
 Several skills are forked, adapted, or inspired by other projects:
 

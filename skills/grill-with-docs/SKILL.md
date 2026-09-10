@@ -10,9 +10,7 @@ Stress-test the requested plan through conversation and keep agreed domain langu
 
 ## Load the local guidance
 
-Use [grilling](../grilling/SKILL.md) for questions and decision dependencies, and [domain-modeling](../domain-modeling/SKILL.md) for terminology and architectural records. Resolve these links relative to this skill. Use the host's skill loader when it can load these repository-owned copies; otherwise read the files directly with available file tools. No tool named `Skill` is required.
-
-If the skills were installed separately, look for local copies from this repository in the available skill catalog. If a dependency is unavailable, continue with the combined procedure below and disclose the missing guidance. Do not fetch or substitute an external skill.
+Use the `grilling` skill for questions and decision dependencies, and the `domain-modeling` skill for terminology and architectural records, when available. Locate these repository-owned skills through the available skill catalog and use its supplied locations or loading mechanism; do not infer sibling directories. If either skill is unavailable, continue with the combined procedure below. Do not fetch or substitute an external skill.
 
 ## Establish documentation scope
 
@@ -29,8 +27,8 @@ Inspect the existing glossary, context map, relevant ADRs, and only the code nee
 
 ## What to record
 
-- **Domain terms:** Record resolved project-specific concepts, their meaning, and misleading synonyms in the relevant glossary. Keep implementation choices, open questions, and conversation history out of it. Use [CONTEXT-FORMAT.md](../domain-modeling/CONTEXT-FORMAT.md) when no existing glossary format governs; a concise definition and any terms to avoid are sufficient.
-- **Architectural decisions:** Record a settled choice when reversing it has meaningful cost, its rationale would otherwise be unclear, and it resolves a real tradeoff. Include the decision, why it was chosen, and material consequences or rejected alternatives worth preserving. Follow [ADR-FORMAT.md](../domain-modeling/ADR-FORMAT.md) when no existing ADR format governs; a short title and a paragraph explaining the choice and reason are sufficient. Do not create an ADR for every answer.
+- **Domain terms:** Record resolved project-specific concepts, their meaning, and misleading synonyms in the relevant glossary. Keep implementation choices, open questions, and conversation history out of it. When no existing glossary format governs, use the format guidance provided by the `domain-modeling` skill if available; otherwise a concise definition and any terms to avoid are sufficient.
+- **Architectural decisions:** Record a settled choice when reversing it has meaningful cost, its rationale would otherwise be unclear, and it resolves a real tradeoff. Include the decision, why it was chosen, and material consequences or rejected alternatives worth preserving. When no existing ADR format governs, use the format guidance provided by the `domain-modeling` skill if available; otherwise a short title and a paragraph explaining the choice and reason are sufficient. Do not create an ADR for every answer.
 - **Other answers:** Keep routine choices, tentative proposals, and unresolved questions in the conversation unless the user has requested another destination. Do not turn them into glossary definitions, accepted ADRs, specifications, or tracker issues automatically.
 
 Read back each documentation change and verify that it preserves the user's meaning without promoting an inference to an agreed requirement. Continue under the existing documentation authorization; ask again only when the proposed write exceeds it.

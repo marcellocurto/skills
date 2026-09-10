@@ -16,6 +16,10 @@ An internal collaborator may be substituted at a meaningful seam under the same 
 
 Model the dependency's relevant contract accurately, including failure and asynchronous behavior when they matter. A convenient mock response that the real dependency cannot produce gives misleading evidence.
 
+Preserve starting conditions that matter to the claim. Do not seed readiness, enable a capability, run a backfill, or supply configuration in setup unless the supported workflow guarantees it or that condition is explicitly the subject of the test. Tests of an initialized state are useful, but do not prove that deployment or first use establishes it. Exercise the real configuration selection when the claim depends on which path runs.
+
+A test of graceful rejection proves error handling, not availability of the required capability. Verify the supported successful workflow separately. A function test can detect a readiness decision without a real database when it executes that decision and faithfully supplies the relevant state; replacing the entire decision with a successful stub cannot.
+
 Use a real test database when verifying persistence, queries, schema constraints, or transaction semantics. A database double may still be useful for a separate test of caller behavior, such as recovery from a reported storage failure, but it does not prove that the real storage path behaves correctly.
 
 Assert calls, counts, or ordering only when they express a promised interaction. If the contract requires one payment request for duplicate submissions, assert that boundary interaction. Asserting that a private formatting helper ran once usually freezes implementation structure.

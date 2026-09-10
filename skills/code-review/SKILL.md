@@ -65,6 +65,10 @@ Judge whether the change safely does the right thing:
 
 For a requirements finding, cite the governing requirement and the contradictory implementation. Do not require tests by default; require one only when it protects observable behavior through a stable seam and would catch a realistic regression.
 
+Compare changed tests with their prior protection. Identify any realistic failure newly accepted by changed assertions, fixtures, mocks, snapshots, skips, or configuration, and check for an authorized contract change or a demonstrated error in the old test. Updating an interface is legitimate when the same behavior remains protected; new implementation output is not authority for a new expectation.
+
+Check whether setup repairs a prerequisite the supported workflow lacks, or an error-handling test is presented as proof that a capability works. Confirm that claimed validation selected the relevant tests and distinguish passed, failed, skipped, and unable-to-run checks. When test-first work is required, inspect available failing-before evidence; a final green run alone does not establish the sequence. Missing history is an evidence gap, not proof that the author skipped TDD.
+
 ### Maintainability
 
 Judge whether the change fits the repository and remains economical to change:

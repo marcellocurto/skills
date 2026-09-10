@@ -37,6 +37,7 @@ Prefer direct, boring changes that meet every real requirement. Simpler is valid
 - Compare total lifecycle complexity, not merely initial implementation size. Do not reject justified infrastructure, durable queues, explicit state, or domain distinctions simply because they add code. Complexity is removable only when requirements, operational guarantees, and failure modes remain covered.
 - Do not recommend removing a mechanism until its consumers, operational role, failure behavior, and replacement path are understood. Require a concrete cost and a behavior-preserving alternative.
 - When replacing an interface, find everything that uses it, including tests. Update tests to use the replacement while still checking the same behavior. Do not keep an old production API just to leave tests unchanged. Keep it when callers or rollout requirements still need it, and state when any temporary adapter can be removed.
+- In implementation mode, establish relevant test results before a behavior-preserving refactor and retain the same meaningful cases afterward. Change an expectation only for an authorized contract change or a demonstrated error in the test. Do not simplify fixtures, mocks, or selection in ways that hide a real failure. If the work includes a behavioral fix, observe a practical regression failing before fixing it; explain any unavailable evidence. Preserve a valid failing regression when an unresolved decision or prerequisite blocks completion.
 
 ## Context Budget
 

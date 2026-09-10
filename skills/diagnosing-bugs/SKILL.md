@@ -105,6 +105,12 @@ When that test is practical:
 3. Apply the fix supported by the established mechanism.
 4. Run the check again and confirm the intended behavior passes. If it still fails, return to the investigation.
 
+Preserve the relevant starting state, configuration, and real decision path in the regression. Setup must not repair a prerequisite that the reported workflow lacks. A check that expects graceful rejection does not prove the required operation succeeds.
+
+Change expectations only when an authorized requirement changed or evidence establishes that the test was wrong against the requirement. Interface or setup changes must retain the protected failure case. Do not accept new output, replace a failing collaborator with a successful stub, or skip the regression merely to get green.
+
+Continue authorized fixes and necessary restructuring. If a valid failure depends on an unresolved decision, unavailable prerequisite, or material scope expansion, preserve the failing test and report the blocker and remaining work. A reproduction-only request can finish with a red test; an implementation request remains incomplete. Distinguish behavioral failure from a check that could not reach the behavior, and confirm the reported command actually ran the regression.
+
 Whether or not a durable test was added, verify the fix through the original entry point, environment, inputs, and sequence when accessible. A reduced reproduction or lower-level test supports that verification but does not replace it. For intermittent failures, report the before/after observations and remaining uncertainty. If either failing-before evidence or original-scenario verification is unavailable, state that gap explicitly.
 
 After confirming the fix, consider whether the bug exposed a stable invariant that can be enforced at the seam that owns it. Prefer an existing structural mechanism—such as a type or schema constraint, boundary validation, lint rule, or canonical entry point—when it prevents the demonstrated bug class. Keep the regression test as behavioral proof. Do not add machinery for an isolated failure with no credible recurrence, and do not expand the authorized scope to enforce the invariant.

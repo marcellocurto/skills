@@ -31,6 +31,6 @@ For services such as Stripe or Twilio, accept the service through a dependency i
 
 - Compare the behavior and realistic regressions protected by existing tests with what the new interface tests actually exercise. Passing higher-level tests or coverage percentages alone do not establish that the same cases remain protected.
 - Keep lower-level tests that catch important failures other tests would miss, such as edge cases, complex calculations, or broken dependency contracts. Being below the new interface does not make a test redundant.
-- Update tests tied to removed implementation details while preserving the behavior they check. Remove duplicates only when the retained tests would catch the same failures.
+- Update tests tied to removed implementation details while preserving the behavior and failure cases they check. New implementation output does not justify a new expectation; require an authorized contract change or evidence that the old test was wrong. Remove duplicates only when the retained tests would catch the same failures.
 - Add tests through the combined module's interface when they check behavior or interactions that lower-level tests cannot verify. Check observable results rather than adding another suite for the same cases.
 - During an authorized refactor, run the affected tests to verify retained coverage. For design-only work, state which tests should stay, move, or be removed and why; do not modify them.

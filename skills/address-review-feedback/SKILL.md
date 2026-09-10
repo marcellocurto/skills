@@ -31,6 +31,8 @@ For each thread:
 
 Related concerns may share an implementation, commit, or verification run, but reply to each original thread. General PR comments have no thread-resolution state; respond where appropriate without claiming to resolve them.
 
+For a behavioral fix with a practical regression test, observe its meaningful failure before changing production code. Use the `tdd` skill when available. Explain a concrete limitation and alternative verification before implementing without a regression test. Change expectations only for an authorized requirement change or a demonstrated test error; interface and setup changes must preserve protected cases. If the valid regression remains blocked, retain it failing and leave the concern unresolved. Confirm the relevant check actually ran; a skip or unavailable prerequisite is not a passing verification.
+
 Before a reply or resolution, refresh the thread and relevant PR head to catch intervening changes. Preserve others' work, skip already-completed operations, and read back uncertain outcomes before retrying to avoid duplicate replies. Verify each reply and resolution; report publication failures without claiming completion.
 
 Finish with a short summary of fixes, declined or already-addressed feedback, and remaining open threads with their blockers. Link the PR and relevant commits; disclose missing coverage. Do not create a large classification report unless requested.

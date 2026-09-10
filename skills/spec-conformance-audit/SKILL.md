@@ -58,7 +58,7 @@ Report **unauthorized expansion** separately when the work changes behavior outs
 
 ## Coordinate journey evidence
 
-Reuse relevant results from `user-journey-verifier` when they cover the same implementation or artifact version, entry point, inputs, and conditions. When a material acceptance gap remains, use [user-journey-verifier](../user-journey-verifier/SKILL.md) within the request's verification scope to obtain the missing evidence. Pass the requirement, expected outcome, actual user or consumer path, and relevant environment rather than requesting another general verification pass.
+Reuse relevant results from `user-journey-verifier` when they cover the same implementation or artifact version, entry point, inputs, and conditions. When a material acceptance gap remains, use the `user-journey-verifier` skill when available, within the request's verification scope. Pass the requirement, expected outcome, actual user or consumer path, and relevant environment rather than requesting another general verification pass. If the skill is unavailable, verify that path directly within the same scope and report the observed outcome or exact evidence gap.
 
 Journey verification may run before the audit or close a gap found during it; a conforming verdict is not a prerequisite. Credit a passing result only for the requirements it directly proves. Classify a failure from its observed mismatch and available implementation evidence, without assuming failed behavior means absent code. An unavailable or inconclusive journey remains a verification gap, not an implementation defect.
 
