@@ -7,6 +7,8 @@ description: Turn approved work into well-scoped GitHub issues after checking fo
 
 Turn existing context into one or more focused GitHub tickets that can be implemented and verified independently.
 
+Prepare the complete ticket set, then obtain explicit user approval of the drafts before any GitHub write. Invoking this skill, including after `implementation-planner`, authorizes preparation; it does not approve publication.
+
 ## Principles
 
 - Use facts from the user, source material, and repository. Do not invent requirements, goals, metadata, relationships, or priority.
@@ -89,13 +91,17 @@ Treat readiness and dependency status as separate dimensions. A fully specified,
 
 Before publication, check all completion requirements throughout each issue against its owner, execution requirements, labels, and dependencies. Being able to start coding is insufficient. Where verification depends on a particular environment, make the handoff explicit: if that capability is unavailable at execution time and no equivalent evidence can be obtained, preserve completed work and report the unverified criteria and execution blocker rather than claiming completion or reclassifying the work as human-only.
 
-Check the current request and prior approvals for authorization to publish the concrete ticket set, including its repository, content, labels, and native relationships. Approval may already be supplied by a direct request to publish that set or by an earlier explicit approval of the drafts. Reuse that authorization when the set remains within its approved scope; do not require another turn solely because publication is the next step.
+### 4. Obtain approval
 
-When content, metadata, duplicate handling, or publication authority still requires a decision, present the exact drafts and affected choices before asking for the missing approval. Include a short rationale for proposed labels and for including or omitting `ready-for-agent`. Approval of the drafts includes their listed labels and native relationships. Approval of an underlying feature alone is not permission to publish issues, and material changes to an approved set require approval of those changes.
+Present the target repository, exact titles and bodies, proposed labels, native relationships, and duplicate findings for the complete ticket set. Include a short rationale for proposed labels and for including or omitting `ready-for-agent`. Ask the user to approve publication and wait for their response before any GitHub write.
 
-### 4. Publish
+Approval must refer to these concrete drafts and their listed metadata. A request to turn work into tickets, an instruction to run skills in sequence, or approval of the underlying feature or implementation plan does not satisfy this step. Completing the drafts during the same turn does not turn the initial request into approval.
 
-If any part of this ticket set was already attempted, reconcile that state using [Resume partial publication](#5-resume-partial-publication) before making further writes.
+Reuse an earlier explicit approval of the same drafts, repository, labels, and native relationships when continuing or resuming publication; do not ask again for an unchanged approved set. Material changes or unresolved duplicate handling require approval of the affected choices before writing them.
+
+### 5. Publish
+
+Proceed only with the concrete ticket set approved in step 4. If any part of this ticket set was already attempted, reconcile that state using [Resume partial publication](#6-resume-partial-publication) before making further writes.
 
 Preflight `gh`, authentication, the repository, and every approved label. If an approved label is missing, report the affected tickets and ask for the missing decision; do not create or silently substitute a label. Continue only operations whose content and metadata remain authorized. Use `gh issue create` with a body file so Markdown and real newlines are preserved.
 
@@ -117,7 +123,7 @@ Both issue numbers in a helper call belong to the named repository. Relationship
 
 Never propose, create, or assign a `blocked` label, including spelling or case variants. Never use a label or body link as a fallback for a failed native blocking relationship.
 
-### 5. Resume partial publication
+### 6. Resume partial publication
 
 Resume the approved set rather than starting a new publication:
 
@@ -127,6 +133,6 @@ Resume the approved set rather than starting a new publication:
 4. Create only tickets confirmed not to exist, retaining the duplicate checks and blocker-before-dependent ordering. Use the existing issue numbers for all remaining native relationships. Inspect a failed relationship operation before retrying it; never replace it with a label or body-only dependency.
 5. Verify each resumed write and update the progress mapping. Continue independent authorized operations when one ticket is blocked, and report the remaining decision or failure without claiming the entire set is complete.
 
-### 6. Verify and report
+### 7. Verify and report
 
 Verify every created or reused issue, approved label, and native relationship. Return the issue URLs and relationship status. If publication is partial, state what succeeded, what still needs doing, and which outcomes remain uncertain, with the exact failure. Keep successful writes. Do not delete and recreate issues to retry a failed step, or replace a failed native relationship with a label or body link.
