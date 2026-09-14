@@ -8,8 +8,6 @@ Skill runtime instructions must be self-contained and repository-controlled. Nev
 
 In runtime instructions, reference other skills by name (for example, “Use the `tdd` skill when available”); the agent resolves their locations through the host's skill catalog. Do not use sibling paths such as `../tdd/SKILL.md`. Relative links are for supporting files within the same skill. Keep essential instructions local so missing companion skills do not remove required behavior.
 
-Treat external skills as research, not templates. Extract the useful decisions, then write from scratch in this repository's vocabulary and voice. Do not copy their prose, headings, examples, slogans, structure, tone, or workflow ceremony. Remove generic advice, repetition, hype, and any sentence that does not change agent behavior.
-
 Store every repository skill under `skills/<skill-name>/`. Keep `.claude-plugin/plugin.json` synchronized when adding, removing, or renaming a skill. Every repository skill must be listed in its `skills` array so installers group it under "Marcello Curto Skills" rather than "Other."
 
 Also update `README.md` when adding or removing skills or the skill description materially changes.

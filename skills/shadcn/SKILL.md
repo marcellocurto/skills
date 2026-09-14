@@ -1,7 +1,7 @@
 ---
 name: shadcn
 description: Build, update, debug, and style shadcn/ui components using the project's registry and conventions.
-user-invocable: false
+disable-model-invocation: true
 allowed-tools: Bash(npx shadcn@latest *), Bash(pnpm dlx shadcn@latest *), Bash(bunx --bun shadcn@latest *)
 ---
 

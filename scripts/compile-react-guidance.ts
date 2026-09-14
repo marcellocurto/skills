@@ -1,9 +1,22 @@
 import { readdir } from "node:fs/promises";
 import { join, posix } from "node:path";
 
-const skillRoot = join(import.meta.dir, "../skills/vercel-react-best-practices");
-const rulesRoot = join(skillRoot, "rules");
-const outputFile = Bun.file(join(skillRoot, "AGENTS.md"));
+const guides = [
+  {
+    name: "vercel-react-best-practices",
+    title: "React Best Practices",
+    priorityLabel: "Investigation priority",
+    introduction:
+      "Use [SKILL.md](SKILL.md) and only the rules relevant to the task. This compiled reference is for deliberate full-guide reading. Apply optimizations only for a supported performance mechanism; ratings and example gains are not measurements of the current application.",
+  },
+  {
+    name: "vercel-composition-patterns",
+    title: "React Composition Patterns",
+    priorityLabel: "Impact",
+    introduction:
+      "Use [SKILL.md](SKILL.md) to select the rules relevant to the task. This document combines all source rules for full-guide reading.",
+  },
+];
 const checkOnly = Bun.argv.slice(2).includes("--check");
 
 function record(value: unknown): value is Record<string, unknown> {
@@ -17,7 +30,7 @@ function requiredString(value: unknown, field: string, source: string): string {
   return value[field];
 }
 
-async function readRule(name: string) {
+async function readRule(rulesRoot: string, name: string) {
   const source = (await Bun.file(join(rulesRoot, name)).text()).replaceAll("\r\n", "\n");
   const match = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/.exec(source);
   if (!match?.[1] || !match[2]) throw new Error(`${name}: missing frontmatter or body`);
@@ -76,69 +89,82 @@ function compiledBody(body: string): string {
     .join("\n");
 }
 
-const metadata: unknown = await Bun.file(join(skillRoot, "metadata.json")).json();
-const sectionSource = await Bun.file(join(rulesRoot, "_sections.md")).text();
-const sections = [
-  ...sectionSource.matchAll(
-    /^## (\d+)\. (.+) \(([^)]+)\)\s*\n+\*\*Impact:\*\* (\S+)\s*\n\*\*Description:\*\* ([^\n]+)/gm,
-  ),
-].map((match) => {
-  const [, number, title, prefix, impact, description] = match;
-  if (!number || !title || !prefix || !impact || !description) {
-    throw new Error("Invalid section metadata");
-  }
-  return { number, title, prefix, impact, description };
-});
-if (!sections.length) throw new Error("No rule sections found");
+async function compileGuide(guide: (typeof guides)[number]) {
+  const skillRoot = join(import.meta.dir, "../skills", guide.name);
+  const rulesRoot = join(skillRoot, "rules");
+  const outputFile = Bun.file(join(skillRoot, "AGENTS.md"));
+  const metadata: unknown = await Bun.file(join(skillRoot, "metadata.json")).json();
+  const sectionSource = await Bun.file(join(rulesRoot, "_sections.md")).text();
+  const sections = sectionSource
+    .split(/^## /m)
+    .slice(1)
+    .map((source) => {
+      const match =
+        /^(\d+)\. (.+) \(([^)]+)\)\s*\n+\*\*Impact:\*\* (\S+)\s*\n\*\*Description:\*\* ([\s\S]+)$/.exec(
+          source.trim(),
+        );
+      if (!match) throw new Error(`${guide.name}: invalid section metadata`);
+      const [, number, title, prefix, impact, description] = match;
+      if (!number || !title || !prefix || !impact || !description) {
+        throw new Error("Invalid section metadata");
+      }
+      return { number, title, prefix, impact, description: description.trim() };
+    });
+  if (!sections.length) throw new Error("No rule sections found");
 
-const names = (await readdir(rulesRoot)).filter(
-  (name) => name.endsWith(".md") && !name.startsWith("_"),
-);
-const rules = await Promise.all(names.map(readRule));
-for (const rule of rules) {
-  if (!sections.some((section) => section.prefix === rule.prefix)) {
-    throw new Error(`${rule.name}: unknown section prefix ${rule.prefix}`);
-  }
-}
-
-const contents: string[] = [];
-const chapters: string[] = [];
-for (const section of sections) {
-  const members = rules
-    .filter((rule) => rule.prefix === section.prefix)
-    .toSorted((a, b) => (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
-  contents.push(`${section.number}. **${section.title}**`);
-  chapters.push(
-    `## ${section.number}. ${section.title}\n\n**Investigation priority: ${section.impact}**\n\n${section.description}`,
+  const names = (await readdir(rulesRoot)).filter(
+    (name) => name.endsWith(".md") && !name.startsWith("_"),
   );
-  for (const [index, rule] of members.entries()) {
-    const number = `${section.number}.${index + 1}`;
-    const anchor = rule.name.slice(0, -3);
-    contents.push(`   - ${number} [${rule.title}](#${anchor})`);
-    const impact = `${rule.impact}${rule.description ? ` (${rule.description})` : ""}`;
+  const rules = await Promise.all(names.map((name) => readRule(rulesRoot, name)));
+  for (const rule of rules) {
+    if (!sections.some((section) => section.prefix === rule.prefix)) {
+      throw new Error(`${rule.name}: unknown section prefix ${rule.prefix}`);
+    }
+  }
+
+  const contents: string[] = [];
+  const chapters: string[] = [];
+  for (const section of sections) {
+    const members = rules
+      .filter((rule) => rule.prefix === section.prefix)
+      .toSorted((a, b) => (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
+    contents.push(`${section.number}. **${section.title}**`);
     chapters.push(
-      `<a id="${anchor}"></a>\n\n### ${number} ${rule.title}\n\n[Source rule](rules/${rule.name})\n\n**Investigation priority: ${impact}**\n\n${compiledBody(rule.body)}`,
+      `## ${section.number}. ${section.title}\n\n**${guide.priorityLabel}: ${section.impact}**\n\n${section.description}`,
     );
+    for (const [index, rule] of members.entries()) {
+      const number = `${section.number}.${index + 1}`;
+      const anchor = rule.name.slice(0, -3);
+      contents.push(`   - ${number} [${rule.title}](#${anchor})`);
+      const impact = `${rule.impact}${rule.description ? ` (${rule.description})` : ""}`;
+      chapters.push(
+        `<a id="${anchor}"></a>\n\n### ${number} ${rule.title}\n\n[Source rule](rules/${rule.name})\n\n**${guide.priorityLabel}: ${impact}**\n\n${compiledBody(rule.body)}`,
+      );
+    }
+  }
+
+  const generated =
+    [
+      `# ${guide.title}`,
+      "<!-- Generated by scripts/compile-react-guidance.ts. Edit rules/ or metadata.json instead. -->",
+      `**Version ${requiredString(metadata, "version", "metadata.json")}**  \n${requiredString(metadata, "organization", "metadata.json")}  \n${requiredString(metadata, "date", "metadata.json")}`,
+      guide.introduction,
+      requiredString(metadata, "abstract", "metadata.json"),
+      "## Contents\n\n" + contents.join("\n"),
+      chapters.join("\n\n---\n\n"),
+    ].join("\n\n") + "\n";
+
+  if (checkOnly) {
+    if (!(await outputFile.exists()) || (await outputFile.text()) !== generated) {
+      throw new Error(
+        `${guide.name}: compiled guidance is stale. Run bun run react-guidance:build.`,
+      );
+    }
+    console.log(`${guide.name}: compiled guidance matches ${rules.length} source rules.`);
+  } else {
+    await Bun.write(outputFile, generated);
+    console.log(`${guide.name}: compiled ${rules.length} source rules.`);
   }
 }
 
-const generated =
-  [
-    "# React Best Practices",
-    "<!-- Generated by scripts/compile-react-guidance.ts. Edit rules/ or metadata.json instead. -->",
-    `**Version ${requiredString(metadata, "version", "metadata.json")}**  \n${requiredString(metadata, "organization", "metadata.json")}  \n${requiredString(metadata, "date", "metadata.json")}`,
-    "Use [SKILL.md](SKILL.md) and only the rules relevant to the task. This compiled reference is for deliberate full-guide reading. Apply optimizations only for a supported performance mechanism; ratings and example gains are not measurements of the current application.",
-    requiredString(metadata, "abstract", "metadata.json"),
-    "## Contents\n\n" + contents.join("\n"),
-    chapters.join("\n\n---\n\n"),
-  ].join("\n\n") + "\n";
-
-if (checkOnly) {
-  if (!(await outputFile.exists()) || (await outputFile.text()) !== generated) {
-    throw new Error("Compiled React guidance is stale. Run bun run react-guidance:build.");
-  }
-  console.log(`Compiled React guidance matches ${rules.length} source rules.`);
-} else {
-  await Bun.write(outputFile, generated);
-  console.log(`Compiled ${rules.length} React rules.`);
-}
+for (const guide of guides) await compileGuide(guide);

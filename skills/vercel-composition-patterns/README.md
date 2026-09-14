@@ -15,14 +15,14 @@ lifting state, and composing internals.
 
 ## Rules
 
-### Component Architecture (CRITICAL)
+### Component Architecture (HIGH)
 
 - `architecture-avoid-boolean-props.md` - Don't add boolean props to customize
   behavior
 - `architecture-compound-components.md` - Structure as compound components with
   shared context
 
-### State Management (HIGH)
+### State Management (MEDIUM)
 
 - `state-lift-state.md` - Lift state into provider components
 - `state-context-interface.md` - Define clear context interfaces
@@ -33,6 +33,13 @@ lifting state, and composing internals.
 
 - `patterns-children-over-render-props.md` - Prefer children over renderX props
 - `patterns-explicit-variants.md` - Create explicit component variants
+
+### React 19 APIs (MEDIUM)
+
+- `react19-no-forwardref.md` - React 19 API changes
+
+Section priorities come from `rules/_sections.md`. Individual rules have their own
+impact ratings, which can differ from the section priority.
 
 ## Core Principles
 
@@ -50,8 +57,17 @@ lifting state, and composing internals.
    - `architecture-` for Component Architecture
    - `state-` for State Management
    - `patterns-` for Implementation Patterns
+   - `react19-` for React 19 APIs
 3. Fill in the frontmatter and content
 4. Ensure you have clear examples with explanations
+
+## Compiled Reference
+
+From the repository root, run `bun run react-guidance:build` after editing rules,
+section metadata, or `metadata.json`. This regenerates both React guides.
+
+Run `bun run react-guidance:check` to verify that the compiled references match
+their sources. This check also runs as part of `bun run check`.
 
 ## Impact Levels
 

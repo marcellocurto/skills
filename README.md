@@ -26,6 +26,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 **User-invoked (explicit only)**
 
+- **[`shadcn`](skills/shadcn/SKILL.md)**: Use the shadcn CLI and registry correctly when adding, composing, styling, or repairing components in a shadcn project.
 - **[`close-ticket`](skills/close-ticket/SKILL.md)**: Close the ticket being worked on or discussed with a concise comment explaining the implementation; stop if the intended ticket is unclear.
 - **[`simple-answer`](skills/simple-answer/SKILL.md)**: Use this when an answer is technically correct but harder to understand than it needs to be.
 - **[`wayfinder`](skills/wayfinder/SKILL.md)**: Resolve the decisions needed for a large or uncertain effort, using tracker issues when work needs coordination across people or sessions.
@@ -56,7 +57,6 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`product-ui-audit`](skills/product-ui-audit/SKILL.md)**: Evaluate an existing interface in its real product context and converge on one practical UX direction before implementation.
 - **[`user-journey-verifier`](skills/user-journey-verifier/SKILL.md)**: Prove that completed software works through the exact path and artifact a real user experiences.
 - **[`relentless-review`](skills/relentless-review/SKILL.md)**: Ask whether a proposal or result is genuinely the best path by pushing on its risks, assumptions, and alternatives.
-- **[`shadcn`](skills/shadcn/SKILL.md)**: Use the shadcn CLI and registry correctly when adding, composing, styling, or repairing components in a shadcn project.
 - **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition techniques when component APIs become rigid, tangled, or overloaded with boolean props.
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
 - **[`code-review`](skills/code-review/SKILL.md)**: Review a fixed change from independent correctness and maintainability perspectives, with focused adversarial review when the risk warrants it.
@@ -93,7 +93,7 @@ bun run check
 Installable skills live in [`skills/`](skills/). Repository-level automation lives in [`scripts/`](scripts/).
 The tooling uses TypeScript 7, Oxlint, and Oxfmt. Run `bun run format` to format repository files and `bun run lint:fix` to apply safe lint fixes.
 
-After editing the React performance rules, run `bun run react-guidance:build` to regenerate their compiled reference. `bun run check` includes `react-guidance:check` to catch drift between the rules and that reference.
+After editing the React performance or composition rules, section metadata, or document metadata, run `bun run react-guidance:build` to regenerate both compiled references. `bun run check` includes `react-guidance:check` to catch drift between each guide's sources and its compiled reference.
 
 Install every published skill globally for Codex and Claude Code with symlinks:
 
