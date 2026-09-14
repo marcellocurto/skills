@@ -20,7 +20,7 @@ These instructions and [TESTS.md](TESTS.md) contain the full review criteria. Do
 ## Establish one pinned comparison
 
 1. Resolve the PR URL, repository, and GitHub host from the user's target or current branch. Preserve the host in every operation, including fork PRs. Ask only when ambiguity would select a different PR.
-2. Fetch PR metadata, all relevant linked requirements, comments and review threads, changed files, and verification results through available GitHub tools or `gh`. Follow pagination and detect truncated diffs or incomplete thread conversations. Record base and head commit IDs, head repository, and PR state.
+2. Fetch PR metadata, all relevant linked requirements, comments and review threads, changed files, and verification results through available GitHub tools or `gh`. Follow pagination and detect truncated diffs or incomplete thread conversations. Record PR state, title and description, base and head repository identities, target branch, and base and head commit IDs. Retain the content and source identities of the requirements used by the audit so later changes can be detected.
 3. Inspect the exact head through an existing matching checkout or an isolated temporary checkout. Preserve the user's branch and unrelated work. Obtain the complete commit comparison, calculate the merge base, and record `git diff <merge-base>..<head> --` and the corresponding commit list. Do not substitute the current working tree for the pinned PR. If the comparison is unexpectedly empty or unavailable, investigate before making a verdict.
 4. Read governing repository instructions, applicable standards, surrounding code, callers, and behavior-defining tests. Account for each changed file; generated or mechanical files may be reviewed through their source and generation contract when that establishes their correctness.
 
@@ -99,7 +99,9 @@ Never claim that absence of findings proves readiness when material inspection o
 
 ## Publish one actionable comment
 
-Prepare the complete comment before publishing. In preview-only mode, return that comment to the user without executing the publication steps. For publication, re-fetch PR state, base and head IDs, and relevant merge gates immediately before posting. If either commit moved, reassess the new comparison and refresh verification; never publish the stale verdict as current. If repeated movement prevents a stable audit, report that to the user and do not post. If only a gate changed, revise the verdict accordingly.
+Prepare the complete comment before publishing. In preview-only mode, return that comment to the user without executing the publication steps. For publication, re-fetch PR state, title and description, base and head repository identities, target branch, commit IDs, and relevant merge gates immediately before posting. Refresh the linked requirements used by the audit and check whether the PR now names different requirement sources.
+
+Compare these inputs with the recorded audit context. If a commit, repository identity, or target branch changed, re-establish the comparison and reassess affected findings and verification. If the title, description, or authoritative requirements changed, apply the same authority order and determine whether accepted scope or acceptance criteria changed, even when commit IDs are unchanged. Reassess affected axes and revise the verdict before publishing; purely editorial changes do not require repeating unaffected work. If only a gate changed, revise the verdict accordingly. Never publish a stale verdict as current. If repeated changes or unavailable requirement sources prevent establishing a current, sound verdict, report that to the user and do not post.
 
 For **Ready to merge**, the entire visible comment is exactly one sentence:
 
