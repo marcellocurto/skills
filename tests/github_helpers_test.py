@@ -23,7 +23,7 @@ def load_helper(name, path):
 
 REVIEW_HELPERS = [
     load_helper(f"review_{name.replace('-', '_')}", f"skills/{name}/scripts/fetch_review_context.py")
-    for name in ("address-review-feedback", "to-tickets")
+    for name in ("pr-comments-audit", "to-tickets")
 ]
 RELATIONSHIPS = load_helper("relationships", "skills/to-tickets/scripts/set_issue_relationship.py")
 

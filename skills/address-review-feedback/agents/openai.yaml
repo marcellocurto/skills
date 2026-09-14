@@ -1,4 +1,0 @@
-interface:
-  display_name: "Address Review Feedback"
-  short_description: "Evaluate feedback, fix issues, and resolve threads"
-  default_prompt: "Use $address-review-feedback to address and resolve this PR's feedback: validate each concern and remedy, implement and push justified fixes, then reply with evidence and resolve settled threads."

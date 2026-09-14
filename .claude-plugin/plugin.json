@@ -1,7 +1,7 @@
 {
   "name": "marcello-curto-skills",
   "skills": [
-    "./skills/address-review-feedback",
+    "./skills/pr-comments-audit",
     "./skills/audit-code-complexity",
     "./skills/blast-radius-audit",
     "./skills/bug-fix-planner",
