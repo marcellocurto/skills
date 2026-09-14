@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Audit"
+  short_description: "Audit merge readiness and post one clear PR comment"
+  default_prompt: "Use $pr-audit to assess this PR's correctness, maintainability and complexity, and test quality, then post one comment with the merge verdict and any required fixes."

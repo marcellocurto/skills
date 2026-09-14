@@ -50,6 +50,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`implement`](skills/implement/SKILL.md)**: Implement an existing specification or ticket set using meaningful test-first checks for behavioral changes, with explicit blockers when required behavior cannot be verified.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
 - **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit existing PR comments, reject unsupported or harmful suggestions with evidence, and implement justified fixes or settle threads when authorized.
+- **[`pr-audit`](skills/pr-audit/SKILL.md)**: Decide whether a PR is ready to merge through independent correctness, maintainability and complexity, and test-quality gates, then post one actionable comment or a single-sentence pass.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Check completed work against the decisions and requirements that authorized it without turning the audit into general code review.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find code that is harder to understand or change than the problem requires and identify safer, simpler shapes.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Trace what a change could break outside the obvious diff, especially across data, timing, persistence, dependencies, and runtime wiring.
@@ -77,7 +78,7 @@ Several skills are forked, adapted, or inspired by other projects:
 - [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, self-contained typography guidance, and product-specific copy guidance. The original license is retained.
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `to-spec`, `triage`, `diagnosing-bugs`, `to-tickets`, `implement`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `prototype`, `research`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `simple-answer`, `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
-- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-comments-audit`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
+- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
 
