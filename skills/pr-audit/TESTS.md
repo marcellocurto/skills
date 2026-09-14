@@ -11,7 +11,8 @@ For each relevant test group, determine:
 3. What realistic bug would make it fail, and why would that bug matter?
 4. Could production behavior break while the test remains green?
 5. Could a harmless internal refactor break it?
-6. Did the reported validation execute this test under the conditions it needs?
+6. Is this behavior best protected by a unit, integration, contract, or end-to-end test, or does it need no test? Choose a boundary that would expose the named regression; more isolated unit tests cannot establish that production wiring works.
+7. Did the reported validation execute this test under the conditions it needs?
 
 Compare changed assertions, fixtures, mocks, snapshots, skips, and configuration with their previous versions. Name any realistic failure the old test rejected that the new one accepts. Lost protection needs an accepted contract change or evidence that the old test was wrong. Adapting an interface does not justify losing meaningful cases, and current implementation output is not authority for an expected result.
 
@@ -24,7 +25,7 @@ Compare changed assertions, fixtures, mocks, snapshots, skips, and configuration
 - **Overlapping tests and helpers:** compare the failures they detect before declaring redundancy. Inspect hidden setup, shared state, excessive mocking, and helper layers that obscure the behavior or force production-only-for-tests machinery.
 - **Obsolete APIs:** check whether tests are the only reason a replaced API remains. Preserve meaningful assertions through the replacement when compatibility no longer requires the old surface; do not remove a useful boundary merely because only tests call it.
 - **Failure paths and timing:** investigate retries, concurrency, partial failure, uncontrolled time, and flaky setup when the PR makes those risks relevant. Error-handling tests do not establish that successful use works.
-- **Selection and prerequisites:** inspect actual commands, filters, opt-ins, skips, expected failures, and required services. Excluded tests cannot substantiate a validation claim. Keep optional live-service checks distinguishable from required deterministic checks.
+- **Selection and prerequisites:** inspect actual commands, filters, opt-ins, skips, expected failures, and required services. Excluded tests cannot substantiate a validation claim. When protection is required, recommend appropriate deterministic coverage in the required validation command and visible failure when a required prerequisite is unavailable, rather than silent exclusion or success. Keep optional live-service checks distinguishable from required deterministic checks.
 
 Treat patterns as investigation leads, not automatic defects. Do not require the author to defend every mock, snapshot, or unit test simply because it exists.
 

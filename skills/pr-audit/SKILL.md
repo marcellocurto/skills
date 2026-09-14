@@ -55,6 +55,7 @@ Treat concrete structural harm as sufficient to block merging even when behavior
 
 - behavior owned by the wrong module, such as an entry point accumulating independently changing domain rules
 - duplicated policy, scattered changes for one concept, unnecessary coupling, or multiple sources of truth
+- tangled control flow, interacting flags, implicit state, hidden side effects, repeated transformations, broad mutation, or misleading names that materially obscure behavior
 - speculative configuration, genericity, extension points, compatibility machinery, or dependencies
 - abstractions that hide no meaningful complexity, leak implementation knowledge, or complicate callers
 - invalid states permitted unnecessarily by types, unclear public contracts, and poor fit with documented boundaries or idioms
@@ -63,6 +64,8 @@ Treat concrete structural harm as sufficient to block merging even when behavior
 For every structural blocker, explain the actual cost, the affected caller or change path, and a concrete better arrangement that preserves required behavior. Cite the exact rule for documented-standard violations; otherwise identify the concern as an engineering judgment supported by code. Do not demote a demonstrated problem to optional polish simply because it has no immediate runtime failure.
 
 Optimize total comprehension and lifecycle cost, not lines, file count, or abstraction count. A focused single-use module can be the right owner; predicted reuse is unnecessary. Before removing a wrapper, inspect its callers and the behavior or contract it protects. Before retaining an old API for tests, check whether production callers or compatibility still need it. Keep useful boundaries and justified departures from local patterns.
+
+Similar-looking code does not automatically justify extraction; require a shared concept. Repeated parameters and primitive values do not by themselves justify new abstractions. A proposed simplification must preserve meaningful domain distinctions, data semantics, and operational guarantees without moving greater complexity or risk into callers.
 
 Metrics, smell names, unfamiliarity, and a preference for a different design are leads, not proof. Skip cosmetic style nits and mechanically enforced preferences; actual failed required tooling belongs in verification. Require a material cost or clear applicable standard violation, and a remedy whose benefit justifies its migration and regression risk.
 
