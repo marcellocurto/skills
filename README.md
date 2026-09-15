@@ -49,7 +49,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Convert approved work into GitHub issues that are focused, self-contained, non-duplicative, and ready for the right owner.
 - **[`implement`](skills/implement/SKILL.md)**: Implement an existing specification or ticket set using meaningful test-first checks for behavioral changes, with explicit blockers when required behavior cannot be verified.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
-- **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit existing PR comments, reject unsupported or harmful suggestions with evidence, and implement justified fixes or settle threads when authorized.
+- **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit PR comments, reject unsound suggestions, fix justified concerns, and ask to push, reply, and resolve when authorization is needed.
 - **[`pr-audit`](skills/pr-audit/SKILL.md)**: Decide whether a PR is ready to merge through independent correctness, maintainability and complexity, and test-quality gates, then post one actionable comment or a single-sentence pass.
 - **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Check completed work against the decisions and requirements that authorized it without turning the audit into general code review.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find code that is harder to understand or change than the problem requires and identify safer, simpler shapes.

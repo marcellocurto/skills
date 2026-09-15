@@ -11,9 +11,13 @@ A reviewer's confidence, seniority, repetition, bot identity, approval status, o
 
 ## Scope and authorization
 
-An audit request, including invoking this skill without a request to act, stays read-only: report assessments and proposed fixes. A request to fix feedback authorizes justified, in-scope local changes. A request to **address and resolve PR feedback** also authorizes the necessary commits, pushes, thread replies, and resolutions. Reuse prior authorization without asking again per thread; honor requests to review proposals before implementation. Ask only for missing decisions or operations outside the authorized scope, and continue independent work while waiting.
+- **Audit:** read-only assessments and proposed fixes.
+- **Fix:** justified local changes.
+- **Address and resolve**, or equivalent authorization: also commit, push, reply, and resolve.
 
-Even a request to address all comments requires independent judgment. It does not make every suggested edit a requirement. If the user explicitly adopts a particular remedy and concrete evidence shows it would be harmful, explain the consequence and ask for a decision before implementing that remedy. Continue unrelated authorized work.
+Reuse prior authorization and honor requests to review proposals first.
+
+Judge every suggestion independently. If evidence shows a user-approved remedy would be harmful, explain why and ask before implementing it; continue unrelated work.
 
 Do not force-push, merge, submit a review, change PR metadata, or create follow-up issues under this workflow unless explicitly requested. Preserve unrelated work and the existing branch; explain and obtain permission before creating or switching branches unless already explicitly authorized.
 
@@ -59,6 +63,10 @@ Give each concern a supported disposition before editing:
 For a justified fix, briefly explain the implementation and why it fits, then proceed when authorized. If the feedback identifies a real problem with how code is organized, check whether the same problem occurs elsewhere in the PR. Fix confirmed cases within the authorized scope before calling the feedback addressed; report known cases outside that scope separately. Verify the changed behavior and recheck the resulting diff; reuse still-valid verification and add tests only for realistic regressions. Leave incomplete, failed-verification, or undecided scope questions open.
 
 For a behavioral fix with a practical regression test, observe its meaningful failure before changing production code. Use the `tdd` skill when available. Explain a concrete limitation and alternative verification before implementing without a regression test. Change expectations only for an authorized requirement change or a demonstrated test error; interface and setup changes must preserve protected cases. If the valid regression remains blocked, retain it failing and leave the concern unresolved. Confirm the relevant check actually ran; a skip or unavailable prerequisite is not a passing verification.
+
+## Handoff after local work
+
+After local fixes and checks, summarize results and ask once to commit, push, reply, and resolve fully addressed threads. Ask only about unauthorized steps. Acceptance covers the bundle; honor narrower instructions. Across follow-ups, ask about remaining actions unless declined or deferred.
 
 ## Reply and resolve when authorized
 
