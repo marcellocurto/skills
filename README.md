@@ -1,28 +1,19 @@
 # Skills
 
-This is a collection of agent skills I wrote to improve the outcome of working with LLMs.
+Agent skills for better outcomes working with LLMs, maintained for GPT-6.
 
-These skills are maintained for use with GPT-6.
-
-Most of the skills I use on a daily basis and try to improve them whenever I find they could be better.
-
-This is currently only done by feel not by benchmarking. 🤞
+I use most of them daily and refine them as gaps surface — by judgment, not benchmarks (for now). 🤞
 
 ## Install
 
 ```bash
 bunx skills add marcellocurto/skills
-```
-
-```bash
-npx skills add marcellocurto/skills
+# or: npx skills add marcellocurto/skills
 ```
 
 ## Available Skills
 
-Skills for planning, building, reviewing, and improving software.
-
-All skills can be invoked manually. **User-invoked** skills run only when selected explicitly. **Model-invoked** skills may also be selected automatically when the request matches their description.
+Skills for planning, building, reviewing, and improving software. All run manually; **User-invoked** run only when explicitly selected, **Model-invoked** may also be auto-selected on match.
 
 **User-invoked (explicit only)**
 
@@ -71,7 +62,7 @@ All skills can be invoked manually. **User-invoked** skills run only when select
 
 ## Sources and Attribution
 
-Skill maintenance follows [OpenAI's GPT-6 prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices), with repository-owned instructions for task boundaries and proportionate verification.
+Skill maintenance follows [OpenAI's GPT-6 prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices); task boundaries and verification stay repository-owned.
 
 Several skills are forked, adapted, or inspired by other projects:
 
@@ -84,19 +75,19 @@ Several skills are forked, adapted, or inspired by other projects:
 
 ## Development
 
-This repository is a Bun project. Install its development dependencies and run all repository checks with:
+Bun project. Install and check with:
 
 ```bash
 bun install
 bun run check
 ```
 
-Installable skills live in [`skills/`](skills/). Repository-level automation lives in [`scripts/`](scripts/).
-The tooling uses TypeScript 7, Oxlint, and Oxfmt. Run `bun run format` to format repository files and `bun run lint:fix` to apply safe lint fixes.
+Installable skills: [`skills/`](skills/). Automation: [`scripts/`](scripts/).
+Tooling: TypeScript 7, Oxlint, Oxfmt. `bun run format` formats files; `bun run lint:fix` applies safe lint fixes.
 
-After editing the React performance or composition rules, section metadata, or document metadata, run `bun run react-guidance:build` to regenerate both compiled references. `bun run check` includes `react-guidance:check` to catch drift between each guide's sources and its compiled reference.
+After editing React performance/composition rules or their section/document metadata, run `bun run react-guidance:build` to regenerate compiled references (`bun run check` catches drift via `react-guidance:check`).
 
-Install every published skill globally for Codex and Claude Code with symlinks:
+Symlink all published skills globally for Codex and Claude Code:
 
 ```bash
 bun run skills:install

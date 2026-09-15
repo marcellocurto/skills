@@ -1,17 +1,17 @@
 # Agent Instructions
 
-Design and maintain all skills in this repository for use with GPT-6. Follow current GPT-6 prompting guidance when creating or revising a skill.
+Design and maintain all skills for GPT-6, following current GPT-6 prompting guidance.
 
-Skill descriptions should state the capability and semantic routing boundaries only. Put explicit-only behavior in supported invocation metadata—`disable-model-invocation: true` for Claude and `policy.allow_implicit_invocation: false` in `agents/openai.yaml` for Codex—and never repeat that policy as prose in the description or body.
+State only capability and routing boundaries in skill descriptions. Mark explicit-only skills in invocation metadata — `disable-model-invocation: true` for Claude, `policy.allow_implicit_invocation: false` in `agents/openai.yaml` for Codex — never as prose in description or body.
 
-Skill runtime instructions must be self-contained and repository-controlled. Never use an external skill, prompt, principle file, or other mutable third-party document as runtime guidance from a `SKILL.md` or its supporting instruction files; write the required guidance locally instead. External source attribution belongs in `README.md`, and authoritative external documentation may be consulted only when the task itself requires current external facts—not as a substitute for maintained skill instructions.
+Keep `SKILL.md` and supporting runtime instructions self-contained and repository-controlled. Never delegate runtime guidance to an external skill, prompt, principle file, or other mutable third-party document; write it locally. Attribute external sources in `README.md`. Consult authoritative external docs only when the task needs current external facts, never as a substitute for maintained instructions.
 
-In runtime instructions, reference other skills by name (for example, “Use the `tdd` skill when available”); the agent resolves their locations through the host's skill catalog. Do not use sibling paths such as `../tdd/SKILL.md`. Relative links are for supporting files within the same skill. Keep essential instructions local so missing companion skills do not remove required behavior.
+Reference other skills by name in runtime instructions (for example, “Use the `tdd` skill when available”); the host catalog resolves locations. Never use sibling paths like `../tdd/SKILL.md`. Reserve relative links for supporting files in the same skill, and keep essential instructions local so a missing companion skill removes nothing required.
 
-Store every repository skill under `skills/<skill-name>/`. Keep `.claude-plugin/plugin.json` synchronized when adding, removing, or renaming a skill. Every repository skill must be listed in its `skills` array so installers group it under "Marcello Curto Skills" rather than "Other."
+Store every skill under `skills/<skill-name>/` and keep it listed in `.claude-plugin/plugin.json`'s `skills` array (groups it under "Marcello Curto Skills") when adding, removing, or renaming.
 
-Also update `README.md` when adding or removing skills or the skill description materially changes.
+Update `README.md` when skills are added/removed or a description materially changes.
 
 Tests must protect intended behavior; never weaken them to hide a defect, and report unresolved failures honestly.
 
-Repository tooling uses Bun, TypeScript 7, Oxlint, and Oxfmt. Run `bun run check` after changing tooling and `bun run format` before finishing.
+Tooling: Bun, TypeScript 7, Oxlint, Oxfmt. Run `bun run check` after tooling changes, `bun run format` before finishing.
