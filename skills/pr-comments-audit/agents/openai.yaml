@@ -1,4 +1,4 @@
 interface:
   display_name: "PR Comments Audit"
-  short_description: "Audit PR feedback and reject unsound suggestions"
-  default_prompt: "Use $pr-comments-audit to assess this PR's comments: verify each concern and proposed remedy, reject unsound suggestions with evidence, and report justified fixes and unresolved questions."
+  short_description: "Audit, fix, and resolve open PR comments"
+  default_prompt: "Use $pr-comments-audit to settle this PR's open comments."
