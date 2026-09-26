@@ -39,7 +39,6 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Find out whether a GitHub issue is true, in scope, ready, duplicated, blocked, or already solved.
 - **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Recommend or implement a simpler code solution while preserving requirements, clear ownership, and necessary lifecycle complexity.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Convert approved work into GitHub issues that are focused, self-contained, non-duplicative, and ready for the right owner.
-- **[`implement`](skills/implement/SKILL.md)**: Implement an existing specification or ticket set using meaningful test-first checks for behavioral changes, with explicit blockers when required behavior cannot be verified.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
 - **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit open PR comments, fix and push the justified ones, and reply to and resolve each thread.
 - **[`pr-audit`](skills/pr-audit/SKILL.md)**: Decide whether a PR is ready to merge through independent correctness, maintainability and complexity, and test-quality gates, then post one actionable comment or a single-sentence pass.
@@ -68,7 +67,7 @@ Skill maintenance follows [OpenAI's GPT-6 prompting guidance](https://developers
 Several skills are forked, adapted, or inspired by other projects:
 
 - [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, self-contained typography guidance, and product-specific copy guidance. The original license is retained.
-- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `to-spec`, `triage`, `diagnosing-bugs`, `to-tickets`, `implement`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `prototype`, `research`, `tdd`, and `wizard`.
+- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `to-spec`, `triage`, `diagnosing-bugs`, `to-tickets`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `prototype`, `research`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `simple-answer`, `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
 - [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
