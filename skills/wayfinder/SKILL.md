@@ -62,8 +62,8 @@ A decision kept in the conversation needs no issue, label, or assignment. A deci
 
 Choose the work needed to answer it:
 
-- **Research:** establish a fact using `research` and relevant code, documentation, or first-party APIs. Investigate directly or delegate independent reading when useful and available. Check the findings before relying on them. Save a separate research record only when the requested output or authorized tracker workflow calls for one.
-- **Prototype:** use `prototype` to create an outline, sample, mockup, or runnable experiment that the user can judge. Link the result from the issue when there is one. The agent must not make the user's design choice on their behalf.
+- **Research:** establish a fact using relevant code, documentation, or first-party APIs. Investigate directly or delegate independent reading when useful and available. Check the findings before relying on them. Save a separate research record only when the requested output or authorized tracker workflow calls for one.
+- **Prototype:** create an outline, sample, mockup, or runnable experiment that the user can judge. Link the result from the issue when there is one. The agent must not make the user's design choice on their behalf.
 - **Grilling:** use `grilling` for a conversation about the decision, and `domain-modeling` for authorized glossary or ADR updates. A recommendation is not the user's answer.
 - **Task:** perform work that must happen before a decision can be made, such as obtaining access or preparing data. This type is for prerequisites to a decision, not delivery of the final outcome. The agent performs authorized work it can complete; otherwise give the user precise steps. Record what was done and the resulting facts later decisions need, without exposing secrets.
 

@@ -4,7 +4,7 @@ Compare alternatives when at least two designs could meet the requirements and r
 
 Use the interface and responsibility checks in [SKILL.md](SKILL.md).
 
-Skip the exploration cost when existing conventions or constraints already determine the answer. Send visual questions that must be judged by feel to the UI branch of `prototype`.
+Skip the exploration cost when existing conventions or constraints already determine the answer. For visual questions that must be judged by feel, build a quick mockup for the user to look at instead.
 
 ## Process
 

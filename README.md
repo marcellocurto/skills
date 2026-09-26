@@ -19,14 +19,10 @@ Skills for planning, building, reviewing, and improving software. All run manual
 
 - **[`shadcn`](skills/shadcn/SKILL.md)**: Use the shadcn CLI and registry correctly when adding, composing, styling, or repairing components in a shadcn project.
 - **[`close-ticket`](skills/close-ticket/SKILL.md)**: Close the ticket being worked on or discussed with a concise comment explaining the implementation; stop if the intended ticket is unclear.
-- **[`simple-answer`](skills/simple-answer/SKILL.md)**: Use this when an answer is technically correct but harder to understand than it needs to be.
 - **[`wayfinder`](skills/wayfinder/SKILL.md)**: Resolve the decisions needed for a large or uncertain effort, using tracker issues when work needs coordination across people or sessions.
-- **[`design-system-ui`](skills/design-system-ui/SKILL.md)**: Add production UI to a mature product by learning and extending the design patterns already in its codebase.
 - **[`frontend-design`](skills/frontend-design/SKILL.md)**: Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one.
-- **[`wild-frontend`](skills/wild-frontend/SKILL.md)**: Create visually ambitious frontend work that should feel original instead of blending into an existing product system.
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Pressure-test a design through conversation while keeping its glossary and architectural decisions up to date.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Surface the architecture changes most likely to improve maintainability, show them visually, and explore the strongest candidate together.
-- **[`to-spec`](skills/to-spec/SKILL.md)**: Publish the decisions already made in a conversation as a coherent project specification without reopening the interview.
 - **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Build a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review; ask when something doesn't work as expected.
 - **[`triage`](skills/triage/SKILL.md)**: Assess one supplied GitHub issue, resolve only the questions blocking implementation, and update it after approval.
 
@@ -55,8 +51,6 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design type-safe interfaces that hide internal rules from callers and keep related behavior in one place.
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Keep the codebase's language, glossary, and lasting architectural decisions aligned with the domain people actually discuss.
 - **[`grilling`](skills/grilling/SKILL.md)**: Resolve consequential assumptions and tradeoffs through focused rounds of questions, keeping the interview bounded by the decision at hand.
-- **[`prototype`](skills/prototype/SKILL.md)**: Build the cheapest useful artifact that can answer a design or behavior question before committing to a full implementation.
-- **[`research`](skills/research/SKILL.md)**: Answer a question from primary sources, reconcile conflicting evidence, and state what remains uncertain, saving findings when requested.
 - **[`tdd`](skills/tdd/SKILL.md)**: Drive a feature or bug fix from meaningful failing behavior to a verified implementation, preserving valid failing regressions when a decision or prerequisite blocks completion.
 - **[`wizard`](skills/wizard/SKILL.md)**: Package setup steps that require a person—credentials, dashboards, migrations, or cutovers—into a guided interactive Bash flow.
 
@@ -67,8 +61,8 @@ Skill maintenance follows [OpenAI's GPT-6 prompting guidance](https://developers
 Several skills are forked, adapted, or inspired by other projects:
 
 - [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, self-contained typography guidance, and product-specific copy guidance. The original license is retained.
-- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `to-spec`, `triage`, `diagnosing-bugs`, `to-tickets`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `prototype`, `research`, `tdd`, and `wizard`.
-- [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `simple-answer`, `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
+- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
+- [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
 - [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.

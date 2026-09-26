@@ -7,7 +7,7 @@ description: Review an existing product interface and recommend a product-specif
 
 Audit how well an existing interface helps its real user understand, decide, and act.
 
-Audit only. Do not edit code or design files. Use `design-system-ui` for an explicitly requested implementation and `wild-frontend` for explicitly requested unconstrained creative work.
+Audit only. Do not edit code or design files.
 
 ## Goal
 
