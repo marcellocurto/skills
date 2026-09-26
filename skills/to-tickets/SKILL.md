@@ -5,134 +5,82 @@ description: Turn approved work into well-scoped GitHub issues after checking fo
 
 # To Tickets
 
-Turn existing context into one or more focused GitHub tickets that can be implemented and verified independently.
+Turn approved work into focused GitHub tickets. Each ticket is the only thing its implementer reads, so it must contain the whole task, what "done" means, and when to stop and ask.
 
-Prepare the complete ticket set, then obtain explicit user approval of the drafts before any GitHub write. Invoking this skill, including after `implementation-planner`, authorizes preparation; it does not approve publication.
+Invoking this skill, even after `implementation-planner`, authorizes drafts only. Write nothing to GitHub until the user approves the drafts in step 4.
 
-## Principles
+## Rules
 
-- Use facts from the user, source material, and repository. Do not invent requirements, goals, metadata, relationships, or priority.
-- Preserve requirements, constraints, decisions, rationale, meaningful edge cases, and verified findings from prior research. Do not compress away technical detail that would force the implementation agent to repeat exploration.
-- Make each ticket self-contained enough to complete without reading a parent or sibling. Reference relevant existing specs, ADRs, or repository docs when they exist; do not require or invent one.
-- Declare only genuine blocking dependencies. Sequence or preference alone is not a blocker.
-- Do not modify or close a source or parent issue unless the user explicitly asks.
-- Avoid generic file inventories and speculative code paths. Include confirmed code locations as current starting points when they save meaningful exploration, but do not present them as authoritative scope.
+- Use only what the user, the source material, and the repository tell you. Do not invent requirements, priorities, labels, relationships, or approval steps.
+- Keep decisions, constraints, rationale, edge cases, and research findings in enough detail that the implementer need not rediscover them. Mention confirmed code locations as starting points, not as scope.
+- For interface work, carry over each visual pattern the source rules out, by name ("no pill-shaped buttons"). Do not reduce them to "avoid a generic look".
+- Leave out instructions like "think carefully" or "be thorough".
+- Do not edit or close the source or parent issue unless the user asks.
 
-## GitHub access
+## 1. Gather context
 
-- Use `gh` for issue creation, labels, native relationships, and verification.
-- When a GitHub connector is already available, it may be used for repository, issue, pull-request, or review-thread reads. Use `gh` for all writes in one publication; do not mix connector and CLI writes.
-- Resolve the exact `HOST/OWNER/REPO` from an explicit identifier or the local remote and retain that host for CLI and API calls. The helpers accept `OWNER/REPO` using `GH_HOST` when set, otherwise `github.com`. Ask only when the repository remains ambiguous after local inspection.
-- Check the active account on the resolved host with `gh auth status --active --hostname HOST`. The helpers perform this check themselves. Diagnose failure for that host; request `gh auth login --hostname HOST` only when authentication needs repair. An unrelated account's status must not block publication.
+Read the source material and the code needed to make the tickets accurate. Ask only when the answer would change what a ticket requires, how the work is split, or its order.
 
-## Process
+For pull-request feedback, fetch threads with `python "<skill-path>/scripts/fetch_review_context.py"` or a connector, check each unresolved thread against current code, and ticket only concerns that still need work.
 
-### 1. Gather context
+List the repository's labels and learn their meaning from descriptions and past use, not names alone. Find out which environment will implement the tickets and what tools, access, and permissions it has; it may differ from this session.
 
-Work from the conversation and any referenced plan, spec, issue, comments, repository documentation, ADRs, domain glossary, or prior research. Inspect the code needed to make the tickets accurate. Ask only when a missing answer would change what the tickets require, how the work is divided, or which work must finish first.
+## 2. Check for duplicates
 
-When the user explicitly asks to turn pull-request feedback into tickets, retrieve review threads through an available connector or `python "<skill-path>/scripts/fetch_review_context.py"`. Check unresolved, non-outdated threads against the current code; the fix may already exist. Read other comments when they explain a concern or contain additional work. Do not create implementation tickets for feedback that is already addressed, has no useful action, or is unclear. Explain which concerns need work, which do not, and which need clarification. Create research or decision tickets only when the user requests that work.
+Search open and closed issues for each planned outcome using plain-language terms. Compare goals and scope, not titles. Report likely duplicates with URLs and the overlap, and do not change or reuse an existing issue without approval. If the search fails, create nothing until it works or the user says to proceed without it.
 
-List the repository's existing labels with their descriptions. Use descriptions and established usage on comparable issues to understand the repository's label vocabulary; do not infer semantics from a label name alone when its meaning is ambiguous.
+## 3. Draft the tickets
 
-Establish the intended execution environment from repository instructions, runner configuration, or the user's context. Assess concrete tools, access, and permissions rather than model names; the ticket-writing session may differ from the implementing agent's environment. Browser interaction, computer use, and visual inspection are not inherently human-only work. Do not assume that the intended environment supports them merely because the model can use them.
+### Split the work
 
-### 2. Check for duplicates
+Keep work in one ticket when it produces one useful result that can be reviewed as a whole. Split only when parts can finish independently, need different owners, or must happen in order to avoid a real risk. A feature ticket covers every layer the feature needs.
 
-Before drafting new tickets, search both open and closed issues for likely duplicates of each intended outcome. Use the plan's plain-language concepts rather than relying on one exact title. Read plausible matches closely enough to compare their actual goals and scope.
+Mark a ticket blocked by another only when it cannot be completed without it; preferred order is not a blocker. When replacing an interface whose callers cannot all change at once, write ordered tickets to add the new interface, move callers, and remove the old one.
 
-Surface likely duplicate URLs and explain the overlap. Do not treat a similar title as proof of duplication, and do not modify, close, or substitute an existing issue without the user's approval. Issues already created for this same approved ticket set are reused when resuming publication, after verifying their identity and current state. If the duplicate search cannot run, report why; do not create new issues until it succeeds or the user explicitly approves proceeding without it.
+Write research tickets only when the user asks for discovery. Do not create tracking or epic issues to group the set, and attach tickets to an existing parent only when the user or repository convention requires it.
 
-### 3. Draft the ticket set
+### Separate human work
 
-Write each ticket as a compact argument that lets a busy maintainer understand the situation, judge its importance, and act without reconstructing the surrounding conversation. Use simple technical language and a specific, outcome-oriented title that makes sense on its own. Avoid shorthand, clever wording, and jargon that does not improve precision.
+Decisions, approvals, and actions that need a person go in their own ticket with a clear completion signal and the repository's human-work label. A person owns this work even if an agent could operate the interface. Do not create tickets for ordinary PR review.
 
-Use only sections that add information. A simple ticket may need only a summary, desired outcome, and acceptance criteria; omit empty sections and do not create both a simple summary and a second summary. Choose from these sections as the work requires:
+- A human action the implementation needs first blocks the implementation ticket.
+- Human approval of finished work is blocked by the implementation ticket, which must not list that approval as a completion condition.
+- Approval needed before rollout blocks the rollout work.
 
-- `## Summary`: explain in a short paragraph what is currently true, why it matters, and what should happen next; do not merely restate the title
-- `## Why this issue exists`: when the ticket is derived from other work or needs justification as a separate unit, explain why it is distinct and worthwhile rather than only naming its source or classification
-- `## Evidence` or `## Current behavior`: record verified observations, relevant code locations, constraints, and decisions; distinguish confirmed facts from hypotheses
-- `## Impact`: state the concrete user, operational, or maintenance consequence and calibrate urgency honestly, including when the work is non-blocking or protects only against a future regression
-- `## Desired outcome`: describe what should become true without prescribing files, code, or implementation details unless the source material already decided them
-- `## Acceptance criteria`: use ordinary bullets describing independently verifiable behavior; do not use task-list checkboxes, implementation steps, code locations, generic “tests pass” statements, or bullets that merely restate the desired outcome
-- `## Execution requirements`: record tools, access, permissions, or fixtures needed beyond the repository's established agent environment; omit when the baseline suffices
-- `## Research and findings`: use this instead of a basic evidence section when prior exploration is substantial, preserving rejected approaches, pitfalls, and technical detail that would otherwise have to be rediscovered
-- `## Risks / non-goals`: capture meaningful compatibility risks, scope boundaries, and nearby work that must remain untouched; omit generic boilerplate
-- `## Context`: place source issues, pull requests, specifications, ADRs, and other provenance at the end so they support rather than interrupt the issue
+### Write each ticket
 
-Add another section only when important maintainer-facing information does not fit these concepts. Calibrate the language to the status of the work: state confirmed requirements directly, but present optional suggestions as tradeoffs rather than pretending implementation has already been decided. When the honest outcome is a maintainer decision, state the decision and evidence needed and allow the suggestion to be closed with a clear rationale.
+Use a specific title that names the outcome, and plain technical language. State confirmed requirements as requirements and optional ideas as tradeoffs. Use only sections that add something; a simple ticket may need only a summary, desired outcome, and acceptance criteria. Choose from `## Summary`, `## Why this issue exists`, `## Current behavior` or `## Research and findings`, `## Impact`, `## Desired outcome`, `## Acceptance criteria`, `## Stop and ask`, `## Execution requirements`, `## Risks / non-goals`, and `## Context` (last). Keep verified facts apart from guesses, and do not prescribe implementation the source has not decided.
 
-For every acceptance criterion, establish who can perform the work and what evidence can verify it. Describe observable outcomes; prescribe a verification method only when the method itself matters. Consider equivalent verification routes before declaring a capability missing, but do not weaken the required evidence to fit available tools. An uncertain or unavailable capability is an execution gap, not proof that a human must own the work. Surface the specific gap and what would resolve it; do not assume readiness or create a human ticket merely to cover it.
+- `## Acceptance criteria` is the finish line: plain bullets that together mean done, so the implementer works until all hold and then stops. Include required end states such as deleted code or no remaining callers, and state the full scope ("every payment endpoint"). Name a test suite or command only when it is the evidence that matters. Leave out implementation steps, generic "tests pass" lines, and checkboxes.
+- `## Stop and ask` lists situations specific to this ticket where continuing needs a decision the ticket does not make, such as finding a caller outside this repository.
+- `## Execution requirements` lists tools, access, or fixtures beyond the repository's usual agent setup.
 
-Separate required human decisions, approvals, or actions into human-owned tickets with a concrete completion signal. Keep agent-executable preparation and verification in the implementation ticket. Use the repository's established human-work label, based on its meaning, and never combine it with `ready-for-agent`. Do not invent approval requirements or separate tickets for ordinary PR review. Human authority remains a requirement even when an agent can operate the relevant interface.
+For each criterion, decide who can verify it and with what evidence. Never weaken the evidence to fit the available tools. A capability that is missing from the environment is a gap to report, not a reason to make the work human-owned.
 
-When a human must verify or approve completed implementation, make the human ticket blocked by the implementation ticket. When a human action is a prerequisite, reverse that relationship. The implementation ticket must be completable without waiting for its downstream human ticket; do not leave the same approval as a completion condition elsewhere in its body. Preserve any required approval before rollout as a dependency of the rollout work.
+### Choose labels
 
-Keep related work together when it delivers one useful outcome that can be implemented and reviewed as a whole. A ticket set may contain one issue. Split when parts can be completed independently, need separate human and agent owners, or must happen in order to avoid a concrete risk. For a feature, include the layers needed to make its behavior work. Setup work, migrations, infrastructure, and mechanical refactors can also be valid tickets. Do not split work merely to meet a size target.
+Use existing labels only, and add priority or workflow labels only when repository convention supports them. If a needed label is missing, leave it off and say so. Never use a `blocked` label.
 
-Allow research or investigation tickets when discovery is itself explicitly requested, independently useful work with a concrete question and completion signal. When the user asks for an actionable implementation ticket set for a feature believed to be ready, resolve material unknowns before drafting; do not turn them into research tickets that postpone implementation.
+Apply `ready-for-agent` when an agent in the intended environment can finish and verify the ticket from its text alone, with no human step and no known stop condition. Never apply it to research, decision, or human-owned tickets. A ready ticket keeps the label while a blocked-by relationship holds it.
 
-Do not create a tracking, overview, epic, or coordination issue merely to organize the set or preserve shared context. Attach tickets to an existing parent only when the user explicitly requests it or established repository convention requires it.
+## 4. Get approval
 
-When replacing an interface, find who uses it and how those callers are deployed. If all callers can change together, update them and remove the old interface in one ticket. If old and new callers must coexist, create ordered tickets to add the new interface, move callers to it, and remove the old one. State when each temporary adapter can be removed and include the final cleanup ticket. Do not call an interface internal or prescribe branches without supporting evidence.
+Show the repository, each ticket's exact title and body, labels with a short reason (including for `ready-for-agent`), relationships, and duplicate findings. Wait for the user to approve these drafts. A request for tickets, approval of the underlying plan, or an instruction to run several skills in a row is not approval. Approval carries over when resuming an unchanged set; material changes need new approval.
 
-Choose existing labels that describe the ticket's type, affected area, or other categories the repository uses. Add priority, workflow, or ownership labels only when the source material and repository convention support them. Do not invent labels or choose one merely because its name shares words with the ticket. If no label fits a needed category, leave it unset and explain which label is missing.
+## 5. Publish
 
-Treat `ready-for-agent` as a completion contract for the intended environment. Apply it only when all of the following are true after declared prerequisites are satisfied:
+Before any write, read back what this set already created and reuse it. Never create a ticket twice, and never delete, reopen, or overwrite an issue to retry a step.
 
-- the ticket calls for a concrete implementation or repository change, rather than research as its outcome
-- the relevant decisions, constraints, context, and completion signals are sufficient to complete the work
-- the agent can perform and verify every acceptance criterion with tools, access, and permissions supported by the intended environment
-- no completion condition within the ticket requires human authority or participation
+Use `gh` for all writes. Take `HOST/OWNER/REPO` from the user or the local remote and use that host throughout. Confirm every approved label exists; if one does not, ask instead of creating or substituting it. Then, creating blockers first:
 
-Do not apply `ready-for-agent` to research, investigation, discovery, or spike tickets; decision or coordination work; human-owned tasks; or underspecified implementation. Normal codebase exploration needed while implementing a well-specified change does not by itself make a ticket a research task.
+1. Create each issue with `gh issue create --body-file`.
+2. Add exactly its approved labels.
+3. Add each approved relationship with the bundled helper, which resolves and verifies database IDs:
+   - parent: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --parent PARENT --sub-issue CHILD`
+   - blocked by: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --blocked BLOCKED --blocked-by BLOCKER`
 
-Treat readiness and dependency status as separate dimensions. A fully specified, agent-executable ticket may carry `ready-for-agent` while an open native blocked-by relationship prevents it from starting, including a concrete prerequisite that supplies required access or tooling. An unresolved decision that determines implementation requirements, or an unconfirmed execution environment without such a prerequisite, does not qualify. Represent dependencies only with native relationships; do not withhold `ready-for-agent` merely because an otherwise ready ticket is blocked.
+Both numbers must belong to the named repository; for a cross-repository relationship, use `gh api` with each issue's database ID. If a relationship fails, never fall back to a label or body link.
 
-Before publication, check all completion requirements throughout each issue against its owner, execution requirements, labels, and dependencies. Being able to start coding is insufficient. Where verification depends on a particular environment, make the handoff explicit: if that capability is unavailable at execution time and no equivalent evidence can be obtained, preserve completed work and report the unverified criteria and execution blocker rather than claiming completion or reclassifying the work as human-only.
+## 6. Report
 
-### 4. Obtain approval
-
-Present the target repository, exact titles and bodies, proposed labels, native relationships, and duplicate findings for the complete ticket set. Include a short rationale for proposed labels and for including or omitting `ready-for-agent`. Ask the user to approve publication and wait for their response before any GitHub write.
-
-Approval must refer to these concrete drafts and their listed metadata. A request to turn work into tickets, an instruction to run skills in sequence, or approval of the underlying feature or implementation plan does not satisfy this step. Completing the drafts during the same turn does not turn the initial request into approval.
-
-Reuse an earlier explicit approval of the same drafts, repository, labels, and native relationships when continuing or resuming publication; do not ask again for an unchanged approved set. Material changes or unresolved duplicate handling require approval of the affected choices before writing them.
-
-### 5. Publish
-
-Proceed only with the concrete ticket set approved in step 4. If any part of this ticket set was already attempted, reconcile that state using [Resume partial publication](#6-resume-partial-publication) before making further writes.
-
-Preflight `gh`, authentication, the repository, and every approved label. If an approved label is missing, report the affected tickets and ask for the missing decision; do not create or silently substitute a label. Continue only operations whose content and metadata remain authorized. Use `gh issue create` with a body file so Markdown and real newlines are preserved.
-
-Create approved blockers before their dependents, then:
-
-- create each approved issue
-- apply exactly the approved labels for that issue
-- create approved parent/sub-issue relationships with GitHub's native relationship
-- create approved blocked-by/blocking relationships with GitHub's native relationship
-
-After each creation, retain a compact mapping from the approved draft to its repository, issue number, and URL, with pending label or relationship operations. Record uncertain outcomes as uncertain until read-back establishes what happened. Keep this progress in the task context or an explicitly requested record; do not add tracking comments or labels solely to support retries.
-
-For native relationships, run the bundled helper after both issues exist. It retrieves the required database IDs and verifies the relationship:
-
-- parent: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --parent PARENT_NUMBER --sub-issue CHILD_NUMBER`
-- blocked by: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --blocked BLOCKED_NUMBER --blocked-by BLOCKER_NUMBER`
-
-Both issue numbers in a helper call belong to the named repository. Relationship verification compares database IDs, including when existing relationships point to issues in other repositories. For an approved cross-repository relationship, use host-scoped `gh api` with each issue's verified database ID rather than passing another repository's issue number to the helper.
-
-Never propose, create, or assign a `blocked` label, including spelling or case variants. Never use a label or body link as a fallback for a failed native blocking relationship.
-
-### 6. Resume partial publication
-
-Resume the approved set rather than starting a new publication:
-
-1. Re-establish the latest approved content and metadata. Read back known issue numbers or URLs and their current bodies, labels, and native relationships. Verify that each issue belongs to the intended repository and approved draft.
-2. If a create request failed or returned no clear identifier, inspect current and recent repository issues to establish whether it succeeded. Compare the actual content and available creation context, not just the title. Reuse a verified match. If identity or creation status remains uncertain, report that gap instead of issuing another create request for the same ticket.
-3. Preserve issues already created for this set. Skip verified completed operations and finish only missing approved labels or native relationships. Preserve unrelated edits and metadata added by others. If an issue was closed or materially changed, reconcile that state before attempting a repair; do not reopen, overwrite, delete, or recreate it merely to restore the earlier draft.
-4. Create only tickets confirmed not to exist, retaining the duplicate checks and blocker-before-dependent ordering. Use the existing issue numbers for all remaining native relationships. Inspect a failed relationship operation before retrying it; never replace it with a label or body-only dependency.
-5. Verify each resumed write and update the progress mapping. Continue independent authorized operations when one ticket is blocked, and report the remaining decision or failure without claiming the entire set is complete.
-
-### 7. Verify and report
-
-Verify every created or reused issue, approved label, and native relationship. Return the issue URLs and relationship status. If publication is partial, state what succeeded, what still needs doing, and which outcomes remain uncertain, with the exact failure. Keep successful writes. Do not delete and recreate issues to retry a failed step, or replace a failed native relationship with a label or body link.
+Read back every issue, label, and relationship. Return the issue URLs and relationship status. If anything is incomplete, say what worked, what is left, and the exact error.
