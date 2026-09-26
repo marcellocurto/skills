@@ -27,6 +27,7 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Pressure-test a design through conversation while keeping its glossary and architectural decisions up to date.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Surface the architecture changes most likely to improve maintainability, show them visually, and explore the strongest candidate together.
 - **[`to-spec`](skills/to-spec/SKILL.md)**: Publish the decisions already made in a conversation as a coherent project specification without reopening the interview.
+- **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Build a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review; ask when something doesn't work as expected.
 - **[`triage`](skills/triage/SKILL.md)**: Assess one supplied GitHub issue, resolve only the questions blocking implementation, and update it after approval.
 
 **Model-invoked (implicit allowed)**
