@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Build features and bug fixes test-first around meaningful behavior.
+description: Use before implementing features or bug fixes with testable behavior, including requests that do not mention tests or TDD. Not for behavior-preserving refactors or prose, styling, and static-content edits.
 ---
 
 # Test-Driven Development

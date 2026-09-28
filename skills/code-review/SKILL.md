@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a specific code change for correctness, requirements, maintainability, and repository standards.
+description: Review a specific diff, pull request, or commit range for correctness, maintainability, and repository standards. Not for whole-codebase or current-state subsystem audits.
 ---
 
 # Code Review
@@ -8,6 +8,8 @@ description: Review a specific code change for correctness, requirements, mainta
 Review one exact change for correctness and maintainability, with a separate verdict for each. This skill is read-only: do not edit files, add tests, apply fixes, commit, push, publish comments, resolve threads, or mutate external systems. A later request to act on accepted findings is separate work.
 
 For adversarial, multi-agent, blind-spot, `interrogate`, or tear-it-apart requests, read [ADVERSARIAL.md](ADVERSARIAL.md) before dispatching reviewers. Incorporate its criteria into the same review effort rather than automatically adding a second reviewer group.
+
+For a current-state or whole-codebase audit without a target change, investigate the requested subsystem directly; do not apply this skill's diff-only finding criteria.
 
 ## Pin the review scope
 
