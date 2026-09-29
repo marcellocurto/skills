@@ -10,7 +10,7 @@
     "lint:fix": "oxlint --fix",
     "react-guidance:build": "bun run scripts/compile-react-guidance.ts",
     "react-guidance:check": "bun run scripts/compile-react-guidance.ts --check",
-    "skills:install": "bunx skills add marcellocurto/skills --skill '*' --global --agent codex --agent claude-code --yes",
+    "skills:install": "bun run scripts/install-skills.ts",
     "typecheck": "tsc --noEmit",
     "validate:skills": "bun run scripts/validate-skills.ts",
     "test": "bun test"

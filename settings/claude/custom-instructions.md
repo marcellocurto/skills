@@ -44,6 +44,8 @@ When a rule can be enforced through types, linting, or tooling, prefer that over
 
 Tests should protect meaningful behavior or catch realistic regressions. Do not test implementation details, prompt prose, static content, or non-critical configuration. Prefer types or lint rules when they prevent the same regression. Ask before adding substantial test infrastructure and explain its value in plain language.
 
+Before implementing a feature or bug fix with a practical behavioral test, invoke the `tdd` skill when available, even if the request does not mention testing. Observe a meaningful failing test before implementing the behavior, then verify it passes. Follow that sequence even if the skill is unavailable. For behavior-preserving refactors, preserve coverage without manufacturing a failing test. Do not force tests for prose, styling, or static content; explain alternative verification when a behavioral test is impractical.
+
 Use comments when they clarify intent, contracts, or non-obvious usage, and keep them synchronized with the code.
 
 # Working together

@@ -47,11 +47,11 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`relentless-review`](skills/relentless-review/SKILL.md)**: Ask whether a proposal or result is genuinely the best path by pushing on its risks, assumptions, and alternatives.
 - **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition techniques when component APIs become rigid, tangled, or overloaded with boolean props.
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
-- **[`code-review`](skills/code-review/SKILL.md)**: Review a fixed change from independent correctness and maintainability perspectives, with focused adversarial review when the risk warrants it.
+- **[`code-review`](skills/code-review/SKILL.md)**: Review a specific diff, pull request, or commit range from independent correctness and maintainability perspectives. Whole-codebase and current-state subsystem audits fall outside this skill.
 - **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design type-safe interfaces that hide internal rules from callers and keep related behavior in one place.
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Keep the codebase's language, glossary, and lasting architectural decisions aligned with the domain people actually discuss.
 - **[`grilling`](skills/grilling/SKILL.md)**: Resolve consequential assumptions and tradeoffs through focused rounds of questions, keeping the interview bounded by the decision at hand.
-- **[`tdd`](skills/tdd/SKILL.md)**: Drive a feature or bug fix from meaningful failing behavior to a verified implementation, preserving valid failing regressions when a decision or prerequisite blocks completion.
+- **[`tdd`](skills/tdd/SKILL.md)**: Use before implementing features or bug fixes with testable behavior, even when the request does not mention tests. Preserve coverage for behavior-preserving refactors without manufacturing a failing test.
 - **[`wizard`](skills/wizard/SKILL.md)**: Package setup steps that require a person—credentials, dashboards, migrations, or cutovers—into a guided interactive Bash flow.
 
 ## Sources and Attribution
@@ -81,11 +81,13 @@ Tooling: TypeScript 7, Oxlint, Oxfmt. `bun run format` formats files; `bun run l
 
 After editing React performance/composition rules or their section/document metadata, run `bun run react-guidance:build` to regenerate compiled references (`bun run check` catches drift via `react-guidance:check`).
 
-Symlink all published skills globally for Codex and Claude Code:
+Install all published skills globally for Codex and Claude Code, and remove obsolete skills tracked as belonging to this repository:
 
 ```bash
 bun run skills:install
 ```
+
+The installer uses one published Git revision for installation and cleanup, preserves skills from other sources, and removes obsolete entries only after verifying the new installation. It does not install unpublished changes from this checkout. The plain `bunx skills add` command above only adds or updates skills; use `bun run skills:install` from this repository for reconciliation.
 
 List installed skills:
 
