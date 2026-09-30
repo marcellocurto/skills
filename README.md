@@ -18,8 +18,6 @@ Skills for planning, building, reviewing, and improving software. All run manual
 **User-invoked (explicit only)**
 
 - **[`shadcn`](skills/shadcn/SKILL.md)**: Use the shadcn CLI and registry correctly when adding, composing, styling, or repairing components in a shadcn project.
-- **[`close-ticket`](skills/close-ticket/SKILL.md)**: Close the ticket being worked on or discussed with a concise comment explaining the implementation; stop if the intended ticket is unclear.
-- **[`wayfinder`](skills/wayfinder/SKILL.md)**: Resolve the decisions needed for a large or uncertain effort, using tracker issues when work needs coordination across people or sessions.
 - **[`frontend-design`](skills/frontend-design/SKILL.md)**: Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one.
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Pressure-test a design through conversation while keeping its glossary and architectural decisions up to date.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Surface the architecture changes most likely to improve maintainability, show them visually, and explore the strongest candidate together.
@@ -28,8 +26,6 @@ Skills for planning, building, reviewing, and improving software. All run manual
 
 **Model-invoked (implicit allowed)**
 
-- **[`bug-fix-planner`](skills/bug-fix-planner/SKILL.md)**: Use this when a bug needs a credible, code-grounded repair plan before anyone starts editing.
-- **[`implementation-planner`](skills/implementation-planner/SKILL.md)**: Turn a settled feature or refactor into a concrete plan that is small enough to implement and verify.
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Debug stubborn failures by building a reproducible feedback loop, narrowing the cause, and proving the fix.
 - **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Get a reliable mental model of how a feature actually runs, from its entry point to its final effect.
 - **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Find out whether a GitHub issue is true, in scope, ready, duplicated, blocked, or already solved.
@@ -38,12 +34,9 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
 - **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit open PR comments, fix and push the justified ones, and reply to and resolve each thread.
 - **[`pr-audit`](skills/pr-audit/SKILL.md)**: Decide whether a PR is ready to merge through independent correctness, maintainability and complexity, and test-quality gates, then post one actionable comment or a single-sentence pass.
-- **[`spec-conformance-audit`](skills/spec-conformance-audit/SKILL.md)**: Check completed work against the decisions and requirements that authorized it without turning the audit into general code review.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find code that is harder to understand or change than the problem requires and identify safer, simpler shapes.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Trace what a change could break outside the obvious diff, especially across data, timing, persistence, dependencies, and runtime wiring.
 - **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge realistic regression protection, lost coverage in test changes, and whether claimed validation actually runs the relevant tests.
-- **[`product-ui-audit`](skills/product-ui-audit/SKILL.md)**: Evaluate an existing interface in its real product context and converge on one practical UX direction before implementation.
-- **[`user-journey-verifier`](skills/user-journey-verifier/SKILL.md)**: Prove that completed software works through the exact path and artifact a real user experiences.
 - **[`relentless-review`](skills/relentless-review/SKILL.md)**: Ask whether a proposal or result is genuinely the best path by pushing on its risks, assumptions, and alternatives.
 - **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition techniques when component APIs become rigid, tangled, or overloaded with boolean props.
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
@@ -59,9 +52,9 @@ Skills for planning, building, reviewing, and improving software. All run manual
 Several skills are forked, adapted, or inspired by other projects:
 
 - [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, self-contained typography guidance, and product-specific copy guidance. The original license is retained.
-- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `wayfinder`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
+- [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
-- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `implementation-planner`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
+- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
 

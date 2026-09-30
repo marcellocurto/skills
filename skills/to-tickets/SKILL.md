@@ -7,7 +7,7 @@ description: Turn approved work into well-scoped GitHub issues after checking fo
 
 Turn approved work into focused GitHub tickets. Each ticket is the only thing its implementer reads, so it must contain the whole task, what "done" means, and when to stop and ask.
 
-Invoking this skill, even after `implementation-planner`, authorizes drafts only. Write nothing to GitHub until the user approves the drafts in step 4.
+Invoking this skill authorizes drafts only. Write nothing to GitHub until the user approves the drafts in step 4.
 
 ## Rules
 
