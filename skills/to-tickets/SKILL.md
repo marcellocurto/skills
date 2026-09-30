@@ -12,8 +12,8 @@ Invoking this skill authorizes drafts only. Write nothing to GitHub until the us
 ## Rules
 
 - Use only what the user, the source material, and the repository tell you. Do not invent requirements, priorities, labels, relationships, or approval steps.
-- Keep decisions, constraints, rationale, edge cases, and research findings in enough detail that the implementer need not rediscover them. Mention confirmed code locations as starting points, not as scope.
-- For interface work, carry over each visual pattern the source rules out, by name ("no pill-shaped buttons"). Do not reduce them to "avoid a generic look".
+- Carry over decisions, constraints, rationale, edge cases, and research findings in enough detail that the implementer need not rediscover them. Keep specific constraints specific: "no pill-shaped buttons" stays as written rather than becoming "avoid a generic look".
+- Mention confirmed code locations as starting points, not as scope.
 - Leave out instructions like "think carefully" or "be thorough".
 - Do not edit or close the source or parent issue unless the user asks.
 
@@ -23,7 +23,7 @@ Read the source material and the code needed to make the tickets accurate. Ask o
 
 For pull-request feedback, fetch threads with `python "<skill-path>/scripts/fetch_review_context.py"` or a connector, check each unresolved thread against current code, and ticket only concerns that still need work.
 
-List the repository's labels and learn their meaning from descriptions and past use, not names alone. Find out which environment will implement the tickets and what tools, access, and permissions it has; it may differ from this session.
+List the repository's labels and learn their meaning from descriptions and past use, not names alone. Assume an agent with this repository's usual setup will implement the tickets, unless the user or repository says otherwise.
 
 ## 2. Check for duplicates
 
@@ -49,13 +49,47 @@ Decisions, approvals, and actions that need a person go in their own ticket with
 
 ### Write each ticket
 
-Use a specific title that names the outcome, and plain technical language. State confirmed requirements as requirements and optional ideas as tradeoffs. Use only sections that add something; a simple ticket may need only a summary, desired outcome, and acceptance criteria. Choose from `## Summary`, `## Why this issue exists`, `## Current behavior` or `## Research and findings`, `## Impact`, `## Desired outcome`, `## Acceptance criteria`, `## Stop and ask`, `## Execution requirements`, `## Risks / non-goals`, and `## Context` (last). Keep verified facts apart from guesses, and do not prescribe implementation the source has not decided.
+Title: the outcome in plain words that is understandable without opening the ticket, such as "Retry failed webhook deliveries with backoff" rather than "Webhook improvements".
 
-- `## Acceptance criteria` is the finish line: plain bullets that together mean done, so the implementer works until all hold and then stops. Include required end states such as deleted code or no remaining callers, and state the full scope ("every payment endpoint"). Name a test suite or command only when it is the evidence that matters. Leave out implementation steps, generic "tests pass" lines, and checkboxes.
-- `## Stop and ask` lists situations specific to this ticket where continuing needs a decision the ticket does not make, such as finding a caller outside this repository.
-- `## Execution requirements` lists tools, access, or fixtures beyond the repository's usual agent setup.
+Body, in this order:
 
-For each criterion, decide who can verify it and with what evidence. Never weaken the evidence to fit the available tools. A capability that is missing from the environment is a gap to report, not a reason to make the work human-owned.
+```markdown
+## Summary
+
+Two to four sentences: what needs to change, why, and who is affected. A reader who stops here should know what the ticket asks for.
+
+## Current behavior
+
+What happens today, or the research findings for new work. Keep verified facts apart from guesses.
+
+## Desired outcome
+
+The behavior when the work is done. State confirmed requirements as requirements and optional ideas as tradeoffs. Do not prescribe implementation the source has not decided.
+
+## Acceptance criteria
+
+Plain bullets that together mean done, so the implementer works until all hold and then stops. Include required end states, such as deleted code or no remaining callers, and the full scope, such as "every payment endpoint". Name a test suite or command only when it is the evidence that matters. No implementation steps, generic "tests pass" lines, or checkboxes.
+
+## Stop and ask
+
+Situations specific to this ticket where continuing needs a decision the ticket does not make, such as finding a caller outside this repository.
+
+## Execution requirements
+
+Tools, access, or fixtures beyond the repository's usual setup.
+
+## Risks and non-goals
+
+What could break, and what this ticket deliberately does not do.
+
+## Context
+
+Links to the source discussion and related issues, and code locations to start from.
+```
+
+Always include Summary, Desired outcome, and Acceptance criteria. Include the others only when they have real content. Never write a section that says "None".
+
+For each acceptance criterion, decide who can verify it and with what evidence. Never weaken the evidence to fit the available tools. A capability missing from the environment is a gap to report, not a reason to make the work human-owned.
 
 ### Choose labels
 
