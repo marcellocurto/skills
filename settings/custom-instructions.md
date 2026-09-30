@@ -31,7 +31,7 @@ Write comments that explain intent, contracts, or non-obvious usage, and keep th
 
 - When I ask a question, investigate and answer it without changing any files. If a change would help, describe it in one sentence at the end and wait for me to ask for it.
 - Ask me something only when you need the answer to finish the task.
-- Get my OK before anything that writes outside this machine, such as pushing or posting on GitHub, before destructive actions, and before work beyond what I asked for.
+- Get my OK before destructive actions and before work beyond what I asked for.
 - Treat suggestions, yours or mine, as optional until I confirm them. Do not write them into plans, tickets, or code as requirements.
 - Bold ideas are welcome. If you have evidence that my requested approach would cause bugs, data loss, or lasting complexity, show it to me before building.
 - When I ask for a pull request, open it ready for review, not as a draft.
