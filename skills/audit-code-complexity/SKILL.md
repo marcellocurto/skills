@@ -3,73 +3,73 @@ name: audit-code-complexity
 description: Find needless code complexity and suggest simpler designs that preserve behavior.
 ---
 
-# Audit code complexity
+# Audit Code Complexity
 
-Find what is materially harder to understand, change, or verify than the problem requires.
+Find code that is harder to understand, change, or verify than the problem requires, and propose simpler shapes that keep its behavior. This is an audit: do not edit code unless the user asks.
 
-## Scope
+## 1. Set the scope
 
-Choose from the user's wording:
+- **Current state:** audit the named code as it exists, whenever its complexity was introduced.
+- **Change:** audit only complexity that the named commits, branch, or pull request introduced or made worse. Read surrounding code for context.
 
-- **Current-state.** Audit the target as it exists, regardless of when complexity was introduced.
-- **Change-scoped.** Report only complexity introduced or materially worsened by the named changes. Inspect surrounding code only for context.
+Use the change scope only when the user names a change; uncommitted work in the repository is not a reason to switch. If the user asks for both, report them separately.
 
-Do not infer change scope merely because a repository has changes. If both modes are requested, report them separately. Ask only when genuine ambiguity would materially change the audit.
+For a large target, split it by module across parallel read-only subagents where available, and verify their findings yourself before reporting.
 
-## Method
+## 2. Look for complexity
 
-Inspect the target, repository instructions, callers, tests, configuration, and only the requirements or docs needed to understand behavior and constraints.
+Read the target, the repository instructions, the callers, the tests, and the configuration, plus only the docs needed to understand required behavior. Use `git log` to see which files change most often; complexity there costs the most.
 
 Look for:
 
-- unjustified indirection, wrappers, genericity, extension points, dependencies, or infrastructure
-- tangled control flow, flag combinations, implicit state, invalid states, or multiple sources of truth
-- repeated transformations, leaky types, wide APIs, hidden side effects, or unclear ownership
-- duplicated policy, scattered edits for one change, or modules with unrelated responsibilities
-- misleading names, distant cause and effect, broad mutation, dense expressions, or clever code
-- speculative guards, fallbacks, compatibility paths, or dead machinery
-- test harnesses, fixtures, mocks, or setup that make production behavior harder to understand or change
+- indirection, wrappers, generic code, extension points, dependencies, or infrastructure that no current requirement needs
+- tangled control flow, flag combinations, implicit state, and types that permit invalid states
+- the same fact stored or computed in several places
+- behavior placed with the wrong owner, such as an entry point or controller holding business rules, or one module mixing unrelated responsibilities
+- one change requiring edits across many files, or callers needing to know details the callee should hide
+- hidden side effects, broad mutation, misleading names, and dense or clever expressions
+- guards, fallbacks, compatibility paths, and code that nothing uses anymore
+- an old API kept only because tests still call it
+- test setup, helpers, or mocks that hide behavior, encode policy in several places, or force indirection into production code
 
-Smell names are optional vocabulary for explaining a concrete mechanism, not a checklist to exhaust or evidence of a violation. Use labels such as Feature Envy, Data Clumps, Shotgun Surgery, or Speculative Generality only when they make a finding clearer.
+Before recommending that a wrapper be removed, read its callers, including tests. Keep it if it owns real behavior or protects a contract. If it only forwards a call, suggest moving that call into the module that owns it.
 
-Include a finding only when:
+When you confirm a problem, check the rest of the target for the same problem and report the locations together. If you inspected only part of the target, say which part.
 
-1. The code creates a concrete maintenance, comprehension, correctness, or operational cost.
-2. The claim is supported by code, usage, tests, or requirements.
-3. A simpler alternative is concrete and preserves required behavior and contracts.
-4. The benefit outweighs migration and regression risk.
+## 3. Keep only real findings
 
-Line count, nesting, complexity metrics, and unfamiliarity are clues, not findings.
+Report a finding only when all of these hold:
 
-Before recommending removal of a wrapper, read its callers, including tests. Check what it handles that callers would otherwise need to handle themselves. Keep it when it owns useful behavior or protects a required contract. If it only forwards a call, consider putting that call in the appropriate existing module. File size and caller count alone do not decide this.
+1. It has a concrete cost: the code is harder to understand, change, or test, or it risks bugs or operational problems.
+2. Code, usage, tests, or requirements support the claim.
+3. A specific simpler alternative preserves the required behavior and contracts.
+4. The benefit outweighs the migration and regression risk.
 
-When you find a problem, check whether the same problem occurs elsewhere in the code you were asked to audit. Report affected locations together when the same fix applies; keep cases separate when they must preserve different behavior. If you checked only part of the target, say so instead of presenting examples as a complete list.
+Line count, nesting depth, complexity metrics, and unfamiliarity are clues, not findings. Similar-looking code justifies a shared abstraction only when it represents one concept. Skip anything a formatter or linter enforces.
 
-## Test boundary
+Prefer local changes, but recommend a larger restructuring when the evidence shows it removes much more complexity than local fixes would, and state its migration cost. Every alternative must preserve domain distinctions, data semantics, identity, validation, security, accessibility, and compatibility.
 
-Inspect tests when they establish a contract, explain intended behavior, or provide evidence for a complexity finding.
+A bug, security issue, or performance problem belongs in this report only when the complexity causes or hides it; label it separately. Tests are in scope only as a source of complexity. For test value and coverage, use the `test-quality-audit` skill.
 
-Report test-related complexity only when the test architecture creates or conceals a concrete cost. Examples include shared setup with hidden state, helper layers that obscure behavior, duplicated fixtures that encode policy in several places, test-only seams that force production indirection, or mocks that hide unclear ownership.
+## 4. Report
 
-Do not turn this into a general review of test value, coverage, snapshots, assertions, or missing cases. When tests are the main subject, use `test-quality-audit` instead.
+Use this format, order findings by benefit relative to risk, and omit empty sections:
 
-## Output
+```markdown
+**Verdict:** Needs simplification | Minor opportunities | No material findings. One sentence on why.
 
-Lead with a verdict, then prioritized findings. For each finding include:
+**Scope:** what was inspected, and what was not.
 
-- impact and confidence
-- exact location and evidence
-- concrete cost
-- simpler alternative
-- behavior or contracts that must remain unchanged
+### 1. Short title
 
-Add justified complexity, simplification order, and validation only when useful. If no material findings exist, say so directly.
+`path/to/file.ts:42`, plus other locations with the same problem.
 
-## Rules
+- **Cost:** what is harder, and the evidence.
+- **Simpler shape:** the concrete alternative.
+- **Keep:** behavior and contracts that must not change.
+- **Risk:** migration and regression risk, and how to verify the change.
 
-- Audit only; do not edit unless explicitly asked.
-- Prefer local simplification over rewrites.
-- Do not create an abstraction solely to remove similar-looking code; require a shared concept.
-- Preserve domain distinctions, data semantics, source of truth, identity, routing, validation, security, accessibility, and compatibility.
-- Skip formatter, linter, naming, and style nits unless they materially obscure behavior.
-- Do not present an ordinary correctness bug as a complexity or simplification finding. Report bugs, security, or performance issues only when caused or concealed by the complexity under review, and label them separately from simplification findings.
+**Justified complexity:** complex-looking code that earns its place, only when a reader would likely question it.
+
+**Order:** which findings to do first, only when the order matters.
+```
