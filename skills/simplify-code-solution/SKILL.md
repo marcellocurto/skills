@@ -5,71 +5,64 @@ description: Simplify a proposed or existing code solution through recommendatio
 
 # Simplify Code Solution
 
-Find the simplest complete production design for a code problem.
+Find the simplest complete production design for a code problem, whether it is a proposed solution or existing code. Simpler means easier to understand and change while keeping every real requirement. Fewer files, functions, or lines do not by themselves make a solution simpler.
 
-## Choose the working mode
+## 1. Choose the mode
 
-Infer the mode from what the user wants changed and any authorization already given:
+- **Recommend:** for questions such as "Could this be simpler?" or a review of a proposal. Do not edit files. A request to revise a proposal changes the proposal, not the code it describes.
+- **Implement:** when the user asks to simplify or refactor the code, or to apply a recommendation. Make the change and verify it without asking for approval again.
 
-- **Recommend:** For an assessment, proposal review, or question such as "Could this be simpler?", explain the simpler path, tradeoffs, and validation needed. A question about simplification does not authorize file edits. A request to revise a proposal applies to that proposal, not the production code it describes.
-- **Implement:** When the user asks to simplify or refactor the code, or to apply a recommended change, make the scoped change and verify it. Honor prior authorization without requesting approval again merely because the analysis produced a recommendation.
+Stay in recommend mode unless the user asked for changes; liking a design is not a request to implement it. Ask only when a missing decision would change the solution or its scope.
 
-When no implementation intent is established, stay in recommendation mode. A preferred design or favorable reaction alone does not authorize implementation. Ask only when a missing decision would materially change the solution or its scope.
+## 2. Understand what the code must do
 
-## Goal
+Read the code on the current path, its callers, its tests, and the local patterns, and stop reading once the requirements and risks are clear. Then separate:
 
-Prefer direct, boring changes that meet every real requirement. Simpler is valid only when it preserves behavior, keeps responsibilities coherent, fits sound existing patterns, and can be verified. Fewer files, functions, or modules do not by themselves make a solution simpler.
+- **Requirements:** the behavior and contracts callers rely on, and the success criteria.
+- **Assumptions and nice-to-haves** that could be dropped.
+- **Complexity to keep:** code that encodes real domain rules, durability, recovery, or operational guarantees. Durable queues, explicit state, and domain distinctions often look heavy and are still needed.
 
-## Success Criteria
+Before proposing to remove a mechanism, know its consumers, its role in operation and failure handling, and what would replace it.
 
-- The actual problem and success criteria are explicit.
-- Requirements are separated from assumptions and nice-to-haves.
-- Relevant code has been inspected before judging the approach.
-- Essential complexity that represents real domain, durability, recovery, or operational requirements is identified and preserved.
-- Every proposed generic abstraction, refactor, dependency, or state change is justified by a real requirement or by current complexity it meaningfully hides from callers.
-- The recommendation or implementation is the simplest production-quality change that preserves behavior and fits sound local patterns.
-- Tradeoffs and validation are stated.
+## 3. Find the simpler shape
 
-## Constraints
+Look for:
 
-- Reuse existing paths, helpers, types, components, and APIs when they can absorb the behavior without gaining an unrelated responsibility.
-- Avoid rewrites for localized bugs, state machines for simple state, generic frameworks for one caller, speculative migrations, unnecessary dependencies, wide API changes for internal convenience, and tests that only mirror implementation.
-- Compare total lifecycle complexity, not merely initial implementation size. Do not reject justified infrastructure, durable queues, explicit state, or domain distinctions simply because they add code. Complexity is removable only when requirements, operational guarantees, and failure modes remain covered.
-- Do not recommend removing a mechanism until its consumers, operational role, failure behavior, and replacement path are understood. Require a concrete cost and a behavior-preserving alternative.
-- When replacing an interface, find everything that uses it, including tests. Update tests to use the replacement while still checking the same behavior. Do not keep an old production API just to leave tests unchanged. Keep it when callers or rollout requirements still need it, and state when any temporary adapter can be removed.
-- In implementation mode, establish relevant test results before a behavior-preserving refactor and retain the same meaningful cases afterward. Change an expectation only for an authorized contract change or a demonstrated error in the test. Do not simplify fixtures, mocks, or selection in ways that hide a real failure. If the work includes a behavioral fix, observe a practical regression failing before fixing it; explain any unavailable evidence. Preserve a valid failing regression when an unresolved decision or prerequisite blocks completion.
+- an existing path, helper, type, component, or API that can absorb the behavior without taking on an unrelated responsibility
+- code that duplicates what the language, framework, or an existing dependency already provides
+- generic code, extension points, or configuration with only one real variation
+- rewrites for localized bugs, state machines for simple state, frameworks for one caller, speculative migrations, new dependencies, or wide API changes for internal convenience
+- wrappers that only add a call to follow; read their callers first, and keep wrappers that handle rules, cleanup, or compatibility the callers would otherwise carry
+- logic placed away from its natural owner, or an owner that has taken on an independent workflow
 
-## Context Budget
+A focused module is justified, even with one caller, when it hides real complexity and reduces what callers must know. Compare total lifecycle cost, not initial size, and reject a simplification that moves complexity, risk, or manual work downstream.
 
-Inspect the minimum relevant code needed to understand the current path, contract, local patterns, and risk. Continue reading only when a requirement, behavior boundary, local pattern, or validation path is unclear.
+When replacing an interface, find every user, including tests. Move tests to the replacement while checking the same behavior; do not keep an old API only for tests. Keep it while other callers or a rollout need it, and say when a temporary adapter can be removed.
 
-## Simplicity Checks
+When you find a simplification, check the rest of the requested scope for the same problem and include those cases. Report cases outside the scope separately.
 
-- Can one existing code path absorb the behavior while remaining coherent, or would a focused module reduce the caller's required context?
-- Can current contracts and data shapes remain unchanged?
-- Is genericity serving demonstrated variation? Separately, does a responsibility extraction hide meaningful existing complexity even if it has one caller?
-- Would removing a wrapper make the code easier to follow, or make callers handle rules, cleanup, or compatibility themselves? Read its callers before recommending removal.
-- What required behavior or operational guarantee does the apparent complexity encode?
-- Would removing local complexity move more complexity, risk, or manual work downstream?
-- Can the edge case be handled by its natural owner without making that owner responsible for an independent workflow or policy?
-- Will a maintainer understand the changed path without holding unrelated responsibilities in mind?
-- Does validation cover behavior users or callers rely on?
+## 4. Implement
 
-## Output
+In implement mode, run the relevant tests before the refactor and keep the same meaningful cases afterward. Change an expected outcome only for an authorized contract change or a demonstrated error in the test. Do not change fixtures, mocks, or test selection in ways that hide a failure. If the work includes a behavior fix, use the `tdd` skill when available; otherwise, watch the regression test fail before fixing the code.
 
-For recommendations:
+Continue through the change and its verification; do not stop at a proposal. If a blocker stops you, keep any valid failing test and report the missing decision and what remains.
 
-- **Real requirement**
-- **Complexity to preserve**
-- **Assumptions to drop**
-- **Simpler path**
-- **Tradeoffs**
-- **Validation**
+## 5. Report
 
-Use only the headings that add decision value. For implementation, report what changed, why it reduces complexity, the verification performed, and any material limitation.
+For a recommendation, use this format and omit lines that add nothing:
 
-## Stop Rules
+```markdown
+**Requirements:** what the code must keep doing.
 
-When you find a way to simplify the code, check whether the same problem occurs elsewhere in the requested scope. Include confirmed cases in the recommendation or authorized cleanup before calling the work complete. Report any known cases outside that scope separately.
+**Complexity to keep:** what stays, and why.
 
-In recommendation mode, finish when the simpler production-quality path and its validation plan are clear. In implementation mode, continue through the authorized change and verification; do not stop at a proposal. If a genuine blocker prevents completion, state the missing decision or evidence and what remains unfinished.
+**Assumptions to drop:** what the current design assumes without a requirement.
+
+**Simpler path:** the concrete change, with locations.
+
+**Tradeoffs:** what gets worse or riskier.
+
+**Validation:** how to confirm behavior is preserved.
+```
+
+For an implementation, report what changed, why it is simpler, the checks run with their results, and any limitation.

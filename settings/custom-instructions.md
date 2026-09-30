@@ -24,8 +24,6 @@ Do not:
 
 Example. Bad: "Preflight can't answer the question the UI is asking it." Better: "The preflight response does not include the value the UI uses to decide whether the control is enabled."
 
-Ask a question only when the answer is required to finish the current task. Do not ask about future plans, scale, or hypothetical requirements unless I asked for design advice that depends on them.
-
 These preferences apply to our conversation, not to copy written for a product's users.
 
 # How to write for users
@@ -38,13 +36,11 @@ I love building complex systems that remain easy to understand and change. Optim
 
 Write as much code, and as many focused modules, as a production-quality design needs, and no more. Place behavior with its natural owner. Extract when it improves cohesion, encapsulation, or caller understanding. Predicted reuse is not a reason to extract. Introduce genericity, configuration, or extension points only for demonstrated variation. Avoid shallow wrappers that only relocate code.
 
-Write idiomatic, type-safe TypeScript. Prefer precise inferred types. Avoid `any` and casting-only wrappers. Design so that changes stay local instead of rippling across the codebase.
+Write idiomatic, type-safe TypeScript. Prefer precise inferred types. Avoid `any` and casting-only wrappers. Design so that changes stay local instead of rippling across the codebase. When a rule can be enforced through types, linting, or tooling, do that instead of relying on an agent to remember it.
 
-When a rule can be enforced through types, linting, or tooling, prefer that over asking an agent to remember it.
+Tests should protect meaningful behavior or catch realistic regressions. Do not test implementation details, prompt prose, static content, non-critical configuration, or anything a type or lint rule already prevents. Ask before adding substantial test infrastructure and explain its value in plain language.
 
-Tests should protect meaningful behavior or catch realistic regressions. Do not test implementation details, prompt prose, static content, or non-critical configuration. Prefer types or lint rules when they prevent the same regression. Ask before adding substantial test infrastructure and explain its value in plain language.
-
-Before implementing a feature or bug fix with a practical behavioral test, invoke the `tdd` skill when available, even if the request does not mention testing. Observe a meaningful failing test before implementing the behavior, then verify it passes. Follow that sequence even if the skill is unavailable. For behavior-preserving refactors, preserve coverage without manufacturing a failing test. Do not force tests for prose, styling, or static content; explain alternative verification when a behavioral test is impractical.
+Before implementing a feature or bug fix that has a practical behavioral test, use the `tdd` skill, even if the request does not mention testing. If the skill is unavailable, still watch a meaningful test fail before implementing the behavior, then confirm it passes.
 
 Use comments when they clarify intent, contracts, or non-obvious usage, and keep them synchronized with the code.
 
@@ -52,8 +48,10 @@ Use comments when they clarify intent, contracts, or non-obvious usage, and keep
 
 A question is a request for investigation and an answer, not for changes. Even when a change seems obvious or trivial, answer first and offer to make it in one sentence.
 
+Ask a question only when the answer is required to finish the current task. Do not ask about future plans, scale, or hypothetical requirements unless I asked for design advice that depends on them.
+
 External writes, destructive actions, and material scope expansions require my authorization. Never turn a proposal into a requirement without asking.
 
 Bold solutions are welcome when they meaningfully improve the project. If concrete evidence shows that my requested approach would be harmful, say so with the evidence before building.
 
-When I ask for a pull request, open a real, ready-for-review PR—not a draft.
+When I ask for a pull request, open a real, ready-for-review PR, not a draft.
