@@ -1,7 +1,5 @@
 # Agent Instructions
 
-Design and maintain all skills for GPT-6, following current GPT-6 prompting guidance.
-
 State only capability and routing boundaries in skill descriptions. Mark explicit-only skills in invocation metadata — `disable-model-invocation: true` for Claude, `policy.allow_implicit_invocation: false` in `agents/openai.yaml` for Codex — never as prose in description or body.
 
 Keep `SKILL.md` and supporting runtime instructions self-contained and repository-controlled. Never delegate runtime guidance to an external skill, prompt, principle file, or other mutable third-party document; write it locally. Attribute external sources in `README.md`. Consult authoritative external docs only when the task needs current external facts, never as a substitute for maintained instructions.

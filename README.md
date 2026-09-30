@@ -1,6 +1,6 @@
 # Skills
 
-Agent skills for better outcomes working with LLMs, maintained for GPT-6.
+Agent skills for better outcomes working with LLMs.
 
 I use most of them daily and refine them as gaps surface — by judgment, not benchmarks (for now). 🤞
 
@@ -55,8 +55,6 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`wizard`](skills/wizard/SKILL.md)**: Package setup steps that require a person—credentials, dashboards, migrations, or cutovers—into a guided interactive Bash flow.
 
 ## Sources and Attribution
-
-Skill maintenance follows [OpenAI's GPT-6 prompting guidance](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices); task boundaries and verification stay repository-owned.
 
 Several skills are forked, adapted, or inspired by other projects:
 

@@ -5,91 +5,69 @@ description: Open a ready-for-review GitHub pull request for completed local cha
 
 # Create Pull Request
 
-Publish one completed change as a clear, accurate, ready-for-review GitHub pull request.
+Publish the completed change as one accurate GitHub pull request that is ready for review.
 
-A direct request to create, open, or publish the PR authorizes the ordinary commit, push, and PR creation needed for that exact change. If a matching open PR already exists, this includes updating its title and body to reflect the completed change and marking it ready for review. It does not authorize force-pushing, merging, issue edits, labels, reviewers, assignees, or unrelated local changes.
+A request to open the PR authorizes creating a branch when needed, committing the in-scope changes, pushing without force, and creating the PR or updating a matching open one. Do these without pausing to confirm them. The request does not authorize merging, auto-merge, force-pushing, history rewrites, labels, reviewers, assignees, issue edits, or touching unrelated changes.
 
-Leave the published PR open for review. Merging requires a separate explicit user instruction after publication and delivery of the PR URL, even if the original request bundled creation and merging. Do not merge, enable auto-merge, or enqueue a merge during this workflow.
+Stop and report only when:
 
-## Establish the change
+- the change is empty, incomplete, or mixed with changes whose ownership is unclear
+- a required check fails or cannot run
+- publishing fails
 
-- Read the repository instructions for branches, commits, verification, and pull requests, including the applicable PR template.
-- Resolve the exact GitHub host, base repository, head repository, and push remote from the user's request, repository instructions, and Git remotes. Ask when the intended destination remains ambiguous.
-- Use the user's requested head branch, otherwise the current branch. Use the requested base branch; when unspecified, follow repository instructions, then `branch.<head>.gh-merge-base`, then GitHub's default branch. Ask if repository instructions and explicit branch configuration conflict. A default or protected branch can be the PR head; respect restrictions on the actual push operation.
-- Do not create or switch branches by default. If publication requires creating or switching a branch, explain the concrete reason and proposed branch, ask for permission, and wait before proceeding unless the user has already explicitly authorized that action. A request to publish a PR alone is not permission to change branches. Resolve a detached HEAD or a head and base that identify the same branch under this rule.
-- Record the resolved head ref and commit. Use them for the diff, verification, push, and PR comparison; local `HEAD` represents the requested head only when they match. When the intended commit is already the remote head, inspect that ref without requiring a checkout or push. Commit local changes only in a checkout of the selected head, subject to the branch permission rule.
-- Inspect the complete merge-base diff from the fetched base to the selected head, its commits, and any local changes intended for publication, including staged and unstaged changes, untracked files, and `git diff --check`.
-- Preserve unrelated worktree changes. Stage only clearly in-scope paths; never stash, discard, clean, reset, amend, rebase, or rewrite history merely to publish the PR.
-- Check for an existing open PR with the same base repository and branch and head repository and branch. Read its title, body, and draft state, then reuse it instead of creating a duplicate. Do not reopen or reuse a closed or merged PR without explicit direction.
+## 1. Establish the change
 
-If the intended change set is empty, mixed with changes of uncertain ownership, or incomplete, stop before committing or pushing and explain the exact blocker.
+- Read the repository instructions, the source issue if there is one, and a few recent commits to learn the repository's conventions.
+- The head is the current branch unless the user names one. The base is the branch the user or repository instructions name, otherwise the repository's default branch. If the head is the base branch or HEAD is detached, create a branch named for the change.
+- Review the full diff from the merge base with the base branch, plus staged, unstaged, and untracked changes. Stage only paths that belong to this change. Never stash, reset, clean, amend, or rebase to make publishing work.
+- If an open PR from this head to this base exists, update it instead of creating another.
 
-## Prepare and verify the change
+## 2. Verify
 
-Before publication, confirm that the requested scope is complete, the base and head are correct, the full PR diff is coherent, and no known blocker is hidden.
+Run the checks the repository requires. If it names none, run the smallest checks that exercise the changed behavior, plus `git diff --check`. Reuse earlier results when the code they tested has not changed since. Never weaken tests or bypass failing paths to get a check to pass, and never report a check that did not run.
 
-Run repository-required formatting, lint, type, test, build, or validation commands at their required stage: before committing, after committing, after pushing, or after PR creation. Require checks that can run before publication to pass before creating or marking the PR ready. Checks that require a push or PR run after that prerequisite exists; report them as pending until results are available. If the repository specifies no checks for this change, use the smallest deterministic checks that exercise the changed behavior, with `git diff --check` on the intended diff as the minimum repository check.
+## 3. Commit and push
 
-Reuse recorded verification results when they can be tied to the code being published and the relevant dependencies, configuration, and environment still match. Run only missing or invalidated checks unless repository rules require a fresh run at the current stage; opening a PR is not itself a reason to repeat successful verification.
+Commit the in-scope changes as one commit with a message in the repository's style. Push the head branch without force.
 
-Record the exact commands and outcomes, distinguishing passed, failed, skipped, and unable-to-run checks. Confirm required coverage actually ran; a successful command that excluded it does not satisfy the publication check. A known required-check failure or unavailable required check blocks creating or marking the PR ready at that stage. Report the failure or gap; if a PR already exists, include its URL and leave it open. Never claim a test, review, or user journey that was not run. Preserve valid failing regressions; do not weaken tests, bypass the failing path, or reclassify required checks merely to publish. Resolve in-scope defects when authorized, or report the precise blocker.
+## 4. Write the title and body
 
-If in-scope local changes remain, run checks required before committing, stage only the intended changes, inspect the staged diff, and create one clear commit for that completed work. Preserve existing commits unless the user explicitly requests a history change. Update the recorded head commit, recompute the complete base-to-head diff, and run checks required after committing. A commit with unchanged tested file contents does not invalidate evidence unless the check depends on Git metadata. If hooks change files, or verification depended on worktree changes absent from the commit, rerun the affected checks against the final revision.
+Write both from the committed diff, the source issue, and the check results, not from conversation memory. The readers are engineers who review many pull requests. Use plain words, short paragraphs, the most important point first, and backticks for code identifiers. Keep the body proportional to the change.
 
-## Author the pull request
+Title: the outcome in plain words that a reviewer understands without opening the PR, such as "Retry failed webhook deliveries with backoff" rather than "Update webhook logic".
 
-Derive the title and body from the source issue or specification when available, the complete committed diff, the commit list, and the final verification results. Do not rely on conversation memory alone.
+Body, in this order:
 
-### Title
+```markdown
+## Summary
 
-- Describe the outcome in simple, ordinary language.
-- Make it understandable without reading the issue.
-- Avoid vague wording such as "update logic" or "fix issue."
-- Use repository prefixes such as `feat:` only when the repository requires them.
+Two to four sentences: what problem this solves, why it matters, and how behavior changes. A reader who stops here should know what the PR does. End with `Closes #N` when the PR fully resolves that issue in the same repository; otherwise reference it without closing it.
 
-### Body
+## Changes
 
-Follow the applicable repository template or the user's requested format. Preserve required sections and answer them accurately; omit optional sections that add no information. Do not mark template checkboxes complete without supporting evidence.
+The changes grouped by concern, each with the behavior before and after. Explain decisions a reviewer might question and the alternatives you rejected.
 
-When no template governs, choose the structure the change warrants. A simple PR may need only a short explanation of the problem and resulting behavior, followed by verification commands and outcomes. Add implementation decisions, review pointers, compatibility risks, or non-goals only when they help assess the change. Avoid duplicate summaries, empty headings, and boilerplate such as a mandatory "None identified" risk section.
+## How to review
 
-Keep every claim traceable to repository evidence. Do not invent scope, files, tests, risks, follow-up work, or success. Remove secrets, absolute local paths, private command output, and internal agent artifacts. Use repository-relative paths and concise result summaries.
+Where to start, which parts need careful reading, and which are mechanical, such as renames, moved code, or generated files. Name any specific question you want the reviewer's judgment on.
 
-Add `Closes #<number>` only when the PR fully completes that same-repository issue. Use a non-closing reference when the issue is only context or the work is partial. Do not infer issue numbers from branch names alone.
+## Verification
 
-Write the reviewed Markdown to a temporary file outside the repository, or stream it through standard input when supported. Pass it with `--body-file`; do not interpolate multiline Markdown into a shell argument.
+The commands run and their results, manual checks, and screenshots for UI changes. Say what was not tested and why.
 
-## Publish once
+## Risks and non-goals
 
-Require `gh` and successful authentication for the active account on the resolved host using `gh auth status --active --hostname HOST`.
-
-Compare the remote head branch with the recorded head commit. Push only if that commit is not already the remote branch tip, using the resolved source ref and destination branch explicitly, without force. Confirm the source ref still identifies the recorded commit before pushing; if it moved, inspect and verify the new state first. Preserve existing upstream tracking configuration; publishing a PR does not require changing it.
-
-For an existing matching PR, use `gh pr edit` with its URL and explicit title and `--body-file` arguments only when updates are needed. Preserve accurate human-authored context. Once the applicable checks pass, use `gh pr ready` with its URL if it is a draft. Do not call `gh pr create` for an existing open PR.
-
-Otherwise create the PR with explicit arguments, including the resolved host in the repository identifier:
-
-```bash
-gh pr create \
-  --repo HOST/OWNER/REPO \
-  --base BASE_BRANCH \
-  --head HEAD_BRANCH \
-  --title "TITLE" \
-  --body-file PR_BODY_FILE
+What could break, such as compatibility, migrations, performance, or security, and what this PR deliberately does not do.
 ```
 
-For a fork, qualify the head as `OWNER:BRANCH`. Never pass `--draft`; this skill creates a real PR that is immediately ready for human and automated review.
+Always include Summary and Verification. Include the other sections only when they have real content; a one-file fix usually needs only those two. Never write a section that says "None".
 
-If creation fails or returns unclear output, query GitHub for the exact head and base before retrying. Never blindly repeat a create operation. If the push succeeded but PR creation did not, preserve the pushed branch and report the partial state and exact error.
+Leave out file-by-file change lists, restatements of the diff, unticked checkboxes, secrets, absolute local paths, and raw command output.
 
-## Verify the published result
+Write the body to a temporary file outside the repository and pass it with `--body-file`.
 
-Read the created or reused PR back by URL with `gh pr view` and verify:
+## 5. Publish and report
 
-- it has a URL and number and is open
-- `isDraft` is false
-- repository, base branch, and head branch are exact
-- GitHub's head commit matches the recorded, verified head commit
-- title and body match the reviewed content
+For a matching open PR, update it with `gh pr edit` if needed, and run `gh pr ready` if it is a draft. Otherwise run `gh pr create` with explicit `--repo`, `--base`, `--head` (`OWNER:BRANCH` for forks), `--title`, and `--body-file`. Never pass `--draft`. If creation fails or its output is unclear, check whether the PR exists before retrying.
 
-Inspect checks that require publication now that the PR exists. Return the PR URL and number, base and head, published commit, verification commands and outcomes, and any pending or failed checks or other disclosed limitation, then stop with the PR open for review. Do not manually close its source issue.
+Report the PR URL, the checks run with their results, and any CI checks still pending. Leave the PR open. Merge only if the user asks after receiving the URL.
