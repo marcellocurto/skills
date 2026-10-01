@@ -22,6 +22,7 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Pressure-test a design through conversation while keeping its glossary and architectural decisions up to date.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Surface the architecture changes most likely to improve maintainability, show them visually, and explore the strongest candidate together.
 - **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Build a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review; ask when something doesn't work as expected.
+- **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Watch a PR and settle review comments from people and Codex each round, rejecting suggestions that work against the PR's intent, stopping when a batch of comments points to an architectural problem, and finishing once every thread is answered and Codex approves the latest commit.
 - **[`triage`](skills/triage/SKILL.md)**: Assess one supplied GitHub issue, resolve only the questions blocking implementation, and update it after approval.
 
 **Model-invoked (implicit allowed)**
@@ -54,7 +55,7 @@ Several skills are forked, adapted, or inspired by other projects:
 - [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, self-contained typography guidance, and product-specific copy guidance. The original license is retained.
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
-- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `github-issue-audit`, `create-pull-request`, and the review lenses in `code-review`.
+- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `github-issue-audit`, `create-pull-request`, the review-context helper in `babysit-pr`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
 

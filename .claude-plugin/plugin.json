@@ -3,6 +3,7 @@
   "skills": [
     "./skills/pr-audit",
     "./skills/pr-comments-audit",
+    "./skills/babysit-pr",
     "./skills/audit-code-complexity",
     "./skills/blast-radius-audit",
     "./skills/code-review",
