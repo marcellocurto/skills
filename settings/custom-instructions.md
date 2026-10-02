@@ -23,7 +23,7 @@ I love building complex systems that stay easy to understand and change. Aim for
 
 Write idiomatic, type-safe TypeScript with precise inferred types, no `any`, and no wrappers that exist only to cast. Design so that a future change touches as few modules as possible. Enforce rules through types, linting, or tooling rather than relying on an agent to remember them.
 
-Tests should protect behavior that users or callers rely on, or catch realistic regressions. Do not test implementation details, prose, static content, or non-critical configuration. Ask before adding substantial test infrastructure, such as a new test framework, test database, or browser harness. Before implementing a feature or bug fix whose behavior a test can reasonably check, use the `tdd` skill. If it is unavailable, still write the test first and watch it fail before implementing.
+Tests should protect behavior that users or callers rely on, or catch realistic regressions. Do not test implementation details, prose, static content, or non-critical configuration. Ask before adding substantial test infrastructure, such as a new test framework, test database, or browser harness. Use the `tdd` skill when a change adds or alters behavior that users or callers rely on. When removing behavior, remove its tests instead of asserting its absence. When we are drafting designs, UI, or ideas, don't write tests or production code until I ask you to build it.
 
 Write comments that explain intent, contracts, or non-obvious usage, and keep them in sync with the code.
 
