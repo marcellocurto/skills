@@ -20,6 +20,12 @@ Take one GitHub issue supplied by the user from its current state to a clear imp
 
 Read the complete issue and discussion, then inspect only the repository context needed to understand the requested behavior and determine whether implementation can begin. Check current behavior, governing decisions, relevant constraints, native and declared dependencies, and whether the requested outcome is already satisfied. Do not expand into a general codebase audit.
 
+Read conclusions that earlier triage comments recorded on the issue, and do not reopen questions they settled unless new evidence changes the answer.
+
+- **Already satisfied or duplicated:** search the code by domain concept and behavior, not only the issue's wording. Search closed issues as well as open ones. Before calling something a duplicate, compare its outcome and scope; a similar title proves nothing.
+- **Reported bugs:** follow the reporter's steps when that is safe, and record the environment, inputs, and result. A failed reproduction is inconclusive unless other evidence disproves the report.
+- **Past decisions:** a past rejection holds only while its reasoning still holds, and a later comment does not automatically override an earlier decision. When the issue asks maintainers to reconsider a decision with new evidence, present that evidence and leave the choice to them.
+
 An issue's specification is ready when:
 
 - the desired outcome is concrete
@@ -31,12 +37,12 @@ An issue does not need file names, an implementation design, or every engineerin
 
 ## Recommend the next step
 
-Recommend starting implementation only when the specification is ready and meaningful work is unblocked. If the issue duplicates another, conflicts with an accepted decision, or is already satisfied, recommend that outcome instead of a readiness result. Report specification readiness and dependency status separately:
+Recommend starting implementation only when the specification is ready and meaningful work is unblocked. If the issue duplicates another, conflicts with an accepted decision it does not ask to reconsider, is already satisfied, or cannot be implemented, recommend that outcome instead of a readiness result. Call an issue not implementable only with a concrete constraint found after checking extension points and any alternatives the issue allows. Low value, effort, difficulty, and unfamiliarity are never reasons. Report specification readiness and dependency status separately:
 
 - **Ready:** the outcome and constraints are sufficient to implement without another product decision.
 - **Needs clarification:** one or more missing decisions or facts would materially change the implementation or its acceptance criteria.
 
-For dependencies, report **Clear** when no verified prerequisite prevents meaningful work, or **Blocked** with the prerequisite and its owner when one does. A fully specified issue can be ready but blocked; do not manufacture clarification questions for a known dependency. Inspect closure reasons and resolutions before treating a closed prerequisite as satisfied, replaced, or explicitly waived. An issue closed as not planned or as a duplicate does not by itself establish that work can begin.
+For dependencies, report **Clear** when no verified prerequisite prevents meaningful work, or **Blocked** with the prerequisite and its owner when one does. A fully specified issue can be ready but blocked; do not manufacture clarification questions for a known dependency. Do not confuse issues this one blocks with issues that block it. Inspect closure reasons and resolutions before treating a closed prerequisite as satisfied, replaced, or explicitly waived. An issue closed as not planned or as a duplicate does not by itself establish that work can begin; when a prerequisite was closed as a duplicate, follow it to the issue that replaced it and check that one.
 
 If access, tooling, or unavailable repository evidence prevents either judgment, report **Assessment incomplete**, identify the missing evidence and how to obtain it, and preserve any established facts without claiming an overall readiness result. Missing access is not a product clarification question.
 
