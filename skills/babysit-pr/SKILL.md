@@ -21,7 +21,7 @@ Run:
 python3 "<skill-path>/scripts/watch_pr.py" [--pr URL_OR_NUMBER] --interval <minutes> [--since <checked_at>]
 ```
 
-Omit `--since` on the first run so that existing feedback counts. On later runs, pass the `checked_at` value from the previous result. The watcher checks the PR every interval and returns JSON whose `reason` says why it stopped waiting. While Codex is reviewing, it keeps waiting, so feedback that arrives mid-review is handled together with Codex's findings. It ignores comments from the authenticated account, which includes your own replies; if the user says they commented, run a round anyway.
+Omit `--since` on the first run so that existing feedback counts. On later runs, pass the `checked_at` value from the previous result. The watcher checks the PR every interval and returns JSON whose `reason` says why it stopped waiting. A comment edited after the last check counts as new activity, so reread edited comments rather than only new ones. While Codex is reviewing, it keeps waiting, so feedback that arrives mid-review is handled together with Codex's findings. It ignores comments from the authenticated account, which includes your own replies; if the user says they commented, run a round anyway.
 
 Run the watcher as a background command if your host wakes you when it exits. Otherwise run it in the foreground with a shell timeout longer than `--timeout` (30 minutes by default), and lower `--timeout` if the shell limit requires it.
 
@@ -31,7 +31,7 @@ Act on `reason`:
 - `codex-approved`: Codex reviewed the head commit and found nothing. If no unresolved threads remain, the PR is done. If the only unresolved threads are ones you left open for a decision, stop. Otherwise run a round for the remaining threads.
 - `timeout` with Codex `pending`: Codex has not started on the head commit. Comment `@codex review` once for that commit and wait again. If it still has not started after another timeout, stop.
 - `timeout` with Codex `running`: wait again. Stop once it has been running on the same commit for over two hours.
-- `timeout` with Codex `findings`: Codex's findings on the head commit are already answered without a push, so Codex will not review again on its own. Comment `@codex review` once for that commit and wait again.
+- `timeout` with Codex `findings`: Codex's findings on the head commit are already answered without a push, so Codex will not review again on its own. Comment `@codex review` once for that commit and wait again; a clean re-review of the same commit shows up as `codex-approved`.
 - `codex-failed` or `closed`: stop.
 
 ## Run a round

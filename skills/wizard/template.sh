@@ -26,6 +26,7 @@ _STAGE_INDEX=0
 ENV_FILE="${ENV_FILE:-.env}"
 WRITTEN_ENV=()    # KEYs written to ENV_FILE this run
 WRITTEN_SECRET=() # secret NAMEs set this run
+WRITTEN_VAR=()    # GitHub variable NAMEs set this run
 SKIPPED=()        # things we couldn't do (e.g. gh missing)
 
 # _clear wipes the terminal so only the current step is on screen. No-op when
@@ -76,27 +77,60 @@ open_url() {
   } >/dev/null 2>&1 || warn "couldn't open a browser, so visit it manually: $url"
 }
 
+# _read reads one line like `read`, but aborts the wizard when input ends:
+# nobody is answering, and a blank answer must not pass for a real one.
+_read() {
+  if ! read "$@"; then
+    printf '\n'
+    warn "input ended before the wizard finished; run it in an interactive terminal"
+    exit 1
+  fi
+}
+
 # pause "msg" waits for the human to confirm they've done the manual part.
 pause() {
   printf '  %s%s%s ' "$DIM" "${1:-Press Enter to continue}" "$RESET"
-  read -r _ || true
+  _read -r _
 }
 
 # confirm "question" is a y/N gate; returns success on yes.
 confirm() {
   local reply=""
   printf '  %s? %s [y/N] ' "$YELLOW" "$1"
-  read -r reply || true
+  _read -r reply
   [[ "$reply" =~ ^[Yy] ]]
 }
 
-# _existing KEY: current value of KEY in ENV_FILE, if any, without a pair of
-# surrounding quotes, so re-runs compare and re-send the bare value.
+# _env_quote VALUE prints VALUE as a dotenv literal. Plain values stay bare;
+# anything with spaces, `#`, quotes, `$`, or backslashes is single-quoted
+# (literal in dotenv loaders), or double-quoted with escapes if it contains a
+# single quote. Without this, `abc#def` loads as `abc`.
+_env_quote() {
+  local value="$1"
+  if [[ -n "$value" && "$value" =~ ^[A-Za-z0-9_./:@+=-]+$ ]]; then
+    printf '%s' "$value"
+  elif [[ "$value" != *"'"* ]]; then
+    printf "'%s'" "$value"
+  else
+    value="${value//\\/\\\\}"
+    value="${value//\"/\\\"}"
+    printf '"%s"' "$value"
+  fi
+}
+
+# _existing KEY: current value of KEY in ENV_FILE, if any, decoded from the
+# quoting that _env_quote applied, so re-runs compare and re-send the bare value.
 _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
   local line value; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
   value="${line#*=}"
-  if [[ "$value" =~ ^\"(.*)\"$ || "$value" =~ ^\'(.*)\'$ ]]; then value="${BASH_REMATCH[1]}"; fi
+  if [[ "$value" =~ ^\'(.*)\'$ ]]; then
+    value="${BASH_REMATCH[1]}"
+  elif [[ "$value" =~ ^\"(.*)\"$ ]]; then
+    value="${BASH_REMATCH[1]}"
+    value="${value//\\\"/\"}"
+    value="${value//\\\\/\\}"
+  fi
   printf '%s' "$value"
 }
 
@@ -111,7 +145,7 @@ _prompt() {
     else
       printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
     fi
-    if [[ "$flag" == "-s" ]]; then read -rs input || true; printf '\n'; else read -r input || true; fi
+    if [[ "$flag" == "-s" ]]; then _read -rs input; printf '\n'; else _read -r input; fi
     [[ -z "$input" && -n "$current" ]] && input="$current"
     [[ -n "$input" ]] && break
     warn "a value is required"
@@ -134,7 +168,7 @@ write_env() {
   [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
   tmp=$(mktemp)
   grep -vE "^${key}=" "$ENV_FILE" > "$tmp" || true
-  printf '%s=%s\n' "$key" "$value" >> "$tmp"
+  printf '%s=%s\n' "$key" "$(_env_quote "$value")" >> "$tmp"
   cat "$tmp" > "$ENV_FILE"
   rm -f "$tmp"
   WRITTEN_ENV+=("$key")
@@ -173,6 +207,7 @@ set_var() {
   local name="$1" value="$2"
   if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     if gh variable set "$name" --body "$value" >/dev/null 2>&1; then
+      WRITTEN_VAR+=("$name")
       printf '  %s✓ set%s GitHub variable %s on %s\n' "$GREEN" "$RESET" "$name" "$(_gh_repo)"
       return
     fi
@@ -186,9 +221,14 @@ set_var() {
 finish() {
   pause
   _clear
-  printf '\n%s%s  ✓ Setup complete%s\n' "$BOLD" "$GREEN" "$RESET"
+  if (( ${#SKIPPED[@]} )); then
+    printf '\n%s%s  ⚠ Setup finished with steps left to do%s\n' "$BOLD" "$YELLOW" "$RESET"
+  else
+    printf '\n%s%s  ✓ Setup complete%s\n' "$BOLD" "$GREEN" "$RESET"
+  fi
   (( ${#WRITTEN_ENV[@]} ))    && note "wrote ${#WRITTEN_ENV[@]} value(s) to $ENV_FILE: ${WRITTEN_ENV[*]}"
   (( ${#WRITTEN_SECRET[@]} )) && note "set ${#WRITTEN_SECRET[@]} GitHub secret(s): ${WRITTEN_SECRET[*]}"
+  (( ${#WRITTEN_VAR[@]} ))    && note "set ${#WRITTEN_VAR[@]} GitHub variable(s): ${WRITTEN_VAR[*]}"
   if (( ${#SKIPPED[@]} )); then
     printf '\n'; warn "still to do by hand:"
     for s in "${SKIPPED[@]}"; do note "  - $s"; done

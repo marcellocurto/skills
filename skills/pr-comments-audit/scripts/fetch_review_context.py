@@ -44,7 +44,7 @@ query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
       number url title state baseRefName headRefName
       reviews(first: 100, after: $cursor) {
         pageInfo { hasNextPage endCursor }
-        nodes { id url state body submittedAt author { login } }
+        nodes { id url state body submittedAt updatedAt author { login } }
       }
     }
   }

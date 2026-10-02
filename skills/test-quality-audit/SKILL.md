@@ -51,7 +51,7 @@ When it is unclear whether an important test would fail on the regression it cla
 - **Keep**: protects a contract and fails on a realistic regression.
 - **Fix**: useful intent, weak execution. Rewrite it around observable behavior or the risky boundary.
 - **Cut**: protects no contract, or costs more to maintain than it protects and has no intent worth rewriting. Includes redundant, tautological, and coverage-only tests, and tests of static content, copy, navigation structure, or non-critical configuration that encode no compatibility promise.
-- **Add**: a contract is untested and a realistic regression is plausible. Do not recommend Add for removals, design exploration, prototypes, static content, copy, or configuration.
+- **Add**: a contract is untested and a realistic regression is plausible. Do not recommend Add for removals, design exploration, prototypes, static content, copy, or configuration, unless the configuration carries a compatibility promise that callers rely on.
 
 ## Patterns to investigate
 

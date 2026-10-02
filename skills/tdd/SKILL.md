@@ -11,7 +11,7 @@ Work in small red → green → refactor cycles: write one behavior as a test, w
 
 Write a test only when the change adds or alters a rule that users or callers will rely on from now on. Tests exist to catch realistic regressions of such rules; coverage by itself is not a reason to write one. If the change does not create such a rule, say so in one line and implement without the cycle.
 
-Tests describe what the system does. Do not write a test that asserts a feature, route, option, or default is absent. A promised rejection or default is a behavior, so test the outcome itself: the endpoint returns 401 without credentials, or the destructive flag starts off. When removing behavior, delete the tests that covered it and run the remaining suite, which already catches anything that still depended on it.
+Tests describe what the system does. Do not write a test that asserts a feature, route, option, or default is absent. A promised rejection or default is a behavior, so test the outcome itself: the endpoint returns 401 without credentials, or the destructive flag starts off. When removing behavior, delete the tests that covered it, find the callers that remain, and run the remaining suite; it covers only what it already tested, so check the remaining callers directly.
 
 Do not write tests while drafting designs, UI, or ideas. Write them once the behavior is agreed and you are building it.
 

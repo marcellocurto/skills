@@ -46,6 +46,12 @@ function Search({ items }: { items: Item[] }) {
     </>
   )
 }
+
+// The deferred render only skips work if the child bails out when its props
+// are unchanged, so the list must be memoized.
+const ResultsList = memo(function ResultsList({ results }: { results: Item[] }) {
+  // ...
+})
 ```
 
 **When to use:**
@@ -54,6 +60,6 @@ function Search({ items }: { items: Item[] }) {
 - Expensive visualizations (charts, graphs) reacting to input
 - Any derived state that causes noticeable render delays
 
-**Note:** Wrap the expensive computation in `useMemo` with the deferred value as a dependency, otherwise it still runs on every render.
+**Note:** Wrap the expensive computation in `useMemo` with the deferred value as a dependency, otherwise it still runs on every render. Memoize the component that renders the result as well: during the urgent render, `deferredQuery` and `filtered` are unchanged, and only a `memo` child skips re-rendering with unchanged props. Without that, the expensive child still renders on every keystroke.
 
 Reference: [React useDeferredValue](https://react.dev/reference/react/useDeferredValue)

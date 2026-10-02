@@ -35,6 +35,6 @@ Read back each documentation change and verify that it preserves the user's mean
 
 ## Finish
 
-Finish when the requested decision is understood or the user pauses the discussion. Report the settled conclusions, remaining material questions, and documentation changed. In read-only or proposed-edit mode, present the proposed text and identify its intended location without claiming it was saved.
+Finish when the material choices needed for the requested decision are settled or explicitly deferred, or when the user pauses the discussion. Report the settled conclusions, remaining material questions, and documentation changed. In read-only or proposed-edit mode, present the proposed text and identify its intended location without claiming it was saved.
 
 Agreement on a design and authorization to record it do not authorize implementation, commits, pushes, or external publication. Continue into those actions only when the user has authorized them.

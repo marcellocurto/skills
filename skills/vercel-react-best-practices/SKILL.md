@@ -116,14 +116,14 @@ These ratings are relative priorities for investigation under applicable conditi
 - `rendering-hydration-no-flicker` - Use inline script for client-only data
 - `rendering-hydration-suppress-warning` - Suppress expected mismatches
 - `rendering-activity` - Use Activity component for show/hide
-- `rendering-conditional-render` - Use ternary, not && for conditionals
+- `rendering-conditional-render` - Use a ternary instead of && when the condition can be 0, NaN, or another falsy value that renders
 - `rendering-usetransition-loading` - Prefer useTransition for loading state
 - `rendering-resource-hints` - Use React DOM resource hints for preloading
 - `rendering-script-defer-async` - Use defer or async on script tags
 
 ### 7. JavaScript Performance (LOW-MEDIUM)
 
-- `js-batch-dom-css` - Group CSS changes via classes or cssText
+- `js-batch-dom-css` - Keep layout reads apart from style writes; consecutive writes are already batched
 - `js-index-maps` - Build Map for repeated lookups
 - `js-cache-property-access` - Cache object properties in loops
 - `js-cache-function-results` - Cache costly repeated computation only with suitable keys and lifetime
