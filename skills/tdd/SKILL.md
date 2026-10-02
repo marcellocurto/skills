@@ -1,11 +1,19 @@
 ---
 name: tdd
-description: Use before implementing features or bug fixes with testable behavior, including requests that do not mention tests or TDD. Not for behavior-preserving refactors or prose, styling, and static-content edits.
+description: Use before implementing a feature or bug fix that adds or changes behavior users or callers rely on, including requests that do not mention tests or TDD. Not for removing features or code, behavior-preserving refactors, design or UX exploration, prototypes, styling, copy, configuration, or data cleanup.
 ---
 
 # Test-Driven Development
 
 Work in small red → green → refactor cycles: write one behavior as a test, watch it fail, implement it, then tidy the changed code. Read `CONTEXT.md` and relevant ADRs if they exist, so tests use the project's domain terms.
+
+## Decide whether a test is warranted
+
+A test is warranted only when the change adds or alters a rule that users or callers will rely on from now on. The goal is protection against realistic regressions, not coverage. If the change does not create such a rule, skip the cycle, say so in one line, and implement directly. That is a normal outcome, not a gap.
+
+A test describes something the system does, never something it no longer does. Do not write a test that asserts a feature, route, option, or default is absent. When removing behavior, the test work is deleting the tests that covered it and running the remaining suite, which already catches anything that still depended on it.
+
+Do not write tests while drafting designs, UI, or ideas. The deliverable there is the design; tests come once the behavior is agreed and being built.
 
 ## Choose the test
 
@@ -57,7 +65,7 @@ In each cycle, run the focused test and tests near the change. Run broader check
 
 ## Final response
 
-- the test or check that failed before the change, and how it failed
+- the test or check that failed before the change and how it failed, or the one-line reason no test was warranted
 - the passing run after the change, or the still-failing test and its blocker
 - other checks run, with results
 - if failing-before evidence was not possible, why, and which check was used instead

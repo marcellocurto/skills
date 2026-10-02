@@ -45,7 +45,7 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design type-safe interfaces that hide internal rules from callers and keep related behavior in one place.
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Keep the codebase's language, glossary, and lasting architectural decisions aligned with the domain people actually discuss.
 - **[`grilling`](skills/grilling/SKILL.md)**: Resolve consequential assumptions and tradeoffs through focused rounds of questions, keeping the interview bounded by the decision at hand.
-- **[`tdd`](skills/tdd/SKILL.md)**: Use before implementing features or bug fixes with testable behavior, even when the request does not mention tests. Preserve coverage for behavior-preserving refactors without manufacturing a failing test.
+- **[`tdd`](skills/tdd/SKILL.md)**: Use before implementing a feature or bug fix that adds or changes behavior users or callers rely on, even when the request does not mention tests. Not for removals, refactors, design exploration, prototypes, styling, copy, configuration, or data cleanup; never manufacture a failing test.
 - **[`wizard`](skills/wizard/SKILL.md)**: Package setup steps that require a person—credentials, dashboards, migrations, or cutovers—into a guided interactive Bash flow.
 
 ## Sources and Attribution
