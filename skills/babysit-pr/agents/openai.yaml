@@ -2,5 +2,3 @@ interface:
   display_name: "Babysit PR"
   short_description: "Settle PR comments until reviewers and Codex are done"
   default_prompt: "Use $babysit-pr to watch this PR and settle its review comments."
-policy:
-  allow_implicit_invocation: false

@@ -1,7 +1,6 @@
 ---
 name: babysit-pr
 description: Watch a pull request, settle review comments from people and Codex as they arrive, and stop once every thread is answered and Codex approves the latest commit, or when a problem needs the user.
-disable-model-invocation: true
 ---
 
 # Babysit PR

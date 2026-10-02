@@ -21,8 +21,6 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`frontend-design`](skills/frontend-design/SKILL.md)**: Choose the visual direction, typography, layout, and interface copy when building new UI or reshaping an existing one.
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions in the project's docs.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change with you.
-- **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Implement a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review.
-- **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Watch a pull request, settle review comments from people and Codex as they arrive, and stop once every thread is answered and Codex approves the latest commit, or when something needs you.
 - **[`triage`](skills/triage/SKILL.md)**: Assess one GitHub issue for implementation readiness, ask only the questions that block it, and update it after approval.
 - **[`valid-issue`](skills/valid-issue/SKILL.md)**: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
 
@@ -31,8 +29,10 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Reproduce, isolate, and fix difficult bugs or performance regressions with a feedback loop that proves the fix.
 - **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Trace and explain how an existing code path or subsystem works, from its entry point to its final effect.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn approved work into well-scoped GitHub issues after checking for duplicates.
+- **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Implement a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Open a ready-for-review GitHub pull request for finished local changes, committing and pushing when needed.
 - **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit open PR comments, fix and push the justified ones, and reply to and resolve each thread.
+- **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Watch a pull request, settle review comments from people and Codex as they arrive, and stop once every thread is answered and Codex approves the latest commit, or when something needs you.
 - **[`pr-audit`](skills/pr-audit/SKILL.md)**: Audit a whole PR for merge readiness across correctness, maintainability and complexity, and test quality, then post one actionable comment.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find needless complexity in code and get simpler designs that keep its behavior.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Find what a code change could break beyond the files it touches, across callers, data, timing, and runtime wiring.
