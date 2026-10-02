@@ -1,7 +1,6 @@
 ---
 name: implement-to-pr
 description: Implement a GitHub issue or the work agreed in the conversation, check it, and open a pull request that is ready for review.
-disable-model-invocation: true
 ---
 
 # Implement to PR
