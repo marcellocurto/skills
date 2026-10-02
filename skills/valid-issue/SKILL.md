@@ -25,17 +25,25 @@ Use targeted searches and stop once you can answer. This is a quick check, not a
 3. **Is it aligned?** Compare it with the project's README, docs, ADRs, and earlier maintainer decisions. Note any conflict with a stated goal or a past decision.
 4. **Should it be implemented?** Weigh the value to users against the cost to build and maintain it. This answer is your opinion, so label it as one and keep it separate from the three factual answers.
 
+## Collect the questions
+
+List every question that must be answered before implementation can start, such as which of two behaviors users should get, what "done" means, or a reproduction detail the reporter left out. Leave out anything the issue, its comments, or the code already answers, and any choice the implementer can make and change later.
+
+Write each question so the person answering it does not need to read the code: plain, everyday words, one thing per question, and a short reason it matters. When the evidence limits the options, name them.
+
 ## Report
 
 ```markdown
-**Answer:** Implement / Don't implement / Needs a decision. One or two sentences on why.
+**Answer:** Implement / Don't implement / Answer the questions first. One or two sentences on why.
 
 - **Valid:** yes, no, or unclear, with the evidence.
 - **Still valid:** yes or no, with the code, issue, or PR that settles it, and any open issue that blocks it.
 - **Aligned:** yes or no, with the doc or decision it matches or conflicts with.
 - **Worth it (opinion):** the value against the cost, in a sentence or two.
 
-**Open question:** only when the answer is "Needs a decision": who has to decide what, and how each choice changes the answer.
+**Questions**
+
+1. The question, in plain words. Who should answer it, and why it matters.
 ```
 
-Cite file paths, issue numbers, and comments for every factual answer. Say plainly when you could not check something.
+Omit the Questions section when there are none. Cite file paths, issue numbers, and comments for every factual answer. Say plainly when you could not check something.
