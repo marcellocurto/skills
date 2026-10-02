@@ -50,10 +50,13 @@ For each test or test group, answer:
 4. Would that bug matter?
 5. Could real behavior break while this still passes?
 6. Could a harmless refactor break this?
-7. Is this the right level: unit, integration, contract, end-to-end, or none?
-8. Did the claimed validation actually run this test under the relevant conditions?
+7. Is the only realistic failure reverting the change that introduced this test? If so, it documents a commit, not a rule.
+8. Is this the right level: unit, integration, contract, end-to-end, or none?
+9. Did the claimed validation actually run this test under the relevant conditions?
 
 When tests changed, compare the protected behavior before and after: what realistic failure would the previous test catch that the replacement now accepts? Inspect changed assertions, fixtures, mocks, snapshots, skips, and configuration together. Establish whether lost protection follows an authorized contract change or a demonstrated error in the old test. A changed interface alone does not authorize dropping its failure cases.
+
+When behavior is removed, tests deleted with it are not lost protection. Check instead that the remaining suite still covers what depended on the removed area, and do not recommend replacing deleted tests with tests of absence.
 
 For an important claim whose sensitivity is uncertain, use existing failing-before evidence or a focused check against a known broken version when practical. If a temporary defect would resolve that uncertainty, use an isolated disposable copy, preserve the test, restore the copy afterward, and report the observation. Do not mutate the reviewed checkout or require broad mutation infrastructure. A passing result against the defect disproves only the protection that experiment exercised.
 
@@ -61,13 +64,14 @@ For an important claim whose sensitivity is uncertain, use existing failing-befo
 
 - **Keep**: protects meaningful behavior and would fail on a realistic regression.
 - **Fix**: useful intent, weak execution. Rewrite around observable behavior or the risky boundary.
-- **Cut**: little bug-finding value, redundant, tautological, brittle, or coverage-only.
-- **Add**: important behavior or risk is untested.
+- **Cut**: little bug-finding value, redundant, tautological, brittle, coverage-only, or a test of static content, copy, navigation structure, or non-critical configuration that encodes no compatibility promise.
+- **Add**: behavior that users or callers rely on is untested and a realistic regression is plausible. Do not recommend Add for removals, design exploration, prototypes, static content, copy, or configuration.
 
 ## Investigate signals
 
 Treat test patterns as leads, not verdicts. Establish the contract, the realistic regression the test catches or misses, and any concrete maintenance cost before recommending a change:
 
+- **Absence assertions:** a test that a feature, route, option, menu entry, or default no longer exists protects nothing callers rely on. Cut it. Keep absence only when it is a promised contract in its own right, such as an endpoint not being reachable without authentication or a destructive action being off by default.
 - **Call, count, and ordering assertions:** useful when an interaction is part of the contract, such as dispatching one message for duplicate submissions or following a required protocol sequence. Investigate whether the assertion instead freezes private helper calls while the promised outcome could still fail.
 - **Constants and fixtures:** can provide independent expectations for published formats, protocol values, or compatibility requirements. Distinguish those checks from assertions that compare fixture-controlled values with themselves or merely repeat non-critical configuration. Judge wrappers and getters by the behavior they own, not their size or name.
 - **Snapshots:** can protect a stable, meaningful output contract when changes receive semantic review. Investigate noisy incidental output, unnoticed contract changes, or bulk snapshot updates that accept a regression. Snapshot syntax alone does not make a test weak.
@@ -116,6 +120,7 @@ Derive expectation changes from authorized requirements or evidence that the old
 - Do not reward coverage for its own sake.
 - Do not require tests for every line or helper.
 - Do not confuse unit tests with mocking everything.
+- Do not credit a test for having been written first. Test-first process is evidence about how the work was done, not about whether the test protects anything.
 - If the tests are strong, say so and name the remaining blind spots.
 
 ## Stop Rules
