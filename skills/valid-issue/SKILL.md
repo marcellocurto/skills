@@ -31,6 +31,10 @@ List every question that must be answered before implementation can start, such 
 
 Write each question so the person answering it does not need to read the code: plain, everyday words, one thing per question, and a short reason it matters. When the evidence limits the options, name them.
 
+## Check the issue's plan
+
+When the issue proposes steps, check them against the repository's instructions, such as `AGENTS.md` or `CLAUDE.md`, and against the existing code. Note each step that breaks one of those rules, repeats work that already exists, or is no longer needed, and say what to do instead. Include only points the implementer can act on without asking anyone; anything that needs a person's decision belongs in the questions.
+
 ## Report
 
 ```markdown
@@ -44,6 +48,10 @@ Write each question so the person answering it does not need to read the code: p
 **Questions**
 
 1. The question, in plain words. Who should answer it, and why it matters.
+
+**Notes for the implementer**
+
+- The step to change or drop, why, with the rule or file behind it, and what to do instead.
 ```
 
-Omit the Questions section when there are none. Cite file paths, issue numbers, and comments for every factual answer. Say plainly when you could not check something.
+Omit the Questions and Notes for the implementer sections when they are empty. Cite file paths, issue numbers, and comments for every factual answer. Say plainly when you could not check something.
