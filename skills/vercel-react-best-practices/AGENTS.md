@@ -302,14 +302,18 @@ export async function GET(request: Request) {
 export async function GET(request: Request) {
   const sessionPromise = auth()
   const configPromise = fetchConfig()
-  const session = await sessionPromise
+  // Both promises get a handler in the same tick they are created. Awaiting
+  // `sessionPromise` on its own first would leave `configPromise` unobserved;
+  // a fast config failure would then be an unhandled rejection.
   const [config, data] = await Promise.all([
     configPromise,
-    fetchData(session.user.id)
+    sessionPromise.then(session => fetchData(session.user.id))
   ])
   return Response.json({ data, config })
 }
 ```
+
+Attach a handler to every promise you start before the first `await`, by passing it to `Promise.all` or chaining `.then` immediately. A promise left unobserved across an `await` becomes an unhandled rejection if it fails first, which crashes a Node process by default.
 
 For more complex dependency chains, compare existing scheduling facilities and direct promise composition before considering `better-all`. See [Dependency-Based Parallelization](rules/async-dependencies.md) for the conditions that justify it.
 
@@ -1432,7 +1436,8 @@ export async function POST(request: Request) {
     const userAgent = (await headers()).get('user-agent') || 'unknown'
     const sessionCookie = (await cookies()).get('session-id')?.value || 'anonymous'
     
-    logUserAction({ sessionCookie, userAgent })
+    // Await the work so `after()` keeps the function alive until logging finishes
+    await logUserAction({ sessionCookie, userAgent })
   })
   
   return new Response(JSON.stringify({ status: 'success' }), {
@@ -1442,7 +1447,7 @@ export async function POST(request: Request) {
 }
 ```
 
-The response is sent immediately while logging happens in the background.
+The response is sent immediately while logging happens in the background. Return or await every promise inside the callback: `after()` waits for the callback's promise, so a dropped promise can be cut off when the function instance ends.
 
 **Common use cases:**
 
@@ -1678,11 +1683,13 @@ const data = localStorage.getItem('userConfig')
 ```typescript
 const VERSION = 'v2'
 
-function saveConfig(config: { theme: string; language: string }) {
+function saveConfig(config: { theme: string; language: string }): boolean {
   try {
     localStorage.setItem(`userConfig:${VERSION}`, JSON.stringify(config))
+    return true
   } catch {
     // Throws in incognito/private browsing, quota exceeded, or disabled
+    return false
   }
 }
 
@@ -1701,8 +1708,9 @@ function migrate() {
     const v1 = localStorage.getItem('userConfig:v1')
     if (v1) {
       const old = JSON.parse(v1)
-      saveConfig({ theme: old.darkMode ? 'dark' : 'light', language: old.lang })
-      localStorage.removeItem('userConfig:v1')
+      const saved = saveConfig({ theme: old.darkMode ? 'dark' : 'light', language: old.lang })
+      // Remove the old version only once the new one is stored, or a failed write loses both
+      if (saved) localStorage.removeItem('userConfig:v1')
     }
   } catch {}
 }
@@ -3272,6 +3280,8 @@ function processOrders(orders: Order[], users: User[]) {
 ```
 
 Build map once (O(n)), then all lookups are O(1).
+
+`find` returns the first match, while `new Map(entries)` keeps the last entry for a duplicate key. Use this rewrite when the key is unique. If duplicates can occur and the first match is the contract, build the map with `if (!userById.has(u.id)) userById.set(u.id, u)` instead.
 For 1000 orders × 1000 users: 1M ops → 2K ops.
 
 ---
@@ -3563,7 +3573,7 @@ This new approach is more efficient because:
 
 **Investigation priority: LOW-MEDIUM (avoids unnecessary computation)**
 
-Return early when result is determined to skip unnecessary processing.
+Return early when result is determined to skip unnecessary processing. Check what the existing code returns first: a loop that keeps overwriting a result reports the last finding, while an early return reports the first. The example below assumes the caller wants the first failing check, which is the usual contract for validation; if the last finding was relied on, settle that before rewriting.
 
 **Incorrect (processes all items even after finding answer):**
 
@@ -3696,7 +3706,7 @@ Still sorts unnecessarily when only min/max are needed.
 
 ```typescript
 function getLatestProject(projects: Project[]) {
-  if (projects.length === 0) return null
+  if (projects.length === 0) return undefined
   
   let latest = projects[0]
   
@@ -3710,21 +3720,22 @@ function getLatestProject(projects: Project[]) {
 }
 
 function getOldestAndNewest(projects: Project[]) {
-  if (projects.length === 0) return { oldest: null, newest: null }
+  if (projects.length === 0) return { oldest: undefined, newest: undefined }
   
   let oldest = projects[0]
   let newest = projects[0]
   
   for (let i = 1; i < projects.length; i++) {
     if (projects[i].updatedAt < oldest.updatedAt) oldest = projects[i]
-    if (projects[i].updatedAt > newest.updatedAt) newest = projects[i]
+    // `>=` keeps the last of tied entries, matching `sorted[sorted.length - 1]` above
+    if (projects[i].updatedAt >= newest.updatedAt) newest = projects[i]
   }
   
   return { oldest, newest }
 }
 ```
 
-Single pass through the array, no copying, no sorting.
+Single pass through the array, no copying, no sorting. The loop keeps the sorted versions' results for an empty array (`undefined`) and for ties: a stable sort puts the first of tied entries at `sorted[0]` and the last at `sorted[sorted.length - 1]`, so `getLatestProject` keeps the first with `>` and `getOldestAndNewest` keeps the last with `>=`. Match the comparison to the contract you are replacing.
 
 **Alternative (Math.min/Math.max for small arrays):**
 
@@ -3772,7 +3783,7 @@ items.filter(item => allowedIds.has(item.id))
 
 **Investigation priority: LOW-MEDIUM (eliminates intermediate array)**
 
-Chaining `.map().filter(Boolean)` creates an intermediate array and iterates twice. Use `.flatMap()` to transform and filter in a single pass.
+Chaining `.map().filter(Boolean)` creates an intermediate array and iterates twice. Use `.flatMap()` to transform and filter in a single pass. Keep the same filter: `filter(Boolean)` also drops empty strings, `0`, and `null` values, so the `flatMap` branch must test the value, not only the condition that produced it.
 
 **Incorrect (2 iterations, intermediate array):**
 
@@ -3786,7 +3797,7 @@ const userNames = users
 
 ```typescript
 const userNames = users.flatMap(user =>
-  user.isActive ? [user.name] : []
+  user.isActive && user.name ? [user.name] : []
 )
 ```
 
@@ -3801,7 +3812,7 @@ const emails = responses
 
 // After
 const emails = responses.flatMap(r =>
-  r.success ? [r.data.email] : []
+  r.success && r.data.email ? [r.data.email] : []
 )
 
 // Parse and filter valid numbers

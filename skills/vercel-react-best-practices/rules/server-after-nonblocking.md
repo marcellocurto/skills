@@ -45,7 +45,8 @@ export async function POST(request: Request) {
     const userAgent = (await headers()).get('user-agent') || 'unknown'
     const sessionCookie = (await cookies()).get('session-id')?.value || 'anonymous'
     
-    logUserAction({ sessionCookie, userAgent })
+    // Await the work so `after()` keeps the function alive until logging finishes
+    await logUserAction({ sessionCookie, userAgent })
   })
   
   return new Response(JSON.stringify({ status: 'success' }), {
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
 }
 ```
 
-The response is sent immediately while logging happens in the background.
+The response is sent immediately while logging happens in the background. Return or await every promise inside the callback: `after()` waits for the callback's promise, so a dropped promise can be cut off when the function instance ends.
 
 **Common use cases:**
 
