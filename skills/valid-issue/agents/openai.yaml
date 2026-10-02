@@ -1,0 +1,6 @@
+interface:
+  display_name: "Valid Issue"
+  short_description: "Decide whether an issue should be implemented"
+  default_prompt: "Use $valid-issue to decide whether this GitHub issue is valid, still relevant, aligned with the project, and worth implementing."
+policy:
+  allow_implicit_invocation: false

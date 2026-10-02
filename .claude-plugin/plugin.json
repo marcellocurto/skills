@@ -24,6 +24,7 @@
     "./skills/test-quality-audit",
     "./skills/to-tickets",
     "./skills/triage",
+    "./skills/valid-issue",
     "./skills/vercel-composition-patterns",
     "./skills/vercel-react-best-practices",
     "./skills/wizard"

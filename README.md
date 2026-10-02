@@ -24,6 +24,7 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Implement a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review.
 - **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Watch a pull request, settle review comments from people and Codex as they arrive, and stop once every thread is answered and Codex approves the latest commit, or when something needs you.
 - **[`triage`](skills/triage/SKILL.md)**: Assess one GitHub issue for implementation readiness, ask only the questions that block it, and update it after approval.
+- **[`valid-issue`](skills/valid-issue/SKILL.md)**: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
 
 **Model-invoked (implicit allowed)**
 
