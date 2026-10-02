@@ -28,11 +28,11 @@ Run the checks the repository requires. If it names none, run the smallest check
 
 ## 3. Commit and push
 
-Commit the in-scope changes as one commit with a message in the repository's style. Push the head branch without force.
+Commit any uncommitted in-scope changes as one commit with a message in the repository's style. Push the head branch without force.
 
 ## 4. Write the title and body
 
-Write both from the committed diff, the source issue, and the check results, not from conversation memory. The readers are engineers who review many pull requests. Use plain words, short paragraphs, the most important point first, and backticks for code identifiers. Keep the body proportional to the change.
+Write both from the committed diff, the source issue, and the check results. Use the conversation only for the decisions and rejected alternatives behind the change, and only where the diff reflects them. The readers are engineers who review many pull requests. Use plain words, short paragraphs, the most important point first, and backticks for code identifiers. Keep the body proportional to the change.
 
 Title: the outcome in plain words that a reviewer understands without opening the PR, such as "Retry failed webhook deliveries with backoff" rather than "Update webhook logic".
 
@@ -41,7 +41,7 @@ Body, in this order:
 ```markdown
 ## Summary
 
-Two to four sentences: what problem this solves, why it matters, and how behavior changes. A reader who stops here should know what the PR does. End with `Closes #N` when the PR fully resolves that issue in the same repository; otherwise reference it without closing it.
+Two to four sentences: what problem this solves, why it matters, and how behavior changes. A reader who stops here should know what the PR does. End with `Closes #N` when the PR fully resolves that issue in the same repository and targets the default branch, since GitHub closes linked issues only for those merges; otherwise reference it without closing it.
 
 ## Changes
 

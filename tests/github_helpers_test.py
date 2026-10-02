@@ -108,8 +108,13 @@ class ReviewPaginationTests(OfflineTest):
                         self.assertIn("--active", command)
                         return "Authenticated"
                     self.assertEqual(command[1:3], ["api", "graphql"])
+                    # Strings travel as raw `-f` fields so a digit-only owner stays a string;
+                    # only the number is typed with `-F`.
                     fields = dict(command[i + 1].split("=", 1)
-                                  for i, value in enumerate(command) if value == "-F")
+                                  for i, value in enumerate(command) if value in ("-f", "-F"))
+                    typed = {command[i + 1].split("=", 1)[0]
+                             for i, value in enumerate(command) if value == "-F"} - {"query"}
+                    self.assertEqual(typed, {"number"} if "number" in fields else set())
                     cursor = fields.get("cursor")
                     if "thread_id" in fields:
                         thread_id = fields["thread_id"]

@@ -66,15 +66,15 @@ const updateProfileSchema = z.object({
 })
 
 export async function updateProfile(data: unknown) {
-  // Validate input first
-  const validated = updateProfileSchema.parse(data)
-  
-  // Then authenticate
+  // Authenticate first, so unauthenticated callers learn nothing about the schema
   const session = await verifySession()
   if (!session) {
     throw new Error('Unauthorized')
   }
   
+  // Then validate input
+  const validated = updateProfileSchema.parse(data)
+
   // Then authorize
   if (session.user.id !== validated.userId) {
     throw new Error('Can only update own profile')

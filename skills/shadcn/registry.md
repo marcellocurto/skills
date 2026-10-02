@@ -215,26 +215,9 @@ Rules:
 - Currently, GitHub addresses support public `github.com` repositories only.
 - Private repos and GitHub Enterprise require explicit product decisions.
 
-When implementing GitHub registry fetching, resolve refs to a commit SHA before
-reading source files. Do not read moving refs directly from
-`raw.githubusercontent.com`, because branch-like refs can be cached for several
-minutes.
-
-Preferred flow:
-
-```txt
-owner/repo[#ref]
-  -> resolve ref with git ls-remote
-  -> commit SHA
-  -> read https://raw.githubusercontent.com/{owner}/{repo}/{sha}/registry.json
-  -> read includes and item files from the same SHA
-```
-
-This keeps a command on one consistent repository snapshot.
-
-Full 40-character commit SHAs are already stable and can be used directly.
-Branches, tags, and short refs require Git so the CLI can resolve them to a
-commit SHA first.
+Pin `#ref` to a full 40-character commit SHA when an install must be
+reproducible. The CLI resolves branch and tag refs to a commit for each command,
+so a moving ref can change between runs.
 
 ## Build and Verify
 

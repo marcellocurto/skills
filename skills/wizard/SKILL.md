@@ -20,7 +20,7 @@ Identify the steps and values needed for the requested setup, migration, or tran
 - For setup: relevant environment examples, README instructions, service and framework configuration, and CI workflows. Use `secrets.*` / `vars.*` references to identify consumers of the requested setup's values; unrelated references do not expand the wizard's scope. Reuse existing configuration where appropriate instead of collecting credentials again. Inspect secret-bearing files only as needed, without exposing their values.
 - For a migration or transition: the current state, the target state, and the irreversible actions between them.
 
-Reuse the procedure and authorization already established in the conversation. When the procedure is specified, prepare and validate the concrete script before seeking any missing approval for consequential execution. A stage outline can be a progress update; it does not require another approval round. Ask only about unresolved choices that materially affect the procedure, target, or captured values, and continue preparing independent stages while those choices remain open. Authoring the script does not authorize executing its external writes or irreversible actions.
+Reuse the procedure and decisions already established in the conversation. A stage outline can be a progress update; it does not require another approval round. Ask only about unresolved choices that materially affect the procedure, target, or captured values, and continue preparing independent stages while those choices remain open. The human runs the finished script, so its `confirm` gates are where consequential actions get approved; do not run it yourself.
 
 **Done when:** every stage is named in order, and for each captured value you know (a) where the human gets it, (b) where it's written (`.env`, a GitHub secret, both, or nowhere; some stages are pure actions), and (c) whether it's secret (hidden entry) or public.
 
@@ -38,11 +38,11 @@ Open the URL before asking for its value. Use `ask_secret` for secrets; never em
 
 Before each irreversible operation, show its target and consequence and require `confirm` to succeed before executing it. A declined confirmation must skip or abort the action; the banner's readiness pause is not a substitute. Keep these execution gates even when the user has authorized preparing the script.
 
-Each `stage` clears the screen so only the current step is visible: keep a stage to one focused task so nothing the human needs scrolls away. Don't touch the library above the marker.
+Each `stage` and `finish` waits for Enter and then clears the screen, so the human reads a stage's confirmations and warnings before the next one starts. Keep a stage to one focused task so everything it shows fits on screen. Don't touch the library above the marker.
 
 ### 4. Verify and hand off
 
 - `bash -n <script>`; run `shellcheck` if available.
 - `chmod +x <script>`.
 - Don't run it end-to-end yourself: it opens browsers and blocks on human input. Trace it statically instead: required values are captured or reused, each write reaches its intended destination, CI secret and variable names match the relevant consumers, and irreversible operations cannot run after a declined confirmation.
-- Deliver the script with run instructions and identify consequential stages that require human confirmation. If execution still needs authorization, request it against this concrete artifact and its exact targets. Completion means the requested script is ready for the human to run; do not claim the setup or migration has executed.
+- Deliver the script with run instructions, say which repository its `gh` writes target (it uses the repository of the directory it runs in), and identify consequential stages that require human confirmation. Completion means the requested script is ready for the human to run; do not claim the setup or migration has executed.

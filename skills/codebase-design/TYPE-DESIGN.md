@@ -5,9 +5,9 @@ Use this guidance when a module's types carry correctness-critical rules. Encode
 ## Rules
 
 - Represent mutually exclusive cases as explicit variants instead of fields that can contradict one another. Do this only when some combinations are genuinely invalid.
-- Give equal-shaped values distinct types when callers can realistically confuse them. Skip wrappers that prevent no credible mistake.
+- Give equal-shaped values distinct types when callers can realistically confuse them. In TypeScript, two aliases of the same shape are interchangeable, so use a branded type when the distinction must be enforced. Skip wrappers that prevent no credible mistake.
 - Parse external input once at the system edge. Modules should receive validated values rather than repeat checks or carry `unknown` through their implementation.
-- Generate transport types when a schema owns the external contract. Map them into domain types when storage or wire names do not express the domain's rules.
+- Generate transport types when a schema owns the external contract. Generated types describe the contract and check nothing at runtime, so still validate the input at the edge. Decide there what happens to a variant the code does not know, such as rejecting it or mapping it to an explicit case, so it never reaches an exhaustive match unannounced. Map transport types into domain types when storage or wire names do not express the domain's rules.
 - Match variants exhaustively so adding a case exposes every decision that must change. Avoid fallback branches that silently absorb future cases.
 - Treat `any`, casts, unsafe coercions, and non-null assertions as claims that need evidence. Prove the claim through validation or narrowing, or isolate an unavoidable interop cast beside its justification.
 

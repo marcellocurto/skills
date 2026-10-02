@@ -11,7 +11,7 @@ Review one exact change and give separate verdicts for Correctness and Maintaina
 
 Review the pull request, branch, commit range, or working changes the user names. If none is named, review the current branch against the default branch plus uncommitted changes. Record the base and head commits and the merge base, and review `git diff <merge-base>..<head>` with its commit list. For working changes, include staged, unstaged, and relevant untracked files.
 
-A finding must be caused or made worse by this change. Code outside the diff can be evidence, but a problem that already existed is not a finding.
+A finding must be caused or made worse by this change. Code outside the diff can be evidence, but a problem that already existed is not a finding. A pre-existing problem in code the change touches directly may be listed as a follow-up; it does not affect the verdict.
 
 ## 2. Gather the requirements
 
@@ -32,7 +32,7 @@ If there are no requirements, review correctness against the code's evident purp
 
 For a small change, such as a few files and a couple hundred changed lines, review both axes yourself. For a larger change, run two read-only reviewers in parallel, one per axis. Give both the pinned diff, the requirements, the repository instructions, the relevant surrounding code, and the validation results, and keep each reviewer's conclusions out of the other's brief. Add a third reviewer only for a named coverage gap, or when the user asks for more.
 
-For adversarial, blind-spot, or tear-it-apart requests, first write one paragraph stating what the change is meant to accomplish, based on the sources in step 2, and mark what is inferred. Give both reviewers that paragraph and have each cover both axes independently. If the user wants the intent itself challenged, use the `relentless-review` skill for that separate question.
+For adversarial, blind-spot, or tear-it-apart requests, run two reviewers regardless of the change's size. First write one paragraph stating what the change is meant to accomplish, based on the sources in step 2, and mark what is inferred. Give both reviewers that paragraph and have each cover both axes independently. If the user wants the intent itself challenged, use the `relentless-review` skill for that separate question.
 
 Reviewers use the parent model unless the user asks otherwise. If you cannot run subagents, do separate local passes and say so.
 
@@ -73,7 +73,7 @@ Report a concern only when you can name its concrete cost. Look for:
 - tests that are tautological, coupled to implementation, mock away the shipped path, or freeze prose, static content, or configuration
 - misleading names or public interfaces
 
-Duplication and repeated parameters do not by themselves justify a new abstraction. A single-use module is justified when it hides real complexity and reduces what callers must know. Mark concerns that no documented rule covers as judgment calls.
+Duplication and repeated parameters do not by themselves justify a new abstraction. A single-use module is justified when it hides real complexity and reduces what callers must know. When no documented rule covers a concern, say so in the finding; it is then a judgment call that must stand on its concrete cost.
 
 ## 6. Verify and label the findings
 
@@ -82,13 +82,13 @@ Treat reviewer output as leads. Check each finding against the diff, the require
 Label each finding:
 
 - **Must fix:** the change should not merge without it, and direct evidence supports it. A maintainability finding qualifies only when it creates correctness risk, significant ongoing change cost, or a violation of a documented rule.
-- **Follow-up:** valid work outside this change. It never blocks approval.
-- **Suggestion:** optional.
+- **Follow-up:** a pre-existing problem in code this change touches directly, worth fixing in a later change. It never blocks approval.
+- **Suggestion:** optional, with a concrete benefit named. A change that only matches the reviewer's taste is a preference and is dropped.
 
-Set each axis verdict:
+Set each axis verdict, taking the first that applies:
 
+- **Changes requested** if any must-fix finding remains; note missing information under Limitations
 - **Blocked** if missing information, access, or a human decision makes approval unsafe
-- **Changes requested** if any must-fix finding remains
 - **Approved** otherwise
 
 No findings is a valid result. Do not add minor observations to fill the report.

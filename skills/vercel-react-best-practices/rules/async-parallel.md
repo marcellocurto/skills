@@ -1,7 +1,7 @@
 ---
 title: Promise.all() for Independent Operations
 impact: CRITICAL
-impactDescription: 2-10× improvement
+impactDescription: removes sequential round trips
 tags: async, parallelization, promises, waterfalls
 ---
 

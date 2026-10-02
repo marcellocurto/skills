@@ -237,9 +237,9 @@ const [value, setValue] = React.useState("normal")
 
 ## Slider
 
-Base accepts a plain number for a single thumb. Radix always requires an array.
+Base accepts either a plain number or a one-element array for a single thumb (Base UI types `value` as `number | readonly number[]`, and the generated component counts thumbs from the array form). Radix always requires an array.
 
-**Incorrect (base):**
+**Also valid (base):**
 
 ```tsx
 <Slider defaultValue={[50]} max={100} step={1} />

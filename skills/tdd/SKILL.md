@@ -5,13 +5,13 @@ description: Use before implementing a feature or bug fix that adds or changes b
 
 # Test-Driven Development
 
-Work in small red → green → refactor cycles: write one behavior as a test, watch it fail, implement it, then tidy the changed code. Read `CONTEXT.md` and relevant ADRs if they exist, so tests use the project's domain terms.
+Work in small red → green → refactor cycles: write one behavior as a test, watch it fail, implement it, then tidy the changed code. Read the project's glossary and relevant ADRs if they exist, whatever their filenames, so tests use the project's domain terms.
 
 ## Decide whether a test is warranted
 
 Write a test only when the change adds or alters a rule that users or callers will rely on from now on. Tests exist to catch realistic regressions of such rules; coverage by itself is not a reason to write one. If the change does not create such a rule, say so in one line and implement without the cycle.
 
-Tests describe what the system does. Do not write a test that asserts a feature, route, option, or default is absent. When removing behavior, delete the tests that covered it and run the remaining suite, which already catches anything that still depended on it.
+Tests describe what the system does. Do not write a test that asserts a feature, route, option, or default is absent. A promised rejection or default is a behavior, so test the outcome itself: the endpoint returns 401 without credentials, or the destructive flag starts off. When removing behavior, delete the tests that covered it and run the remaining suite, which already catches anything that still depended on it.
 
 Do not write tests while drafting designs, UI, or ideas. Write them once the behavior is agreed and you are building it.
 
@@ -26,11 +26,11 @@ Before writing a test, name the requirement that sets the expected outcome, the 
 
 ## Cycle
 
-Features and bug fixes follow the same cycle. For a bug, the first test reproduces the reported failure at the narrowest level already tested near that code.
+Features and bug fixes follow the same cycle. For a bug, the first test reproduces the reported failure through the narrowest interface that owns the failing behavior, following the test conventions near that code.
 
 1. Pick the smallest observable behavior.
 2. Write one focused test for it.
-3. Run it before changing production code, and confirm it fails because the behavior is missing. If it passes, or fails because of a setup or test error, fix the test first.
+3. Run it before changing production code, and confirm it fails because the behavior is missing. If it fails because of a setup or test error, fix the test first. If it passes, check whether the behavior already exists; if it does, report that instead of changing production code, and if the test missed the behavior, fix the test.
 4. Make the simplest production-quality change that passes it. Don't add behavior for later tests.
 5. Run it and confirm it passes.
 6. Refactor the changed code if ownership or cohesion suffered, and rerun the test.
@@ -42,7 +42,7 @@ For a flaky bug, make the regression test deterministic and say what it locks do
 
 Change a test's expected outcome only when the requirement changed, the test was wrong against the requirement, or an interface change keeps the same protected behavior. Say why when you do. The implementation's new output is never a reason to change the expected output.
 
-These moves make a failing test pass without fixing the behavior. Do not use them:
+These moves turn a red run green without fixing the behavior. Do not use them:
 
 - updating an assertion, snapshot, or fixture to match the new output
 - seeding state in setup that the real workflow does not guarantee, such as a flag, a backfill, or initialized data

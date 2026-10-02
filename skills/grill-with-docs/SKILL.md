@@ -1,6 +1,6 @@
 ---
 name: grill-with-docs
-description: Stress-test a plan through questions while recording the resulting domain terms and decisions.
+description: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions.
 disable-model-invocation: true
 ---
 
@@ -22,13 +22,13 @@ Inspect the existing glossary, context map, relevant ADRs, and only the code nee
 
 1. Establish the decision the user wants to resolve and reuse answers already given. Ask questions whose prerequisites are settled, explain the consequential tradeoffs, and recommend an answer when evidence supports it. Defer dependent questions until their inputs are known.
 2. Look up facts in the available code and documentation rather than asking the user to supply discoverable information. Keep verified behavior, proposed changes, and unresolved assumptions distinct. The user decides product meaning and tradeoffs; a recommendation or unanswered question is not agreement.
-3. After each answer, check for ambiguity or a conflict that would change the meaning. Ask only the clarification needed to resolve that conflict. Treat a clear answer as agreement without requiring another confirmation solely to record it.
+3. After each round of answers, check for ambiguity or a conflict that would change the meaning. Ask only the clarification needed to resolve that conflict. Treat a clear answer as agreement without requiring another confirmation solely to record it.
 4. Capture the agreed result according to the rules below, then continue with the questions it unlocks. If an answer revises an earlier decision, update the affected record so the documentation and discussion agree.
 
 ## What to record
 
 - **Domain terms:** Record resolved project-specific concepts, their meaning, and misleading synonyms in the relevant glossary. Keep implementation choices, open questions, and conversation history out of it. When no existing glossary format governs, use the format guidance provided by the `domain-modeling` skill if available; otherwise a concise definition and any terms to avoid are sufficient.
-- **Architectural decisions:** Record a settled choice when reversing it has meaningful cost, its rationale would otherwise be unclear, and it resolves a real tradeoff. Include the decision, why it was chosen, and material consequences or rejected alternatives worth preserving. When no existing ADR format governs, use the format guidance provided by the `domain-modeling` skill if available; otherwise a short title and a paragraph explaining the choice and reason are sufficient. Do not create an ADR for every answer.
+- **Architectural decisions:** Record a settled choice when reversing it has meaningful cost, its rationale would otherwise be unclear, and it resolves a real tradeoff or an outside constraint ruled the obvious option out. Include the decision, why it was chosen, and material consequences or rejected alternatives worth preserving. When no existing ADR format governs, use the format guidance provided by the `domain-modeling` skill if available; otherwise a short title and a paragraph explaining the choice and reason are sufficient. Do not create an ADR for every answer.
 - **Other answers:** Keep routine choices, tentative proposals, and unresolved questions in the conversation unless the user has requested another destination. Do not turn them into glossary definitions, accepted ADRs, specifications, or tracker issues automatically.
 
 Read back each documentation change and verify that it preserves the user's meaning without promoting an inference to an agreed requirement. Continue under the existing documentation authorization; ask again only when the proposed write exceeds it.

@@ -114,15 +114,15 @@ These examples illustrate the defaults above. Styling alternatives are not autom
 Project context from `info` may contain these fields. When reading configuration directly, establish equivalent facts from the relevant files rather than assuming all fields are present:
 
 - **`aliases`** → use the actual alias prefix for imports (e.g. `@/`, `~/`), never hardcode.
-- **`isRSC`** → when `true`, components using `useState`, `useEffect`, event handlers, or browser APIs need `"use client"` at the top of the file. Always reference this field when advising on the directive.
+- **`project.rsc`** → when `true`, components using `useState`, `useEffect`, event handlers, or browser APIs need `"use client"` at the top of the file. Always reference this field when advising on the directive.
 - **`tailwindVersion`** → `"v4"` uses `@theme inline` blocks; `"v3"` uses `tailwind.config.js`.
-- **`tailwindCssFile`** → the existing theme stylesheet. Put shared variables with the project's theme owner rather than creating a competing global stylesheet.
+- **`project.tailwindCss`** → the existing theme stylesheet. Put shared variables with the project's theme owner rather than creating a competing global stylesheet.
 - **`style`** → component visual treatment (e.g. `nova`, `vega`).
 - **`base`** → the selected primitive library. Affects component APIs and available props; use guidance for that base.
 - **`iconLibrary`** → determines icon imports. Use `lucide-react` for `lucide`, `@tabler/icons-react` for `tabler`, etc. Never assume `lucide-react`.
 - **`resolvedPaths`** → exact file-system destinations for components, utils, hooks, etc.
 - **`framework`** → routing and file conventions (e.g. Next.js App Router vs Vite SPA).
-- **`packageManager`** → use this for any non-shadcn dependency installs (e.g. `pnpm add date-fns` vs `npm install date-fns`).
+- **Package manager** → `info` does not report it. Read the lockfile (`bun.lock`, `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`) before any non-shadcn dependency install (e.g. `pnpm add date-fns` vs `npm install date-fns`).
 - **`preset`** → resolved preset code and values for the current project. Use `npx shadcn@latest preset resolve --json` when you only need preset information.
 
 See [cli.md — `info` command](./cli.md) for the full field reference.
@@ -161,7 +161,7 @@ Use only the steps relevant to the task. A local styling edit may need no regist
    - **Partial**: `npx shadcn@latest apply <code> --only theme,font`. Updates only the selected preset parts without reinstalling UI components. Supported values are `theme` and `font`; comma-separated combinations are allowed. `icon` is intentionally not supported, because icon changes may require full component reinstall and transforms.
    - **Merge**: `npx shadcn@latest init --preset <code> --force --no-reinstall`, then run `npx shadcn@latest info` to list installed components, then for each installed component use `--dry-run` and `--diff` to [smart merge](#updating-components) it individually.
    - **Skip**: `npx shadcn@latest init --preset <code> --force --no-reinstall`. Only updates config and CSS, leaves components as-is.
-   - **Important**: Always run preset commands inside the user's project directory. `apply` only works in an existing project with a `components.json` file. The CLI automatically preserves the current base (`base` vs `radix`) from `components.json`. If you must use a scratch/temp directory (e.g. for `--dry-run` comparisons), pass `--base <current-base>` explicitly — preset codes do not encode the base.
+   - **Important**: Always run preset commands inside the user's project directory. `apply` only works in an existing project with a `components.json` file. The CLI automatically preserves the current base (`base` vs `radix`) from `components.json`. If you must use a scratch/temp directory, initialize it with `npx shadcn@latest init --preset <code> --base <current-base>` (preset codes do not encode the base), then run `add --dry-run` or `--diff` there; `apply` has no `--base` or `--dry-run` flag.
 
 ## Updating Components
 
@@ -176,16 +176,16 @@ When the user asks to update a component from upstream while keeping their local
 
 ```bash
 # Create a new project.
-npx shadcn@latest init --name my-app --preset base-nova
+npx shadcn@latest init --name my-app --preset nova --base base
 npx shadcn@latest init --name my-app --preset a2r6bw --template vite
 
 # Create a monorepo project.
-npx shadcn@latest init --name my-app --preset base-nova --monorepo
-npx shadcn@latest init --name my-app --preset base-nova --template next --monorepo
+npx shadcn@latest init --name my-app --preset nova --base base --monorepo
+npx shadcn@latest init --name my-app --preset nova --base base --template next --monorepo
 
 # Initialize existing project.
-npx shadcn@latest init --preset base-nova
-npx shadcn@latest init --defaults  # shortcut: --template=next --preset=nova (base style implied)
+npx shadcn@latest init --preset nova --base base
+npx shadcn@latest init --defaults  # shortcut: --template=next --base=base --preset=nova
 
 # Apply a preset to an existing project.
 npx shadcn@latest apply a2r6bw
@@ -227,7 +227,7 @@ npx shadcn@latest view @shadcn/button
 npx shadcn@latest view owner/repo/item
 ```
 
-**Named presets:** `nova`, `vega`, `maia`, `lyra`, `mira`, `luma`
+**Named presets:** `nova`, `vega`, `maia`, `lyra`, `mira`, `luma`, `sera`, `rhea`. The base is a separate `--base` choice; `base-nova` is the resulting `style` value in `components.json`, not a preset name.
 **Templates:** `next`, `vite`, `start`, `react-router`, `astro` (all support `--monorepo`) and `laravel` (not supported for monorepo)
 **Preset codes:** Version-prefixed base62 strings (e.g. `a2r6bw` or `b0`), from [ui.shadcn.com](https://ui.shadcn.com).
 
@@ -241,4 +241,5 @@ npx shadcn@latest view owner/repo/item
 - [rules/base-vs-radix.md](./rules/base-vs-radix.md) — asChild vs render, Select, ToggleGroup, Slider, Accordion
 - [cli.md](./cli.md) — Commands, flags, presets, templates
 - [registry.md](./registry.md) — Authoring source registries, `include`, item definitions, dependencies, GitHub registry rules
+- [mcp.md](./mcp.md) — `shadcn mcp` server setup and tools
 - [customization.md](./customization.md) — Theming, CSS variables, extending components

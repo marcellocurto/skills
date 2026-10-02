@@ -46,10 +46,11 @@ function useWindowEvent(event: string, handler: (e) => void) {
   const onEvent = useEffectEvent(handler)
 
   useEffect(() => {
-    window.addEventListener(event, onEvent)
-    return () => window.removeEventListener(event, onEvent)
+    const listener = (e: Event) => onEvent(e)
+    window.addEventListener(event, listener)
+    return () => window.removeEventListener(event, listener)
   }, [event])
 }
 ```
 
-`useEffectEvent` provides a cleaner API for the same pattern: it creates a stable function reference that always calls the latest version of the handler.
+`useEffectEvent` removes the manual ref: `onEvent` always sees the latest `handler`. Its identity still changes on every render, so call it from inside the effect and keep it out of the dependency array; do not pass it to other components or hooks.

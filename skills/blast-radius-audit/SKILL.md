@@ -7,11 +7,11 @@ description: Find downstream breakage a code change could cause beyond the files
 
 Find how a change could break behavior outside the edited files, and check the facts its safety depends on.
 
-This is an audit. Do not edit repository files, add permanent tests, apply fixes, commit, or touch production or external systems unless the user separately asks. Read-only inspection and reversible local commands are fine. Put temporary probes outside the working tree and delete them when done.
+This is an audit. Do not edit repository files, add permanent tests, apply fixes, commit, or touch production or external systems unless the user separately asks. Read-only inspection and reversible local commands are fine. Put temporary probe files outside the working tree, where they can still import the checked-out code, and delete them when done.
 
 ## 1. List the changed contracts
 
-Audit the pull request, branch, commit, or working changes the user names. If none is named, audit the current branch against the default branch plus uncommitted changes. Record the exact commits.
+Audit the pull request, branch, commit, or working changes the user names. If none is named, audit the current branch against the default branch plus uncommitted changes. Record the base and head commits and the merge base, and read `git diff <merge-base>..<head>` so commits that only exist on the base are left out.
 
 Read the full diff, the commit messages, the related tests, and the repository instructions. Then list every contract the change alters, including ones not obvious from the edited lines:
 
@@ -45,11 +45,11 @@ Give each risk one status:
 
 ## 4. Report
 
-Choose the verdict:
+Choose the verdict, taking the first that applies:
 
-- **Material risk** if any confirmed risk affects correctness, data, compatibility, or operation.
-- **Unverified** if nothing is confirmed but an unresolved risk could change the verdict.
-- **Contained** if every risk is ruled out. This covers only what you inspected.
+- **Material risk** if a confirmed risk would matter to users, data, compatibility, performance, or operation.
+- **Unverified** if an unresolved risk could be material.
+- **Contained** if every remaining risk is ruled out or confirmed as minor. This covers only what you inspected.
 
 Use this format and omit sections with nothing to report:
 

@@ -14,7 +14,7 @@ For each relevant test group, determine:
 6. Is a unit, integration, contract, end-to-end test, or no test appropriate? Choose a boundary that exposes the regression; isolated unit tests cannot establish that production wiring works.
 7. Did the reported validation execute this test under the conditions it needs?
 
-Compare changed assertions, fixtures, mocks, snapshots, skips, and configuration with their predecessors. Name realistic failures newly accepted. Lost protection requires an accepted contract change or evidence the old test was wrong. Interface changes do not justify dropping cases; implementation output does not define expected behavior.
+Compare changed assertions, fixtures, mocks, snapshots, skips, and configuration with their predecessors. Name realistic failures newly accepted. Lost protection requires an accepted contract change or evidence the old test was wrong. Interface changes do not justify dropping cases; implementation output does not define expected behavior. Tests deleted together with the behavior they covered are not lost protection; check instead that the remaining suite still covers what depended on the removed area.
 
 ## Investigate patterns through behavior
 
@@ -33,7 +33,7 @@ Patterns are investigation leads, not automatic defects. Require evidence of wea
 
 Use failing-before evidence to assess sensitivity to the defect. A final green run cannot prove a required test-first sequence; missing history is a limitation, not proof it was skipped.
 
-When a focused experiment can resolve important uncertainty, run the unchanged test against a known broken version or one narrow defect in a disposable copy. Do not mutate the reviewed checkout, publish the experiment, or add mutation-testing infrastructure. A surviving test disproves only the protection exercised by that experiment.
+When a focused experiment can resolve important uncertainty, run the unchanged test against a known broken version or one narrow defect in a disposable copy. Ask the lead to provide the copy and record it in the resource ledger; reviewers do not create resources themselves. Do not mutate the reviewed checkout, publish the experiment, or add mutation-testing infrastructure. A surviving test disproves only the protection exercised by that experiment.
 
 ## Return actionable conclusions
 

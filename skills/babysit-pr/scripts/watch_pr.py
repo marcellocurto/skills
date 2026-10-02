@@ -115,7 +115,9 @@ def new_activity(context: dict[str, Any], viewer: str, since: datetime | None) -
 
     def add(kind: str, node: dict[str, Any], created_at: str | None) -> None:
         author = (node.get("author") or {}).get("login", "ghost")
-        if author == viewer or not created_at or (since and parse_time(created_at) <= since):
+        # `since` is a whole-second floor, so an item from that same second is reported
+        # again rather than skipped; a repeated round costs less than a missed comment.
+        if author == viewer or not created_at or (since and parse_time(created_at) < since):
             return
         items.append({"kind": kind, "author": author, "url": node.get("url", ""), "created_at": created_at})
 

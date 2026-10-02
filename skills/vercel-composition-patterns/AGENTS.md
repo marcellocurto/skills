@@ -277,7 +277,7 @@ useState, Zustand, or a server sync.
 function ChannelComposer({ channelId }: { channelId: string }) {
   // UI component knows about global state implementation
   const state = useGlobalChannelState(channelId)
-  const { submit, updateInput } = useChannelSync(channelId)
+  const sync = useChannelSync(channelId)
 
   return (
     <Composer.Frame>

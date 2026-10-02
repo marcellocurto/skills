@@ -27,10 +27,10 @@ Initializes shadcn/ui in an existing project or creates a new project (when `--n
 
 | Flag                    | Short | Description                                               | Default |
 | ----------------------- | ----- | --------------------------------------------------------- | ------- |
-| `--template <template>` | `-t`  | Template (next, start, vite, next-monorepo, react-router) | —       |
+| `--template <template>` | `-t`  | Template (next, start, vite, react-router, laravel, astro) | —       |
 | `--preset [name]`       | `-p`  | Preset configuration (named, code, or URL)                | —       |
 | `--yes`                 | `-y`  | Skip confirmation prompt                                  | `true`  |
-| `--defaults`            | `-d`  | Use defaults (`--template=next --preset=base-nova`)       | `false` |
+| `--defaults`            | `-d`  | Use defaults (`--template=next --base=base --preset=nova`) | `false` |
 | `--force`               | `-f`  | Force overwrite existing configuration                    | `false` |
 | `--cwd <cwd>`           | `-c`  | Working directory                                         | current |
 | `--name <name>`         | `-n`  | Name for new project                                      | —       |
@@ -39,6 +39,11 @@ Initializes shadcn/ui in an existing project or creates a new project (when `--n
 | `--reinstall`           |       | Re-install existing UI components                         | `false` |
 | `--monorepo`            |       | Scaffold a monorepo project                               | —       |
 | `--no-monorepo`         |       | Skip the monorepo prompt                                  | —       |
+| `--base <base>`         | `-b`  | Primitive library (`base`, `radix`, `aria`)               | prompt  |
+| `--no-reinstall`        |       | Keep existing UI components as they are                   | —       |
+| `--css-variables` / `--no-css-variables` | | Use CSS variables for theming               | `true`  |
+| `--no-rtl`              |       | Disable RTL support                                       | —       |
+| `--pointer` / `--no-pointer` |  | Enable or disable the pointer cursor on buttons           | —       |
 
 `npx shadcn@latest create` is an alias for `npx shadcn@latest init`.
 
@@ -164,20 +169,18 @@ Displays item info including file contents. Examples:
 npx shadcn@latest docs <components...> [options]
 ```
 
-Outputs resolved URLs for component documentation, examples, and API references. Accepts one or more component names. Fetch the URLs to get the actual content.
+Outputs resolved URLs for component documentation, examples, and API references. Accepts one or more component names. Fetch the URLs to get the actual content. Flags: `--base <base>` (`base`, `radix`, `aria`; defaults to the project base) and `--json` (returns `{ base, results: [{ component, base, links }] }`).
 
-Example output for `npx shadcn@latest docs input button`:
+Example output for `npx shadcn@latest docs input button` in a `base` project:
 
 ```
-base  radix
-
 input
-  docs      https://ui.shadcn.com/docs/components/radix/input
-  examples  https://raw.githubusercontent.com/.../examples/input-example.tsx
+  - docs      https://ui.shadcn.com/docs/components/base/input
+  - examples  https://ui.shadcn.com/code/apps/v4/registry/bases/base/examples/input-example.tsx
 
 button
-  docs      https://ui.shadcn.com/docs/components/radix/button
-  examples  https://raw.githubusercontent.com/.../examples/button-example.tsx
+  - docs      https://ui.shadcn.com/docs/components/base/button
+  - examples  https://ui.shadcn.com/code/apps/v4/registry/bases/base/examples/button-example.tsx
 ```
 
 Some components include an `api` link to the underlying library (e.g. `cmdk` for the command component).
@@ -199,31 +202,31 @@ Displays project info and `components.json` configuration. Reuse applicable obse
 | `--cwd <cwd>` | `-c`  | Working directory | current |
 | `--json`      |       | Return JSON       | `false` |
 
-**Project Info fields:**
+The JSON has five top-level keys: `project` (detected from the file system), `config` (from `components.json`), `preset` (the resolved preset code and values), `components` (installed component names), and `links` (docs, components, ui, examples, schema URLs). It does not report the package manager; read the lockfile for that.
 
-| Field                | Type      | Meaning                                                            |
-| -------------------- | --------- | ------------------------------------------------------------------ |
-| `framework`          | `string`  | Detected framework (`next`, `vite`, `react-router`, `start`, etc.) |
-| `frameworkVersion`   | `string`  | Framework version (e.g. `15.2.4`)                                  |
-| `isSrcDir`           | `boolean` | Whether the project uses a `src/` directory                        |
-| `isRSC`              | `boolean` | Whether React Server Components are enabled                        |
-| `isTsx`              | `boolean` | Whether the project uses TypeScript                                |
-| `tailwindVersion`    | `string`  | `"v3"` or `"v4"`                                                   |
-| `tailwindConfigFile` | `string`  | Path to the Tailwind config file                                   |
-| `tailwindCssFile`    | `string`  | Path to the global CSS file                                        |
-| `aliasPrefix`        | `string`  | Import alias prefix (e.g. `@`, `~`, `@/`)                          |
-| `packageManager`     | `string`  | Detected package manager (`npm`, `pnpm`, `yarn`, `bun`)            |
+**`project` fields:**
 
-**Components.json fields:**
+| Field              | Type      | Meaning                                                            |
+| ------------------ | --------- | ------------------------------------------------------------------ |
+| `framework`        | `string`  | Detected framework (`next`, `vite`, `react-router`, `start`, etc.) |
+| `frameworkName`    | `string`  | Display name of the framework                                      |
+| `frameworkVersion` | `string`  | Framework version (e.g. `15.2.4`)                                  |
+| `srcDirectory`     | `boolean` | Whether the project uses a `src/` directory                        |
+| `rsc`              | `boolean` | Whether React Server Components are enabled                        |
+| `typescript`       | `boolean` | Whether the project uses TypeScript                                |
+| `tailwindVersion`  | `string`  | `"v3"` or `"v4"`                                                   |
+| `tailwindConfig`   | `string`  | Path to the Tailwind config file                                   |
+| `tailwindCss`      | `string`  | Path to the global CSS file                                        |
+| `importAlias`      | `string`  | Import alias prefix (e.g. `@`, `~`, `@/`)                          |
+
+**`config` fields (from `components.json`):**
 
 | Field                | Type      | Meaning                                                                                    |
 | -------------------- | --------- | ------------------------------------------------------------------------------------------ |
 | `base`               | `string`  | Primitive library (`radix` or `base`) — determines component APIs and available props      |
-| `style`              | `string`  | Visual style (e.g. `nova`, `vega`)                                                         |
+| `style`              | `string`  | Visual style (e.g. `base-nova`, `radix-vega`)                                              |
 | `rsc`                | `boolean` | RSC flag from config                                                                       |
-| `tsx`                | `boolean` | TypeScript flag                                                                            |
-| `tailwind.config`    | `string`  | Tailwind config path                                                                       |
-| `tailwind.css`       | `string`  | Global CSS path — this is where custom CSS variables go                                    |
+| `typescript`         | `boolean` | TypeScript flag                                                                            |
 | `iconLibrary`        | `string`  | Icon library — determines icon import package (e.g. `lucide-react`, `@tabler/icons-react`) |
 | `aliases.components` | `string`  | Component import alias (e.g. `@/components`)                                               |
 | `aliases.utils`      | `string`  | Utils import alias (e.g. `@/lib/utils`)                                                    |
@@ -290,4 +293,4 @@ Inspect the current and incoming presets, then use the operation already authori
 - **Merge** → `npx shadcn@latest init --preset <code> --force --no-reinstall`, then run `npx shadcn@latest info` to get the list of installed components and use the [smart merge workflow](./SKILL.md#updating-components) to update them one by one, preserving local changes. Use when the user has customized components.
 - **Skip** → `npx shadcn@latest init --preset <code> --force --no-reinstall`. Only updates config and CSS variables, leaves existing components as-is.
 
-Always run preset commands inside the user's project directory. `apply` only works in an existing project with a `components.json` file. The CLI automatically preserves the current base (`base` vs `radix`) from `components.json`. If you must use a scratch/temp directory (e.g. for `--dry-run` comparisons), pass `--base <current-base>` explicitly — preset codes do not encode the base.
+Always run preset commands inside the user's project directory. `apply` only works in an existing project with a `components.json` file. The CLI automatically preserves the current base (`base` vs `radix`) from `components.json`. If you must use a scratch/temp directory, initialize it with `npx shadcn@latest init --preset <code> --base <current-base>` (preset codes do not encode the base), then run `add --dry-run` or `--diff` there; `apply` has no `--base` or `--dry-run` flag.
