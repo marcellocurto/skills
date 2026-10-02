@@ -2,7 +2,6 @@
 name: frontend-design
 description: Choose the visual direction, typography, layout, and interface copy when building new UI or reshaping an existing one.
 license: Complete terms in LICENSE.txt
-disable-model-invocation: true
 ---
 
 # Frontend Design
@@ -13,7 +12,7 @@ Approach this as the design lead at a design studio known for giving every clien
 
 If the brief does not identify what the product or subject matter is, identify it yourself before designing, and confirm with the client. You can come up with one concrete subject, the design's audience, and the design's primary job, as a proposal. If there's any information in your memory about the client's preferences or context about what they're building, use that as a hint. The subject's industry, subject matter, materials, and vernacular are where distinctive visual choices come from — a design for a toy for girls aged 8–11 will be very aesthetically different from a dashboard for financial analysts. Build with the brief's real content and subject matter throughout.
 
-When the product already has a design system or brand, decide whether this brief builds inside it or breaks from it, and say which. Inside it, its tokens, components, and voice are part of the brief. Breaking from it is a legitimate choice when the existing design is the problem; then treat it as context to improve on, not a constraint. If the brief does not say, ask.
+When the product already has a design system or brand, build inside it: its tokens, components, and voice are part of the brief. Break from it only when the brief explicitly asks for a new direction; then treat the existing design as context to improve on, not a constraint.
 
 ## Design principles
 
