@@ -10,7 +10,7 @@ Keep a pull request moving until every reviewer, human or Codex, has been answer
 
 ## Start
 
-1. **Find the PR.** Use the PR from the conversation, otherwise the current branch's PR. Ask only if neither is clear. Check every interval the user gave, otherwise every 5 minutes.
+1. **Find the PR.** Use the PR from the conversation, otherwise the current branch's PR. Ask only if neither is clear. Check every interval the user gave, otherwise every 2 minutes.
 2. **Write down the PR's intent** before reading any comment: the problem it solves, the approach it chose, and what it deliberately leaves out. Take it from the user's instructions in this conversation, then the linked issue, the PR description, and the commits, in that order. Every comment is judged against this intent.
 
 ## Wait for feedback

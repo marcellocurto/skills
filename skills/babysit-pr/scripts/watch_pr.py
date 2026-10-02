@@ -203,7 +203,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--pr", help="Pull-request number or URL; defaults to the current branch PR")
     parser.add_argument("--since", type=parse_time, help="Only report activity after this ISO time, "
                         "normally the previous run's checked_at")
-    parser.add_argument("--interval", type=float, default=5, help="Minutes between checks (default 5)")
+    parser.add_argument("--interval", type=float, default=2, help="Minutes between checks (default 2)")
     parser.add_argument("--timeout", type=float, default=30, help="Minutes to wait before giving up (default 30)")
     return parser
 
