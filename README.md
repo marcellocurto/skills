@@ -17,45 +17,44 @@ Skills for planning, building, reviewing, and improving software. All run manual
 
 **User-invoked (explicit only)**
 
-- **[`shadcn`](skills/shadcn/SKILL.md)**: Use the shadcn CLI and registry correctly when adding, composing, styling, or repairing components in a shadcn project.
-- **[`frontend-design`](skills/frontend-design/SKILL.md)**: Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one.
-- **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Pressure-test a design through conversation while keeping its glossary and architectural decisions up to date.
-- **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Surface the architecture changes most likely to improve maintainability, show them visually, and explore the strongest candidate together.
-- **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Build a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review; ask when something doesn't work as expected.
-- **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Watch a PR and settle review comments from people and Codex each round, rejecting suggestions that work against the PR's intent, stopping when a batch of comments points to an architectural problem, and finishing once every thread is answered and Codex approves the latest commit.
-- **[`triage`](skills/triage/SKILL.md)**: Assess one supplied GitHub issue, resolve only the questions blocking implementation, and update it after approval.
+- **[`shadcn`](skills/shadcn/SKILL.md)**: Build, update, debug, and style shadcn/ui components using the project's registry and conventions.
+- **[`frontend-design`](skills/frontend-design/SKILL.md)**: Choose the visual direction, typography, layout, and interface copy when building new UI or reshaping an existing one.
+- **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions in the project's docs.
+- **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change with you.
+- **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Implement a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review.
+- **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Watch a pull request, settle review comments from people and Codex as they arrive, and stop once every thread is answered and Codex approves the latest commit, or when something needs you.
+- **[`triage`](skills/triage/SKILL.md)**: Assess one GitHub issue for implementation readiness, ask only the questions that block it, and update it after approval.
 
 **Model-invoked (implicit allowed)**
 
-- **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Debug stubborn failures by building a reproducible feedback loop, narrowing the cause, and proving the fix.
-- **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Get a reliable mental model of how a feature actually runs, from its entry point to its final effect.
-- **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Find out whether a GitHub issue is true, in scope, ready, duplicated, blocked, or already solved.
-- **[`simplify-code-solution`](skills/simplify-code-solution/SKILL.md)**: Recommend or implement a simpler code solution while preserving requirements, clear ownership, and necessary lifecycle complexity.
-- **[`to-tickets`](skills/to-tickets/SKILL.md)**: Convert approved work into GitHub issues that are focused, self-contained, non-duplicative, and ready for the right owner.
-- **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Publish finished local work as a real GitHub pull request that is easy for a reviewer to understand and verify.
+- **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Reproduce, isolate, and fix difficult bugs or performance regressions with a feedback loop that proves the fix.
+- **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Trace and explain how an existing code path or subsystem works, from its entry point to its final effect.
+- **[`github-issue-audit`](skills/github-issue-audit/SKILL.md)**: Decide whether one GitHub issue is valid, unique, scoped, and ready to proceed, without changing it.
+- **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn approved work into well-scoped GitHub issues after checking for duplicates.
+- **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Open a ready-for-review GitHub pull request for finished local changes, committing and pushing when needed.
 - **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit open PR comments, fix and push the justified ones, and reply to and resolve each thread.
-- **[`pr-audit`](skills/pr-audit/SKILL.md)**: Decide whether a PR is ready to merge through independent correctness, maintainability and complexity, and test-quality gates, then post one actionable comment or a single-sentence pass.
-- **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find code that is harder to understand or change than the problem requires and identify safer, simpler shapes.
-- **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Trace what a change could break outside the obvious diff, especially across data, timing, persistence, dependencies, and runtime wiring.
-- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge realistic regression protection, lost coverage in test changes, and whether claimed validation actually runs the relevant tests.
-- **[`relentless-review`](skills/relentless-review/SKILL.md)**: Ask whether a proposal or result is genuinely the best path by pushing on its risks, assumptions, and alternatives.
-- **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition techniques when component APIs become rigid, tangled, or overloaded with boolean props.
+- **[`pr-audit`](skills/pr-audit/SKILL.md)**: Audit a whole PR for merge readiness across correctness, maintainability and complexity, and test quality, then post one actionable comment.
+- **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find needless complexity in code and get simpler designs that keep its behavior.
+- **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Find what a code change could break beyond the files it touches, across callers, data, timing, and runtime wiring.
+- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge whether tests catch realistic regressions, and recommend what to keep, change, or remove.
+- **[`relentless-review`](skills/relentless-review/SKILL.md)**: Challenge an existing proposal or result to find its material risks and a better path.
+- **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition patterns when designing or refactoring component interfaces.
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
 - **[`code-review`](skills/code-review/SKILL.md)**: Review a specific diff, pull request, or commit range from independent correctness and maintainability perspectives. Whole-codebase and current-state subsystem audits fall outside this skill.
-- **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design type-safe interfaces that hide internal rules from callers and keep related behavior in one place.
-- **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Keep the codebase's language, glossary, and lasting architectural decisions aligned with the domain people actually discuss.
-- **[`grilling`](skills/grilling/SKILL.md)**: Resolve consequential assumptions and tradeoffs through focused rounds of questions, keeping the interview bounded by the decision at hand.
-- **[`tdd`](skills/tdd/SKILL.md)**: Use before implementing a feature or bug fix that adds or changes behavior users or callers rely on, even when the request does not mention tests. Not for removals, refactors, design exploration, prototypes, styling, copy, configuration, or data cleanup; never manufacture a failing test.
-- **[`wizard`](skills/wizard/SKILL.md)**: Package setup steps that require a person—credentials, dashboards, migrations, or cutovers—into a guided interactive Bash flow.
+- **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design small, type-safe interfaces that hide complexity from callers and give domain logic a clear home.
+- **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Define and maintain the codebase's shared domain terms and the architectural decisions behind them.
+- **[`grilling`](skills/grilling/SKILL.md)**: Stress-test an idea or decision through focused questions about the assumptions and tradeoffs that matter.
+- **[`tdd`](skills/tdd/SKILL.md)**: Use before implementing a feature or bug fix that adds or changes behavior users or callers rely on, even when the request does not mention tests. Not for removals, behavior-preserving refactors, design exploration, prototypes, styling, copy, configuration, or data cleanup.
+- **[`wizard`](skills/wizard/SKILL.md)**: Create an interactive Bash wizard for setup steps that only a person can complete, such as credentials, dashboards, or cutovers.
 
 ## Sources and Attribution
 
 Several skills are forked, adapted, or inspired by other projects:
 
-- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, self-contained typography guidance, and product-specific copy guidance. The original license is retained.
+- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, a rule for existing design systems, and product-specific copy guidance. The original license is retained.
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
-- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `github-issue-audit`, `create-pull-request`, the review-context helper in `babysit-pr`, and the review lenses in `code-review`.
+- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `github-issue-audit`, `create-pull-request`, the review-context helper shared by `babysit-pr`, `pr-comments-audit`, and `to-tickets`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
 

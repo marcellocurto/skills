@@ -24,7 +24,7 @@ For services such as Stripe or Twilio, accept the service through a dependency i
 
 ## Keep dependency details with their owner
 
-- Keep a dependency interface when it hides a protocol, side effects, or rules that callers should not have to handle. It may be useful with one adapter; having two adapters does not by itself justify it. Do not invent a second adapter to justify the design.
+- Keep a dependency interface when it hides a protocol, side effects, or rules that callers should not have to handle. It may be useful with one adapter; having two adapters does not by itself justify it. Do not invent a second production adapter to justify the design. A test substitute from categories 2 to 4 is not a second adapter.
 - Tests may use internal dependency interfaces without exposing them to application callers. Do not add public methods just because tests need control over a dependency.
 
 ## Preserve useful tests

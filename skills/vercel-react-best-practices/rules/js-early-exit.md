@@ -7,7 +7,7 @@ tags: javascript, functions, optimization, early-return
 
 ## Early Return from Functions
 
-Return early when result is determined to skip unnecessary processing.
+Return early when result is determined to skip unnecessary processing. Check what the existing code returns first: a loop that keeps overwriting a result reports the last finding, while an early return reports the first. The example below assumes the caller wants the first failing check, which is the usual contract for validation; if the last finding was relied on, settle that before rewriting.
 
 **Incorrect (processes all items even after finding answer):**
 

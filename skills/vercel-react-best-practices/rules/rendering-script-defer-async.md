@@ -59,10 +59,12 @@ export default function Page() {
   return (
     <>
       <Script src="https://example.com/analytics.js" strategy="afterInteractive" />
-      <Script src="/scripts/utils.js" strategy="beforeInteractive" />
+      <Script src="/scripts/utils.js" strategy="afterInteractive" />
     </>
   )
 }
 ```
+
+`afterInteractive` (the default) and `lazyOnload` are the non-blocking choices. `beforeInteractive` is the opposite of `defer`: it is fetched before any first-party code, must sit in the root layout, and is for critical scripts such as bot detection or cookie consent.
 
 Reference: [MDN - Script element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#defer)

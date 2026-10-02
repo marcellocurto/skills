@@ -44,15 +44,15 @@ In documentation-update mode, record a resolved term in the existing glossary as
 
 Keep glossary entries focused on domain meaning. Put implementation decisions in the appropriate architectural record rather than a definition. Preserve unrelated sections of existing documents; do not reshape a multipurpose `CONTEXT.md` into a glossary-only file. Keep unresolved proposals and assumptions distinct from agreed content.
 
-### Offer ADRs sparingly
+### Record only qualifying decisions as ADRs
 
-Only offer to create an ADR when all three are true:
+A decision qualifies for an ADR when all three are true:
 
 1. **Hard to reverse**: the cost of changing your mind later is meaningful
 2. **Surprising without context**: a future reader will wonder "why did they do it this way?"
-3. **The result of a real trade-off**: there were genuine alternatives and you picked one for specific reasons
+3. **The result of a real trade-off or an outside constraint**: there were genuine alternatives and you picked one for specific reasons, or a constraint invisible in the code ruled the obvious option out
 
-If any of the three is missing, skip the unsolicited ADR. When documentation updates are already authorized, record qualifying settled decisions without requesting approval again. Otherwise propose the record in the conversation. Follow the project's ADR format; use [ADR-FORMAT.md](./ADR-FORMAT.md) when no convention exists.
+If any of the three is missing, do not create or propose an ADR. When documentation updates are already authorized, record qualifying settled decisions without requesting approval again. Otherwise propose the record in the conversation. Follow the project's ADR format; use [ADR-FORMAT.md](./ADR-FORMAT.md) when no convention exists; it also lists examples of qualifying decisions.
 
 ## Finish
 

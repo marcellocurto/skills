@@ -18,7 +18,7 @@ The review criteria are self-contained here and in [TESTS.md](TESTS.md). Do not 
 ## Establish one pinned comparison
 
 1. Resolve the PR URL, repository, and GitHub host from the user's target or current branch. Preserve the host throughout, including for forks. Ask only if ambiguity could select the wrong PR.
-2. Fetch metadata, relevant linked requirements, comments, review threads, changed files, and verification results through GitHub tools or `gh`. Follow pagination and detect incomplete diffs or conversations. Record state, title, description, base and head repositories and commit IDs, target branch, and the content and source identities of the requirements used.
+2. Fetch metadata, relevant linked requirements, comments, review threads, changed files, and verification results through GitHub tools or `gh`. Follow pagination and detect incomplete diffs or conversations. Record state, title, description, base and head repositories and commit IDs, target branch, and the content and source identities of the requirements used. If the PR is closed or merged, report its state to the user and stop here, before creating any resource or publishing anything.
 3. Inspect the exact head in a suitable existing checkout or a new isolated worktree, following the resource lifecycle below; preserve the user's branch and unrelated work. Calculate the merge base and record `git diff <merge-base>..<head> --` and its commit list. Do not substitute working changes for the pinned PR. Investigate an unexpectedly empty or unavailable comparison before judging it.
 4. Read governing instructions, standards, surrounding code, callers, and behavior-defining tests. Account for every changed file. Assess generated or mechanical files through their source and generation contract when that establishes correctness.
 
@@ -99,13 +99,13 @@ The lead verifies plausible findings against pinned code, requirements, governin
 
 Group recurring problems by mechanism and shared remedy, identifying affected locations. Report each finding under its controlling axis without duplication. Exclude optional polish and unrelated follow-ups.
 
-Record each axis internally as **Pass**, **Changes required**, or **Blocked**, with coverage limits. Derive the overall verdict:
+Record each axis internally as **Pass**, **Changes required**, or **Blocked**, with coverage limits. Derive the overall verdict. The first two differ by whether the audit reached a judgment: Not ready means it did and something must change; Blocked means it could not, and the next step is evidence, not a fix.
 
-- **Not ready to merge:** a verified code or test blocker remains. Include independent readiness blockers too.
-- **Blocked — readiness not established:** no verified defect remains, but material inspection gaps, pending verification, or unmet merge requirements prevent readiness.
+- **Not ready to merge:** the audit reached a judgment and the PR must change before merging. A verified code or test blocker remains, or a merge requirement is known to be unmet, such as a failed required check or a conflict with the base. Each finding names the fix.
+- **Blocked — readiness not established:** the audit could not reach a judgment. No verified defect or unmet requirement remains, but a material inspection gap, pending verification, or missing access or requirement prevents one. Each finding names the evidence or decision that would settle it and who can supply it.
 - **Ready to merge:** all axes pass, inspection is sufficient, and applicable verification and merge requirements are satisfied.
 
-For a closed or merged PR, report its state to the user without publishing a readiness comment.
+When both apply, report Not ready to merge and list the open gaps as further findings, so the author fixes what is known while the evidence is gathered.
 
 ## Publish one actionable comment
 
@@ -132,7 +132,7 @@ Otherwise, start with the verdict and audited commit, followed by prioritized nu
 - the trigger and consequence, or the specific structural cost or missing evidence
 - the focused change or verification needed before merging
 
-Keep evidence, impact, and remedy together. Recommend focused production-quality fixes. Omit cosmetic patches, unnecessary rewrites, empty sections, praise, optional suggestions, transcripts, repeated summaries, and evidence inventories. A blocked audit still needs an explicit next action.
+Keep evidence, impact, and remedy together. Recommend focused production-quality fixes. Omit cosmetic patches, unnecessary rewrites, empty sections, praise, optional suggestions, transcripts, repeated summaries, and evidence inventories. For a blocked audit, the next action is the evidence or decision that unblocks the judgment, never a speculative code change.
 
 Post exactly one top-level conversation comment per completed run using a GitHub connector or `gh`. For the CLI, write literal Markdown to a temporary file and use `--body-file` with the correct host. Do not add inline or per-axis comments. Later user-requested audits may each post one new comment.
 

@@ -29,12 +29,21 @@ export default function RootLayout({ children }) {
 **Correct (loads after hydration):**
 
 ```tsx
+// components/analytics.tsx
+// `ssr: false` is only allowed in a Client Component, so the dynamic import lives here.
+'use client'
+
 import dynamic from 'next/dynamic'
 
-const Analytics = dynamic(
+export const Analytics = dynamic(
   () => import('@vercel/analytics/react').then(m => m.Analytics),
   { ssr: false }
 )
+```
+
+```tsx
+// app/layout.tsx
+import { Analytics } from '@/components/analytics'
 
 export default function RootLayout({ children }) {
   return (

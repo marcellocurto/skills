@@ -44,7 +44,7 @@ query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
       number url title state baseRefName headRefName
       reviews(first: 100, after: $cursor) {
         pageInfo { hasNextPage endCursor }
-        nodes { id url state body submittedAt author { login } }
+        nodes { id url state body submittedAt updatedAt author { login } }
       }
     }
   }
@@ -173,8 +173,11 @@ def graphql(host: str, query: str, **variables: str | int | None) -> dict[str, A
         "query=@-",
     ]
     for name, value in variables.items():
-        if value is not None:
-            command.extend(["-F", f"{name}={value}"])
+        if value is None:
+            continue
+        # `-F` types its value, so an all-digit owner or repo would be sent as an integer;
+        # strings go through `-f` untouched.
+        command.extend(["-F" if isinstance(value, int) else "-f", f"{name}={value}"])
     payload = run_json(command, stdin=query)
     if payload.get("errors"):
         raise RuntimeError(f"GitHub GraphQL errors: {json.dumps(payload['errors'])}")

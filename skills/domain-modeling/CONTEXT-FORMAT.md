@@ -25,8 +25,8 @@ A person or organization that places orders.
 ## Rules
 
 - **Use established domain names.** Record the agreed canonical term. Use `_Avoid_` only for wording that confuses distinct concepts or changes meaning, not every harmless synonym.
-- **Keep definitions tight.** One or two sentences max. Define what it IS, not what it does.
-- **Only include terms specific to this project's context.** General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: is this a concept unique to this context, or a general programming concept? Only the former belongs.
+- **Keep definitions tight.** One or two sentences max. State what the term refers to; the operations performed on it belong elsewhere.
+- **Only include terms with a project-specific meaning.** Ordinary words such as Customer or Invoice belong when the project gives them a definition that matters here. General programming concepts (timeouts, error types, utility patterns) don't belong even if the project uses them extensively. Before adding a term, ask: does this project define what the word means, or is it a general programming concept? Only the former belongs.
 - **Group terms under subheadings** when natural clusters emerge. If all terms belong to a single cohesive area, a flat list is fine.
 
 ## Single vs multi-context repos

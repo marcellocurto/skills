@@ -118,14 +118,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        warning: "oklch(var(--warning) / <alpha-value>)",
-        "warning-foreground":
-          "oklch(var(--warning-foreground) / <alpha-value>)",
+        warning: "var(--warning)",
+        "warning-foreground": "var(--warning-foreground)",
       },
     },
   },
 }
 ```
+
+The variables above hold complete `oklch(...)` colors, so wrapping them again (`oklch(var(--warning) / <alpha-value>)`) produces invalid CSS. Tailwind v3 cannot apply opacity modifiers such as `bg-warning/50` to a variable that holds a full color; if you need them, store the channels only (`--warning: 0.84 0.16 84;`) and register `oklch(var(--warning) / <alpha-value>)`.
 
 ```tsx
 // 3. Use in components.

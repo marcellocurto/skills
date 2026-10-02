@@ -17,8 +17,9 @@ Keep optional refinements and unrelated decisions outside the active interview. 
 
 - Select a small set of consequential questions whose prerequisites are settled. Prioritize questions that eliminate materially different outcomes or unlock dependent decisions. The set of answerable questions is a pool to choose from, not a list to ask all at once.
 - Follow the user's requested pace or the calling workflow's focus. Ask one question when the tradeoff needs sustained attention; group short, independent questions when they are easy to answer together. Do not hide a large questionnaire inside a single numbered item.
-- Make each question concrete and explain why its answer matters. Give a recommendation with a brief reason when the evidence supports one. Keep recommendations distinct from the user's decisions.
+- Make each question concrete and explain why its answer matters. Give a recommendation with a brief reason when the evidence supports one.
 - Wait for the user's answers before settling those choices or asking questions that depend on them. Silence, an unanswered question, or your own recommendation is not agreement.
+- When the user asks you to decide, state your choice and its reason and proceed with it as the decision. When the user does not know, check whether evidence can settle the question; otherwise record it as an open assumption, say what depends on it, and continue.
 - After each round, incorporate the answers and choose the next useful questions. Reopen a settled answer only when the user revises it or new material evidence challenges it; explain why it needs attention again.
 
 ## Establish facts

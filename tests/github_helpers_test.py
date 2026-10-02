@@ -108,8 +108,13 @@ class ReviewPaginationTests(OfflineTest):
                         self.assertIn("--active", command)
                         return "Authenticated"
                     self.assertEqual(command[1:3], ["api", "graphql"])
+                    # Strings travel as raw `-f` fields so a digit-only owner stays a string;
+                    # only the number is typed with `-F`.
                     fields = dict(command[i + 1].split("=", 1)
-                                  for i, value in enumerate(command) if value == "-F")
+                                  for i, value in enumerate(command) if value in ("-f", "-F"))
+                    typed = {command[i + 1].split("=", 1)[0]
+                             for i, value in enumerate(command) if value == "-F"} - {"query"}
+                    self.assertEqual(typed, {"number"} if "number" in fields else set())
                     cursor = fields.get("cursor")
                     if "thread_id" in fields:
                         thread_id = fields["thread_id"]
@@ -188,7 +193,8 @@ OLD_HEAD = "d57114cb82aa31f6c0e0d7f7e5f0c1a2b3c4d5e6"
 CODEX = "chatgpt-codex-connector"
 
 
-def codex_pull_request(reactions=(), reviewed_commits=(), committed="2026-10-01T23:33:05Z"):
+def codex_pull_request(reactions=(), reviewed_commits=(), committed="2026-10-01T23:33:05Z",
+                       reviewed_at="2026-10-01T23:40:00Z"):
     return {
         "headRefOid": HEAD,
         "commits": {"nodes": [{"commit": {"committedDate": committed}}]},
@@ -197,7 +203,7 @@ def codex_pull_request(reactions=(), reviewed_commits=(), committed="2026-10-01T
             for content, created in reactions
         ]},
         "reviews": {"nodes": [
-            {"author": {"login": CODEX}, "submittedAt": "2026-10-01T23:40:00Z", "commit": {"oid": oid}}
+            {"author": {"login": CODEX}, "submittedAt": reviewed_at, "commit": {"oid": oid}}
             for oid in reviewed_commits
         ]},
     }
@@ -240,6 +246,11 @@ class CodexReviewStateTests(OfflineTest):
         pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T06:00:00Z")], [OLD_HEAD, HEAD])
         self.assertEqual(self.state(pull_request, [summary]), "findings")
 
+    def test_thumbs_up_after_a_head_review_with_findings_means_the_rerun_was_clean(self):
+        summary = codex_summary(("📝 **Code Review**", "✅ **Completed**", HEAD))
+        pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T23:50:00Z")], [OLD_HEAD, HEAD])
+        self.assertEqual(self.state(pull_request, [summary]), "approved")
+
     def test_all_head_reviews_completed_with_thumbs_up_is_approved(self):
         summary = codex_summary(
             ("📝 **Code Review**", "✅ **Completed**", HEAD),
@@ -258,6 +269,12 @@ class CodexReviewStateTests(OfflineTest):
         self.assertEqual(self.state(stale), "pending")
         self.assertEqual(self.state(fresh), "approved")
 
+    def test_without_summary_thumbs_up_older_than_codex_last_review_is_not_about_the_head(self):
+        # An old-dated commit pushed after an old 👍: the 👍 predates Codex's review of an earlier commit.
+        pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T23:45:00Z")], [OLD_HEAD],
+                                          committed="2026-09-30T08:00:00Z", reviewed_at="2026-10-02T08:00:00Z")
+        self.assertEqual(self.state(pull_request), "pending")
+
 
 class ActivityTests(OfflineTest):
     def test_only_other_peoples_items_after_since_count_as_new(self):
@@ -265,6 +282,8 @@ class ActivityTests(OfflineTest):
             "conversation_comments": [
                 {"author": {"login": "reviewer"}, "createdAt": "2026-10-01T10:00:00Z", "url": "old"},
                 {"author": {"login": "reviewer"}, "createdAt": "2026-10-01T12:00:00Z", "url": "new"},
+                {"author": {"login": "reviewer"}, "createdAt": "2026-10-01T10:00:00Z",
+                 "updatedAt": "2026-10-01T12:30:00Z", "url": "edited"},
                 {"author": {"login": "me"}, "createdAt": "2026-10-01T12:00:00Z", "url": "own-reply"},
                 {**codex_summary(("Code Review", "Running", HEAD)), "createdAt": "2026-10-01T12:00:00Z",
                  "url": "summary"},
@@ -282,7 +301,7 @@ class ActivityTests(OfflineTest):
         }
         since = WATCHER.parse_time("2026-10-01T11:00:00Z")
         urls = [item["url"] for item in WATCHER.new_activity(context, "me", since)]
-        self.assertEqual(sorted(urls), ["codex-review", "inline", "new"])
+        self.assertEqual(sorted(urls), ["codex-review", "edited", "inline", "new"])
 
 
 def snapshot(state, activity=(), pr_state="OPEN"):

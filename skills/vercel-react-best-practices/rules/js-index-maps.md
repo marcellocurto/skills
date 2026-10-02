@@ -34,4 +34,6 @@ function processOrders(orders: Order[], users: User[]) {
 ```
 
 Build map once (O(n)), then all lookups are O(1).
+
+`find` returns the first match, while `new Map(entries)` keeps the last entry for a duplicate key. Use this rewrite when the key is unique. If duplicates can occur and the first match is the contract, build the map with `if (!userById.has(u.id)) userById.set(u.id, u)` instead.
 For 1000 orders × 1000 users: 1M ops → 2K ops.

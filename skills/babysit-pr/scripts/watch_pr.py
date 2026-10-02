@@ -72,6 +72,13 @@ def codex_review(pull_request: dict[str, Any], conversation_comments: list[dict[
     Codex reacts with 👀 while any review runs, posts a review tagged with the commit when it has
     suggestions, and reacts with 👍 when all reviews finish clean. The 👍 is not tied to a commit and
     can survive later pushes, so approval also requires every summary row to cover the head commit.
+
+    A review with findings on the head commit is superseded by a 👍 posted after it, which is how a
+    clean re-review of the same commit (after the findings were answered without a push) shows up.
+
+    Without a summary table the 👍 must postdate the head commit's recorded date. GitHub does not
+    expose when a commit was pushed, so a commit with an old date pushed after an old 👍 cannot be
+    told apart from an approved head in that fallback.
     """
     head = pull_request["headRefOid"]
     rows = summary_rows(conversation_comments)
@@ -81,11 +88,15 @@ def codex_review(pull_request: dict[str, Any], conversation_comments: list[dict[
         for reaction in pull_request["reactions"]["nodes"]
         if is_codex(reaction.get("user"))
     }
-    reviewed_head = any(
-        is_codex(review.get("author")) and (review.get("commit") or {}).get("oid") == head
-        for review in pull_request["reviews"]["nodes"]
+    codex_reviews = [review for review in pull_request["reviews"]["nodes"] if is_codex(review.get("author"))]
+    latest_review_at = max((parse_time(review["submittedAt"]) for review in codex_reviews), default=None)
+    latest_head_review_at = max(
+        (parse_time(review["submittedAt"]) for review in codex_reviews
+         if (review.get("commit") or {}).get("oid") == head),
+        default=None,
     )
     thumbs_up = reactions.get("THUMBS_UP")
+    thumbs_up_at = parse_time(thumbs_up["createdAt"]) if thumbs_up else None
 
     if "EYES" in reactions or any(row["status"] == "running" for row in head_rows):
         state = "running"
@@ -93,12 +104,15 @@ def codex_review(pull_request: dict[str, Any], conversation_comments: list[dict[
         state = "pending"
     elif any(row["status"] != "completed" for row in head_rows):
         state = "failed"
-    elif reviewed_head:
+    elif latest_head_review_at and not (thumbs_up_at and thumbs_up_at > latest_head_review_at):
         state = "findings"
     elif thumbs_up and rows:
         state = "approved"
-    elif thumbs_up and parse_time(thumbs_up["createdAt"]) > head_commit_time(pull_request):
-        # Without a summary table, only a 👍 newer than the head commit can be about it.
+    elif thumbs_up_at and thumbs_up_at > head_commit_time(pull_request) and not (
+        latest_review_at and thumbs_up_at < latest_review_at
+    ):
+        # Without a summary table, only a 👍 newer than the head commit and newer than Codex's
+        # last review of any commit can be about the head.
         state = "approved"
     else:
         state = "pending"
@@ -110,14 +124,21 @@ def head_commit_time(pull_request: dict[str, Any]) -> datetime:
 
 
 def new_activity(context: dict[str, Any], viewer: str, since: datetime | None) -> list[dict[str, str]]:
-    """List comments and reviews from anyone but the viewer posted after `since`."""
+    """List comments and reviews from anyone but the viewer posted or edited after `since`."""
     items = []
 
     def add(kind: str, node: dict[str, Any], created_at: str | None) -> None:
         author = (node.get("author") or {}).get("login", "ghost")
-        if author == viewer or not created_at or (since and parse_time(created_at) <= since):
+        if author == viewer or not created_at:
             return
-        items.append({"kind": kind, "author": author, "url": node.get("url", ""), "created_at": created_at})
+        # An edit counts as activity, so the item's time is its latest change.
+        changed_at = max(created_at, node.get("updatedAt") or created_at, key=parse_time)
+        # `since` is a whole-second floor, so an item from that same second is reported
+        # again rather than skipped; a repeated round costs less than a missed comment.
+        if since and parse_time(changed_at) < since:
+            return
+        items.append({"kind": kind, "author": author, "url": node.get("url", ""),
+                      "created_at": created_at, "changed_at": changed_at})
 
     for comment in context["conversation_comments"]:
         if not is_summary(comment):

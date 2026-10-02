@@ -182,41 +182,41 @@ async function handleRequest(userId: string, skipProcessing: boolean) {
 **Another example (early return optimization):**
 
 ```typescript
-// Incorrect: always fetches permissions
+// Incorrect: always fetches the resource, even for callers who may not edit
 async function updateResource(resourceId: string, userId: string) {
   const permissions = await fetchPermissions(userId)
   const resource = await getResource(resourceId)
   
-  if (!resource) {
-    return { error: 'Not found' }
-  }
-  
   if (!permissions.canEdit) {
     return { error: 'Forbidden' }
+  }
+  
+  if (!resource) {
+    return { error: 'Not found' }
   }
   
   return await updateResourceData(resource, permissions)
 }
 
-// Correct: fetches only when needed
+// Correct: fetches the resource only once the caller is allowed to edit
 async function updateResource(resourceId: string, userId: string) {
-  const resource = await getResource(resourceId)
-  
-  if (!resource) {
-    return { error: 'Not found' }
-  }
-  
   const permissions = await fetchPermissions(userId)
   
   if (!permissions.canEdit) {
     return { error: 'Forbidden' }
   }
   
+  const resource = await getResource(resourceId)
+
+  if (!resource) {
+    return { error: 'Not found' }
+  }
+
   return await updateResourceData(resource, permissions)
 }
 ```
 
-This optimization is especially valuable when the skipped branch is frequently taken, or when the deferred operation is expensive.
+This optimization is especially valuable when the skipped branch is frequently taken, or when the deferred operation is expensive. Never defer an authorization check behind a lookup whose result reveals whether the resource exists; the permission check stays first.
 
 For `await getFlag()` combined with a cheap synchronous guard (`flag && someCondition`), see [Check Cheap Conditions Before Async Flags](rules/async-cheap-condition-before-await.md).
 
@@ -302,14 +302,18 @@ export async function GET(request: Request) {
 export async function GET(request: Request) {
   const sessionPromise = auth()
   const configPromise = fetchConfig()
-  const session = await sessionPromise
+  // Both promises get a handler in the same tick they are created. Awaiting
+  // `sessionPromise` on its own first would leave `configPromise` unobserved;
+  // a fast config failure would then be an unhandled rejection.
   const [config, data] = await Promise.all([
     configPromise,
-    fetchData(session.user.id)
+    sessionPromise.then(session => fetchData(session.user.id))
   ])
   return Response.json({ data, config })
 }
 ```
+
+Attach a handler to every promise you start before the first `await`, by passing it to `Promise.all` or chaining `.then` immediately. A promise left unobserved across an `await` becomes an unhandled rejection if it fails first, which crashes a Node process by default.
 
 For more complex dependency chains, compare existing scheduling facilities and direct promise composition before considering `better-all`. See [Dependency-Based Parallelization](rules/async-dependencies.md) for the conditions that justify it.
 
@@ -321,7 +325,7 @@ For more complex dependency chains, compare existing scheduling facilities and d
 
 [Source rule](rules/async-parallel.md)
 
-**Investigation priority: CRITICAL (2-10× improvement)**
+**Investigation priority: CRITICAL (removes sequential round trips)**
 
 When async operations have no interdependencies, execute them concurrently using `Promise.all()`.
 
@@ -579,12 +583,21 @@ export default function RootLayout({ children }) {
 **Correct (loads after hydration):**
 
 ```tsx
+// components/analytics.tsx
+// `ssr: false` is only allowed in a Client Component, so the dynamic import lives here.
+'use client'
+
 import dynamic from 'next/dynamic'
 
-const Analytics = dynamic(
+export const Analytics = dynamic(
   () => import('@vercel/analytics/react').then(m => m.Analytics),
   { ssr: false }
 )
+```
+
+```tsx
+// app/layout.tsx
+import { Analytics } from '@/components/analytics'
 
 export default function RootLayout({ children }) {
   return (
@@ -610,7 +623,7 @@ export default function RootLayout({ children }) {
 
 Use `next/dynamic` to lazy-load large components not needed on initial render.
 
-**Incorrect (Monaco bundles with main chunk ~300KB):**
+**Incorrect (Monaco ships in the main chunk):**
 
 ```tsx
 import { MonacoEditor } from './monaco-editor'
@@ -827,15 +840,15 @@ const updateProfileSchema = z.object({
 })
 
 export async function updateProfile(data: unknown) {
-  // Validate input first
-  const validated = updateProfileSchema.parse(data)
-  
-  // Then authenticate
+  // Authenticate first, so unauthenticated callers learn nothing about the schema
   const session = await verifySession()
   if (!session) {
     throw new Error('Unauthorized')
   }
   
+  // Then validate input
+  const validated = updateProfileSchema.parse(data)
+
   // Then authorize
   if (session.user.id !== validated.userId) {
     throw new Error('Can only update own profile')
@@ -1423,7 +1436,8 @@ export async function POST(request: Request) {
     const userAgent = (await headers()).get('user-agent') || 'unknown'
     const sessionCookie = (await cookies()).get('session-id')?.value || 'anonymous'
     
-    logUserAction({ sessionCookie, userAgent })
+    // Await the work so `after()` keeps the function alive until logging finishes
+    await logUserAction({ sessionCookie, userAgent })
   })
   
   return new Response(JSON.stringify({ status: 'success' }), {
@@ -1433,7 +1447,7 @@ export async function POST(request: Request) {
 }
 ```
 
-The response is sent immediately while logging happens in the background.
+The response is sent immediately while logging happens in the background. Return or await every promise inside the callback: `after()` waits for the callback's promise, so a dropped promise can be cut off when the function instance ends.
 
 **Common use cases:**
 
@@ -1621,13 +1635,13 @@ function UserList() {
 }
 ```
 
-**For immutable data, when the project provides this helper:**
+**For immutable data:**
 
 ```tsx
-import { useImmutableSWR } from '@/lib/swr'
+import useSWRImmutable from 'swr/immutable'
 
 function StaticContent() {
-  const { data } = useImmutableSWR('/api/config', fetcher)
+  const { data } = useSWRImmutable('/api/config', fetcher)
 }
 ```
 
@@ -1669,11 +1683,13 @@ const data = localStorage.getItem('userConfig')
 ```typescript
 const VERSION = 'v2'
 
-function saveConfig(config: { theme: string; language: string }) {
+function saveConfig(config: { theme: string; language: string }): boolean {
   try {
     localStorage.setItem(`userConfig:${VERSION}`, JSON.stringify(config))
+    return true
   } catch {
     // Throws in incognito/private browsing, quota exceeded, or disabled
+    return false
   }
 }
 
@@ -1692,8 +1708,9 @@ function migrate() {
     const v1 = localStorage.getItem('userConfig:v1')
     if (v1) {
       const old = JSON.parse(v1)
-      saveConfig({ theme: old.darkMode ? 'dark' : 'light', language: old.lang })
-      localStorage.removeItem('userConfig:v1')
+      const saved = saveConfig({ theme: old.darkMode ? 'dark' : 'light', language: old.lang })
+      // Remove the old version only once the new one is stored, or a failed write loses both
+      if (saved) localStorage.removeItem('userConfig:v1')
     }
   } catch {}
 }
@@ -1937,11 +1954,11 @@ function UserProfile({ user, theme }) {
 
 **Investigation priority: MEDIUM (restores memoization by using a constant for default value)**
 
-When memoized component has a default value for some non-primitive optional parameter, such as an array, function, or object, calling the component without that parameter results in broken memoization. This is because new value instances are created on every rerender, and they do not pass strict equality comparison in `memo()`.
+A default value for a non-primitive optional parameter, such as an array, function, or object, is re-created on every render of the component. `memo()` itself is unaffected, because defaults are applied after props are compared, but any memoized child, `useMemo`, `useCallback`, or effect that receives the default sees a new identity each render and re-runs.
 
 To address this issue, extract the default value into a constant.
 
-**Incorrect (`onClick` has different values on every rerender):**
+**Incorrect (`onClick` is a new function on every render of `UserAvatar`):**
 
 ```tsx
 const UserAvatar = memo(function UserAvatar({ onClick = () => {} }: { onClick?: () => void }) {
@@ -2334,7 +2351,7 @@ function UserProfile() {
 }
 ```
 
-Use lazy initialization when computing initial values from localStorage/sessionStorage, building data structures (indexes, maps), reading from the DOM, or performing heavy transformations.
+Use lazy initialization when computing initial values from localStorage/sessionStorage, building data structures (indexes, maps), reading from the DOM, or performing heavy transformations. A `useState` initializer still runs during server rendering, so read browser storage this way only in client-only components; for pages that render on the server, see [Prevent Hydration Mismatch Flicker](rules/rendering-hydration-no-flicker.md).
 
 For simple primitives (`useState(0)`), direct references (`useState(props.value)`), or cheap literals (`useState({})`), the function form is unnecessary.
 
@@ -2429,6 +2446,12 @@ function Search({ items }: { items: Item[] }) {
     </>
   )
 }
+
+// The deferred render only skips work if the child bails out when its props
+// are unchanged, so the list must be memoized.
+const ResultsList = memo(function ResultsList({ results }: { results: Item[] }) {
+  // ...
+})
 ```
 
 **When to use:**
@@ -2437,7 +2460,7 @@ function Search({ items }: { items: Item[] }) {
 - Expensive visualizations (charts, graphs) reacting to input
 - Any derived state that causes noticeable render delays
 
-**Note:** Wrap the expensive computation in `useMemo` with the deferred value as a dependency, otherwise it still runs on every render.
+**Note:** Wrap the expensive computation in `useMemo` with the deferred value as a dependency, otherwise it still runs on every render. Memoize the component that renders the result as well: during the urgent render, `deferredQuery` and `filtered` are unchanged, and only a `memo` child skips re-rendering with unchanged props. Without that, the expensive child still renders on every keystroke.
 
 Reference: [React useDeferredValue](https://react.dev/reference/react/useDeferredValue)
 
@@ -2611,7 +2634,7 @@ function MessageList({ messages }: { messages: Message[] }) {
 }
 ```
 
-For 1000 messages, browser skips layout/paint for ~990 off-screen items (10× faster initial render).
+For 1000 messages, the browser skips layout and paint for the roughly 990 off-screen items until they scroll into view.
 
 ---
 
@@ -3022,11 +3045,13 @@ export default function Page() {
   return (
     <>
       <Script src="https://example.com/analytics.js" strategy="afterInteractive" />
-      <Script src="/scripts/utils.js" strategy="beforeInteractive" />
+      <Script src="/scripts/utils.js" strategy="afterInteractive" />
     </>
   )
 }
 ```
+
+`afterInteractive` (the default) and `lazyOnload` are the non-blocking choices. `beforeInteractive` is the opposite of `defer`: it is fetched before any first-party code, must sit in the root layout, and is for critical scripts such as bot detection or cookie consent.
 
 Reference: [MDN - Script element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#defer)
 
@@ -3103,7 +3128,7 @@ function SearchResults() {
 - **Automatic pending state**: No need to manually manage `setIsLoading(true/false)`
 - **Error resilience**: Pending state correctly resets even if the transition throws
 - **Better responsiveness**: Keeps the UI responsive during updates
-- **Interrupt handling**: New transitions automatically cancel pending ones
+- **Interruptible**: Urgent updates such as typing interrupt an in-progress transition render; multiple ongoing transitions are batched together rather than cancelled
 
 Reference: [useTransition](https://react.dev/reference/react/useTransition)
 
@@ -3261,6 +3286,8 @@ function processOrders(orders: Order[], users: User[]) {
 ```
 
 Build map once (O(n)), then all lookups are O(1).
+
+`find` returns the first match, while `new Map(entries)` keeps the last entry for a duplicate key. Use this rewrite when the key is unique. If duplicates can occur and the first match is the contract, build the map with `if (!userById.has(u.id)) userById.set(u.id, u)` instead.
 For 1000 orders × 1000 users: 1M ops → 2K ops.
 
 ---
@@ -3552,7 +3579,7 @@ This new approach is more efficient because:
 
 **Investigation priority: LOW-MEDIUM (avoids unnecessary computation)**
 
-Return early when result is determined to skip unnecessary processing.
+Return early when result is determined to skip unnecessary processing. Check what the existing code returns first: a loop that keeps overwriting a result reports the last finding, while an early return reports the first. The example below assumes the caller wants the first failing check, which is the usual contract for validation; if the last finding was relied on, settle that before rewriting.
 
 **Incorrect (processes all items even after finding answer):**
 
@@ -3685,7 +3712,7 @@ Still sorts unnecessarily when only min/max are needed.
 
 ```typescript
 function getLatestProject(projects: Project[]) {
-  if (projects.length === 0) return null
+  if (projects.length === 0) return undefined
   
   let latest = projects[0]
   
@@ -3699,21 +3726,22 @@ function getLatestProject(projects: Project[]) {
 }
 
 function getOldestAndNewest(projects: Project[]) {
-  if (projects.length === 0) return { oldest: null, newest: null }
+  if (projects.length === 0) return { oldest: undefined, newest: undefined }
   
   let oldest = projects[0]
   let newest = projects[0]
   
   for (let i = 1; i < projects.length; i++) {
     if (projects[i].updatedAt < oldest.updatedAt) oldest = projects[i]
-    if (projects[i].updatedAt > newest.updatedAt) newest = projects[i]
+    // `>=` keeps the last of tied entries, matching `sorted[sorted.length - 1]` above
+    if (projects[i].updatedAt >= newest.updatedAt) newest = projects[i]
   }
   
   return { oldest, newest }
 }
 ```
 
-Single pass through the array, no copying, no sorting.
+Single pass through the array, no copying, no sorting. The loop keeps the sorted versions' results for an empty array (`undefined`) and for ties: a stable sort puts the first of tied entries at `sorted[0]` and the last at `sorted[sorted.length - 1]`, so `getLatestProject` keeps the first with `>` and `getOldestAndNewest` keeps the last with `>=`. Match the comparison to the contract you are replacing.
 
 **Alternative (Math.min/Math.max for small arrays):**
 
@@ -3761,7 +3789,7 @@ items.filter(item => allowedIds.has(item.id))
 
 **Investigation priority: LOW-MEDIUM (eliminates intermediate array)**
 
-Chaining `.map().filter(Boolean)` creates an intermediate array and iterates twice. Use `.flatMap()` to transform and filter in a single pass.
+Chaining `.map().filter(Boolean)` creates an intermediate array and iterates twice. Use `.flatMap()` to transform and filter in a single pass. Keep the same filter: `filter(Boolean)` also drops empty strings, `0`, and `null` values, so the `flatMap` branch must test the value, not only the condition that produced it.
 
 **Incorrect (2 iterations, intermediate array):**
 
@@ -3775,7 +3803,7 @@ const userNames = users
 
 ```typescript
 const userNames = users.flatMap(user =>
-  user.isActive ? [user.name] : []
+  user.isActive && user.name ? [user.name] : []
 )
 ```
 
@@ -3790,7 +3818,7 @@ const emails = responses
 
 // After
 const emails = responses.flatMap(r =>
-  r.success ? [r.data.email] : []
+  r.success && r.data.email ? [r.data.email] : []
 )
 
 // Parse and filter valid numbers
@@ -4029,13 +4057,14 @@ function useWindowEvent(event: string, handler: (e) => void) {
   const onEvent = useEffectEvent(handler)
 
   useEffect(() => {
-    window.addEventListener(event, onEvent)
-    return () => window.removeEventListener(event, onEvent)
+    const listener = (e: Event) => onEvent(e)
+    window.addEventListener(event, listener)
+    return () => window.removeEventListener(event, listener)
   }, [event])
 }
 ```
 
-`useEffectEvent` provides a cleaner API for the same pattern: it creates a stable function reference that always calls the latest version of the handler.
+`useEffectEvent` removes the manual ref: `onEvent` always sees the latest `handler`. Its identity still changes on every render, so call it from inside the effect and keep it out of the dependency array; do not pass it to other components or hooks.
 
 ---
 

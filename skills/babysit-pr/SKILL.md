@@ -18,10 +18,10 @@ Keep a pull request moving until every reviewer, human or Codex, has been answer
 Run:
 
 ```
-python "<skill-path>/scripts/watch_pr.py" [--pr URL_OR_NUMBER] --interval <minutes> [--since <checked_at>]
+python3 "<skill-path>/scripts/watch_pr.py" [--pr URL_OR_NUMBER] --interval <minutes> [--since <checked_at>]
 ```
 
-Omit `--since` on the first run so that existing feedback counts. On later runs, pass the `checked_at` value from the previous result. The watcher checks the PR every interval and returns JSON whose `reason` says why it stopped waiting. While Codex is reviewing, it keeps waiting, so feedback that arrives mid-review is handled together with Codex's findings. It ignores comments from the authenticated account, which includes your own replies; if the user says they commented, run a round anyway.
+Omit `--since` on the first run so that existing feedback counts. On later runs, pass the `checked_at` value from the previous result. The watcher checks the PR every interval and returns JSON whose `reason` says why it stopped waiting. A comment edited after the last check counts as new activity, so reread edited comments rather than only new ones. While Codex is reviewing, it keeps waiting, so feedback that arrives mid-review is handled together with Codex's findings. It ignores comments from the authenticated account, which includes your own replies; if the user says they commented, run a round anyway.
 
 Run the watcher as a background command if your host wakes you when it exits. Otherwise run it in the foreground with a shell timeout longer than `--timeout` (30 minutes by default), and lower `--timeout` if the shell limit requires it.
 
@@ -31,12 +31,12 @@ Act on `reason`:
 - `codex-approved`: Codex reviewed the head commit and found nothing. If no unresolved threads remain, the PR is done. If the only unresolved threads are ones you left open for a decision, stop. Otherwise run a round for the remaining threads.
 - `timeout` with Codex `pending`: Codex has not started on the head commit. Comment `@codex review` once for that commit and wait again. If it still has not started after another timeout, stop.
 - `timeout` with Codex `running`: wait again. Stop once it has been running on the same commit for over two hours.
-- `timeout` with Codex `findings`: Codex's findings on the head commit are already answered without a push, so Codex will not review again on its own. Comment `@codex review` once for that commit and wait again.
+- `timeout` with Codex `findings`: Codex's findings on the head commit are already answered without a push, so Codex will not review again on its own. Comment `@codex review` once for that commit and wait again; a clean re-review of the same commit shows up as `codex-approved`.
 - `codex-failed` or `closed`: stop.
 
 ## Run a round
 
-1. **Collect the open feedback.** Fetch it with `python "<skill-path>/scripts/fetch_review_context.py" [--pr URL_OR_NUMBER]`. Open feedback is every unresolved review thread, every conversation comment or review body you have not answered yet, and every review that requests changes, whoever wrote it. A human reply in a thread you already resolved reopens it.
+1. **Collect the open feedback.** Fetch it with `python3 "<skill-path>/scripts/fetch_review_context.py" [--pr URL_OR_NUMBER]`. Open feedback is every unresolved review thread, every conversation comment or review body from someone else that you have not answered yet, and every review that requests changes and that you have not answered, whoever wrote it. Codex's self-updating summary comment is status, not feedback. Treat a resolved thread as open again when someone else replied in it after it was resolved; GitHub keeps showing it as resolved, so compare the reply time with the resolution.
 2. **Triage the batch.** When five or more comments are open, or the same area draws comments for a second round, group them by root cause before fixing anything. Decide whether you have many independent small fixes or symptoms of one design problem (see **Small fixes or an architectural problem**).
 3. **Audit each comment.** Check the code to decide whether the comment is correct and whether its suggestion is the right fix. Then check it against the PR's intent (see **Reject what works against the PR**). If the concern is real but the suggestion is poor, fix it a better way.
 4. **Fix in one batch.** Make every justified fix, run the relevant checks, commit, and push once. Every push restarts Codex's review, so never push per comment.
@@ -72,7 +72,7 @@ Otherwise, treat the comments as independent small fixes and settle them all in 
 
 ## Stop
 
-- **Done:** no unresolved thread or unanswered comment remains, no review still requests changes, and Codex reacted with 👍 for the head commit.
+- **Done:** no unresolved thread, unanswered comment, or unanswered changes-requested review remains, and Codex reacted with 👍 for the head commit. A changes-requested review you have answered counts as answered; its author re-reviews on their own schedule.
 - **Architectural problem:** fixing it would change the PR's approach or scope.
 - **Decision needed:** a comment needs a product or design decision you cannot make. Leave the thread open and say in the reply what is needed.
 - **Codex unavailable:** Codex failed, never started on the head commit, or ran on the same commit for over two hours.

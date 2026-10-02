@@ -26,22 +26,19 @@ An issue's specification is ready when:
 - material current behavior and constraints are understood
 - decisions that could change user-visible behavior, public contracts, data semantics, security, or scope are settled
 - completion can be verified through observable acceptance criteria
-- implementation does not depend on another live human decision
 
 An issue does not need file names, an implementation design, or every engineering choice resolved. Normal codebase exploration, local architecture choices, and test mechanics belong to implementation unless different choices would materially change the outcome.
 
 ## Recommend the next step
 
-Report specification readiness and dependency status separately:
+Recommend starting implementation only when the specification is ready and meaningful work is unblocked. If the issue duplicates another, conflicts with an accepted decision, or is already satisfied, recommend that outcome instead of a readiness result. Report specification readiness and dependency status separately:
 
 - **Ready:** the outcome and constraints are sufficient to implement without another product decision.
 - **Needs clarification:** one or more missing decisions or facts would materially change the implementation or its acceptance criteria.
 
-For dependencies, report **Clear** when no verified prerequisite prevents meaningful work, or **Blocked** with the prerequisite and its owner when one does. A fully specified issue can be ready but blocked; do not manufacture clarification questions for a known dependency. Inspect closure reasons and resolutions before treating a closed prerequisite as satisfied, replaced, or explicitly waived. A cancelled or not-planned issue alone does not establish that work can begin.
+For dependencies, report **Clear** when no verified prerequisite prevents meaningful work, or **Blocked** with the prerequisite and its owner when one does. A fully specified issue can be ready but blocked; do not manufacture clarification questions for a known dependency. Inspect closure reasons and resolutions before treating a closed prerequisite as satisfied, replaced, or explicitly waived. An issue closed as not planned or as a duplicate does not by itself establish that work can begin.
 
-If access, tooling, or unavailable repository evidence prevents either judgment, report **Assessment incomplete**, identify the missing evidence and how to obtain it, and preserve any established facts without claiming an overall readiness result. Missing access is not a product clarification question. Recommend starting implementation only when the specification is ready and meaningful work is unblocked.
-
-If repository evidence shows that no implementation remains, explain that directly instead of manufacturing questions or declaring the issue ready.
+If access, tooling, or unavailable repository evidence prevents either judgment, report **Assessment incomplete**, identify the missing evidence and how to obtain it, and preserve any established facts without claiming an overall readiness result. Missing access is not a product clarification question.
 
 Lead with the recommendation and concise reasoning. Separate:
 
@@ -77,7 +74,7 @@ Once the specification is ready, draft an update only when the answers or verifi
 
 Write acceptance criteria as ordinary bullets describing independently verifiable behavior. Do not use task checkboxes, implementation steps, speculative file lists, or generic statements such as “tests pass.” Distinguish reported behavior from verified facts.
 
-Reuse explicit authorization already given for the exact title and body changes to this repository and issue. If that authorization is missing, show the proposed changes and wait for approval. An assessment-only request does not authorize an update, and approval covers only the specified changes; do not require another approval turn when those changes are already authorized.
+Reuse authorization the user has already given to update this issue. If none was given, show the proposed title and body changes and wait for approval. An assessment-only request does not authorize an update, and approval covers only the changes shown; do not ask again for changes that are already approved.
 
 Immediately before editing, confirm `gh` authentication and the exact target, then re-read the issue's current title, body, state, and relevant new discussion. Apply the approved changes to that fresh content, preserving unrelated edits made since the draft. If intervening changes conflict with the approved update or invalidate the readiness conclusion, explain the conflict and present any revised proposal before requesting the missing decision. If the approved changes are already present, report that and skip the write.
 

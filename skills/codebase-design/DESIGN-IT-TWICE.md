@@ -42,19 +42,17 @@ For each candidate, provide only the detail needed to compare it:
 5. **Dependency strategy:** dependencies and adapters, using [DEEPENING.md](DEEPENING.md).
 6. **Trade-offs:** what becomes easier for callers or maintainers, what becomes harder, and why.
 
-Check that the proposed call sites work with the interface. Adjust the interface when they do not, unless a real requirement prevents it. Do not make callers coordinate internal steps merely because the interface was designed first.
+Check that the proposed call sites work with the interface. Adjust the interface when they do not, unless a real requirement prevents it.
 
 ### 3. Present and compare
 
-Before presenting a candidate, revise or reject it when:
+Before presenting a candidate, check it for these signs. Revise or reject it unless a concrete requirement justifies the cost, and name that requirement when you keep it:
 
-- Its interface exposes nearly as much complexity as its implementation, or callers must coordinate several methods to complete one operation.
+- Callers must learn nearly as much to use the interface as they would to do the work themselves, or must coordinate several methods to complete one operation.
 - Callers must handle storage formats, framework objects, wire types, or protocol details that their task does not require.
 - Modules are split by execution order—such as load, validate, transform, and save—even though those stages protect the same knowledge and invariants.
 - A method merely forwards the same operation and arguments without adding policy, adaptation, or a distinct abstraction.
 - Callers must understand internal rules to use the interface correctly.
-
-These are reasons to inspect a design, not automatic bans. Keep it when a concrete requirement justifies the cost and explain why.
 
 Compare what callers must know, how many places must change when a rule changes, and how easily the behavior can be tested. Include the work and risk of migrating callers and checking the result.
 

@@ -7,11 +7,11 @@ description: Reproduce, isolate, and fix difficult bugs or performance regressio
 
 Diagnose hard bugs by combining reproduction, code inspection, provisional hypotheses, and targeted probes. Choose the next step by the evidence missing; the sections below are tools for the investigation, not gates that must be completed in order.
 
-When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
+When exploring the codebase, read the project's glossary if it exists, whatever its filename, to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
 ## Redact
 
-This skill has you show commands, outputs and captured artifacts. **Redact every secret first**: write `<REDACTED>` in its place. Build loops against env vars, so the credential stays in the environment rather than in what you show. Captured artifacts carry auth headers: quote only the lines that carry the signal.
+This skill has you show commands, outputs and captured artifacts. **Redact every secret first**: write `<REDACTED>` in its place. Build loops against env vars, so the credential stays in the environment rather than in what you show. Captured artifacts carry auth headers: quote only the lines that carry the signal, scrub secrets from any trace before saving it to disk, and keep saved traces outside the repository.
 
 If the redacted output is not enough to diagnose the bug, say so and ask the user.
 
@@ -32,9 +32,9 @@ Choose the cheapest check that reaches the reported failure. These are alternati
 5. **Replay a captured trace.** Save a real network request / payload / event log to disk; replay it through the code path in isolation.
 6. **Throwaway harness.** Spin up a minimal subset of the system (one service, mocked deps) that exercises the bug code path with a single function call.
 7. **Property / fuzz loop.** For input-dependent failures, use bounded input generation and retain the seed and failing inputs.
-8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat" so you can `git bisect run` it.
+8. **Bisection harness.** If the bug appeared between two known states (commit, dataset, version), automate "boot at state X, check, repeat". For commits, `git bisect run` drives that loop.
 9. **Differential loop.** Run the same input through old-version vs new-version (or two configs) and diff outputs.
-10. **Human-assisted reproduction.** If the agent cannot exercise the path, give the user precise actions and ask for the relevant observations. Use `scripts/hitl-loop.template.sh` when a repeatable terminal-guided loop helps.
+10. **Human-assisted reproduction.** If the agent cannot exercise the path, give the user precise actions and ask for the relevant observations. When a repeatable terminal-guided loop helps, adapt `scripts/hitl-loop.template.sh`, have the user run it in their own terminal, and ask them to paste back the captured block it prints at the end.
 
 Record the command or manual actions, relevant conditions, and observed result. Distinguish a check that has reproduced the symptom from one that is only expected to catch it.
 
@@ -82,7 +82,7 @@ Each probe must resolve a specific uncertainty or test a prediction. Change one 
 
 Tool preference:
 
-1. **Debugger / REPL inspection** if the env supports it. One breakpoint beats ten logs.
+1. **Debugger / REPL inspection** when the environment supports it and pausing does not change the behavior under study. A timing or concurrency bug usually needs logs instead.
 2. **Targeted logs** at the boundaries that distinguish hypotheses.
 3. Never "log everything and grep".
 
@@ -113,12 +113,12 @@ Continue authorized fixes and necessary restructuring. If a valid failure depend
 
 Whether or not a durable test was added, verify the fix through the original entry point, environment, inputs, and sequence when accessible. A reduced reproduction or lower-level test supports that verification but does not replace it. For intermittent failures, report the before/after observations and remaining uncertainty. If either failing-before evidence or original-scenario verification is unavailable, state that gap explicitly.
 
-After confirming the fix, consider whether the bug exposed a stable invariant that can be enforced at the seam that owns it. Prefer an existing structural mechanism—such as a type or schema constraint, boundary validation, lint rule, or canonical entry point—when it prevents the demonstrated bug class. Keep the regression test as behavioral proof. Do not add machinery for an isolated failure with no credible recurrence, and do not expand the authorized scope to enforce the invariant.
+After confirming the fix, consider whether the bug exposed a stable invariant that can be enforced in the module that owns it. Prefer an existing structural mechanism—such as a type or schema constraint, boundary validation, lint rule, or canonical entry point—when it prevents the demonstrated bug class. Keep the regression test as behavioral proof. Do not add machinery for an isolated failure with no credible recurrence, and do not expand the authorized scope to enforce the invariant.
 
 ## Cleanup and report
 
 Before finishing:
 
-- Record the original-scenario result, regression check, and any verification gap. Reuse results from the final implementation; rerun only after a relevant change or when uncertainty warrants it.
 - Remove temporary debug instrumentation and throwaway artifacts created for the investigation, or keep useful artifacts in an agreed debug location.
+- Then run the regression check and the original-scenario verification on the cleaned code, so the recorded result is for what ships. Reuse an earlier run only when nothing changed after it. Record the results and any verification gap.
 - Report the supported cause, fix, verification evidence, and remaining uncertainty. Include the cause in a commit or PR description when that publication was requested.

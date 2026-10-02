@@ -2,7 +2,7 @@
 
 Follow the project's existing ADR location, naming, numbering, and format. When no convention exists, use `docs/adr/` with sequential names such as `0001-slug.md` and `0002-slug.md`.
 
-Create the fallback directory only when a qualifying decision is settled and documentation writes are authorized. In discussion or proposed-edit mode, keep the proposed ADR in the response without creating files.
+Create the fallback directory only when a qualifying decision is settled and documentation writes are authorized. In discussion mode, keep the proposed ADR in the response without creating files.
 
 ## Template
 
@@ -26,17 +26,9 @@ Only include these when they add genuine value. Most ADRs won't need them.
 
 Follow the naming scheme in the actual ADR directory. When it uses sequential numbering, inspect that directory for the next available number; do not start another sequence in `docs/adr/` merely because records live elsewhere.
 
-## When to offer an ADR
+## What qualifies
 
-All three of these must be true:
-
-1. **Hard to reverse**: the cost of changing your mind later is meaningful
-2. **Surprising without context**: a future reader will look at the code and wonder "why on earth did they do it this way?"
-3. **The result of a real trade-off**: there were genuine alternatives and you picked one for specific reasons
-
-If a decision is easy to reverse, skip it: you'll just reverse it. If it's not surprising, nobody will wonder why. If there was no real alternative, there's nothing to record beyond "we did the obvious thing."
-
-### What qualifies
+[SKILL.md](SKILL.md) states the three criteria a decision must meet. Decisions that typically meet them:
 
 - **Architectural shape.** "We're using a monorepo." "The write model is event-sourced, the read model is projected into Postgres."
 - **Integration patterns between contexts.** "Ordering and Billing communicate via domain events, not synchronous HTTP."

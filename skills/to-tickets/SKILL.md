@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Turn approved work into well-scoped GitHub issues after checking for duplicates and dependencies.
+description: Turn approved work into well-scoped GitHub issues after checking for duplicates.
 ---
 
 # To Tickets
@@ -21,7 +21,9 @@ Invoking this skill authorizes drafts only. Write nothing to GitHub until the us
 
 Read the source material and the code needed to make the tickets accurate. Ask only when the answer would change what a ticket requires, how the work is split, or its order.
 
-For pull-request feedback, fetch threads with `python "<skill-path>/scripts/fetch_review_context.py"` or a connector, check each unresolved thread against current code, and ticket only concerns that still need work.
+Take the target repository as `HOST/OWNER/REPO` from the user or the local remote, and use that host for every GitHub read and write.
+
+For pull-request feedback, fetch threads with `python3 "<skill-path>/scripts/fetch_review_context.py"` or a connector, check each unresolved thread against current code, and ticket only concerns that still need work.
 
 List the repository's labels and learn their meaning from descriptions and past use, not names alone. Assume an agent with this repository's usual setup will implement the tickets, unless the user or repository says otherwise.
 
@@ -95,7 +97,7 @@ For each acceptance criterion, decide who can verify it and with what evidence. 
 
 Use existing labels only, and add priority or workflow labels only when repository convention supports them. If a needed label is missing, leave it off and say so. Never use a `blocked` label.
 
-Apply `ready-for-agent` when an agent in the intended environment can finish and verify the ticket from its text alone, with no human step and no known stop condition. Never apply it to research, decision, or human-owned tickets. A ready ticket keeps the label while a blocked-by relationship holds it.
+Apply `ready-for-agent` when an agent in the intended environment can finish and verify the ticket from its text alone, with no human step inside the ticket and no stop condition already known to apply. A **Stop and ask** section lists situations that would need a decision if they arise; it does not make the ticket unready. Never apply the label to research, decision, or human-owned tickets. A blocked-by relationship is not a step inside the ticket, so a ready ticket keeps the label while that relationship holds it.
 
 ## 4. Get approval
 
@@ -103,15 +105,15 @@ Show the repository, each ticket's exact title and body, labels with a short rea
 
 ## 5. Publish
 
-Before any write, read back what this set already created and reuse it. Never create a ticket twice, and never delete, reopen, or overwrite an issue to retry a step.
+Before any write, search the repository's open issues for each approved title and reuse any that this set already created. Never create a ticket twice, and never delete, reopen, or overwrite an issue to retry a step.
 
-Use `gh` for all writes. Take `HOST/OWNER/REPO` from the user or the local remote and use that host throughout. Confirm every approved label exists; if one does not, ask instead of creating or substituting it. Then, creating blockers first:
+Use `gh` for all writes. Confirm every approved label exists; if one does not, ask instead of creating or substituting it. Then work in three phases, because a relationship needs both issue numbers:
 
-1. Create each issue with `gh issue create --body-file`.
-2. Add exactly its approved labels.
+1. Create every issue with `gh issue create --body-file`, blockers before the tickets they block.
+2. Add exactly its approved labels to each issue.
 3. Add each approved relationship with the bundled helper, which resolves and verifies database IDs:
-   - parent: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --parent PARENT --sub-issue CHILD`
-   - blocked by: `python "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --blocked BLOCKED --blocked-by BLOCKER`
+   - parent: `python3 "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --parent PARENT --sub-issue CHILD`
+   - blocked by: `python3 "<skill-path>/scripts/set_issue_relationship.py" --repo HOST/OWNER/REPO --blocked BLOCKED --blocked-by BLOCKER`
 
 Both numbers must belong to the named repository; for a cross-repository relationship, use `gh api` with each issue's database ID. If a relationship fails, never fall back to a label or body link.
 

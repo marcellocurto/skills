@@ -13,7 +13,7 @@ When the user has already selected a candidate or concrete target change, inspec
 This command is _informed_ by the project's domain model and built on a shared design vocabulary:
 
 - Consult the `codebase-design` skill when available for deep-module principles, caller contracts, and seam justification. Use its architectural distinctions alongside established product and repository vocabulary. Evaluate what an interface hides and what callers gain; adapter count alone does not justify or rule out a seam.
-- The project's glossary gives names to good seams; its ADRs record decisions this command should not re-litigate. Follow the existing documentation locations rather than assuming `CONTEXT.md` and `docs/adr/`.
+- The project's glossary gives names to good seams; its ADRs record settled decisions. Do not propose a change that reverses one unless the friction is strong enough to reopen the decision (see **ADR conflicts** below). Follow the existing documentation locations rather than assuming `CONTEXT.md` and `docs/adr/`.
 
 Locate companion skills by name in the available skill catalog, using its supplied locations or loading mechanism. If one is unavailable, continue with the procedure here; do not infer its installation path or fetch external guidance.
 
@@ -21,10 +21,10 @@ Locate companion skills by name in the available skill catalog, using its suppli
 
 ### 1. Explore
 
-**Scope before you scan: YAGNI.** Deepening a module pays off by making future changes to it easier, so put extra weight on the parts of the codebase that have recently changed. Decide *where* to look before you look:
+Deepening a module pays off by making future changes to it easier, so put extra weight on the parts of the codebase that change often. Choose the area before reading code:
 
 - If the user named a direction (a module, a subsystem, a pain point), take it, and skip the inference below.
-- Otherwise, use recent commit history (`git log --oneline`) to select an initial area where repeated change suggests maintenance cost. Broaden that area only when the evidence or requested coverage warrants it.
+- Otherwise, use recent commit history to find the files that change most often, for example `git log --since='6 months ago' --name-only --format='' | sort | uniq -c | sort -rn | head`, and start where repeated change suggests maintenance cost. Broaden that area only when the evidence or requested coverage warrants it.
 
 Read the project's existing domain glossary and any ADRs in the area you're touching first.
 
@@ -34,7 +34,7 @@ Look for friction supported by the code:
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow**, with an interface nearly as complex as the implementation?
-- Where have pure functions been extracted just for testability, but the real bugs hide in how they're called (no **locality**)?
+- Where have pure functions been extracted just for testability, so the real bugs hide in the callers that the tests never exercise?
 - Where do tightly-coupled modules leak across their seams?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
@@ -46,14 +46,13 @@ Follow the requested format and the environment's actual rendering capabilities.
 
 Use visuals where they clarify ownership, dependencies, caller effort, or the proposed change. A before/after diagram is useful when the structural difference matters; do not invent several candidates or diagram types merely to fill a report. Use the host's supported Mermaid rendering, inline SVG, or simple HTML/CSS as appropriate.
 
-When writing an HTML report, use inline CSS and SVG so it opens without network dependencies. Save it to the requested location, otherwise to a fresh file in the OS temp directory. Use an available artifact preview to show it, or provide its absolute path and a link when opening is unavailable. Do not require a particular OS command or external browser.
-
 For each candidate, provide the evidence needed to judge it:
 
 - **Evidence**: relevant files, symbols, and caller traces
 - **Problem**: the concrete friction and its consequence
 - **Solution**: plain English description of what would change
 - **Benefits**: concrete gains for callers and maintainers, including testability when affected
+- **Trade-offs**: what gets harder, and the contracts that must be preserved
 - **Structural comparison**: a diagram or concise explanation of what callers and maintainers would need to know afterward
 - **Recommendation strength and uncertainty**: how strongly the evidence supports the change and what remains unverified
 

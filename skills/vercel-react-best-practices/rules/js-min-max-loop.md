@@ -41,7 +41,7 @@ Still sorts unnecessarily when only min/max are needed.
 
 ```typescript
 function getLatestProject(projects: Project[]) {
-  if (projects.length === 0) return null
+  if (projects.length === 0) return undefined
   
   let latest = projects[0]
   
@@ -55,21 +55,22 @@ function getLatestProject(projects: Project[]) {
 }
 
 function getOldestAndNewest(projects: Project[]) {
-  if (projects.length === 0) return { oldest: null, newest: null }
+  if (projects.length === 0) return { oldest: undefined, newest: undefined }
   
   let oldest = projects[0]
   let newest = projects[0]
   
   for (let i = 1; i < projects.length; i++) {
     if (projects[i].updatedAt < oldest.updatedAt) oldest = projects[i]
-    if (projects[i].updatedAt > newest.updatedAt) newest = projects[i]
+    // `>=` keeps the last of tied entries, matching `sorted[sorted.length - 1]` above
+    if (projects[i].updatedAt >= newest.updatedAt) newest = projects[i]
   }
   
   return { oldest, newest }
 }
 ```
 
-Single pass through the array, no copying, no sorting.
+Single pass through the array, no copying, no sorting. The loop keeps the sorted versions' results for an empty array (`undefined`) and for ties: a stable sort puts the first of tied entries at `sorted[0]` and the last at `sorted[sorted.length - 1]`, so `getLatestProject` keeps the first with `>` and `getOldestAndNewest` keeps the last with `>=`. Match the comparison to the contract you are replacing.
 
 **Alternative (Math.min/Math.max for small arrays):**
 

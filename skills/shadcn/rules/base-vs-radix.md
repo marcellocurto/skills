@@ -84,9 +84,9 @@ Same for triggers whose `render` is not a `Button`:
 
 ## Select
 
-**items prop (base only).** Base requires an `items` prop on the root. Radix uses inline JSX only.
+**items prop (base only).** Base accepts an optional `items` prop on the root. Without it, `SelectValue` renders the raw value; with it, `SelectValue` renders the matching label, and object values become possible. Radix has no `items` prop and uses inline JSX only. Pass `items` whenever the displayed text should differ from the value.
 
-**Incorrect (base):**
+**Renders the raw value (base):**
 
 ```tsx
 <Select>
@@ -94,7 +94,7 @@ Same for triggers whose `render` is not a `Button`:
 </Select>
 ```
 
-**Correct (base):**
+**Renders the item label (base):**
 
 ```tsx
 const items = [
@@ -133,7 +133,7 @@ const items = [
 </Select>
 ```
 
-**Placeholder.** Base uses a `{ value: null }` item in the items array. Radix uses `<SelectValue placeholder="...">`.
+**Placeholder.** Both use `<SelectValue placeholder="...">`. In base, a `{ value: null, label: "..." }` entry in `items` is something else: a selectable option that clears the value from inside the list. Use the placeholder prop unless the user must be able to clear the selection.
 
 **Content positioning.** Base uses `alignItemWithTrigger`. Radix uses `position`.
 
@@ -224,9 +224,10 @@ Base uses a `multiple` boolean prop. Radix uses `type="single"` or `type="multip
 **Controlled single value:**
 
 ```tsx
-// base — wrap/unwrap arrays.
+// base — wrap/unwrap arrays. Clicking the active item yields [], so decide
+// what an empty selection means; here it keeps the current value.
 const [value, setValue] = React.useState("normal")
-<ToggleGroup value={[value]} onValueChange={(v) => setValue(v[0])}>
+<ToggleGroup value={[value]} onValueChange={(v) => setValue(v[0] ?? value)}>
 
 // radix — plain string.
 const [value, setValue] = React.useState("normal")
@@ -237,9 +238,9 @@ const [value, setValue] = React.useState("normal")
 
 ## Slider
 
-Base accepts a plain number for a single thumb. Radix always requires an array.
+Base accepts either a plain number or a one-element array for a single thumb (Base UI types `value` as `number | readonly number[]`, and the generated component counts thumbs from the array form). Radix always requires an array.
 
-**Incorrect (base):**
+**Also valid (base):**
 
 ```tsx
 <Slider defaultValue={[50]} max={100} step={1} />
@@ -273,7 +274,7 @@ const [value, setValue] = React.useState([0.3, 0.7])
 
 ## Accordion
 
-Radix requires `type="single"` or `type="multiple"` and supports `collapsible`. `defaultValue` is a string. Base uses no `type` prop, uses `multiple` boolean, and `defaultValue` is always an array.
+Radix requires `type="single"` or `type="multiple"` and supports `collapsible`. `defaultValue` is a string for `single` and a string array for `multiple`. Base uses no `type` prop, uses `multiple` boolean, and `defaultValue` is always an array.
 
 **Incorrect (base):**
 

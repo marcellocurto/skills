@@ -26,6 +26,7 @@ _STAGE_INDEX=0
 ENV_FILE="${ENV_FILE:-.env}"
 WRITTEN_ENV=()    # KEYs written to ENV_FILE this run
 WRITTEN_SECRET=() # secret NAMEs set this run
+WRITTEN_VAR=()    # GitHub variable NAMEs set this run
 SKIPPED=()        # things we couldn't do (e.g. gh missing)
 
 # _clear wipes the terminal so only the current step is on screen. No-op when
@@ -42,13 +43,15 @@ banner() {
   printf '%s  %s stages%s\n\n' "$DIM" "$TOTAL_STAGES" "$RESET"
   printf '%s  You drive the browser; this wizard tells you exactly what to do and\n' "$DIM"
   printf '  captures the values you copy back. Stop any time with Ctrl-C and re-run\n'
-  printf '  later, since it remembers values already saved.%s\n' "$RESET"
+  printf '  later, since it offers values already saved to %s as defaults.%s\n' "$ENV_FILE" "$RESET"
   pause "Ready to start?"
 }
 
-# stage "Name" clears the screen, then announces a stage and shows progress.
-# Clearing keeps only the current step on screen.
+# stage "Name" announces a stage and shows progress. After the first stage it
+# waits for Enter before clearing, so the previous stage's confirmations and
+# warnings are read before they leave the screen.
 stage() {
+  (( _STAGE_INDEX > 0 )) && pause
   _clear
   _STAGE_INDEX=$((_STAGE_INDEX + 1))
   printf '\n%s%s▸ Stage %s/%s · %s%s\n' \
@@ -70,72 +73,118 @@ open_url() {
     elif command -v explorer.exe >/dev/null 2>&1; then explorer.exe "$url"
     elif command -v xdg-open    >/dev/null 2>&1; then xdg-open "$url"
     elif command -v open        >/dev/null 2>&1; then open "$url"
-    else warn "couldn't open a browser; visit it manually: $url"; fi
+    else false; fi
   } >/dev/null 2>&1 || warn "couldn't open a browser, so visit it manually: $url"
+}
+
+# _read reads one line like `read`, but aborts the wizard when input ends:
+# nobody is answering, and a blank answer must not pass for a real one.
+_read() {
+  if ! read "$@"; then
+    printf '\n'
+    warn "input ended before the wizard finished; run it in an interactive terminal"
+    exit 1
+  fi
 }
 
 # pause "msg" waits for the human to confirm they've done the manual part.
 pause() {
   printf '  %s%s%s ' "$DIM" "${1:-Press Enter to continue}" "$RESET"
-  read -r _ || true
+  _read -r _
 }
 
 # confirm "question" is a y/N gate; returns success on yes.
 confirm() {
   local reply=""
   printf '  %s? %s [y/N] ' "$YELLOW" "$1"
-  read -r reply || true
+  _read -r reply
   [[ "$reply" =~ ^[Yy] ]]
 }
 
-# _existing KEY: current value of KEY in ENV_FILE, if any.
+# _env_quote VALUE prints VALUE as a dotenv literal. Plain values stay bare;
+# anything with spaces, `#`, quotes, `$`, or backslashes is single-quoted
+# (literal in dotenv loaders), or double-quoted with escapes if it contains a
+# single quote. Without this, `abc#def` loads as `abc`.
+_env_quote() {
+  local value="$1"
+  if [[ -n "$value" && "$value" =~ ^[A-Za-z0-9_./:@+=-]+$ ]]; then
+    printf '%s' "$value"
+  elif [[ "$value" != *"'"* ]]; then
+    printf "'%s'" "$value"
+  else
+    value="${value//\\/\\\\}"
+    value="${value//\"/\\\"}"
+    printf '"%s"' "$value"
+  fi
+}
+
+# _existing KEY: current value of KEY in ENV_FILE, if any, decoded from the
+# quoting that _env_quote applied, so re-runs compare and re-send the bare value.
 _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
-  local line; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
-  printf '%s' "${line#*=}"
+  local line value; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
+  value="${line#*=}"
+  if [[ "$value" =~ ^\'(.*)\'$ ]]; then
+    value="${BASH_REMATCH[1]}"
+  elif [[ "$value" =~ ^\"(.*)\"$ ]]; then
+    value="${BASH_REMATCH[1]}"
+    value="${value//\\\"/\"}"
+    value="${value//\\\\/\\}"
+  fi
+  printf '%s' "$value"
 }
 
-# ask KEY "Prompt" reads a value into $KEY. Offers the existing .env value as
-# a default on re-runs (Enter keeps it). Visible input (non-secret).
-ask() {
-  local key="$1" prompt="$2" current input
+# _prompt KEY "Prompt" [-s] reads a non-empty value into $KEY, offering the
+# existing ENV_FILE value as the default on re-runs (Enter keeps it).
+_prompt() {
+  local key="$1" prompt="$2" flag="${3:-}" current input
   current=$(_existing "$key" || true)
-  if [[ -n "$current" ]]; then
-    printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
-  else
-    printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
-  fi
-  read -r input || true
-  [[ -z "$input" && -n "$current" ]] && input="$current"
+  while true; do
+    if [[ -n "$current" ]]; then
+      printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
+    else
+      printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
+    fi
+    if [[ "$flag" == "-s" ]]; then _read -rs input; printf '\n'; else _read -r input; fi
+    [[ -z "$input" && -n "$current" ]] && input="$current"
+    [[ -n "$input" ]] && break
+    warn "a value is required"
+  done
   printf -v "$key" '%s' "$input"
 }
+
+# ask KEY "Prompt" reads a visible (non-secret) value into $KEY.
+ask() { _prompt "$1" "$2"; }
 
 # ask_secret KEY "Prompt" is like ask, but input is hidden.
-ask_secret() {
-  local key="$1" prompt="$2" current input
-  current=$(_existing "$key" || true)
-  if [[ -n "$current" ]]; then
-    printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
-  else
-    printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
-  fi
-  read -rs input || true
-  printf '\n'
-  [[ -z "$input" && -n "$current" ]] && input="$current"
-  printf -v "$key" '%s' "$input"
-}
+ask_secret() { _prompt "$1" "$2" -s; }
 
-# write_env KEY VALUE upserts KEY=VALUE into ENV_FILE (creates it; replaces
-# any existing line). Idempotent.
+# write_env KEY VALUE upserts KEY=VALUE into ENV_FILE (creates it owner-only;
+# replaces any existing line in place, keeping the file's mode and any
+# symlink). Idempotent. Warns once if the file is tracked or not ignored by git.
+_ENV_IGNORE_CHECKED=""
 write_env() {
   local key="$1" value="$2" tmp
-  touch "$ENV_FILE"
+  [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
   tmp=$(mktemp)
   grep -vE "^${key}=" "$ENV_FILE" > "$tmp" || true
-  printf '%s=%s\n' "$key" "$value" >> "$tmp"
-  mv "$tmp" "$ENV_FILE"
+  printf '%s=%s\n' "$key" "$(_env_quote "$value")" >> "$tmp"
+  cat "$tmp" > "$ENV_FILE"
+  rm -f "$tmp"
   WRITTEN_ENV+=("$key")
   printf '  %s✓ wrote%s %s → %s\n' "$GREEN" "$RESET" "$key" "$ENV_FILE"
+  if [[ -z "$_ENV_IGNORE_CHECKED" ]] && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    _ENV_IGNORE_CHECKED=1
+    if ! git check-ignore -q "$ENV_FILE" 2>/dev/null; then
+      warn "$ENV_FILE is not ignored by git; add it to .gitignore before committing"
+    fi
+  fi
+}
+
+# _gh_repo prints the OWNER/REPO that gh writes target (from the current
+# directory's remote), so the human can see where secrets go.
+_gh_repo() {
+  gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || printf 'the current repository'
 }
 
 # set_secret NAME VALUE sets a GitHub Actions repo secret via gh. Falls back
@@ -145,7 +194,7 @@ set_secret() {
   if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     if printf '%s' "$value" | gh secret set "$name" >/dev/null 2>&1; then
       WRITTEN_SECRET+=("$name")
-      printf '  %s✓ set%s GitHub secret %s\n' "$GREEN" "$RESET" "$name"
+      printf '  %s✓ set%s GitHub secret %s on %s\n' "$GREEN" "$RESET" "$name" "$(_gh_repo)"
       return
     fi
   fi
@@ -158,7 +207,8 @@ set_var() {
   local name="$1" value="$2"
   if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     if gh variable set "$name" --body "$value" >/dev/null 2>&1; then
-      printf '  %s✓ set%s GitHub variable %s\n' "$GREEN" "$RESET" "$name"
+      WRITTEN_VAR+=("$name")
+      printf '  %s✓ set%s GitHub variable %s on %s\n' "$GREEN" "$RESET" "$name" "$(_gh_repo)"
       return
     fi
   fi
@@ -166,12 +216,19 @@ set_var() {
   warn "skipped GitHub variable $name, gh not ready; set it later"
 }
 
-# finish clears, then shows a closing summary of everything configured.
+# finish waits for Enter, clears, then shows a closing summary of everything
+# configured.
 finish() {
+  pause
   _clear
-  printf '\n%s%s  ✓ Setup complete%s\n' "$BOLD" "$GREEN" "$RESET"
+  if (( ${#SKIPPED[@]} )); then
+    printf '\n%s%s  ⚠ Setup finished with steps left to do%s\n' "$BOLD" "$YELLOW" "$RESET"
+  else
+    printf '\n%s%s  ✓ Setup complete%s\n' "$BOLD" "$GREEN" "$RESET"
+  fi
   (( ${#WRITTEN_ENV[@]} ))    && note "wrote ${#WRITTEN_ENV[@]} value(s) to $ENV_FILE: ${WRITTEN_ENV[*]}"
   (( ${#WRITTEN_SECRET[@]} )) && note "set ${#WRITTEN_SECRET[@]} GitHub secret(s): ${WRITTEN_SECRET[*]}"
+  (( ${#WRITTEN_VAR[@]} ))    && note "set ${#WRITTEN_VAR[@]} GitHub variable(s): ${WRITTEN_VAR[*]}"
   if (( ${#SKIPPED[@]} )); then
     printf '\n'; warn "still to do by hand:"
     for s in "${SKIPPED[@]}"; do note "  - $s"; done

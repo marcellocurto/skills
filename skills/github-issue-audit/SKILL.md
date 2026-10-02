@@ -26,7 +26,7 @@ Use targeted searches and stop when you have enough evidence to decide. This is 
 3. **Is it in scope?** Check the request against the repository's documentation, ADRs, and explicit maintainer decisions. A later comment does not automatically override an earlier decision. A past rejection applies only while its reasoning still holds; if the issue asks maintainers to reconsider, weigh the new evidence and leave the choice to them. Your own product taste is not evidence.
 4. **Is it clear enough to start?** The outcome, the constraints, and a way to tell it is done should be clear. The issue does not need an implementation design; ordinary exploration and reversible engineering choices belong to implementation. A human decision is needed only when the options differ in user-visible behavior, public contracts, data, security, scope, or acceptance criteria.
 5. **Is it feasible?** A credible path through the code and platform is enough. Call it not implementable only with a concrete constraint, after checking extension points and any alternatives the issue allows. Effort, difficulty, and unfamiliarity are not constraints.
-6. **Is it blocked?** Prefer GitHub's native relationships over body text, and check each dependency's current state. A dependency closed as not planned, duplicate, or cancelled is not satisfied unless a replacement delivers its outcome; follow the replacement. Do not confuse issues this one blocks with issues that block it. An issue is blocked only when no meaningful work can start; hard work inside the issue is not a blocker.
+6. **Is it blocked?** Prefer GitHub's native relationships over body text, and check each dependency's current state. A dependency closed as not planned or as a duplicate is not satisfied unless a replacement delivers its outcome; follow the replacement. Do not confuse issues this one blocks with issues that block it. An issue is blocked only when no meaningful work can start; hard work inside the issue is not a blocker.
 
 ## 3. Choose the verdict
 
@@ -34,10 +34,10 @@ Take the first that applies:
 
 1. `audit-incomplete`: missing access or tooling prevented a check that could change the verdict. This says nothing about the issue itself.
 2. `no-action`: nothing remains. Give the reason: `already-satisfied` with the code that satisfies it, or `duplicate` or `superseded` with the issue that owns the work.
-3. `reject`: give the reason: `premise-contradicted`, `conflicts-with-accepted-decision`, or `not-implementable`, with the evidence, decision, or constraint. Low value, high effort, difficulty, preference, and ordinary uncertainty are never reasons.
-4. `needs-authoritative-decision`: someone with authority must choose between materially different outcomes, or the governing sources conflict.
+3. `reject`: give the reason: `premise-contradicted`, `conflicts-with-accepted-decision`, or `not-implementable`, with the evidence, decision, or constraint. `conflicts-with-accepted-decision` applies only when the issue does not ask maintainers to reconsider that decision with new evidence; a reconsideration request is `needs-authoritative-decision`. Low value, high effort, difficulty, preference, and ordinary uncertainty are never reasons.
+4. `needs-authoritative-decision`: someone with authority must choose between materially different outcomes, the governing sources conflict, or nobody has defined what done means and only an owner can.
 5. `needs-factual-clarification`: a specific fact is missing, such as reproduction details or an incomplete dependency reference.
-6. `blocked`: a verified external dependency prevents meaningful work. Say whether the issue is otherwise ready.
+6. `blocked`: a verified external dependency prevents meaningful work.
 7. `proceed`: none of the above.
 
 Every question in a `needs-` verdict names who should answer it and how the answer changes the outcome.

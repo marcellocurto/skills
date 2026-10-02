@@ -53,6 +53,6 @@ function UserProfile() {
 }
 ```
 
-Use lazy initialization when computing initial values from localStorage/sessionStorage, building data structures (indexes, maps), reading from the DOM, or performing heavy transformations.
+Use lazy initialization when computing initial values from localStorage/sessionStorage, building data structures (indexes, maps), reading from the DOM, or performing heavy transformations. A `useState` initializer still runs during server rendering, so read browser storage this way only in client-only components; for pages that render on the server, see [Prevent Hydration Mismatch Flicker](./rendering-hydration-no-flicker.md).
 
 For simple primitives (`useState(0)`), direct references (`useState(props.value)`), or cheap literals (`useState({})`), the function form is unnecessary.
