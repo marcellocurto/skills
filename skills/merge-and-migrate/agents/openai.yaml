@@ -1,0 +1,6 @@
+interface:
+  display_name: "Merge and Migrate"
+  short_description: "Merge PRs, promote each environment, and run migrations in order"
+  default_prompt: "Use $merge-and-migrate to merge these pull requests, promote main through each environment, and run the pending migrations at the right time."
+policy:
+  allow_implicit_invocation: false
