@@ -22,6 +22,7 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change with you.
 - **[`triage`](skills/triage/SKILL.md)**: Assess one GitHub issue for implementation readiness, ask only the questions that block it, and update it after approval.
 - **[`valid-issue`](skills/valid-issue/SKILL.md)**: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
+- **[`merge-and-migrate`](skills/merge-and-migrate/SKILL.md)**: Merge pull requests into the main branch in dependency order, promote it through each deployment branch with pull requests, and run pending migrations at the correct point for each environment.
 
 **Model-invoked (implicit allowed)**
 
