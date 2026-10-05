@@ -37,7 +37,11 @@ When the issue proposes steps, check them against the repository's instructions,
 
 ## Report
 
+Open with a short summary of the issue so the reader knows what it is about before the verdict. Write it for a developer who has not opened the issue: two or three sentences in simple, everyday words, with technical terms only where they name something exactly, such as a file, command, or API. Describe what the issue reports or asks for and why, as its author sees it, without judging it.
+
 ```markdown
+**Issue:** What the issue reports or asks for, and why, in two or three short sentences.
+
 **Answer:** Implement / Don't implement / Answer the questions first. One or two sentences on why.
 
 - **Valid:** yes, no, or unclear, with the evidence.
