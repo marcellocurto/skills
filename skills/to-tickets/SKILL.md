@@ -51,7 +51,9 @@ Decisions, approvals, and actions that need a person go in their own ticket with
 
 ### Write each ticket
 
-Title: the outcome in plain words that is understandable without opening the ticket, such as "Retry failed webhook deliveries with backoff" rather than "Webhook improvements".
+Write for a developer who has not followed the discussion. Use simple, everyday words, with technical terms only where they name something exactly, such as a file, command, or API.
+
+Title: the outcome in simple words that is understandable without opening the ticket, such as "Retry failed webhook deliveries with backoff" rather than "Webhook improvements".
 
 Body, in this order:
 

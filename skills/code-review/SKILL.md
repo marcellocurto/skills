@@ -95,9 +95,13 @@ No findings is a valid result. Do not add minor observations to fill the report.
 
 ## 7. Report
 
+Open with a short summary of the change so the reader knows what it does before the verdicts. Write it for a developer who has not read the diff: two or three sentences in simple, everyday words, with technical terms only where they name something exactly, such as a file, command, or API. Describe what the change does and why, as its author intends it, without judging it.
+
 Use this format and omit empty sections:
 
 ```markdown
+**Change:** What the change does, and why, in two or three short sentences.
+
 **Scope:** base..head (N commits), or working changes
 **Correctness:** Approved | Changes requested | Blocked
 **Maintainability:** Approved | Changes requested | Blocked

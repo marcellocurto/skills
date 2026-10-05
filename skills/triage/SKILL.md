@@ -46,9 +46,10 @@ For dependencies, report **Clear** when no verified prerequisite prevents meanin
 
 If access, tooling, or unavailable repository evidence prevents either judgment, report **Assessment incomplete**, identify the missing evidence and how to obtain it, and preserve any established facts without claiming an overall readiness result. Missing access is not a product clarification question.
 
-Lead with the recommendation and concise reasoning. Separate:
+Open with a short summary of the issue so the reader knows what it is about before the recommendation. Write it for a developer who has not opened the issue: two or three sentences in simple, everyday words, with technical terms only where they name something exactly, such as a file, command, or API. Describe what the issue reports or asks for and why, as its author sees it, without judging it.
 
-- what the issue reports
+Then give the recommendation and concise reasoning. Separate:
+
 - what the repository confirms
 - what remains uncertain
 - which uncertainties block implementation

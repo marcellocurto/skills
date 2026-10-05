@@ -17,9 +17,9 @@ When you're done, share the PR link. Never force-push or merge.
 
 ## Pull request title and description
 
-Write both from the committed diff, the issue, and the check results. Use the conversation only for the decisions and rejected alternatives behind the change, and only where the diff reflects them. The readers are engineers who review many pull requests. Use plain words, short paragraphs, the most important point first, and backticks for code identifiers. Keep the description proportional to the change.
+Write both from the committed diff, the issue, and the check results. Use the conversation only for the decisions and rejected alternatives behind the change, and only where the diff reflects them. The readers are engineers who review many pull requests. Use simple, everyday words, with technical terms only where they name something exactly, such as a file, command, or API. Write short paragraphs, put the most important point first, and use backticks for code identifiers. Keep the description proportional to the change.
 
-Title: the outcome in plain words that a reviewer understands without opening the PR, such as "Retry failed webhook deliveries with backoff" rather than "Update webhook logic".
+Title: the outcome in simple words that a reviewer understands without opening the PR, such as "Retry failed webhook deliveries with backoff" rather than "Update webhook logic".
 
 Description, in this order:
 
