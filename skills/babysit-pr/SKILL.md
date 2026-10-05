@@ -1,16 +1,29 @@
 ---
 name: babysit-pr
-description: Watch a pull request, settle review comments from people and Codex as they arrive, and stop once every thread is answered and Codex approves the latest commit, or when a problem needs the user.
+description: Settle a pull request's open review comments from people and Codex, then watch for new ones until every thread is answered and Codex approves the latest commit, or until a problem needs the user.
 ---
 
 # Babysit PR
 
-Keep a pull request moving until every reviewer, human or Codex, has been answered: no review thread or conversation comment is left unanswered, and Codex has reviewed the latest commit and reacted with 👍. Each round, wait for new feedback, let Codex finish if it is mid-review, settle the whole batch, push once, and wait again. Human reviewers get the same treatment as Codex: their comments are audited on the merits, fixed when justified, and answered in every case. Work without asking for approval and stop only for the reasons under **Stop**. Never force-push or merge.
+Keep a pull request moving until every reviewer, human or Codex, has been answered: no review thread or conversation comment is left unanswered, and Codex has reviewed the latest commit and reacted with 👍. Start by settling the feedback that is already open, without waiting. After that, each round waits for new feedback, lets Codex finish if it is mid-review, settles the whole batch, pushes once, and waits again. Human reviewers get the same treatment as Codex: their comments are audited on the merits, fixed when justified, and answered in every case. Work without asking for approval, unless the user asked to approve fixes first, and stop only for the reasons under **Stop**. Never force-push or merge.
 
 ## Start
 
-1. **Find the PR.** Use the PR from the conversation, otherwise the current branch's PR. Ask only if neither is clear. Check every interval the user gave, otherwise every 2 minutes.
+1. **Find the PR.** Use the PR from the conversation, otherwise the current branch's PR. Ask only if neither is clear. If the working tree is not on the PR's head branch, check it out with `gh pr checkout`; for a PR from a fork, pushes go to the fork's branch. Check every interval the user gave, otherwise every 2 minutes.
 2. **Write down the PR's intent** before reading any comment: the problem it solves, the approach it chose, and what it deliberately leaves out. Take it from the user's instructions in this conversation, then the linked issue, the PR description, and the commits, in that order. Every comment is judged against this intent.
+3. **Check the current state once.** Run the watcher with `--timeout 0`, which checks the PR once and returns without waiting:
+
+   ```
+   python3 "<skill-path>/scripts/watch_pr.py" [--pr URL_OR_NUMBER] --timeout 0
+   ```
+
+   Keep its `checked_at` for the first `--since`. Then collect the open feedback as in step 1 of **Run a round**.
+4. **Act on what is already there** instead of waiting first:
+   - The PR is closed, or Codex is `failed`: stop.
+   - Feedback is open: run a round now, even while Codex is `running`. If Codex was running, repeat the one-time check before you push, and if it has finished, add its findings to the same batch so the round still pushes once.
+   - Nothing is open and Codex is `approved`: the PR is done. Report without watching.
+   - Nothing is open and Codex is `findings`: its findings were answered without a push, so Codex will not review again on its own. Comment `@codex review` once for the head commit, then start waiting.
+   - Nothing is open and Codex is `running` or `pending`: start waiting.
 
 ## Wait for feedback
 
@@ -20,7 +33,7 @@ Run:
 python3 "<skill-path>/scripts/watch_pr.py" [--pr URL_OR_NUMBER] --interval <minutes> [--since <checked_at>]
 ```
 
-Omit `--since` on the first run so that existing feedback counts. On later runs, pass the `checked_at` value from the previous result. The watcher checks the PR every interval and returns JSON whose `reason` says why it stopped waiting. A comment edited after the last check counts as new activity, so reread edited comments rather than only new ones. While Codex is reviewing, it keeps waiting, so feedback that arrives mid-review is handled together with Codex's findings. It ignores comments from the authenticated account, which includes your own replies; if the user says they commented, run a round anyway.
+Pass the `checked_at` value from the previous check or watch, so feedback you have already handled does not count again. The watcher checks the PR every interval and returns JSON whose `reason` says why it stopped waiting. A comment edited after the last check counts as new activity, so reread edited comments rather than only new ones. While Codex is reviewing, it keeps waiting, so feedback that arrives mid-review is handled together with Codex's findings. It ignores comments from the authenticated account, which includes your own replies; if the user says they commented, run a round anyway.
 
 Run the watcher as a background command if your host wakes you when it exits. Otherwise run it in the foreground with a shell timeout longer than `--timeout` (30 minutes by default), and lower `--timeout` if the shell limit requires it.
 
@@ -39,7 +52,7 @@ Act on `reason`:
 2. **Triage the batch.** When five or more comments are open, or the same area draws comments for a second round, group them by root cause before fixing anything. Decide whether you have many independent small fixes or symptoms of one design problem (see **Small fixes or an architectural problem**).
 3. **Audit each comment.** Check the code to decide whether the comment is correct and whether its suggestion is the right fix. Then check it against the PR's intent (see **Reject what works against the PR**). If the concern is real but the suggestion is poor, fix it a better way.
 4. **Fix in one batch.** Make every justified fix, run the relevant checks, commit, and push once. Every push restarts Codex's review, so never push per comment.
-5. **Reply and resolve.** In each thread, reply with what changed and the commit, or with why nothing changed, then resolve it. Answer conversation comments with one reply that addresses each point. Keep replies to one or two sentences.
+5. **Reply and resolve.** In each thread, reply with what changed and the commit, or with why nothing changed, then resolve it. Conversation comments and review bodies have no thread to resolve, so answer them with one reply that addresses each point. Keep replies to one or two sentences.
 6. Go back to waiting.
 
 ## Reject what works against the PR

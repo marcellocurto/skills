@@ -31,8 +31,7 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn approved work into well-scoped GitHub issues after checking for duplicates.
 - **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Implement a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Open a ready-for-review GitHub pull request for finished local changes, committing and pushing when needed.
-- **[`pr-comments-audit`](skills/pr-comments-audit/SKILL.md)**: Audit open PR comments, fix and push the justified ones, and reply to and resolve each thread.
-- **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Watch a pull request, settle review comments from people and Codex as they arrive, and stop once every thread is answered and Codex approves the latest commit, or when something needs you.
+- **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Settle a pull request's open review comments from people and Codex right away, then watch for new ones until every thread is answered and Codex approves the latest commit, or until something needs you.
 - **[`pr-audit`](skills/pr-audit/SKILL.md)**: Audit a whole PR for merge readiness across correctness, maintainability and complexity, and test quality, then post one actionable comment.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find needless complexity in code and get simpler designs that keep its behavior.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Find what a code change could break beyond the files it touches, across callers, data, timing, and runtime wiring.
@@ -55,7 +54,7 @@ Several skills are forked, adapted, or inspired by other projects:
 - [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, a rule for existing design systems, and product-specific copy guidance. The original license is retained.
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
-- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `pr-comments-audit`, `create-pull-request`, the review-context helper shared by `babysit-pr`, `pr-comments-audit`, and `to-tickets`, and the review lenses in `code-review`.
+- [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `create-pull-request`, the comment-audit workflow in `babysit-pr`, the review-context helper shared by `babysit-pr` and `to-tickets`, and the review lenses in `code-review`.
 - [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
 
