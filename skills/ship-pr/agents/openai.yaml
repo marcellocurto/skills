@@ -1,0 +1,6 @@
+interface:
+  display_name: "Ship PR"
+  short_description: "Build a PR, review it with four agents, and settle all feedback"
+  default_prompt: "Use $ship-pr to build this, open a pull request, review it for correctness, simplicity, security, and blast radius, and settle every comment until Codex approves."
+policy:
+  allow_implicit_invocation: false

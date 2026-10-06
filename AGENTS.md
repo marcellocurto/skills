@@ -4,7 +4,7 @@ State only capability and routing boundaries in skill descriptions. Mark explici
 
 Keep `SKILL.md` and supporting runtime instructions self-contained and repository-controlled. Never delegate runtime guidance to an external skill, prompt, principle file, or other mutable third-party document; write it locally. Attribute external sources in `README.md`. Consult authoritative external docs only when the task needs current external facts, never as a substitute for maintained instructions.
 
-Reference other skills by name in runtime instructions (for example, “Use the `tdd` skill when available”); the host catalog resolves locations. Never use sibling paths like `../tdd/SKILL.md`. Reserve relative links for supporting files in the same skill, and keep essential instructions local so a missing companion skill removes nothing required.
+Reference other skills by name in runtime instructions (for example, “Use the `tdd` skill when available”); the host catalog resolves locations. Never use sibling paths like `../tdd/SKILL.md`. Reserve relative links for supporting files in the same skill, and keep essential instructions local so a missing companion skill removes nothing required. The exception is an orchestrator skill that exists to run other skills in sequence, such as `ship-pr`: it names the skills it runs and writes locally only the steps it adds.
 
 Store every skill under `skills/<skill-name>/` and keep it listed in `.claude-plugin/plugin.json`'s `skills` array (groups it under "Marcello Curto Skills") when adding, removing, or renaming.
 

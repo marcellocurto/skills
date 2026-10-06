@@ -23,6 +23,7 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`triage`](skills/triage/SKILL.md)**: Assess one GitHub issue for implementation readiness, ask only the questions that block it, and update it after approval.
 - **[`valid-issue`](skills/valid-issue/SKILL.md)**: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
 - **[`merge-and-migrate`](skills/merge-and-migrate/SKILL.md)**: Merge pull requests into the main branch in dependency order, promote it through each deployment branch with pull requests, and run pending migrations at the correct point for each environment.
+- **[`ship-pr`](skills/ship-pr/SKILL.md)**: Implement an issue or agreed work as a pull request, review it with four independent agents for correctness, simplicity, security, and blast radius, then settle every comment from the reviews, people, and Codex until Codex approves.
 
 **Model-invoked (implicit allowed)**
 
