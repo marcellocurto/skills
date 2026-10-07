@@ -16,7 +16,7 @@ Opening the PR starts Codex's review. The review below runs alongside it.
 
 ## 2. Review with four agents
 
-Record the PR URL, the base branch, the head commit, and the merge base. Start four reviewers at the same time, one for each lens under **Lenses**, using Sonnet 5.5 (`model: "sonnet"` in Claude Code). Where the host offers no model choice, use its default. Don't push or change the checkout while they run.
+Record the PR URL, the base branch, the head commit, and the merge base. Start four reviewers at the same time, one for each lens under **Lenses**. Choose each reviewer's agent type and model yourself from what the host offers, based on how much reasoning that lens needs for this diff; the four don't have to match. Don't push or change the checkout while they run.
 
 Give each reviewer what an outside reviewer would have, and nothing from the implementation conversation, so its judgment stays independent:
 
