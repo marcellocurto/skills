@@ -4,8 +4,11 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -29,6 +32,7 @@ RELATIONSHIPS = load_helper("relationships", "skills/to-tickets/scripts/set_issu
 # The watcher imports its sibling helper the way it does when run as a script.
 sys.path.insert(0, str(ROOT / "skills/babysit-pr/scripts"))
 WATCHER = load_helper("watch_pr", "skills/babysit-pr/scripts/watch_pr.py")
+ROUND_CODE = load_helper("review_round_code", "skills/babysit-pr/scripts/review_round_code.py")
 
 
 class OfflineTest(unittest.TestCase):
@@ -269,6 +273,12 @@ class CodexReviewStateTests(OfflineTest):
         self.assertEqual(self.state(stale), "pending")
         self.assertEqual(self.state(fresh), "approved")
 
+    def test_counts_every_codex_review_with_findings_across_commits(self):
+        # Codex posts a review only when it has findings, so each one marks a round of findings.
+        summary = codex_summary(("📝 **Code Review**", "✅ **Completed**", HEAD))
+        pull_request = codex_pull_request([], [OLD_HEAD, OLD_HEAD, HEAD])
+        self.assertEqual(WATCHER.codex_review(pull_request, [summary])["finding_reviews"], 3)
+
     def test_without_summary_thumbs_up_older_than_codex_last_review_is_not_about_the_head(self):
         # An old-dated commit pushed after an old 👍: the 👍 predates Codex's review of an earlier commit.
         pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T23:45:00Z")], [OLD_HEAD],
@@ -343,6 +353,62 @@ class WatchTests(OfflineTest):
     def test_closed_pull_request_stops_the_watch(self):
         result, _ = self.watch([snapshot("running", pr_state="MERGED")])
         self.assertEqual(result["reason"], "closed")
+
+
+# Long enough lines for `git blame -C` to recognise a moved block.
+ORIGINAL_BLOCK = "".join(f"def original_rule_{n}(value):\n    return value * {n} + {n}\n" for n in range(1, 5))
+
+
+class ReviewRoundCodeTests(unittest.TestCase):
+    """Runs real git, since move detection by `git blame` is part of what is checked."""
+
+    def setUp(self):
+        self.repo = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        self.env = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t", "GIT_COMMITTER_NAME": "t",
+                    "GIT_COMMITTER_EMAIL": "t@t", "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+        self.git("init", "-q", "-b", "main")
+        self.commit({"app.py": "print('base')\n"}, "base")
+        self.git("checkout", "-q", "-b", "feature")
+        self.first_reviewed = self.commit({"app.py": "print('base')\n" + ORIGINAL_BLOCK}, "PR as opened")
+
+    def git(self, *args):
+        return subprocess.run(["git", *args], cwd=self.repo, env=self.env, check=True,
+                              capture_output=True, text=True).stdout.strip()
+
+    def commit(self, files, message):
+        for name, content in files.items():
+            (self.repo / name).write_text(content)
+        self.git("add", "-A")
+        self.git("commit", "-q", "-m", message)
+        return self.git("rev-parse", "HEAD")
+
+    def flag(self, path, start, end):
+        thread = {"path": path, "startLine": start, "line": end, "diffSide": "RIGHT",
+                  "comments": {"nodes": [{"url": "https://github.com/acme/app/pull/7#r1"}]}}
+        return ROUND_CODE.flag_thread(thread, self.first_reviewed, "main", self.repo)
+
+    def test_lines_added_after_the_first_review_are_flagged_with_their_commit(self):
+        fix = self.commit({"app.py": "print('base')\n" + ORIGINAL_BLOCK + "GUARD = True\n"}, "review fix")
+        self.assertEqual(self.flag("app.py", 10, 10)["added_after_first_review"], True)
+        self.assertEqual(self.flag("app.py", 10, 10)["commits"], [fix])
+        self.assertEqual(self.flag("app.py", 2, 9)["added_after_first_review"], False)
+
+    def test_code_moved_to_another_file_after_the_first_review_keeps_its_origin(self):
+        self.commit({"app.py": "print('base')\n", "rules.py": ORIGINAL_BLOCK}, "move rules")
+        self.assertEqual(self.flag("rules.py", 1, 8)["added_after_first_review"], False)
+
+    def test_code_merged_in_from_the_base_branch_is_not_review_round_code(self):
+        self.git("checkout", "-q", "main")
+        self.commit({"other.py": "print('from main')\n"}, "main moves on")
+        self.git("checkout", "-q", "feature")
+        self.git("merge", "-q", "--no-edit", "main")
+        self.assertEqual(self.flag("other.py", 1, 1)["added_after_first_review"], False)
+
+    def test_threads_without_a_current_line_cannot_be_judged(self):
+        thread = {"path": "app.py", "startLine": None, "line": None, "diffSide": "RIGHT",
+                  "comments": {"nodes": [{"url": "u"}]}}
+        self.assertIsNone(ROUND_CODE.flag_thread(thread, self.first_reviewed, "main", self.repo)
+                          ["added_after_first_review"])
 
 
 class RelationshipTests(OfflineTest):

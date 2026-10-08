@@ -42,7 +42,7 @@ The commands run and their results, manual checks, and screenshots for UI change
 
 ## Risks and non-goals
 
-What could break, such as compatibility, migrations, performance, or security, and what this PR deliberately does not do.
+What could break, such as compatibility, migrations, performance, or security; the known limits of a deliberately simple approach, such as "scans the HTML with patterns rather than parsing it, so logos inside nested `<template>` elements are missed"; and what this PR deliberately does not do. Reviewers and `babysit-pr` judge comments against this section, so name each limit and non-goal plainly.
 ```
 
 Always include Summary and Verification. Include the other sections only when they have real content; a one-file fix usually needs only those two. Never write a section that says "None".
