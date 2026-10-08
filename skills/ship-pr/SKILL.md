@@ -1,12 +1,12 @@
 ---
 name: ship-pr
-description: Implement a GitHub issue or the work agreed in the conversation as a pull request, review it with independent agents for correctness, simplicity, security, and blast radius, then settle every review comment until Codex approves.
+description: Implement a GitHub issue or the work agreed in the conversation as a pull request, review it with independent agents for correctness, simplicity, security, and blast radius, settle every review comment, then simplify what the review rounds added.
 disable-model-invocation: true
 ---
 
 # Ship PR
 
-Take work from request to a settled pull request in four stages: build it and open the PR, review it with four independent agents, post their verified findings on the PR, and babysit the PR until every comment is answered. This skill runs the `implement-to-pr` and `babysit-pr` skills and adds the review between them. Never force-push or merge.
+Take work from request to a settled pull request in five stages: build it and open the PR, review it with four independent agents, post their verified findings on the PR, babysit the PR until every comment is answered, and simplify what the review rounds added. This skill runs the `implement-to-pr` and `babysit-pr` skills and adds the reviews around them. Never force-push or merge.
 
 ## 1. Build and open the PR
 
@@ -16,7 +16,7 @@ Opening the PR starts Codex's review. The review below runs alongside it.
 
 ## 2. Review with four agents
 
-Record the PR URL, the base branch, the head commit, and the merge base. Start four reviewers at the same time, one for each lens under **Lenses**. Choose each reviewer's agent type and model yourself from what the host offers, based on how much reasoning that lens needs for this diff; the four don't have to match. Don't push or change the checkout while they run.
+Record the PR URL, the base branch, the head commit as the PR was opened, and the merge base. Start four reviewers at the same time, one for each lens under **Lenses**. Choose each reviewer's agent type and model yourself from what the host offers, based on how much reasoning that lens needs for this diff; the four don't have to match. Don't push or change the checkout while they run.
 
 Give each reviewer what an outside reviewer would have, and nothing from the implementation conversation, so its judgment stays independent:
 
@@ -76,7 +76,7 @@ What outside the edited files could break? List the contracts the change alters:
 
 ## 3. Post the verified findings
 
-Wait for all four reviewers. Check each finding against the code yourself, since agreement between reviewers is not proof. Drop findings that are unsupported, already handled, pre-existing, outside the PR's intent, preference only, or speculative hardening; `babysit-pr` would reject them, and they only add noise to the PR. Merge findings that share one cause into one, under the lens that fits best.
+Wait for all four reviewers. Check each finding against the code yourself, since agreement between reviewers is not proof. Drop findings that are unsupported, already handled, pre-existing, outside the PR's intent, preference only, or speculative hardening, and findings that fall short of `babysit-pr`'s fix bar; `babysit-pr` would reject them, and they only add noise to the PR. Merge findings that share one cause into one, under the lens that fits best.
 
 Post the surviving findings as one pull request review with an inline comment for each. `babysit-pr` treats every unresolved review thread as open feedback, whoever wrote it, but it ignores conversation comments and review bodies from your own account, so a finding written only in the review body would never be settled. Use the `COMMENT` event, because GitHub doesn't let authors approve or request changes on their own PR, and pin the review to the reviewed head commit.
 
@@ -113,9 +113,17 @@ GitHub rejects the whole review when one comment's lines are outside the diff. I
 
 Run the `babysit-pr` skill on this PR. Its first check finds the review threads from step 3 along with anything Codex or people have posted, and settles them in one batch before it waits for more. It judges each finding as it would any reviewer's comment, so it can still reject one.
 
+## 5. Simplify what the review rounds added
+
+Each fix made during babysitting answered one finding at a time, so together they can add more code than the findings needed. Run this stage once, when `babysit-pr` finished as done and pushed at least one commit after the PR was opened. If it stopped for any other reason, go to the report.
+
+Start one reviewer with the Simplicity lens, chosen as in step 2 and under the same rules. Give it the PR URL, the requirements, the repository's instruction files, the original diff (`git diff <merge-base>..<opened-head>`), the review rounds' diff (`git diff <opened-head>..<head>`), and the threads with their replies from `babysit-pr`'s `fetch_review_context.py`. Ask it which additions from the review rounds could shrink, merge into one fix at a shared cause, or be reverted, while still handling every finding that met `babysit-pr`'s fix bar. Its findings use the return format from step 2, anchored to the review rounds' changes.
+
+Check each finding against the code yourself and drop it if it would reopen a fixed problem that met the bar. Post the survivors as in step 3, pinned to the current head, then run `babysit-pr` on the PR again. Changes that remove more code than they add are allowed in its late rounds, so these findings still get pushed there. When no finding survives, don't post a review.
+
 ## Report
 
-When `babysit-pr` finishes or stops, send one message that combines the final response from `implement-to-pr` with the report from `babysit-pr`. Use these parts in this order, and leave out any part with nothing to say:
+When the last `babysit-pr` run finishes or stops, send one message that combines the final response from `implement-to-pr` with the report from `babysit-pr`. Use these parts in this order, and leave out any part with nothing to say:
 
 ```markdown
 **PR:** the link, and one sentence on what it does.
@@ -126,9 +134,9 @@ When `babysit-pr` finishes or stops, send one message that combines the final re
 
 **Judgment calls:** assumptions and decisions the issue or conversation didn't settle, and anywhere the work differs from what was asked.
 
-**Feedback:** each review finding, labeled with its lens, and each Codex or human comment, with its outcome: fixed (with the commit), rejected (with the reason), or left open (with the decision needed). For an architectural problem, name the root cause and the change you recommend.
+**Feedback:** each review finding, labeled with its lens, and each Codex or human comment, with its outcome: fixed (with the commit), rejected (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). Label findings from stage 5 as simplifications of the review rounds. For an architectural problem, name the root cause and the change you recommend.
 
-**Noticed, not done:** problems outside the scope that you found along the way.
+**Noticed, not done:** problems outside the scope that you found along the way, and `babysit-pr`'s follow-ups.
 ```
 
 Never say all checks pass when some didn't run. Name what passed and what didn't run.

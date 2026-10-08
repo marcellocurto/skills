@@ -67,7 +67,8 @@ def summary_rows(conversation_comments: list[dict[str, Any]]) -> list[dict[str, 
 
 
 def codex_review(pull_request: dict[str, Any], conversation_comments: list[dict[str, Any]]) -> dict[str, Any]:
-    """Classify Codex's review of the head commit as running, pending, failed, findings, or approved.
+    """Classify Codex's review of the head commit as running, pending, failed, findings, or approved,
+    and count the reviews Codex has posted on the pull request, one for each round that had findings.
 
     Codex reacts with 👀 while any review runs, posts a review tagged with the commit when it has
     suggestions, and reacts with 👍 when all reviews finish clean. The 👍 is not tied to a commit and
@@ -116,7 +117,7 @@ def codex_review(pull_request: dict[str, Any], conversation_comments: list[dict[
         state = "approved"
     else:
         state = "pending"
-    return {"state": state, "reviews": rows}
+    return {"state": state, "reviews": rows, "finding_reviews": len(codex_reviews)}
 
 
 def head_commit_time(pull_request: dict[str, Any]) -> datetime:
