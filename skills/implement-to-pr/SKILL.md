@@ -38,7 +38,7 @@ Where to start, which parts need careful reading, and which are mechanical, such
 
 ## Verification
 
-The commands run and their results, manual checks, and screenshots for UI changes. Say what was not tested and why, including each check that couldn't run because a tool or service is missing here, and what you did instead.
+The commands run and their results, and manual checks with what they showed, such as how a UI change looks at each width checked. Say what was not tested and why, including each check that couldn't run because a tool or service is missing here, and what you did instead.
 
 ## Risks and non-goals
 
@@ -55,6 +55,8 @@ This message is for the user, who already knows the request. Keep it short and p
 
 ```markdown
 **PR:** the link, and one sentence on what it does.
+
+**Screenshots:** for UI changes, the screenshots you took while checking, embedded as Markdown images with absolute local paths and a caption saying what each shows. They go here instead of in the PR.
 
 **Couldn't verify:** each check or tool that didn't run, what it would have caught, what you did instead, and what to install to run it. For example: "Java 25 isn't installed, so `./gradlew test` didn't run. I covered the parser with unit tests instead. Install Java 25 to run the full suite."
 
