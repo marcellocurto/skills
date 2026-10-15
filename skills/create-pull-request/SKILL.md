@@ -53,7 +53,7 @@ Where to start, which parts need careful reading, and which are mechanical, such
 
 ## Verification
 
-The commands run and their results, manual checks, and screenshots for UI changes. Say what was not tested and why.
+The commands run and their results, and manual checks with what they showed, such as how a UI change looks at each width checked. Say what was not tested and why.
 
 ## Risks and non-goals
 
@@ -70,4 +70,4 @@ Write the body to a temporary file outside the repository and pass it with `--bo
 
 For a matching open PR, update it with `gh pr edit` if needed, and run `gh pr ready` if it is a draft. Otherwise run `gh pr create` with explicit `--repo`, `--base`, `--head` (`OWNER:BRANCH` for forks), `--title`, and `--body-file`. Never pass `--draft`. If creation fails or its output is unclear, check whether the PR exists before retrying.
 
-Report the PR URL, the checks run with their results, and any CI checks still pending. Leave the PR open. Merge only if the user asks after receiving the URL.
+Report the PR URL, the checks run with their results, and any CI checks still pending. For UI changes, show the screenshots you took while checking as Markdown images with absolute local paths; they go in this report instead of in the PR. Leave the PR open. Merge only if the user asks after receiving the URL.

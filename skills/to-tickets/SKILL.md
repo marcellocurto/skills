@@ -74,6 +74,8 @@ The behavior when the work is done. State confirmed requirements as requirements
 
 Plain bullets that together mean done, so the implementer works until all hold and then stops. Include required end states, such as deleted code or no remaining callers, and the full scope, such as "every payment endpoint". Name a test suite or command only when it is the evidence that matters. No implementation steps, generic "tests pass" lines, or checkboxes.
 
+For visual changes, state what must be true on screen, such as "the nav collapses into the menu below 768 px wide with no horizontal scroll". Do not require screenshots or other files on the pull request; the implementer shares screenshots with the user in chat.
+
 ## Stop and ask
 
 Situations specific to this ticket where continuing needs a decision the ticket does not make, such as finding a caller outside this repository.
