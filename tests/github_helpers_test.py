@@ -194,96 +194,59 @@ class ReviewPaginationTests(OfflineTest):
 
 HEAD = "b5568c0ae64b15d38c336c721404034913c106c6"
 OLD_HEAD = "d57114cb82aa31f6c0e0d7f7e5f0c1a2b3c4d5e6"
-CODEX = "chatgpt-codex-connector"
 
 
-def codex_pull_request(reactions=(), reviewed_commits=(), committed="2026-10-01T23:33:05Z",
-                       reviewed_at="2026-10-01T23:40:00Z"):
-    return {
-        "headRefOid": HEAD,
-        "commits": {"nodes": [{"commit": {"committedDate": committed}}]},
-        "reactions": {"nodes": [
-            {"content": content, "createdAt": created, "user": {"login": f"{CODEX}[bot]"}}
-            for content, created in reactions
-        ]},
-        "reviews": {"nodes": [
-            {"author": {"login": CODEX}, "submittedAt": reviewed_at, "commit": {"oid": oid}}
-            for oid in reviewed_commits
-        ]},
-    }
+def review(author, body, commit, submitted="2026-10-01T12:00:00Z"):
+    return {"author": {"login": author}, "state": "COMMENTED", "body": body,
+            "submittedAt": submitted, "commit": {"oid": commit}}
 
 
-def codex_summary(*rows):
-    table = "\n".join(
-        f"| {name} | {status} <relative-time>2026-10-01</relative-time> | `{commit[:7]}` | New commits |"
-        for name, status, commit in rows
-    )
-    return {"author": {"login": CODEX}, "createdAt": "2026-10-01T09:48:13Z", "body": (
-        "<!-- codex-pull-request-review-summary -->\n## Codex Review Summary\n\n"
-        "| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n" + table
-    )}
+class OwnReviewTests(OfflineTest):
+    def summarize(self, reviews):
+        return WATCHER.own_reviews(reviews, "me")
 
+    def test_first_review_is_the_viewers_own_lens_review(self):
+        summary = self.summarize([
+            review("me", "Reviewed `d57114c` for correctness and simplicity: 2 findings, inline.", OLD_HEAD),
+            review("reviewer", "Reviewed `b5568c0` by hand", HEAD),
+            review("me", "Answered inline.", HEAD),
+        ])
+        self.assertEqual(summary["first_reviewed_commit"], OLD_HEAD)
 
-class CodexReviewStateTests(OfflineTest):
-    def state(self, pull_request, comments=()):
-        return WATCHER.codex_review(pull_request, list(comments))["state"]
+    def test_a_new_first_review_after_a_rebase_becomes_the_baseline(self):
+        summary = self.summarize([
+            review("me", "Reviewed `d57114c` for correctness: 1 finding, inline.", OLD_HEAD),
+            review("me", "Reviewed the fixes in `d57114c`: nothing to change.", OLD_HEAD),
+            review("me", "Reviewed `b5568c0` for correctness: nothing to change.", HEAD),
+        ])
+        self.assertEqual(summary["first_reviewed_commit"], HEAD)
+        self.assertEqual(summary["last_reviewed_commit"], HEAD)
 
-    def test_eyes_reaction_means_a_review_is_still_running(self):
-        summary = codex_summary(("📝 **Code Review**", "✅ **Completed**", HEAD))
-        pull_request = codex_pull_request([("EYES", "2026-10-01T23:33:24Z")])
-        self.assertEqual(self.state(pull_request, [summary]), "running")
+    def test_without_an_own_lens_review_the_pull_request_has_no_first_review(self):
+        summary = self.summarize([
+            review("reviewer", "Reviewed `b5568c0` for correctness: looks fine.", HEAD),
+            review("me", "Thanks, answered inline.", HEAD),
+        ])
+        self.assertIsNone(summary["first_reviewed_commit"])
+        self.assertIsNone(summary["last_reviewed_commit"])
 
-    def test_summary_running_for_head_means_running(self):
-        summary = codex_summary(
-            ("📝 **Code Review**", "🔄 **Running** since", HEAD),
-            ("🔒 **Security Review**", "✅ **Completed**", HEAD),
-        )
-        self.assertEqual(self.state(codex_pull_request(), [summary]), "running")
+    def test_last_reviewed_commit_is_the_latest_own_first_review_or_fix_check(self):
+        reviewed = [review("me", "Reviewed `d57114c` for correctness: nothing to change.", OLD_HEAD)]
+        fix_checked = reviewed + [review("me", "Reviewed the fixes in `b5568c0`: nothing to change.", HEAD)]
+        replied = fix_checked + [review("me", "Answered inline.", OLD_HEAD),
+                                 review("reviewer", "Reviewed the fixes in `d57114c`.", OLD_HEAD)]
+        self.assertEqual(self.summarize(reviewed)["last_reviewed_commit"], OLD_HEAD)
+        self.assertEqual(self.summarize(fix_checked)["last_reviewed_commit"], HEAD)
+        self.assertEqual(self.summarize(replied)["last_reviewed_commit"], HEAD)
 
-    def test_thumbs_up_from_an_earlier_commit_does_not_approve_the_new_head(self):
-        summary = codex_summary(("📝 **Code Review**", "✅ **Completed**", OLD_HEAD))
-        pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T12:50:00Z")])
-        self.assertEqual(self.state(pull_request, [summary]), "pending")
-
-    def test_completed_head_review_with_findings_is_not_approved(self):
-        summary = codex_summary(("📝 **Code Review**", "✅ **Completed**", HEAD))
-        pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T06:00:00Z")], [OLD_HEAD, HEAD])
-        self.assertEqual(self.state(pull_request, [summary]), "findings")
-
-    def test_thumbs_up_after_a_head_review_with_findings_means_the_rerun_was_clean(self):
-        summary = codex_summary(("📝 **Code Review**", "✅ **Completed**", HEAD))
-        pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T23:50:00Z")], [OLD_HEAD, HEAD])
-        self.assertEqual(self.state(pull_request, [summary]), "approved")
-
-    def test_all_head_reviews_completed_with_thumbs_up_is_approved(self):
-        summary = codex_summary(
-            ("📝 **Code Review**", "✅ **Completed**", HEAD),
-            ("🔒 **Security Review**", "✅ **Completed**", HEAD),
-        )
-        pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T06:00:00Z")], [OLD_HEAD])
-        self.assertEqual(self.state(pull_request, [summary]), "approved")
-
-    def test_unrecognized_head_status_is_reported_as_failed(self):
-        summary = codex_summary(("📝 **Code Review**", "❌ **Failed**", HEAD))
-        self.assertEqual(self.state(codex_pull_request(), [summary]), "failed")
-
-    def test_without_summary_thumbs_up_must_follow_the_head_commit(self):
-        stale = codex_pull_request([("THUMBS_UP", "2026-10-01T23:00:00Z")])
-        fresh = codex_pull_request([("THUMBS_UP", "2026-10-01T23:45:00Z")])
-        self.assertEqual(self.state(stale), "pending")
-        self.assertEqual(self.state(fresh), "approved")
-
-    def test_counts_every_codex_review_with_findings_across_commits(self):
-        # Codex posts a review only when it has findings, so each one marks a round of findings.
-        summary = codex_summary(("📝 **Code Review**", "✅ **Completed**", HEAD))
-        pull_request = codex_pull_request([], [OLD_HEAD, OLD_HEAD, HEAD])
-        self.assertEqual(WATCHER.codex_review(pull_request, [summary])["finding_reviews"], 3)
-
-    def test_without_summary_thumbs_up_older_than_codex_last_review_is_not_about_the_head(self):
-        # An old-dated commit pushed after an old 👍: the 👍 predates Codex's review of an earlier commit.
-        pull_request = codex_pull_request([("THUMBS_UP", "2026-10-01T23:45:00Z")], [OLD_HEAD],
-                                          committed="2026-09-30T08:00:00Z", reviewed_at="2026-10-02T08:00:00Z")
-        self.assertEqual(self.state(pull_request), "pending")
+    def test_counts_own_fix_checks(self):
+        summary = self.summarize([
+            review("me", "Reviewed `d57114c` for correctness: 1 finding, inline.", OLD_HEAD),
+            review("me", "Reviewed the fixes in `d57114c`: 1 finding fixed before this push.", OLD_HEAD),
+            review("reviewer", "Reviewed the fixes in `b5568c0`: fine by me.", HEAD),
+            review("me", "Reviewed the fixes in `b5568c0`: nothing to change.", HEAD),
+        ])
+        self.assertEqual(summary["fix_checks"], 2)
 
 
 class ActivityTests(OfflineTest):
@@ -295,28 +258,27 @@ class ActivityTests(OfflineTest):
                 {"author": {"login": "reviewer"}, "createdAt": "2026-10-01T10:00:00Z",
                  "updatedAt": "2026-10-01T12:30:00Z", "url": "edited"},
                 {"author": {"login": "me"}, "createdAt": "2026-10-01T12:00:00Z", "url": "own-reply"},
-                {**codex_summary(("Code Review", "Running", HEAD)), "createdAt": "2026-10-01T12:00:00Z",
-                 "url": "summary"},
             ],
             "reviews": [
-                {"author": {"login": CODEX}, "state": "COMMENTED", "body": "### 💡 Codex Review",
-                 "submittedAt": "2026-10-01T12:05:00Z", "url": "codex-review"},
+                {"author": {"login": "reviewer"}, "state": "CHANGES_REQUESTED", "body": "Please split this.",
+                 "submittedAt": "2026-10-01T12:05:00Z", "url": "changes-requested"},
                 {"author": {"login": "reviewer"}, "state": "COMMENTED", "body": "",
                  "submittedAt": "2026-10-01T12:05:00Z", "url": "empty-review-wrapper"},
+                {"author": {"login": "me"}, "state": "COMMENTED", "body": "Reviewed the fixes in `b5568c0`.",
+                 "submittedAt": "2026-10-01T12:06:00Z", "url": "own-review"},
             ],
             "review_threads": [{"isResolved": False, "comments": {"nodes": [
-                {"author": {"login": CODEX}, "createdAt": "2026-10-01T12:05:00Z", "url": "inline"},
+                {"author": {"login": "reviewer"}, "createdAt": "2026-10-01T12:05:00Z", "url": "inline"},
                 {"author": {"login": "me"}, "createdAt": "2026-10-01T12:10:00Z", "url": "inline-reply"},
             ]}}],
         }
         since = WATCHER.parse_time("2026-10-01T11:00:00Z")
         urls = [item["url"] for item in WATCHER.new_activity(context, "me", since)]
-        self.assertEqual(sorted(urls), ["codex-review", "edited", "inline", "new"])
+        self.assertEqual(sorted(urls), ["changes-requested", "edited", "inline", "new"])
 
 
-def snapshot(state, activity=(), pr_state="OPEN"):
-    return {"pull_request": {"state": pr_state}, "codex": {"state": state},
-            "new_activity": list(activity)}
+def snapshot(activity=(), pr_state="OPEN"):
+    return {"pull_request": {"state": pr_state}, "new_activity": list(activity)}
 
 
 class WatchTests(OfflineTest):
@@ -332,26 +294,18 @@ class WatchTests(OfflineTest):
             result = WATCHER.watch(target=None, since=None, interval=5 * 60, timeout=timeout * 60)
         return result, sleeps
 
-    def test_new_comments_wait_until_codex_finishes(self):
-        result, sleeps = self.watch([
-            snapshot("running", [{"url": "human"}]),
-            snapshot("findings", [{"url": "human"}, {"url": "codex"}]),
-        ])
+    def test_a_new_comment_wakes_the_watch(self):
+        result, sleeps = self.watch([snapshot(), snapshot([{"url": "human"}])])
         self.assertEqual(result["reason"], "new-activity")
         self.assertEqual(sleeps, [300])
 
-    def test_codex_approval_wakes_even_without_new_comments(self):
-        result, _ = self.watch([snapshot("pending"), snapshot("approved")])
-        self.assertEqual(result["reason"], "codex-approved")
-
-    def test_handled_findings_without_new_activity_keep_waiting_until_timeout(self):
-        result, sleeps = self.watch([snapshot("findings")] * 10, timeout=12)
+    def test_without_new_activity_the_watch_waits_until_timeout(self):
+        result, sleeps = self.watch([snapshot()] * 10, timeout=12)
         self.assertEqual(result["reason"], "timeout")
-        self.assertEqual(result["codex"]["state"], "findings")
         self.assertEqual(sleeps, [300, 300])
 
     def test_closed_pull_request_stops_the_watch(self):
-        result, _ = self.watch([snapshot("running", pr_state="MERGED")])
+        result, _ = self.watch([snapshot([{"url": "human"}], pr_state="MERGED")])
         self.assertEqual(result["reason"], "closed")
 
 

@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Poll a pull request until Codex finishes reviewing its head and someone needs an answer."""
+"""Poll a pull request until someone needs an answer, and report which commits this skill has reviewed."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -13,21 +12,16 @@ from typing import Any
 
 from fetch_review_context import PullRequestTarget, ensure_authenticated, fetch_all, graphql, resolve_pr
 
-CODEX_LOGIN = "chatgpt-codex-connector"
-SUMMARY_MARKER = "<!-- codex-pull-request-review-summary -->"
-# A summary table row: | 📝 **Code Review** | ✅ **Completed** <relative-time …> | `b5568c0` | New commits |
-SUMMARY_ROW = re.compile(r"^\|\s*(?P<review>[^|]+?)\s*\|\s*(?P<status>[^|]+?)\s*\|\s*`(?P<commit>[0-9a-f]{7,40})`\s*\|")
+# Bodies of the reviews this skill posts, as `REVIEWERS.md` specifies them. Each is pinned to the
+# commit it covers, so these prefixes plus the review's commit say what has been reviewed.
+FIRST_REVIEW_PREFIX = "Reviewed `"
+FIX_CHECK_PREFIX = "Reviewed the fixes in `"
 
 STATUS_QUERY = """\
 query($owner: String!, $repo: String!, $number: Int!) {
   viewer { login }
   repository(owner: $owner, name: $repo) {
-    pullRequest(number: $number) {
-      headRefOid
-      commits(last: 1) { nodes { commit { committedDate } } }
-      reactions(first: 100) { nodes { content createdAt user { login } } }
-      reviews(last: 100) { nodes { author { login } submittedAt commit { oid } } }
-    }
+    pullRequest(number: $number) { headRefOid }
   }
 }
 """
@@ -37,91 +31,25 @@ def parse_time(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def is_codex(actor: dict[str, Any] | None) -> bool:
-    return bool(actor) and str(actor["login"]).removesuffix("[bot]") == CODEX_LOGIN
+def own_reviews(reviews: list[dict[str, Any]], viewer: str) -> dict[str, Any]:
+    """Summarize the first reviews and fix checks the viewer posted, in submission order.
 
-
-def is_summary(comment: dict[str, Any]) -> bool:
-    return is_codex(comment.get("author")) and SUMMARY_MARKER in (comment.get("body") or "")
-
-
-def summary_rows(conversation_comments: list[dict[str, Any]]) -> list[dict[str, str]]:
-    """Read Codex's self-updating summary table: one row per review kind, naming the commit it last covered."""
-    summary = next((comment for comment in conversation_comments if is_summary(comment)), None)
-    if summary is None:
-        return []
-    rows = []
-    for line in summary["body"].splitlines():
-        match = SUMMARY_ROW.match(line.strip())
-        if not match:
-            continue
-        status = match["status"]
-        rows.append({
-            "review": match["review"].replace("*", "").strip(),
-            "status": "running" if "Running" in status or "Queued" in status
-            else "completed" if "Completed" in status
-            else re.sub(r"<[^>]*>|\*", "", status).strip(),
-            "commit": match["commit"],
-        })
-    return rows
-
-
-def codex_review(pull_request: dict[str, Any], conversation_comments: list[dict[str, Any]]) -> dict[str, Any]:
-    """Classify Codex's review of the head commit as running, pending, failed, findings, or approved,
-    and count the reviews Codex has posted on the pull request, one for each round that had findings.
-
-    Codex reacts with 👀 while any review runs, posts a review tagged with the commit when it has
-    suggestions, and reacts with 👍 when all reviews finish clean. The 👍 is not tied to a commit and
-    can survive later pushes, so approval also requires every summary row to cover the head commit.
-
-    A review with findings on the head commit is superseded by a 👍 posted after it, which is how a
-    clean re-review of the same commit (after the findings were answered without a push) shows up.
-
-    Without a summary table the 👍 must postdate the head commit's recorded date. GitHub does not
-    expose when a commit was pushed, so a commit with an old date pushed after an old 👍 cannot be
-    told apart from an approved head in that fallback.
+    `first_reviewed_commit` is the commit of the latest first review, which is the baseline for code
+    added in review rounds; a rebase prompts a new first review, which replaces the baseline.
+    `last_reviewed_commit` is the commit of the latest first review or fix check. Both are None when
+    the pull request has no first review yet. `fix_checks` counts the fix checks, one per round that
+    checked new commits.
     """
-    head = pull_request["headRefOid"]
-    rows = summary_rows(conversation_comments)
-    head_rows = [row for row in rows if head.startswith(row["commit"])]
-    reactions = {
-        reaction["content"]: reaction
-        for reaction in pull_request["reactions"]["nodes"]
-        if is_codex(reaction.get("user"))
+    own = [review for review in reviews
+           if (review.get("author") or {}).get("login") == viewer and (review.get("commit") or {}).get("oid")]
+    first_reviews = [review for review in own if (review.get("body") or "").startswith(FIRST_REVIEW_PREFIX)]
+    reviewed = [review for review in own
+                if (review.get("body") or "").startswith((FIRST_REVIEW_PREFIX, FIX_CHECK_PREFIX))]
+    return {
+        "first_reviewed_commit": first_reviews[-1]["commit"]["oid"] if first_reviews else None,
+        "last_reviewed_commit": reviewed[-1]["commit"]["oid"] if first_reviews else None,
+        "fix_checks": len(reviewed) - len(first_reviews),
     }
-    codex_reviews = [review for review in pull_request["reviews"]["nodes"] if is_codex(review.get("author"))]
-    latest_review_at = max((parse_time(review["submittedAt"]) for review in codex_reviews), default=None)
-    latest_head_review_at = max(
-        (parse_time(review["submittedAt"]) for review in codex_reviews
-         if (review.get("commit") or {}).get("oid") == head),
-        default=None,
-    )
-    thumbs_up = reactions.get("THUMBS_UP")
-    thumbs_up_at = parse_time(thumbs_up["createdAt"]) if thumbs_up else None
-
-    if "EYES" in reactions or any(row["status"] == "running" for row in head_rows):
-        state = "running"
-    elif len(head_rows) < len(rows):
-        state = "pending"
-    elif any(row["status"] != "completed" for row in head_rows):
-        state = "failed"
-    elif latest_head_review_at and not (thumbs_up_at and thumbs_up_at > latest_head_review_at):
-        state = "findings"
-    elif thumbs_up and rows:
-        state = "approved"
-    elif thumbs_up_at and thumbs_up_at > head_commit_time(pull_request) and not (
-        latest_review_at and thumbs_up_at < latest_review_at
-    ):
-        # Without a summary table, only a 👍 newer than the head commit and newer than Codex's
-        # last review of any commit can be about the head.
-        state = "approved"
-    else:
-        state = "pending"
-    return {"state": state, "reviews": rows, "finding_reviews": len(codex_reviews)}
-
-
-def head_commit_time(pull_request: dict[str, Any]) -> datetime:
-    return parse_time(pull_request["commits"]["nodes"][-1]["commit"]["committedDate"])
 
 
 def new_activity(context: dict[str, Any], viewer: str, since: datetime | None) -> list[dict[str, str]]:
@@ -142,8 +70,7 @@ def new_activity(context: dict[str, Any], viewer: str, since: datetime | None) -
                       "created_at": created_at, "changed_at": changed_at})
 
     for comment in context["conversation_comments"]:
-        if not is_summary(comment):
-            add("comment", comment, comment.get("createdAt"))
+        add("comment", comment, comment.get("createdAt"))
     for review in context["reviews"]:
         # A bodiless COMMENTED review only wraps inline comments, which are listed on their own.
         if review.get("body") or review.get("state") != "COMMENTED":
@@ -159,17 +86,18 @@ def check(target: PullRequestTarget, since: datetime | None) -> dict[str, Any]:
     checked_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     context = fetch_all(target)
     status = graphql(target.host, STATUS_QUERY, owner=target.owner, repo=target.repo, number=target.number)
-    pull_request = status["data"]["repository"]["pullRequest"]
+    head = status["data"]["repository"]["pullRequest"]["headRefOid"]
+    viewer = status["data"]["viewer"]["login"]
     metadata = context["pull_request"]
     return {
         "pull_request": {
             "url": metadata["url"],
             "state": metadata["state"],
-            "head_sha": pull_request["headRefOid"],
+            "head_sha": head,
         },
         "checked_at": checked_at,
-        "codex": codex_review(pull_request, context["conversation_comments"]),
-        "new_activity": new_activity(context, status["data"]["viewer"]["login"], since),
+        "reviews": own_reviews(context["reviews"], viewer),
+        "new_activity": new_activity(context, viewer, since),
         "unresolved_threads": sum(not thread["isResolved"] for thread in context["review_threads"]),
     }
 
@@ -177,13 +105,7 @@ def check(target: PullRequestTarget, since: datetime | None) -> dict[str, Any]:
 def wake_reason(snapshot: dict[str, Any]) -> str | None:
     if snapshot["pull_request"]["state"] != "OPEN":
         return "closed"
-    codex_state = snapshot["codex"]["state"]
-    # Feedback that arrives mid-review is answered together with Codex's findings in one push.
-    if codex_state == "running":
-        return None
-    if snapshot["new_activity"]:
-        return "new-activity"
-    return {"approved": "codex-approved", "failed": "codex-failed"}.get(codex_state)
+    return "new-activity" if snapshot["new_activity"] else None
 
 
 def watch(target: PullRequestTarget, since: datetime | None, interval: float, timeout: float) -> dict[str, Any]:

@@ -3,6 +3,7 @@
 
 Run it from a checkout of the pull request's head. A flagged thread sits on lines that review
 rounds added, so its finding may come from an earlier fix rather than from the change as opened.
+The first review is the one `watch_pr.py` reports as `first_reviewed_commit`.
 """
 
 from __future__ import annotations
@@ -15,14 +16,13 @@ from pathlib import Path
 from typing import Any
 
 from fetch_review_context import ensure_authenticated, fetch_all, graphql, resolve_pr
+from watch_pr import own_reviews
 
-FIRST_REVIEW_QUERY = """\
+STATUS_QUERY = """\
 query($owner: String!, $repo: String!, $number: Int!) {
+  viewer { login }
   repository(owner: $owner, name: $repo) {
-    pullRequest(number: $number) {
-      headRefOid baseRefOid
-      reviews(first: 1) { nodes { commit { oid } } }
-    }
+    pullRequest(number: $number) { headRefOid baseRefOid }
   }
 }
 """
@@ -95,17 +95,18 @@ def main() -> int:
     try:
         target = resolve_pr(args.repo, args.pr)
         ensure_authenticated(target.host)
-        status = graphql(target.host, FIRST_REVIEW_QUERY, owner=target.owner, repo=target.repo,
-                         number=target.number)["data"]["repository"]["pullRequest"]
+        data = graphql(target.host, STATUS_QUERY, owner=target.owner, repo=target.repo,
+                       number=target.number)["data"]
+        status = data["repository"]["pullRequest"]
         head = git_output(cwd, "rev-parse", "HEAD").strip()
         if head != status["headRefOid"]:
             raise RuntimeError(f"Check out the pull request's head {status['headRefOid'][:9]} first; HEAD is {head[:9]}")
-        reviews = status["reviews"]["nodes"]
-        threads = [thread for thread in fetch_all(target)["review_threads"] if not thread["isResolved"]]
-        if not reviews or not threads:
+        context = fetch_all(target)
+        first_reviewed = own_reviews(context["reviews"], data["viewer"]["login"])["first_reviewed_commit"]
+        threads = [thread for thread in context["review_threads"] if not thread["isResolved"]]
+        if not first_reviewed or not threads:
             print(json.dumps({"first_reviewed_commit": None, "threads": []}, indent=2))
             return 0
-        first_reviewed = reviews[0]["commit"]["oid"]
         for commit in (first_reviewed, status["baseRefOid"]):
             if git(cwd, "cat-file", "-e", f"{commit}^{{commit}}").returncode != 0:
                 raise RuntimeError(f"Commit {commit[:9]} is not in this checkout; fetch it first")
