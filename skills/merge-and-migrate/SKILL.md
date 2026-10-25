@@ -1,6 +1,6 @@
 ---
 name: merge-and-migrate
-description: Merge pull requests into the main branch in dependency order, promote it through each deployment branch with pull requests, and run pending migrations at the correct point for each environment.
+description: Merge pull requests into the main branch in dependency order, review the whole release for rollout problems, promote it through each deployment branch with pull requests, and run pending migrations at the correct point for each environment.
 disable-model-invocation: true
 ---
 
@@ -52,6 +52,19 @@ For each pull request, in the planned order:
 
 After the last merge, record the head of the main branch as the **release commit**. Every environment receives this commit.
 
+## Review the release
+
+Each pull request was reviewed on its own, but some problems only show across the whole release, such as a change to how containers run that leaves existing stored data unreadable. Before the first promotion, start one independent, read-only reviewer with the release diff `git diff <deployed>...<release-commit>`, where `<deployed>` is the branch of the last environment in order, or the commit running there when the repository has no environment branches. When the main branch deploys an environment itself, the merges are already deploys, so run the review before the first merge instead, on each planned pull request's diff. Also give it the shipped pull requests, the pending migrations, and the repository's instruction files and deploy docs. Ask it to:
+
+- read the release procedure and the policy for the previous release from the instructions and deploy docs
+- check each changed function signature, return shape, validator, and stored enum value against the clients, workers, and open browser tabs from the previous release that the policy says must keep working
+- check each migration while the old release keeps writing until the switch, and rows that earlier releases created against each invariant the new code assumes
+- check serialized state that outlives a deploy, such as saved plans, job payloads, and journals, and each infrastructure or ownership change against the data already on the servers
+- walk each manual cutover step the shipped pull requests document, saying what it changes or destroys and what would restore it
+- report only problems that cause a security hole, data loss, a crash, a stuck job, or a wrong result on the current deployment, each with the release state and step at which it breaks, and nothing the shipped pull requests' risks and non-goals already decide
+
+Check each finding against the code and the deploy docs yourself. A finding that holds is a reason to stop before promoting. If the host can't start agents, do this review yourself and say so in the report.
+
 ## Promote each environment
 
 Promote through pull requests. Open a pull request from the promotion source into the environment branch and merge it, instead of merging locally and pushing. Branch protection often blocks direct pushes, and the pull request runs the branch's checks and records what was promoted. Push directly only when the repository's instructions say promotions work that way.
@@ -75,6 +88,7 @@ Stop and report when:
 - the release path, a promotion route, or a migration command stays unclear after reading the repository
 - a pull request's checks fail, it conflicts in a way that changes behavior, or branch protection blocks its merge
 - a migration needs a sequence across two deploys, or migrations conflict in order
+- the release review finds a problem that holds
 - a migration would delete or rewrite data in a way that neither the pull request nor the user's request describes
 - a deploy fails, a migration fails, or verification shows anything unexpected
 - the credentials or access for an environment are missing; name the exact command the user needs to run
@@ -88,6 +102,7 @@ Say whether everything shipped or where you stopped and why. Then list:
 - each merged pull request with its merge commit
 - the extra commits from the main branch that shipped with them
 - the release commit
+- the release review's findings, each with whether it held and why
 - for each environment: the promotion pull request, the deploy result, each migration with whether it ran before or after the deploy, how it was verified, and its result
 - the environment-only commits found on each environment branch
 - anything left undone, with the command or decision needed to finish it
