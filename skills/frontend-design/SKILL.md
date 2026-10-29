@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Choose the visual direction, typography, layout, and interface copy when building new UI or reshaping an existing one.
+description: Choose the visual direction, typography, layout, and interface copy for UI work. Use when building new UI or reshaping an existing one.
 license: Complete terms in LICENSE.txt
 ---
 

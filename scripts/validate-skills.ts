@@ -2,6 +2,7 @@ import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 import { readInvocationPolicies } from "./invocation-policy.ts";
+import { descriptionStatesWhenToUse } from "./skill-frontmatter.ts";
 
 const repositoryRoot = join(import.meta.dir, "..");
 const skillsRoot = join(repositoryRoot, "skills");
@@ -35,6 +36,7 @@ const missingPaths = expectedPaths.filter((path) => !declaredSet.has(path));
 const extraPaths = declaredPaths.filter((path) => !expectedSet.has(path));
 const duplicatePaths = declaredPaths.filter((path, index) => declaredPaths.indexOf(path) !== index);
 const invocationPolicyMismatches: string[] = [];
+const descriptionsWithoutUseWhen: string[] = [];
 
 for (const skillName of skillNames) {
   const skillDirectory = join(skillsRoot, skillName);
@@ -42,6 +44,8 @@ for (const skillName of skillNames) {
   const openAIFile = Bun.file(join(skillDirectory, "agents", "openai.yaml"));
   const openAIYaml = (await openAIFile.exists()) ? await openAIFile.text() : undefined;
   const policies = readInvocationPolicies(skillMarkdown, openAIYaml);
+
+  if (!descriptionStatesWhenToUse(skillMarkdown)) descriptionsWithoutUseWhen.push(skillName);
 
   if (policies.claudeExplicitOnly !== policies.codexExplicitOnly) {
     invocationPolicyMismatches.push(
@@ -54,7 +58,8 @@ if (
   missingPaths.length ||
   extraPaths.length ||
   duplicatePaths.length ||
-  invocationPolicyMismatches.length
+  invocationPolicyMismatches.length ||
+  descriptionsWithoutUseWhen.length
 ) {
   if (missingPaths.length) {
     console.error(`Missing manifest entries: ${missingPaths.join(", ")}`);
@@ -70,6 +75,12 @@ if (
 
   if (invocationPolicyMismatches.length) {
     console.error(`Invocation policy mismatches: ${invocationPolicyMismatches.join(", ")}`);
+  }
+
+  if (descriptionsWithoutUseWhen.length) {
+    console.error(
+      `Descriptions without a "Use when" clause: ${descriptionsWithoutUseWhen.join(", ")}`,
+    );
   }
 
   process.exit(1);

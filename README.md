@@ -13,24 +13,21 @@ bunx skills add marcellocurto/skills
 
 ## Available Skills
 
-Skills for planning, building, reviewing, and improving software. All run manually; **User-invoked** run only when explicitly selected, **Model-invoked** may also be auto-selected on match.
+Skills for planning, building, reviewing, and improving software. You can run any skill by name. Agents also start **model-invoked** skills on their own when a request matches the description's "Use when" clause; **user-invoked** skills run only when you select them.
 
 **User-invoked (explicit only)**
 
-- **[`shadcn`](skills/shadcn/SKILL.md)**: Build, update, debug, and style shadcn/ui components using the project's registry and conventions.
-- **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions in the project's docs.
-- **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change with you.
-- **[`triage`](skills/triage/SKILL.md)**: Assess one GitHub issue for implementation readiness, ask only the questions that block it, and update it after approval.
-- **[`valid-issue`](skills/valid-issue/SKILL.md)**: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
 - **[`merge-and-migrate`](skills/merge-and-migrate/SKILL.md)**: Merge pull requests into the main branch in dependency order, review the whole release for rollout problems, promote it through each deployment branch with pull requests, and run pending migrations at the correct point for each environment.
-- **[`ship-pr`](skills/ship-pr/SKILL.md)**: Implement an issue or agreed work as a pull request, then run `babysit-pr` to review it with independent agents, settle every comment, and check each round of fixes before it is pushed.
 
 **Model-invoked (implicit allowed)**
 
 - **[`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md)**: Reproduce, isolate, and fix difficult bugs or performance regressions with a feedback loop that proves the fix.
 - **[`explain-codebase`](skills/explain-codebase/SKILL.md)**: Trace and explain how an existing code path or subsystem works, from its entry point to its final effect.
 - **[`to-tickets`](skills/to-tickets/SKILL.md)**: Turn approved work into well-scoped GitHub issues after checking for duplicates.
+- **[`triage`](skills/triage/SKILL.md)**: Assess one GitHub issue for implementation readiness, ask only the questions that block it, and update it after approval.
+- **[`valid-issue`](skills/valid-issue/SKILL.md)**: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
 - **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Implement a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review.
+- **[`ship-pr`](skills/ship-pr/SKILL.md)**: Implement an issue or agreed work as a pull request, then run `babysit-pr` to review it with independent agents, settle every comment, and check each round of fixes before it is pushed.
 - **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Open a ready-for-review GitHub pull request for finished local changes, committing and pushing when needed.
 - **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Review a pull request with independent agents when it has no review yet, settle its open comments from reviewers and people and its failing CI checks, and check each round of fixes with an independent reviewer before pushing, until every thread is answered and the required checks pass, or something needs you. It fixes what meets a fix bar, settles the rest by reply, and stops pushing once late rounds find nothing that matters.
 - **[`pr-audit`](skills/pr-audit/SKILL.md)**: Audit a whole PR for merge readiness across correctness, maintainability and complexity, and test quality, then post one actionable comment.
@@ -42,10 +39,13 @@ Skills for planning, building, reviewing, and improving software. All run manual
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
 - **[`code-review`](skills/code-review/SKILL.md)**: Review a specific diff, pull request, or commit range from independent correctness and maintainability perspectives. Whole-codebase and current-state subsystem audits fall outside this skill.
 - **[`frontend-design`](skills/frontend-design/SKILL.md)**: Choose the visual direction, typography, layout, and interface copy when building new UI or reshaping an existing one.
+- **[`shadcn`](skills/shadcn/SKILL.md)**: Build, update, debug, and style shadcn/ui components using the project's registry and conventions.
 - **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design small, type-safe interfaces that hide complexity from callers and give domain logic a clear home.
+- **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change with you.
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Define and maintain the codebase's shared domain terms and the architectural decisions behind them.
 - **[`grilling`](skills/grilling/SKILL.md)**: Stress-test an idea or decision through focused questions about the assumptions and tradeoffs that matter.
-- **[`tdd`](skills/tdd/SKILL.md)**: Use before implementing a feature or bug fix that adds or changes behavior users or callers rely on, even when the request does not mention tests. Not for removals, behavior-preserving refactors, design exploration, prototypes, styling, copy, configuration, or data cleanup.
+- **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions in the project's docs.
+- **[`tdd`](skills/tdd/SKILL.md)**: Build features and bug fixes test-first. Agents load it before implementing behavior that users or callers rely on, even when the request does not mention tests. Not for removals, behavior-preserving refactors, design exploration, prototypes, styling, copy, configuration, or data cleanup.
 - **[`wizard`](skills/wizard/SKILL.md)**: Create an interactive Bash wizard for setup steps that only a person can complete, such as credentials, dashboards, or cutovers.
 
 ## Sources and Attribution

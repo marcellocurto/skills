@@ -1,7 +1,6 @@
 ---
 name: triage
-description: Assess one specified GitHub issue for implementation readiness, ask blocking questions, and update it after approval.
-disable-model-invocation: true
+description: Assess one specified GitHub issue for implementation readiness, ask blocking questions, and update it after approval. Use when the user asks to triage an issue or get it ready for implementation. For a quick judgment of whether it is worth doing, use `valid-issue`.
 ---
 
 # Triage

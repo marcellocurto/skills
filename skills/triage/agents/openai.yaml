@@ -1,5 +1,3 @@
 interface:
   display_name: "Triage"
   short_description: "Assess one issue for implementation readiness"
-policy:
-  allow_implicit_invocation: false

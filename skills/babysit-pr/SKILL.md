@@ -1,6 +1,6 @@
 ---
 name: babysit-pr
-description: Review a pull request with independent agents when it has no review yet, settle its open review comments from reviewers and people and its failing CI checks, and check each round of fixes with an independent reviewer before pushing, until every thread is answered and the required checks pass, or a problem needs the user.
+description: Review a pull request with independent agents when it has no review yet, settle its open review comments from reviewers and people and its failing CI checks, and check each round of fixes with an independent reviewer before pushing, until every thread is answered and the required checks pass, or a problem needs the user. Use when the user asks to babysit or watch a PR, to handle, address, or settle its review comments, or to fix its failing checks, or when another skill hands over a newly opened PR.
 ---
 
 # Babysit PR

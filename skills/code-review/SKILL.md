@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a specific diff, pull request, or commit range for correctness, maintainability, and repository standards. Not for whole-codebase or current-state subsystem audits.
+description: Review a specific diff, pull request, or commit range for correctness, maintainability, and repository standards. Use when the user asks to review changes, a PR, or commits, or when another skill needs an independent review of a diff. Not for whole-codebase or current-state subsystem audits.
 ---
 
 # Code Review

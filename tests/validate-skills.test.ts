@@ -1,15 +1,16 @@
 import { describe, expect, test } from "bun:test";
 
 import { invocationPoliciesMatch } from "../scripts/invocation-policy.ts";
+import { descriptionStatesWhenToUse } from "../scripts/skill-frontmatter.ts";
 
 const implicitSkill = `---
 name: example
-description: Example skill.
+description: Example skill. Use when testing.
 ---`;
 
 const explicitSkill = `---
 name: example
-description: Example skill.
+description: Example skill. Use when testing.
 disable-model-invocation: true
 ---`;
 
@@ -31,5 +32,24 @@ describe("invocation policy parity", () => {
 
   test("rejects Codex-only explicit invocation", () => {
     expect(invocationPoliciesMatch(implicitSkill, explicitOpenAI)).toBe(false);
+  });
+});
+
+describe("description routing", () => {
+  test("accepts a description that says when to use the skill", () => {
+    expect(descriptionStatesWhenToUse(implicitSkill)).toBe(true);
+  });
+
+  test("rejects a description that only says what the skill does", () => {
+    expect(
+      descriptionStatesWhenToUse(`---
+name: example
+description: Review pull requests.
+---`),
+    ).toBe(false);
+  });
+
+  test("rejects a skill without a description", () => {
+    expect(descriptionStatesWhenToUse("---\nname: example\n---")).toBe(false);
   });
 });

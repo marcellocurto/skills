@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Use before implementing a feature or bug fix that adds or changes behavior users or callers rely on, including requests that do not mention tests or TDD. Not for removing features or code, behavior-preserving refactors, design or UX exploration, prototypes, styling, copy, configuration, or data cleanup.
+description: Build features and bug fixes test-first, with tests that protect behavior. Use when about to implement a feature or bug fix that adds or changes behavior users or callers rely on, including requests that do not mention tests or TDD. Not for removing features or code, behavior-preserving refactors, design or UX exploration, prototypes, styling, copy, configuration, or data cleanup.
 ---
 
 # Test-Driven Development

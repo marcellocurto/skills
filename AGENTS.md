@@ -1,6 +1,6 @@
 # Agent Instructions
 
-State only capability and routing boundaries in skill descriptions. Mark explicit-only skills in invocation metadata — `disable-model-invocation: true` for Claude, `policy.allow_implicit_invocation: false` in `agents/openai.yaml` for Codex — never as prose in description or body.
+State only capability and routing boundaries in skill descriptions: what the skill does, then a "Use when" clause naming the requests or situations that should load it. Name a task situation instead of a user request for skills that should load without being asked, and add "when another skill runs it" for skills that other skills call. `bun run validate:skills` rejects descriptions without the clause. Prefer model invocation; make a skill explicit-only only when a loose match could cause effects that are hard to undo, such as production migrations. Mark explicit-only skills in invocation metadata — `disable-model-invocation: true` for Claude, `policy.allow_implicit_invocation: false` in `agents/openai.yaml` for Codex — never as prose in description or body.
 
 Keep `SKILL.md` and supporting runtime instructions self-contained and repository-controlled. Never delegate runtime guidance to an external skill, prompt, principle file, or other mutable third-party document; write it locally. Attribute external sources in `README.md`. Consult authoritative external docs only when the task needs current external facts, never as a substitute for maintained instructions.
 

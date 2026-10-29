@@ -1,6 +1,6 @@
 ---
 name: grilling
-description: Stress-test an idea or decision through focused questions about consequential assumptions and tradeoffs.
+description: Stress-test an idea or decision through focused questions about consequential assumptions and tradeoffs. Use when the user asks to be grilled or questioned on an idea, or when another skill needs to settle open decisions with the user.
 ---
 
 # Grilling

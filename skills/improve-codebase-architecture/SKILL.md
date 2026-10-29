@@ -1,7 +1,6 @@
 ---
 name: improve-codebase-architecture
-description: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change.
-disable-model-invocation: true
+description: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change. Use when the user asks to improve a codebase's architecture or find where its modules should be deepened or merged. For needless complexity in specific code, use `audit-code-complexity`.
 ---
 
 # Improve Codebase Architecture

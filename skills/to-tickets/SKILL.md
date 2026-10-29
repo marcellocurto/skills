@@ -1,6 +1,6 @@
 ---
 name: to-tickets
-description: Turn approved work into well-scoped GitHub issues after checking for duplicates.
+description: Turn approved work into well-scoped GitHub issues after checking for duplicates. Use when the user asks to file agreed work as tickets or issues, or to break it into them.
 ---
 
 # To Tickets

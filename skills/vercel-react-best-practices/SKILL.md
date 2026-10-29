@@ -1,6 +1,6 @@
 ---
 name: vercel-react-best-practices
-description: Apply Vercel's React and Next.js performance guidance when writing or reviewing code.
+description: Apply Vercel's React and Next.js performance guidance. Use when writing or reviewing React or Next.js code.
 license: MIT
 metadata:
   author: vercel

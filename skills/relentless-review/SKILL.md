@@ -1,6 +1,6 @@
 ---
 name: relentless-review
-description: Challenge an existing proposal or result to find material risks and a better path.
+description: Challenge an existing proposal or result to find material risks and a better path. Use when the user asks to challenge, poke holes in, or pressure-test a plan or finished work, or when another skill needs an adversarial pass.
 ---
 
 # Relentless Review

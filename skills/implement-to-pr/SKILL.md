@@ -1,6 +1,6 @@
 ---
 name: implement-to-pr
-description: Implement a GitHub issue or the work agreed in the conversation, check it, and open a pull request that is ready for review.
+description: Implement a GitHub issue or the work agreed in the conversation, check it, and open a pull request that is ready for review. Use when the user asks to implement, build, or fix something and open a PR for it, or when another skill runs it. To also review the PR and settle its comments, use `ship-pr`.
 ---
 
 # Implement to PR

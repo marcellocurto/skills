@@ -1,6 +1,6 @@
 ---
 name: wizard
-description: Create an interactive Bash wizard for setup steps that only a human can complete.
+description: Create an interactive Bash wizard for setup steps that only a human can complete. Use when the user asks for a setup wizard, or when setup needs credentials, dashboard settings, or other steps an agent cannot do itself.
 ---
 
 # Wizard

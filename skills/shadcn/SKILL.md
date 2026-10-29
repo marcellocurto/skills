@@ -1,7 +1,6 @@
 ---
 name: shadcn
-description: Build, update, debug, and style shadcn/ui components using the project's registry and conventions.
-disable-model-invocation: true
+description: Build, update, debug, and style shadcn/ui components using the project's registry and conventions. Use when adding, changing, or fixing shadcn/ui components, or when working in a project that has a `components.json`.
 allowed-tools: Bash(npx shadcn@latest *), Bash(pnpm dlx shadcn@latest *), Bash(bunx --bun shadcn@latest *)
 ---
 
