@@ -33,7 +33,19 @@ Most review findings are real, but fixing every real finding makes a pull reques
 
 ## Wait for feedback
 
-The reviews this skill starts run inside the round, so there is nothing to wait for from them once every comment is answered. Wait when checks on the head are still running, when GitHub has not yet computed whether the PR conflicts with its base, or when the user asked you to wait for a person's review or gave an interval. Run:
+The reviews this skill starts run inside the round, so there is nothing to wait for from them once every comment is answered. Wait when checks on the head are still running, when GitHub has not yet computed whether the PR conflicts with its base, or when the user asked you to wait for a person's review or gave an interval.
+
+### With the host's pull-request watch
+
+When the host can watch a pull request and wake you with a message, such as `watch_pull_request` in T3 Code, wait with it instead of the script. It needs no running command and has no timeout. It sets its own interval, so the user's interval does not apply.
+
+1. Start the watch unless it is already running. It keeps running across wakes until the PR closes or you stop it. If the host refuses, for example because you run as a subagent, wait with the script instead.
+2. Collect the open feedback once more as in step 1 of **Run a round**, because the watch reports only comments posted after it starts. If any is open, run a round.
+3. Otherwise end your turn. The watch wakes you when someone comments, when checks pass or fail, and when the branch starts to conflict with its base. When it wakes you, run the one-time check from **Start** and act on it: a failing check is open feedback for a round, and a conflict stops under **Conflict**.
+
+### With the script
+
+Run:
 
 ```
 python3 "<skill-path>/scripts/watch_pr.py" [--pr URL_OR_NUMBER] --interval <minutes> [--since <checked_at>]
@@ -136,6 +148,8 @@ Each review round finds less that matters, and each push adds code for the next 
 - **Checks fail outside the PR:** a required check fails for a cause the PR did not introduce, after one rerun or because it fails the same way on the base branch. Report the check, the lines of its log that show the cause, and why the PR did not cause it.
 - **No convergence:** five rounds without being done, or twelve hours since the first check.
 - **Closed:** the PR was merged or closed.
+
+Before you report, stop the host's pull-request watch if it is running, with `unwatch_pull_request` in T3 Code, so the thread returns to the user's inbox.
 
 ## Report
 
