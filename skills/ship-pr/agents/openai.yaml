@@ -2,5 +2,3 @@ interface:
   display_name: "Ship PR"
   short_description: "Build a PR, review it with independent agents, and settle feedback"
   default_prompt: "Use $ship-pr to build this, open a pull request, review it with independent agents, settle every comment, and check each round of fixes before pushing."
-policy:
-  allow_implicit_invocation: false

@@ -1,6 +1,6 @@
 ---
 name: diagnosing-bugs
-description: Reproduce, isolate, and fix difficult bugs or performance regressions.
+description: Reproduce, isolate, and fix difficult bugs or performance regressions. Use when a bug, failure, or slowdown has no obvious cause, or when a first fix did not work.
 ---
 
 # Diagnosing Bugs

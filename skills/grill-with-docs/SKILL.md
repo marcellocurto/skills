@@ -1,7 +1,6 @@
 ---
 name: grill-with-docs
-description: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions.
-disable-model-invocation: true
+description: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions. Use when the user asks to grill a plan with docs, or to record its terms and decisions while questioning it. For questions alone, use `grilling`.
 ---
 
 # Grill with Docs

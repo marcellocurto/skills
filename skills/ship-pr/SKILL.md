@@ -1,7 +1,6 @@
 ---
 name: ship-pr
-description: Implement a GitHub issue or the work agreed in the conversation as a pull request, then review it with independent agents, settle every review comment, and check each round of fixes before it is pushed.
-disable-model-invocation: true
+description: Implement a GitHub issue or the work agreed in the conversation as a pull request, then review it with independent agents, settle every review comment, and check each round of fixes before it is pushed. Use when the user asks to ship an issue or change end to end, or to build it and then babysit the PR. To only open the PR, use `implement-to-pr`.
 ---
 
 # Ship PR

@@ -1,6 +1,6 @@
 ---
 name: test-quality-audit
-description: Judge whether tests catch realistic regressions and recommend what to keep, change, or remove.
+description: Judge whether tests catch realistic regressions and recommend what to keep, change, or remove. Use when the user asks whether tests are useful or well written, or when another skill needs a test-quality check.
 ---
 
 # Test Quality Audit

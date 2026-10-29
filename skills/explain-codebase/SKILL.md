@@ -1,6 +1,6 @@
 ---
 name: explain-codebase
-description: Trace and explain how an existing code path or subsystem works.
+description: Trace and explain how an existing code path or subsystem works. Use when the user asks how some code, feature, or flow works, or where something happens.
 ---
 
 # Explain Codebase

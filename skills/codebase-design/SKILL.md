@@ -1,6 +1,6 @@
 ---
 name: codebase-design
-description: Design small, type-safe interfaces that hide complexity and give domain logic a clear home.
+description: Design small, type-safe interfaces that hide complexity and give domain logic a clear home. Use when designing or reshaping a module, interface, or type, or deciding where new logic belongs.
 ---
 
 # Codebase Design

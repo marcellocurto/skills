@@ -1,6 +1,6 @@
 ---
 name: merge-and-migrate
-description: Merge pull requests into the main branch in dependency order, review the whole release for rollout problems, promote it through each deployment branch with pull requests, and run pending migrations at the correct point for each environment.
+description: Merge pull requests into the main branch in dependency order, review the whole release for rollout problems, promote it through each deployment branch with pull requests, and run pending migrations at the correct point for each environment. Use when the user asks to merge and release pull requests through every environment and run their migrations.
 disable-model-invocation: true
 ---
 

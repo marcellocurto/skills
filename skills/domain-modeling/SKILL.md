@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Define and maintain the codebase's shared domain terms and architectural decisions.
+description: Define and maintain the codebase's shared domain terms and architectural decisions. Use when a domain term is unclear or disputed, when a lasting architectural decision is made, or when the user asks to update the glossary or decision records.
 ---
 
 # Domain Modeling

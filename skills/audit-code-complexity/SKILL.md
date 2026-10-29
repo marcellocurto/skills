@@ -1,6 +1,6 @@
 ---
 name: audit-code-complexity
-description: Find needless code complexity and suggest simpler designs that preserve behavior.
+description: Find needless code complexity and suggest simpler designs that preserve behavior. Use when the user asks to simplify code or find overengineering, or when another skill needs a complexity check.
 ---
 
 # Audit Code Complexity

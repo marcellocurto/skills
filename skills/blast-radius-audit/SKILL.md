@@ -1,6 +1,6 @@
 ---
 name: blast-radius-audit
-description: Find downstream breakage a code change could cause beyond the files it directly touches.
+description: Find downstream breakage a code change could cause beyond the files it directly touches. Use when the user asks what a change could break or how far its effects reach, or when another skill needs that check.
 ---
 
 # Blast Radius Audit

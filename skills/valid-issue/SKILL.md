@@ -1,7 +1,6 @@
 ---
 name: valid-issue
-description: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
-disable-model-invocation: true
+description: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing. Use when the user asks whether an issue is valid, still relevant, or worth doing. To make it ready for implementation, use `triage`.
 ---
 
 # Valid Issue

@@ -1,6 +1,6 @@
 ---
 name: vercel-composition-patterns
-description: Apply scalable React composition patterns when designing or refactoring component interfaces.
+description: Apply scalable React composition patterns to component interfaces. Use when designing or refactoring React component interfaces.
 license: MIT
 metadata:
   author: vercel

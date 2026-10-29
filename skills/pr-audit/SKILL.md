@@ -1,6 +1,6 @@
 ---
 name: pr-audit
-description: Audit the full PR for merge readiness across correctness, maintainability and complexity, and test quality, then publish one actionable comment. Covers the contribution, not just existing feedback.
+description: Audit the full PR for merge readiness across correctness, maintainability and complexity, and test quality, then publish one actionable comment. Covers the contribution, not just existing feedback. Use when the user asks for a PR audit or whether a PR is ready to merge.
 ---
 
 # PR Audit
