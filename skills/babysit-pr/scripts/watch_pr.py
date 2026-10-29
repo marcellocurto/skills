@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Poll a pull request until someone needs an answer, and report which commits this skill has reviewed."""
+"""Poll a pull request until someone needs an answer, a check finishes, or the PR conflicts with its base, and
+report which commits this skill has reviewed."""
 
 from __future__ import annotations
 
@@ -10,7 +11,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
-from fetch_review_context import PullRequestTarget, ensure_authenticated, fetch_all, graphql, resolve_pr
+from fetch_review_context import PullRequestTarget, ensure_authenticated, fetch_all, graphql, next_cursor, resolve_pr
 
 # Bodies of the reviews this skill posts, as `REVIEWERS.md` specifies them. Each is pinned to the
 # commit it covers, so these prefixes plus the review's commit say what has been reviewed.
@@ -18,13 +19,42 @@ FIRST_REVIEW_PREFIX = "Reviewed `"
 FIX_CHECK_PREFIX = "Reviewed the fixes in `"
 
 STATUS_QUERY = """\
-query($owner: String!, $repo: String!, $number: Int!) {
+query($owner: String!, $repo: String!, $number: Int!, $cursor: String) {
   viewer { login }
   repository(owner: $owner, name: $repo) {
-    pullRequest(number: $number) { headRefOid }
+    pullRequest(number: $number) {
+      headRefOid
+      mergeable
+      commits(last: 1) {
+        nodes {
+          commit {
+            statusCheckRollup {
+              contexts(first: 100, after: $cursor) {
+                pageInfo { hasNextPage endCursor }
+                nodes {
+                  __typename
+                  ... on CheckRun {
+                    name status conclusion completedAt detailsUrl
+                    isRequired(pullRequestNumber: $number)
+                  }
+                  ... on StatusContext {
+                    context state createdAt targetUrl
+                    isRequired(pullRequestNumber: $number)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 """
+
+# Check-run conclusions that pass; every other conclusion fails, as GitHub treats it for required checks.
+PASSING_CONCLUSIONS = {"SUCCESS", "NEUTRAL", "SKIPPED"}
+PENDING_STATUS_STATES = {"PENDING", "EXPECTED"}
 
 
 def parse_time(value: str) -> datetime:
@@ -81,38 +111,103 @@ def new_activity(context: dict[str, Any], viewer: str, since: datetime | None) -
     return items
 
 
+def summarize_checks(contexts: list[dict[str, Any]]) -> dict[str, Any]:
+    """List the head commit's failing and unfinished checks, from GitHub Actions or commit statuses.
+
+    `last_completed_at` is when the latest check finished, so a watch can tell that checks finished
+    after its `--since` even when they all passed.
+    """
+    failing, pending, completed = [], [], []
+    for context in contexts:
+        if context.get("__typename") == "CheckRun":
+            name, url, required = context["name"], context.get("detailsUrl"), context.get("isRequired", False)
+            finished = context["status"] == "COMPLETED"
+            failed = finished and context.get("conclusion") not in PASSING_CONCLUSIONS
+            completed_at = context.get("completedAt")
+        else:
+            name, url, required = context["context"], context.get("targetUrl"), context.get("isRequired", False)
+            finished = context["state"] not in PENDING_STATUS_STATES
+            failed = context["state"] in {"ERROR", "FAILURE"}
+            completed_at = context.get("createdAt")
+        entry = {"name": name, "required": required, "url": url}
+        if not finished:
+            pending.append(entry)
+            continue
+        if completed_at:
+            completed.append(completed_at)
+        if failed:
+            failing.append({**entry, "completed_at": completed_at})
+    return {
+        "failing": failing,
+        "pending": pending,
+        "last_completed_at": max(completed, key=parse_time) if completed else None,
+    }
+
+
+def fetch_status(target: PullRequestTarget) -> tuple[dict[str, Any], str, list[dict[str, Any]]]:
+    """Return the pull request's head and mergeability, the viewer's login, and every check on the head."""
+    cursor: str | None = None
+    contexts: list[dict[str, Any]] = []
+    while True:
+        data = graphql(target.host, STATUS_QUERY, owner=target.owner, repo=target.repo,
+                       number=target.number, cursor=cursor)["data"]
+        pull_request = data["repository"]["pullRequest"]
+        commits = pull_request["commits"]["nodes"]
+        rollup = commits[0]["commit"]["statusCheckRollup"] if commits else None
+        if rollup is None:
+            return pull_request, data["viewer"]["login"], contexts
+        contexts.extend(rollup["contexts"]["nodes"])
+        cursor = next_cursor(rollup["contexts"])
+        if cursor is None:
+            return pull_request, data["viewer"]["login"], contexts
+
+
 def check(target: PullRequestTarget, since: datetime | None) -> dict[str, Any]:
     # Taken before fetching, so the next `--since` cannot skip a comment posted mid-fetch.
     checked_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     context = fetch_all(target)
-    status = graphql(target.host, STATUS_QUERY, owner=target.owner, repo=target.repo, number=target.number)
-    head = status["data"]["repository"]["pullRequest"]["headRefOid"]
-    viewer = status["data"]["viewer"]["login"]
+    pull_request, viewer, contexts = fetch_status(target)
     metadata = context["pull_request"]
     return {
         "pull_request": {
             "url": metadata["url"],
             "state": metadata["state"],
-            "head_sha": head,
+            "head_sha": pull_request["headRefOid"],
+            # MERGEABLE, CONFLICTING, or UNKNOWN while GitHub is still computing it.
+            "mergeable": pull_request["mergeable"],
         },
         "checked_at": checked_at,
         "reviews": own_reviews(context["reviews"], viewer),
+        "checks": summarize_checks(contexts),
         "new_activity": new_activity(context, viewer, since),
         "unresolved_threads": sum(not thread["isResolved"] for thread in context["review_threads"]),
     }
 
 
-def wake_reason(snapshot: dict[str, Any]) -> str | None:
-    if snapshot["pull_request"]["state"] != "OPEN":
+def wake_reason(snapshot: dict[str, Any], since: datetime | None) -> str | None:
+    def after_since(value: str | None) -> bool:
+        # Same whole-second floor as `new_activity`: a repeat costs less than a missed result.
+        return bool(value) and (since is None or parse_time(value) >= since)
+
+    pull_request, checks = snapshot["pull_request"], snapshot["checks"]
+    if pull_request["state"] != "OPEN":
         return "closed"
-    return "new-activity" if snapshot["new_activity"] else None
+    if snapshot["new_activity"]:
+        return "new-activity"
+    if pull_request["mergeable"] == "CONFLICTING":
+        return "conflict"
+    if any(after_since(failed["completed_at"]) for failed in checks["failing"]):
+        return "check-failed"
+    if not checks["pending"] and after_since(checks["last_completed_at"]):
+        return "checks-finished"
+    return None
 
 
 def watch(target: PullRequestTarget, since: datetime | None, interval: float, timeout: float) -> dict[str, Any]:
     deadline = time.monotonic() + timeout
     while True:
         snapshot = check(target, since)
-        reason = wake_reason(snapshot)
+        reason = wake_reason(snapshot, since)
         if reason is None and time.monotonic() + interval > deadline:
             reason = "timeout"
         if reason:

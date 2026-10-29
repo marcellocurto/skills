@@ -277,12 +277,51 @@ class ActivityTests(OfflineTest):
         self.assertEqual(sorted(urls), ["changes-requested", "edited", "inline", "new"])
 
 
-def snapshot(activity=(), pr_state="OPEN"):
-    return {"pull_request": {"state": pr_state}, "new_activity": list(activity)}
+def check_run(name, conclusion=None, completed_at=None, required=False):
+    return {"__typename": "CheckRun", "name": name, "status": "COMPLETED" if conclusion else "IN_PROGRESS",
+            "conclusion": conclusion, "completedAt": completed_at, "detailsUrl": f"https://ci/{name}",
+            "isRequired": required}
+
+
+def status_context(name, state, created_at="2026-10-01T12:00:00Z", required=False):
+    return {"__typename": "StatusContext", "context": name, "state": state, "createdAt": created_at,
+            "targetUrl": f"https://ci/{name}", "isRequired": required}
+
+
+class CheckSummaryTests(OfflineTest):
+    def test_lists_failing_and_unfinished_checks_with_whether_they_are_required(self):
+        summary = WATCHER.summarize_checks([
+            check_run("lint", "SUCCESS", "2026-10-01T12:00:00Z", required=True),
+            check_run("test", "FAILURE", "2026-10-01T12:05:00Z", required=True),
+            check_run("e2e", "TIMED_OUT", "2026-10-01T12:06:00Z"),
+            check_run("docs", "SKIPPED", "2026-10-01T12:01:00Z"),
+            check_run("build", required=True),
+            status_context("deploy-preview", "PENDING"),
+            status_context("license", "ERROR", "2026-10-01T12:07:00Z"),
+        ])
+        self.assertEqual([(c["name"], c["required"]) for c in summary["failing"]],
+                         [("test", True), ("e2e", False), ("license", False)])
+        self.assertEqual([(c["name"], c["required"]) for c in summary["pending"]],
+                         [("build", True), ("deploy-preview", False)])
+        self.assertEqual(summary["last_completed_at"], "2026-10-01T12:07:00Z")
+
+    def test_a_commit_without_checks_has_nothing_failing_or_pending(self):
+        summary = WATCHER.summarize_checks([])
+        self.assertEqual((summary["failing"], summary["pending"], summary["last_completed_at"]), ([], [], None))
+
+
+def snapshot(activity=(), pr_state="OPEN", failing=(), pending=(), last_completed_at=None, mergeable="MERGEABLE"):
+    return {"pull_request": {"state": pr_state, "mergeable": mergeable}, "new_activity": list(activity),
+            "checks": {"failing": list(failing), "pending": list(pending), "last_completed_at": last_completed_at}}
+
+
+SINCE = "2026-10-01T11:00:00Z"
+BEFORE_SINCE = "2026-10-01T10:00:00Z"
+AFTER_SINCE = "2026-10-01T12:00:00Z"
 
 
 class WatchTests(OfflineTest):
-    def watch(self, snapshots, timeout=30):
+    def watch(self, snapshots, timeout=30, since=None):
         sleeps = []
 
         def sleep(seconds):
@@ -291,7 +330,8 @@ class WatchTests(OfflineTest):
         with patch.object(WATCHER, "check", side_effect=snapshots), \
                 patch.object(WATCHER.time, "sleep", side_effect=sleep), \
                 patch.object(WATCHER.time, "monotonic", side_effect=lambda: sum(sleeps)):
-            result = WATCHER.watch(target=None, since=None, interval=5 * 60, timeout=timeout * 60)
+            result = WATCHER.watch(target=None, since=since and WATCHER.parse_time(since),
+                                   interval=5 * 60, timeout=timeout * 60)
         return result, sleeps
 
     def test_a_new_comment_wakes_the_watch(self):
@@ -307,6 +347,31 @@ class WatchTests(OfflineTest):
     def test_closed_pull_request_stops_the_watch(self):
         result, _ = self.watch([snapshot([{"url": "human"}], pr_state="MERGED")])
         self.assertEqual(result["reason"], "closed")
+
+    def test_a_check_failing_after_since_wakes_the_watch(self):
+        failed = {"name": "test", "completed_at": AFTER_SINCE}
+        result, sleeps = self.watch([snapshot(pending=[{"name": "test"}]),
+                                     snapshot(failing=[failed], pending=[{"name": "e2e"}])], since=SINCE)
+        self.assertEqual(result["reason"], "check-failed")
+        self.assertEqual(sleeps, [300])
+
+    def test_a_failure_already_seen_before_since_does_not_wake_the_watch(self):
+        failed = {"name": "test", "completed_at": BEFORE_SINCE}
+        result, _ = self.watch([snapshot(failing=[failed], last_completed_at=BEFORE_SINCE)] * 10,
+                               timeout=12, since=SINCE)
+        self.assertEqual(result["reason"], "timeout")
+
+    def test_the_last_pending_check_finishing_wakes_the_watch(self):
+        result, sleeps = self.watch([snapshot(pending=[{"name": "build"}], last_completed_at=BEFORE_SINCE),
+                                     snapshot(last_completed_at=AFTER_SINCE)], since=SINCE)
+        self.assertEqual(result["reason"], "checks-finished")
+        self.assertEqual(sleeps, [300])
+
+    def test_a_merge_conflict_wakes_the_watch(self):
+        result, sleeps = self.watch([snapshot(mergeable="UNKNOWN"), snapshot(mergeable="CONFLICTING")],
+                                    since=SINCE)
+        self.assertEqual(result["reason"], "conflict")
+        self.assertEqual(sleeps, [300])
 
 
 # Long enough lines for `git blame -C` to recognise a moved block.

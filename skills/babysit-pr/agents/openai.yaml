@@ -1,4 +1,4 @@
 interface:
   display_name: "Babysit PR"
-  short_description: "Review a PR, settle its comments, and check each round of fixes"
+  short_description: "Review a PR, settle its comments and failing checks, and check each round of fixes"
   default_prompt: "Use $babysit-pr to watch this PR and settle its review comments."
