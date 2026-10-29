@@ -31,7 +31,19 @@ Most review findings are real, but fixing every real finding makes a pull reques
 
 ## Wait for feedback
 
-The reviews this skill starts run inside the round, so there is nothing to wait for once every comment is answered. Wait only when the user asked you to wait for a person's review or gave an interval. Run:
+The reviews this skill starts run inside the round, so there is nothing to wait for once every comment is answered. Wait only when the user asked you to wait for a person's review or gave an interval.
+
+### With the host's pull-request watch
+
+When the host can watch a pull request and wake you with a message, such as `watch_pull_request` in T3 Code, wait with it instead of the script. It needs no running command and has no timeout. It sets its own interval, so the user's interval does not apply.
+
+1. Start the watch unless it is already running. It keeps running across wakes until the PR closes or you stop it. If the host refuses, for example because you run as a subagent, wait with the script instead.
+2. Collect the open feedback once more as in step 1 of **Run a round**, because the watch reports only comments posted after it starts. If any is open, run a round.
+3. Otherwise end your turn. When the watch wakes you, run the one-time check from **Start** and act on it. The watch also wakes you when checks pass or fail and when the branch starts to conflict with its base. Such a wake with no open feedback needs no round: note a failing check or conflict for the report and end your turn again.
+
+### With the script
+
+Run:
 
 ```
 python3 "<skill-path>/scripts/watch_pr.py" [--pr URL_OR_NUMBER] --interval <minutes> [--since <checked_at>]
@@ -119,6 +131,8 @@ Each review round finds less that matters, and each push adds code for the next 
 - **Fixes don't converge:** the second fix check of a round still finds a problem that meets the bar. Don't push the round, and leave its threads open without replies. Report the problem, its cause, and the local commits left unpushed.
 - **No convergence:** five rounds without being done, or twelve hours since the first check.
 - **Closed:** the PR was merged or closed.
+
+Before you report, stop the host's pull-request watch if it is running, with `unwatch_pull_request` in T3 Code, so the thread returns to the user's inbox.
 
 ## Report
 
