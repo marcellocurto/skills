@@ -35,3 +35,4 @@ Write comments that explain intent, contracts, or non-obvious usage, and keep th
 - Treat suggestions, yours or mine, as optional until I confirm them. Do not write them into plans, tickets, or code as requirements.
 - Bold ideas are welcome. If you have evidence that my requested approach would cause bugs, data loss, or lasting complexity, show it to me before building.
 - When I ask for a pull request, open it ready for review, not as a draft.
+- Never add AI attribution to commits, pull requests, issues, or comments. That means no `Co-Authored-By: Claude` (or any other agent) trailer and no "Generated with Claude Code" line. I am the sole author of my work.
