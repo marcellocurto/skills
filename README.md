@@ -53,6 +53,7 @@ Skills for planning, building, reviewing, and improving software. You can run an
 Several skills are forked, adapted, or inspired by other projects:
 
 - [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, a rule for existing design systems, and product-specific copy guidance. The original license is retained.
+- [Anthropic's code-simplifier agent](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-simplifier/agents/code-simplifier.md): the readability checks, the over-simplifying test, and the simplification step in `implement-to-pr`, written locally in `audit-code-complexity`, `babysit-pr`, and `implement-to-pr`.
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
 - [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `create-pull-request`, the comment-audit workflow in `babysit-pr`, the review-context helper shared by `babysit-pr` and `to-tickets`, and the review lenses in `code-review`.

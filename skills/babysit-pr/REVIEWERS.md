@@ -71,7 +71,7 @@ Is the change as easy to understand and change as the problem allows, and does i
 - code that duplicates what the language, framework, a dependency, or an existing helper already provides
 - leftover guards, fallbacks, and code that nothing uses
 
-A finding about a broken rule cites the file and the rule, and names the change that follows it. Every other finding names a concrete simpler shape that keeps the required behavior and is worth its regression risk. Skip anything a formatter or linter enforces, and preferences without a concrete cost.
+A finding about a broken rule cites the file and the rule, and names the change that follows it. Every other finding names a concrete simpler shape that keeps the required behavior and is worth its regression risk. That shape must be no denser than the code it replaces, keep separate concerns apart, and be no harder to debug or extend. Skip anything a formatter or linter enforces, and preferences without a concrete cost.
 
 ### Security
 

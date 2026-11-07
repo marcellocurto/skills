@@ -30,7 +30,13 @@ Look for:
 - the same fact stored or computed in several places
 - behavior placed with the wrong owner, such as an entry point or controller holding business rules, or one module mixing unrelated responsibilities
 - one change requiring edits across many files, or callers needing to know details the callee should hide
-- hidden side effects, broad mutation, misleading names, and dense or clever expressions
+- hidden side effects, broad mutation, and misleading names
+- dense or clever expressions where explicit code would read better, such as nested ternaries and packed one-liners
+- nesting a reader must hold in mind to follow one path, when early returns, a switch, or a named step would remove it
+- related logic scattered through a function or file, so a reader must jump around to follow one behavior
+- comments that restate the code or no longer match it; keep comments that explain intent, contracts, or non-obvious usage
+- a rule in the repository's instructions about how code is structured or written that the code breaks; cite the file and the rule
+- a task solved differently from how the surrounding code solves it, when the difference gives readers a second pattern to learn for no benefit
 - guards, fallbacks, compatibility paths, and code that nothing uses anymore
 - an old API kept only because tests still call it
 - test setup, helpers, or mocks that hide behavior, encode policy in several places, or force indirection into production code
@@ -47,12 +53,13 @@ When you confirm a problem, check the rest of the target for the same problem an
 
 Report a finding only when all of these hold:
 
-1. It has a concrete cost: the code is harder to understand, change, or test, or it risks bugs or operational problems.
+1. It has a concrete cost: the code is harder to understand, change, or test, it risks bugs or operational problems, or it breaks a written repository rule.
 2. Code, usage, tests, or requirements support the claim.
 3. A specific simpler alternative preserves the required behavior and contracts.
 4. The benefit outweighs the migration and regression risk, and the alternative does not move complexity, risk, or manual work into callers or operations.
+5. The alternative is no denser than the code it replaces, keeps separate concerns apart, and is no harder to debug or extend.
 
-Line count, nesting depth, complexity metrics, and unfamiliarity are clues, not findings. Similar-looking code justifies a shared abstraction only when it represents one concept. Skip anything a formatter or linter enforces.
+Line count, nesting depth, complexity metrics, and unfamiliarity are clues, not findings. They become findings when you can show what a reader must hold in mind to follow the code and what would remove that. Similar-looking code justifies a shared abstraction only when it represents one concept. Skip anything a formatter or linter enforces.
 
 Prefer local changes, but recommend a larger restructuring when the evidence shows it removes much more complexity than local fixes would, and state its migration cost. Every alternative must preserve domain distinctions, data semantics, identity, validation, security, accessibility, compatibility, and durability, recovery, and operational guarantees.
 
@@ -66,7 +73,9 @@ Edit code only when the user or the skill running this audit asks for it, then c
 
 ## 4. Report
 
-Use this format, order findings by benefit relative to risk, and omit empty sections:
+When a skill asked you to apply the findings, give it a short report: one line for each applied change that a reader of the diff would need explained, and the format below only for findings you left unapplied.
+
+Otherwise use this format, order findings by benefit relative to risk, and omit empty sections:
 
 ```markdown
 **Verdict:** Needs simplification | Minor opportunities | No material findings. One sentence on why.
