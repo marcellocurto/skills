@@ -91,7 +91,7 @@ Every finding names a concrete simpler shape that keeps the required behavior an
 
 ### Security
 
-Review only the trust boundaries the change touches: user or external input, authentication and authorization, session and token handling, secrets and credentials, cryptography and randomness, certificate validation, outbound requests built from input, database queries, shell commands, file paths, templates, rendered HTML, XML parsing, deserialization, code loaded from a path or plugin, messages between processes, new or upgraded dependencies, CI workflow triggers and permissions, IAM and RBAC bindings, agent tool permissions and allowlists, prompts sent to models, and data exposed in responses, logs, or errors. If the change touches none, say so and stop.
+Read each changed file in full, not only its diff hunks, before reporting or ruling anything out; generated files and lockfiles are the exception. Review only the trust boundaries the change touches: user or external input, authentication and authorization, session and token handling, secrets and credentials, cryptography and randomness, certificate validation, outbound requests built from input, database queries, shell commands, file paths, templates, rendered HTML, XML parsing, deserialization, code loaded from a path or plugin, messages between processes, new or upgraded dependencies, CI workflow triggers and permissions, IAM and RBAC bindings, agent tool permissions and allowlists, prompts sent to models, and data exposed in responses, logs, or errors. If the change touches none, say so and stop.
 
 For each boundary, work in this order:
 
@@ -106,6 +106,11 @@ While tracing, check:
 - **Sibling paths have the same guard.** When the change adds a guard to one branch, handler, or layer, check the other branches, early returns, error paths, and handlers that reach the same resource.
 - **Security decisions fail closed.** On error, cancellation, a missing value, and the exact limit value, confirm the decision doesn't end in allow.
 - **Safety claims hold.** A comment, a name, or a header treated as trusted that says input is validated, internal, or safe is a claim. Confirm it in the code or infrastructure before relying on it.
+- **Returned values are safe where they're used.** When a changed function builds a command, query, URL, path, or template and returns it, read the callers that use it, because the sensitive operation is there.
+- **Logs and errors don't leak.** Trace each field a changed log, trace, metric, or error message emits, especially on error branches, where redaction is often skipped and an upstream error can repeat a secret from a URL or header.
+- **Resource limits hold.** When the change parses, decompresses, fetches, or loops over untrusted input, confirm that its size, time, and count limits guard the actual peak use. A defect that defeats a limit is a finding, and plain high volume is not.
+
+Report a candidate once you can name where the input enters, the sensitive operation, and the path between them with no effective protection, even if you aren't sure of it, because the verifier checks every Security finding.
 
 Each finding's Trigger names the entry point, who controls the input, and the sensitive operation it reaches. Its Problem names the missing protection, who is harmed, and the authority or data that crossing this boundary gives the attacker. These are not findings: a guard against input that the types or callers already rule out, a protection you confirmed a framework or earlier layer supplies, and a risk a recorded trust assumption accepts, unless the change makes that assumption's stated reason no longer true.
 
