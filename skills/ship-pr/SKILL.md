@@ -32,7 +32,7 @@ When `babysit-pr` finishes or stops, send one message that combines the final re
 
 **Review focus:** the one to three places in the final diff that need careful reading, and which parts are mechanical.
 
-**Feedback:** each review finding, labeled with its lens, each fix-check finding, and each human comment, with its outcome: fixed (with the commit), rejected (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). For an architectural problem, name the root cause and the change you recommend.
+**Feedback:** each review finding, labeled with its lens, each fix-check finding, and each human comment, with its outcome: fixed (with the commit), rejected (with the reason), dropped before posting or fixing (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). For an architectural problem, name the root cause and the change you recommend.
 
 **Noticed, not done:** problems outside the scope that you found along the way, `babysit-pr`'s follow-ups, and the policy lines it proposes for the repository's instructions.
 ```
