@@ -130,6 +130,8 @@ Record the PR URL, the base branch, the head commit, and the merge base. Choose 
 
 Wait for all reviewers, then check coverage. Compare each reviewer's inspected and skipped areas with the files its lens should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, or skipped or left unmentioned files its lens should read, limiting the rerun to what it missed. Report any gap that remains under coverage gaps.
 
+If no reviewer has returned a result after its rerun, stop under **Review failed** in `SKILL.md`. A lens that says it has nothing to review, such as Security when the change touches no trust boundary, has returned a result. A reviewer that fails doesn't make this a host without agents, so don't replace it with a local pass.
+
 Then check findings yourself; agreement is not proof. Apply [Decide each comment](SKILL.md#decide-each-comment). A finding that it would reject or that falls below the fix bar is a planned drop, as is a reasoned finding triggered by crafted or validation-rejected input unless the lens is Security. Merge shared causes under the best-fitting lens, then run the **Verifier**.
 
 Post survivors as one review pinned to the reviewed head, with an inline thread per finding. Use `COMMENT`; authors cannot approve or request changes on their own PR.
@@ -184,7 +186,7 @@ Ask it three questions, and apply the Correctness, Repository rules, and Scenari
 
 Apply [Decide each comment](SKILL.md#decide-each-comment), including late-round restrictions. Report only eligible fixes and simplifications removing more code than they add. Don't raise points already settled by rejections or accepted limits.
 
-Its findings don't become threads. Check its coverage and each finding against the code yourself, as for the first review, run the **Verifier**, and fix the survivors in the same push. After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
+Its findings don't become threads. Check its coverage as for the first review, and if it has returned no result after its rerun, stop under **Review failed** in `SKILL.md`. Check each finding against the code yourself, as for the first review, run the **Verifier**, and fix the survivors in the same push. After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." When the reviewer left a coverage gap, end the line with it, such as "Security did not cover `src/a.ts`." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
 
 ## Verifier
 
