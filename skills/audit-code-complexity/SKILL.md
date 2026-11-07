@@ -5,15 +5,15 @@ description: Find needless code complexity and suggest simpler designs that pres
 
 # Audit Code Complexity
 
-Find code that is harder to understand, change, or verify than the problem requires, and propose simpler shapes that keep its behavior. Simpler means easier to understand and change while keeping every real requirement; fewer files, functions, or lines do not by themselves make code simpler. This is an audit: do not edit code unless the user asks.
+Find code that is harder to understand, change, or verify than the problem requires, and propose simpler shapes that keep its behavior. Simpler means easier to understand and change while keeping every real requirement; fewer files, functions, or lines do not by themselves make code simpler. This is an audit: do not edit code unless the user or the skill running this audit asks.
 
 ## 1. Set the scope
 
-- **Current state:** audit the named code as it exists, whenever its complexity was introduced.
-- **Change:** audit only complexity that the named commits, branch, or pull request introduced or made worse. Read surrounding code for context.
-- **Proposal:** audit a design or code the user proposes before it is built, against the requirements it states. A request to revise the proposal changes the proposal, not the code it describes.
+- **Current state:** audit the named code as it exists, regardless of when its complexity was introduced.
+- **Change:** audit only complexity that the named commits, branch, pull request, or working changes introduced or made worse. Read surrounding code for context.
+- **Proposal:** audit a design or code the user proposes before it is built, against the requirements it states. If asked to revise the proposal, edit the proposal and leave the code alone.
 
-Use the change scope only when the user names a change; uncommitted work in the repository is not a reason to switch. If the user asks for both, report them separately.
+Default to the current state. Use the change scope only when the user or the skill running this audit names a change; uncommitted work alone doesn't count. If asked for more than one scope, report each separately.
 
 For a large target, split it by module across parallel read-only subagents where available, and verify their findings yourself before reporting.
 
@@ -30,7 +30,13 @@ Look for:
 - the same fact stored or computed in several places
 - behavior placed with the wrong owner, such as an entry point or controller holding business rules, or one module mixing unrelated responsibilities
 - one change requiring edits across many files, or callers needing to know details the callee should hide
-- hidden side effects, broad mutation, misleading names, and dense or clever expressions
+- hidden side effects, broad mutation, and misleading names
+- dense or clever expressions where explicit code would read better, such as nested ternaries and packed one-liners
+- nesting a reader must hold in mind to follow one path, when early returns, a switch, or a named step would remove it
+- related logic scattered through a function or file, so a reader must jump around to follow one behavior
+- comments that restate the code or no longer match it; keep comments that explain intent, contracts, or non-obvious usage
+- a rule in the repository's instructions about how code is structured or written that the code breaks; cite the file and the rule
+- a task solved differently from how the surrounding code solves it, when the difference gives readers a second pattern to learn for no benefit
 - guards, fallbacks, compatibility paths, and code that nothing uses anymore
 - an old API kept only because tests still call it
 - test setup, helpers, or mocks that hide behavior, encode policy in several places, or force indirection into production code
@@ -47,26 +53,29 @@ When you confirm a problem, check the rest of the target for the same problem an
 
 Report a finding only when all of these hold:
 
-1. It has a concrete cost: the code is harder to understand, change, or test, or it risks bugs or operational problems.
+1. It has a concrete cost: the code is harder to understand, change, or test, it risks bugs or operational problems, or it breaks a written repository rule.
 2. Code, usage, tests, or requirements support the claim.
-3. A specific simpler alternative preserves the required behavior and contracts.
+3. A specific simpler alternative preserves the required behavior and contracts, including domain distinctions, data semantics, identity, validation, security, accessibility, compatibility, and durability, recovery, and operational guarantees.
 4. The benefit outweighs the migration and regression risk, and the alternative does not move complexity, risk, or manual work into callers or operations.
+5. The alternative does not trade readability for fewer lines, such as nested ternaries or packed one-liners, keeps separate concerns apart, and is no harder to debug or extend.
 
-Line count, nesting depth, complexity metrics, and unfamiliarity are clues, not findings. Similar-looking code justifies a shared abstraction only when it represents one concept. Skip anything a formatter or linter enforces.
+Line count, nesting depth, and complexity metrics are clues. One becomes a finding when you can show what a reader must hold in mind to follow the code and what would remove that. Unfamiliarity alone is never a finding. Similar-looking code justifies a shared abstraction only when it represents one concept. Skip anything a formatter or linter enforces.
 
-Prefer local changes, but recommend a larger restructuring when the evidence shows it removes much more complexity than local fixes would, and state its migration cost. Every alternative must preserve domain distinctions, data semantics, identity, validation, security, accessibility, compatibility, and durability, recovery, and operational guarantees.
+Prefer local changes, but recommend a larger restructuring when the evidence shows it removes much more complexity than local fixes would, and state its migration cost.
 
 A bug, security issue, or performance problem belongs in this report only when the complexity causes or hides it; label it separately. Tests are in scope only as a source of complexity. For test value and coverage, use the `test-quality-audit` skill.
 
-When replacing an interface, find every user, including tests, and move tests to the replacement while checking the same behavior; do not keep an old API only for tests. Keep it while other callers or a rollout need it, and say when a temporary adapter can be removed.
+## 4. Apply findings, when asked
 
-## Applying a finding
+Edit code only when the user or the skill running this audit asks for it, then carry the change through and verify it without asking again. Leave a finding unapplied when it would change behavior callers or users could notice, or when it needs a decision you can't make. Run the relevant tests before the refactor and keep tests covering the same cases afterward. Change an expected outcome only for an authorized contract change or a demonstrated error in the test, and do not change fixtures, mocks, or test selection in ways that hide a failure. If the work includes a behavior fix, use the `tdd` skill when available. If a blocker stops you, keep any valid failing test and report the missing decision and what remains.
 
-Edit code only when the user asks for it, then carry the change through and verify it without asking again. Run the relevant tests before the refactor and keep the same protected cases afterward. Change an expected outcome only for an authorized contract change or a demonstrated error in the test, and do not change fixtures, mocks, or test selection in ways that hide a failure. If the work includes a behavior fix, use the `tdd` skill when available. If a blocker stops you, keep any valid failing test and report the missing decision and what remains.
+When replacing an interface, find every user, including tests, and move tests to the replacement while checking the same behavior; do not keep an old API only for tests. Keep the old interface while other callers or a rollout need it, and say when a temporary adapter can be removed.
 
-## 4. Report
+## 5. Report
 
-Use this format, order findings by benefit relative to risk, and omit empty sections:
+When a skill asked you to apply the findings, give it a short report: one line for each applied change that a reader of the diff would need explained, and the format below only for findings you left unapplied.
+
+Otherwise use this format, order findings by benefit relative to risk, and omit empty sections:
 
 ```markdown
 **Verdict:** Needs simplification | Minor opportunities | No material findings. One sentence on why.

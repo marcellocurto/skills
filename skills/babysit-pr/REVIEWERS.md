@@ -16,7 +16,7 @@ Give each reviewer what an outside reviewer would have, and nothing from the imp
 
 - Read only. Don't edit, commit, push, post comments, or resolve threads, and don't start other agents.
 - Report only problems this PR causes or makes worse. Code outside the diff can be evidence, but a problem that already existed is not a finding.
-- Anything the PR's risks and non-goals, the issue's non-goals, or the repository's instruction files already decide is not a finding.
+- A limit or tradeoff that the PR's risks and non-goals, the issue's non-goals, or the repository's instruction files already accept is not a finding. A change that breaks a rule in the instruction files is one.
 - Judge cost and edge cases against realistic input: the sizes the repository's instructions state, otherwise what its validators, fixtures, and seed data show. Name the size you assumed. A crafted file, or an input that validation or the types already reject, is a trigger only under the Security lens or when you reproduced the harm.
 - Don't run the full test suites; they ran before the PR was pushed. For each candidate finding, try to reproduce it with one existing test or a temporary probe placed outside the working tree and deleted afterward, when that takes a few minutes. Skip the attempt for races, deploy ordering, and other cases a quick probe can't show.
 - Back every finding with evidence from the code, tests, or requirements. Finding nothing material is a valid result.
@@ -61,8 +61,9 @@ Where the repository already handles the same entity or mode on another path, co
 
 ### Simplicity
 
-Is the change as easy to understand and change as the problem allows? Simpler means easier to understand and change while keeping every requirement; fewer lines, functions, or files don't count by themselves. Check:
+Is the change as easy to understand and change as the problem allows, and does it follow the repository's written rules? Simpler means easier to understand and change while keeping every requirement; fewer lines, functions, or files don't count by themselves. Check:
 
+- a rule in the repository's instruction files that the change breaks
 - behavior placed in a module that doesn't own its data and rules
 - the same rule or fact kept in more than one place
 - wrappers that only forward a call, and abstractions, configuration, or extension points no current requirement needs
@@ -70,7 +71,7 @@ Is the change as easy to understand and change as the problem allows? Simpler me
 - code that duplicates what the language, framework, a dependency, or an existing helper already provides
 - leftover guards, fallbacks, and code that nothing uses
 
-Each finding names a concrete simpler shape that keeps the required behavior and is worth its regression risk. Skip anything a formatter or linter enforces, and preferences without a concrete cost.
+A finding about a broken rule cites the file and the rule, and names the change that follows it. Every other finding names a concrete simpler shape that keeps the required behavior and is worth its regression risk. That shape must not trade readability for fewer lines, such as nested ternaries or packed one-liners, must keep separate concerns apart, and must be no harder to debug or extend. Skip anything a formatter or linter enforces, and preferences without a concrete cost.
 
 ### Security
 
@@ -105,7 +106,7 @@ Read the vendor's documentation for the constructs the change handles, fetching 
 
 Record the PR URL, the base branch, the head commit, and the merge base. Choose the lenses, then start one reviewer per lens at the same time, each with the diff `git diff <merge-base>..<head>`. Don't push or change the checkout while they run.
 
-Wait for all reviewers. Check each finding against the code yourself, since agreement between reviewers is not proof. Drop findings that are unsupported, already handled, pre-existing, outside the PR's intent, decided by the non-goals or the repository's instructions, preference only, or speculative hardening; reasoned findings whose trigger is a crafted input or input that validation rejects, unless the lens is Security; and findings that fall short of the fix bar in `SKILL.md`. Merge findings that share one cause into one, under the lens that fits best.
+Wait for all reviewers. Check each finding against the code yourself, since agreement between reviewers is not proof. Drop findings that are unsupported, already handled, pre-existing, outside the PR's intent, accepted by the non-goals or the repository's instructions, preference only, or speculative hardening; reasoned findings whose trigger is a crafted input or input that validation rejects, unless the lens is Security; and findings that fall short of the fix bar in `SKILL.md`. Merge findings that share one cause into one, under the lens that fits best.
 
 Post the surviving findings as one pull request review with an inline comment for each, so each becomes a review thread that a round settles. Use the `COMMENT` event, because GitHub doesn't let authors approve or request changes on their own PR, and pin the review to the reviewed head commit.
 
