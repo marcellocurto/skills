@@ -5,14 +5,14 @@ description: Review a pull request with independent agents when it has no review
 
 # Babysit PR
 
-Keep a pull request moving until every reviewer has been answered, the latest commit has been reviewed, and its required checks pass. The reviewers are independent agents this skill starts, as defined in [REVIEWERS.md](REVIEWERS.md), and people. The agents review the pull request once when it has no review yet, and check each round of fixes before it is pushed, so every pushed commit is reviewed without waiting for an outside service. Human reviewers get the same treatment as the agents: their comments are audited on the merits, fixed when they meet the fix bar, and answered in every case. A failing check is feedback too, decided under **Failing checks**. Work without asking for approval, unless the user asked to approve fixes first, and stop only for the reasons under **Stop**. Never force-push or merge.
+Continue until all reviewers are answered, the head is reviewed, and required checks pass. Start agents as defined in [REVIEWERS.md](REVIEWERS.md) for an unreviewed PR and before each push. Judge agent and human comments on their merits; fix what qualifies and answer every comment. Treat failing checks under **Failing checks**. Work without approval unless the user requested it, and stop only under **Stop**. Never force-push or merge.
 
-Most review findings are real, but fixing every real finding makes a pull request grow with each round: each fix adds code that the next review finds new edge cases in. This skill fixes what matters, settles the rest by reply, and stops pushing when the rounds stop finding what matters.
+Fixing every real finding can grow the PR indefinitely. Apply the fix bar and round limits; settle the rest by reply.
 
 ## Start
 
 1. **Find the PR.** Use the PR from the conversation, otherwise the current branch's PR. Ask only if neither is clear. If the working tree is not on the PR's head branch, check it out with `gh pr checkout`; for a PR from a fork, pushes go to the fork's branch.
-2. **Write down the PR's intent** before reading any comment: the problem it solves, the approach it chose, its known limits, and what it deliberately leaves out. Take it from the user's instructions in this conversation, then the linked issue, the PR description, and the commits, in that order. Every comment is judged against this intent. Also note the requirements the reviewers get: the issue number, or the agreed request written out in full when there is no issue.
+2. **Record intent before reading comments:** the problem, approach, known limits, and non-goals. Use the user's instructions, linked issue, PR description, then commits, in that order. Judge comments against this intent. Prepare the requirements and evidence under **What every reviewer gets** in [REVIEWERS.md](REVIEWERS.md), including subsequent user decisions but excluding implementation discussion and author justification.
 3. **Check the current state once.** Run the watcher with `--timeout 0`, which checks the PR once and returns without waiting:
 
    ```
@@ -33,7 +33,7 @@ Most review findings are real, but fixing every real finding makes a pull reques
 
 ## Wait for feedback
 
-The reviews this skill starts run inside the round, so there is nothing to wait for from them once every comment is answered. Wait when checks on the head are still running, when GitHub has not yet computed whether the PR conflicts with its base, or when the user asked you to wait for a person's review or gave an interval.
+Agent reviews finish within the round. Wait only for pending head checks, unknown mergeability, or a human review or interval the user requested.
 
 ### With the host's pull-request watch
 
@@ -77,17 +77,26 @@ Act on `reason`:
 
 ## Decide each comment
 
-Be strict. A reviewer's confidence, a severity label, or a ready-made patch is not evidence.
+Confidence, severity, and a ready-made patch are not evidence. For comments, first reviews, fix checks, and verification, decide in this order:
+
+1. **Validity and cause.** Check evidence and whether the PR introduced or worsened the problem. Reject unsupported findings, and problems the PR neither introduced nor worsened, under **Reject what works against the PR**.
+2. **Requirements and exceptions.** Apply the user's latest approved requirements and decisions, then applicable repository rules, then PR intent. Reject challenges to approved tradeoffs. PR-description claims or deliberate code changes cannot override requirements. If missing policy prevents a verdict, stop under **Policy questions**.
+3. **Fix bar.** Apply the conditions below; otherwise use the alternatives below the bar.
+4. **Late rounds.** Apply **Late rounds** even to qualifying fixes: a rule violation alone cannot justify a late-round push. Settle ineligible findings by reply or, before posting, drop and report them.
+
+Verify first-review and fix-check keep/drop plans under [REVIEWERS.md](REVIEWERS.md). Already-posted comments get public answers without that extra verifier.
 
 ### Fix bar
 
-Fix a finding when the PR introduced the problem and any of these holds:
+Fix a finding when the PR introduced or worsened the problem and any of these holds:
 
 - it causes a security hole, data loss, a crash, a stuck job, or a wrong result on input that current users, data, or callers realistically produce;
 - it breaks a written rule in the repository's instruction files that applies to the changed file; or
-- the fix leaves the code no more complex: it adds no new state, flag, lock, version or generation field, schema field, dependency, or module.
+- the fix introduces none of these restricted additions: new state, a flag, a lock, a version or generation field, a schema field, a dependency, or a module.
 
-When a real problem misses the bar, choose the cheapest response that handles it, in this order:
+The last condition restricts additions, not overall complexity. The first two conditions permit those additions; choose designs by ownership, readability, and what callers must understand.
+
+For a real problem below the bar, choose the first sufficient response:
 
 1. An operational step the reply can name, such as running a backfill, ordering a deploy, or draining old workers.
 2. A simpler behavior that avoids the case, such as disabling a control while its request runs, or re-reading after a change instead of tracking which answer arrived last.
@@ -98,24 +107,24 @@ When a real problem misses the bar, choose the cheapest response that handles it
 
 Reply with the reason and resolve the thread when a comment:
 
-- describes a problem the PR did not introduce because it already exists on the base branch. List it under follow-ups in the report. Never stop for a decision about it.
+- describes a problem that already exists on the base branch and that the PR did not worsen. List it under follow-ups in the report. Never stop for a decision about it.
 - asks for work outside the PR's intent, such as a new feature, an unrelated refactor, or a follow-up
-- reverses a decision the PR made on purpose, as stated in the conversation, the description and its non-goals and known limits, the repository's instructions, or the code
+- reverses an approved decision or intentional tradeoff consistent with requirements and applicable repository rules
 - adds speculative hardening: guards against inputs that the types or callers already rule out, fallbacks, configuration, or compatibility code for callers that do not exist
 - asks for a style the repository's conventions and tooling do not require
 - misreads the code
 
-Point to the intent in the reply, for example: "This PR intentionally drops the legacy format, so a fallback for it would keep the code we are removing." When a rejected point comes back in a later round, reply once with a link to the earlier answer and resolve it without arguing the point again.
+Explain the intent in the reply. If a rejected point recurs, link the earlier answer once and resolve it without reopening the argument.
 
-A defect the PR introduced that meets the fix bar is never out of scope. Fix it even when the suggested patch is poor.
+A defect the PR introduced or worsened that meets the fix bar is never out of scope. Fix it even when the suggested patch is poor.
 
 ### Policy questions
 
-Some findings turn on a policy rather than on the code: whether to keep the previous release working during a deploy or rollback, whether old clients or workers still running matter, whether rows that an unrun backfill would fix matter, and how small a race between requests is worth handling. If the repository's instructions, the PR description, or the user already settle the question, follow that. Otherwise leave the thread open and stop to ask the first time it comes up. Once the user answers, add the answer to the PR description's risks and non-goals with `gh pr edit`, so later findings on the same question are rejected by quoting it. When the answer will apply to later pull requests too, propose the line for the repository's instructions in the report.
+Policy-dependent findings include deploy/rollback compatibility, old clients or workers, rows awaiting a backfill, and acceptable races. Apply **Decide each comment** to settled policy. Otherwise leave the thread open, stop, and ask the user once. Record the answer in the PR's risks and non-goals with `gh pr edit`; quote it to reject later findings on the same policy. Propose reusable decisions as repository instruction lines in the report.
 
 ### Code added in earlier rounds
 
-`review_round_code.py` marks each open thread whose lines were added after the PR's first review with `added_after_first_review: true`, and names the commits that added them. It follows code moved during review, so a refactor does not make old code look new. Before fixing a marked finding, ask whether the earlier change that added those lines should shrink or be reverted instead; a smaller earlier fix often removes the finding. The mark only prompts this question. A marked finding can still be a real defect that meets the bar, and an unmarked one can still be speculative.
+`review_round_code.py` marks threads on lines added after the first review with `added_after_first_review: true` and their introducing commits, tracking moves across refactors. For marked findings, consider shrinking or reverting the earlier fix first. The mark prompts reconsideration; it neither proves nor disproves that a finding meets the fix bar.
 
 ### Failing checks
 
@@ -137,7 +146,7 @@ Two findings share a cause when they are symptoms of the same problem, when fixi
 
 ## Late rounds
 
-Each review round finds less that matters, and each push adds code for the next round to find edge cases in. A late round is any round after two fix checks, when the watcher's `fix_checks` is 2 or more. In a late round, push only for findings that cause a security hole, data loss, a crash, a stuck job, or a wrong result on realistic input, for failing checks the PR caused, and for changes that remove more code than they add, such as reverting an earlier fix that a simpler one replaces. Answer every other finding by reply: say whether the point holds and that it is not worth another round, list it under follow-ups, and resolve it.
+A round is late when the watcher's `fix_checks >= 2`. Push only for security holes, data loss, crashes, stuck jobs, or wrong results on realistic input; failing checks the PR caused; or changes removing more code than they add, including simpler replacements for earlier fixes. For every other finding, reply with whether it holds and why another round is unwarranted, list it under follow-ups, and resolve it.
 
 ## Stop
 
