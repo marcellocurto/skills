@@ -34,7 +34,7 @@ When `babysit-pr` finishes or stops, combine both skills' reports in this order,
 
 **Feedback:** each review finding, labeled with its lens, each fix-check finding, and each human comment, with its outcome: fixed (with the commit), rejected (with the reason), dropped before posting or fixing (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). Quote any user decision used as counterevidence. For an architectural problem, name the root cause and the change you recommend.
 
-**Noticed, not done:** problems outside the scope that you found along the way, `babysit-pr`'s follow-ups, and the policy lines it proposes for the repository's instructions.
+**Noticed, not done:** problems outside the scope that you found along the way, `babysit-pr`'s follow-ups and noticed problems, and the policy lines it proposes for the repository's instructions.
 ```
 
 Never say all checks pass when some didn't run. Name what passed and what didn't run.
