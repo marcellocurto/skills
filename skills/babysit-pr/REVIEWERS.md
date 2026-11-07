@@ -191,7 +191,7 @@ For each finding, it answers these questions with evidence from the code, then s
 
 When its answer matches your plan, the finding is settled: one it confirms survives, and one it doesn't confirm is dropped, and the report lists it with the reason.
 
-When its answer differs from your plan, you may send it your counterevidence once. Counterevidence is code or a reproduction; an argument doesn't count. Without any, follow its answer. If the host can't continue the verifier, start a new one with the finding, the first answer, and the counterevidence. If it changes its answer, follow the new answer. If you still disagree:
+When its answer differs from your plan, you may send it your counterevidence once. Counterevidence is something the verifier can check: code, a reproduction, a cited requirement or applicable rule, authoritative documentation, or the user's decision quoted in their own words. Claims in the PR description and unsupported arguments don't count. Without any, follow its answer. If the host can't continue the verifier, start a new one with the finding, the first answer, and the counterevidence. If it changes its answer, follow the new answer. If you still disagree:
 
 - In the first review, post the finding, and a round settles it in public.
 - In a fix check, stop under **Reviewers disagree** in `SKILL.md`, without changing code for that finding.
