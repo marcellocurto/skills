@@ -70,7 +70,7 @@ Act on `reason`:
 2. **Group the batch by cause.** Compare the batch with itself and with earlier rounds' threads, and decide shared causes before fixing anything (see **When findings share a cause**).
 3. **Decide each comment.** Check the code to decide whether the comment is correct, then whether it meets the fix bar and whether its suggestion is the right fix (see **Decide each comment**). If the concern meets the bar but the suggestion is poor, fix it a better way.
 4. **Fix in one batch.** Make every fix that meets the bar, run the relevant checks, and commit. Draft the reply for each thread. In a late round, fix only what **Late rounds** allows.
-5. **Check the fixes.** Run the fix check in [REVIEWERS.md](REVIEWERS.md) on every commit since `last_reviewed_commit`, which includes commits someone else pushed. Fix what survives your verification and commit. When those fixes change more than the lines a finding names, run the fix check once more on just those commits; if it still finds a problem that meets the bar, stop under **Fixes don't converge**. Skip this step when the round committed nothing and the head is reviewed.
+5. **Check the fixes.** Run the fix check in [REVIEWERS.md](REVIEWERS.md) on every commit since `last_reviewed_commit`, which includes commits someone else pushed. Fix what survives verification and commit. When those fixes change more than the lines a finding names, run the fix check once more on just those commits; if it still finds a problem that meets the bar, stop under **Fixes don't converge**. Skip this step when the round committed nothing and the head is reviewed.
 6. **Push once,** then post the fix check's one-line review pinned to the pushed head. A round that settled every comment by reply and found no unreviewed commits pushes nothing and posts no fix check. A round that only fix-checked someone else's commits and needed no fix posts the review pinned to the current head.
 7. **Reply and resolve.** In each thread, reply with what changed and the commit, or with why nothing changed, then resolve it. Conversation comments and review bodies have no thread to resolve, so answer them with one reply that addresses each point. Keep replies to one or two sentences. Failing checks get no reply; their outcomes go in the report.
 8. Run the one-time check from **Start** again and act on it.
@@ -81,9 +81,10 @@ Be strict. A reviewer's confidence, a severity label, or a ready-made patch is n
 
 ### Fix bar
 
-Fix a finding when the PR introduced the problem and either:
+Fix a finding when the PR introduced the problem and any of these holds:
 
-- it causes a security hole, data loss, a crash, a stuck job, or a wrong result on input that current users, data, or callers realistically produce; or
+- it causes a security hole, data loss, a crash, a stuck job, or a wrong result on input that current users, data, or callers realistically produce;
+- it breaks a written rule in the repository's instruction files that applies to the changed file; or
 - the fix leaves the code no more complex: it adds no new state, flag, lock, version or generation field, schema field, dependency, or module.
 
 When a real problem misses the bar, choose the cheapest response that handles it, in this order:
@@ -144,6 +145,7 @@ Each review round finds less that matters, and each push adds code for the next 
 - **Architectural problem:** fixing it would change the PR's approach or scope.
 - **Decision needed:** a comment needs a product, design, or policy decision you cannot make. Leave the thread open and say in the reply what is needed.
 - **Fixes don't converge:** the second fix check of a round still finds a problem that meets the bar. Don't push the round, and leave its threads open without replies. Report the problem, its cause, and the local commits left unpushed.
+- **Reviewers disagree:** you and a fix check's verifier still disagree about a finding after one exchange of counterevidence. Don't push the round, and leave its threads open without replies. Report the finding, each side's evidence, and the local commits left unpushed.
 - **Conflict:** the PR conflicts with its base branch. Report that the base branch needs to be merged in and the conflicts resolved.
 - **Checks fail outside the PR:** a required check fails for a cause the PR did not introduce, after one rerun or because it fails the same way on the base branch. Report the check, the lines of its log that show the cause, and why the PR did not cause it.
 - **No convergence:** five rounds without being done, or twelve hours since the first check.
@@ -153,4 +155,4 @@ Before you report, stop the host's pull-request watch if it is running, with `un
 
 ## Report
 
-Say whether the PR is done or why you stopped, and name the head commit and the number of rounds. List each comment with its outcome: fixed (with the commit), rejected (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). Label each first-review finding with its lens, and list the fix checks' findings with their outcomes too. List each failing check with its outcome: fixed (with the commit), passed after a rerun, or failing outside the PR (with the evidence). For an architectural problem, name the root cause, the comments that point to it, and the change you recommend. Then list the follow-ups, each with a link to its thread: problems that predate the PR, and findings answered by reply in late rounds. End with any policy answers worth adding to the repository's instructions, each as the line to add.
+Say whether the PR is done or why you stopped, and name the head commit and the number of rounds. List each comment with its outcome: fixed (with the commit), rejected (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). Label each first-review finding with its lens, and list the fix checks' findings with their outcomes too. List each finding dropped before posting or fixing, with its lens and the reason. Quote any user decision you used as counterevidence. List each failing check with its outcome: fixed (with the commit), passed after a rerun, or failing outside the PR (with the evidence). For an architectural problem, name the root cause, the comments that point to it, and the change you recommend. Then list the follow-ups, each with a link to its thread: problems that predate the PR, and findings answered by reply in late rounds. End with any policy answers worth adding to the repository's instructions, each as the line to add.
