@@ -57,7 +57,7 @@ Report a finding only when all of these hold:
 2. Code, usage, tests, or requirements support the claim.
 3. A specific simpler alternative preserves the required behavior and contracts.
 4. The benefit outweighs the migration and regression risk, and the alternative does not move complexity, risk, or manual work into callers or operations.
-5. The alternative is no denser than the code it replaces, keeps separate concerns apart, and is no harder to debug or extend.
+5. The alternative does not trade readability for fewer lines, such as nested ternaries or packed one-liners, keeps separate concerns apart, and is no harder to debug or extend.
 
 Line count, nesting depth, complexity metrics, and unfamiliarity are clues, not findings. They become findings when you can show what a reader must hold in mind to follow the code and what would remove that. Similar-looking code justifies a shared abstraction only when it represents one concept. Skip anything a formatter or linter enforces.
 
