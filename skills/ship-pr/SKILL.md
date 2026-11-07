@@ -26,7 +26,7 @@ When `babysit-pr` finishes or stops, combine both skills' reports in this order,
 
 **Screenshots:** for UI changes, embed checked screenshots as Markdown images with absolute local paths and captions. Show the head version after UI fixes.
 
-**Couldn't verify:** each check or tool that didn't run, what it would have caught, what you did instead, and what to install to run it.
+**Couldn't verify:** each check or tool that didn't run, what it would have caught, what you did instead, and what to install to run it; each review lens that didn't cover part of the diff, with the files; and each finding no verifier answered.
 
 **Judgment calls:** assumptions and decisions the issue or conversation didn't settle, and anywhere the work differs from what was asked.
 

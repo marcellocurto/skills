@@ -1,6 +1,6 @@
 # Reviewers
 
-`babysit-pr` runs an initial review, a fix check before each push, and verification of disputed and costly findings. Choose each agent type and model from the host's offerings to suit its lens and diff; they may differ. Without agents, make one local pass per lens and report that they were not independent.
+`babysit-pr` runs an initial review, a fix check before each push, and verification of disputed, costly, and security findings. Choose each agent type and model from the host's offerings to suit its lens and diff; they may differ. Without agents, make one local pass per lens and report that they were not independent.
 
 ## What every reviewer gets
 
@@ -9,7 +9,7 @@ Exclude implementation discussion and author justification. Initial reviewers do
 - the PR URL, the base and head commits, the merge base, and the diff it reviews
 - the requirements: the linked issue or, without one, the full agreed request; include all subsequent user-approved requirements, decisions, and exceptions, quoting user decisions verbatim
 - the PR description's risks and non-goals, and the issue's non-goals
-- the repository's instruction files, including any review decisions and realistic input sizes they record
+- the repository's instruction files, including any review decisions, trust assumptions, and realistic input sizes they record
 - validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit
 - its lens, and the rules and return format below
 
@@ -89,7 +89,15 @@ Every finding names a concrete simpler shape that keeps the required behavior an
 
 ### Security
 
-Review only the trust boundaries the change touches: user or external input, authentication and authorization, secrets and credentials, database queries, shell commands, file paths, rendered HTML, deserialization, new or upgraded dependencies, and data exposed in responses, logs, or errors. If the change touches none, say so and stop. Each finding needs a realistic path from an attacker or untrusted input to the harm. A guard against input that the types or callers already rule out is not a finding.
+Review only the trust boundaries the change touches: user or external input, authentication and authorization, session and token handling, secrets and credentials, cryptography and randomness, certificate validation, outbound requests built from input, database queries, shell commands, file paths, templates, rendered HTML, XML parsing, deserialization, new or upgraded dependencies, and data exposed in responses, logs, or errors. If the change touches none, say so and stop.
+
+For each boundary, work in this order:
+
+1. Learn how the repository protects it: the trust assumptions its instructions record, its middleware and framework defaults, and the validation, authorization, and escaping on comparable paths.
+2. Compare the changed code with those protections. This finds a protection a new path leaves out, which no changed line shows. A difference is a lead to investigate and proves nothing by itself.
+3. Trace untrusted input from where it enters to the sensitive operation, noting each check it passes.
+
+Each finding's Trigger names the entry point, the input an attacker controls, and the sensitive operation it reaches, and its Problem names the protection that is missing. These are not findings: a guard against input that the types or callers already rule out, a protection a framework or earlier layer already supplies, and a risk a recorded trust assumption accepts, unless the change makes that assumption's stated reason no longer true.
 
 ### Blast radius
 
@@ -120,11 +128,15 @@ Read the vendor's documentation for the constructs the change handles, fetching 
 
 Record the PR URL, the base branch, the head commit, and the merge base. Choose the lenses, then start one reviewer per lens at the same time, each with the diff `git diff <merge-base>..<head>`. Don't push or change the checkout while they run.
 
-Wait for all reviewers, then check findings yourself; agreement is not proof. Apply [Decide each comment](SKILL.md#decide-each-comment). A finding that it would reject or that falls below the fix bar is a planned drop, as is a reasoned finding triggered by crafted or validation-rejected input unless the lens is Security. Merge shared causes under the best-fitting lens, then run the **Verifier**.
+Wait for all reviewers, then check coverage. Compare each reviewer's inspected and skipped areas with the files its lens should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, or skipped or left unmentioned files its lens should read, limiting the rerun to what it missed. Report any gap that remains under coverage gaps.
+
+If no reviewer has returned a result after its rerun, stop under **Review failed** in `SKILL.md`. A lens that says it has nothing to review, such as Security when the change touches no trust boundary, has returned a result. A reviewer that fails doesn't make this a host without agents, so don't replace it with a local pass.
+
+Then check findings yourself; agreement is not proof. Apply [Decide each comment](SKILL.md#decide-each-comment). A finding that it would reject or that falls below the fix bar is a planned drop, as is a reasoned finding triggered by crafted or validation-rejected input unless the lens is Security. Merge shared causes under the best-fitting lens, then run the **Verifier**.
 
 Post survivors as one review pinned to the reviewed head, with an inline thread per finding. Use `COMMENT`; authors cannot approve or request changes on their own PR.
 
-Start each inline comment with the lens and a short title in bold, followed by _(reproduced)_ when the evidence was reproduced. Then give the problem, its trigger if it has one, and the fix in two to four sentences. Link each cited rule and any affected code outside the diff with a full-SHA permalink, such as `https://<host>/<owner>/<repo>/blob/<full-sha>/src/a.ts#L10-L14`, pinned to the reviewed head commit, or to the merge base for a rule the diff edits. The review body is one line naming the lenses that ran, such as "Reviewed `abc1234` for correctness, repository rules, scenarios, simplicity, security, blast radius, and diff read: 3 findings, inline." When no finding survives, post the review with only that line, ending in "nothing to change." `watch_pr.py` recognizes the first review by the body's opening "Reviewed \`", so keep that wording.
+Start each inline comment with the lens and a short title in bold, followed by _(reproduced)_ when the evidence was reproduced. Then give the problem, its trigger if it has one, and the fix in two to four sentences. Link each cited rule and any affected code outside the diff with a full-SHA permalink, such as `https://<host>/<owner>/<repo>/blob/<full-sha>/src/a.ts#L10-L14`, pinned to the reviewed head commit, or to the merge base for a rule the diff edits. The review body is one line naming the lenses that ran, such as "Reviewed `abc1234` for correctness, repository rules, scenarios, simplicity, security, blast radius, and diff read: 3 findings, inline." Leave out a lens that never returned a result. When a lens left a coverage gap, end the line with it, such as "Security did not cover `src/a.ts`." When no finding survives, post the review with only that line, with its count reading "nothing to change." `watch_pr.py` recognizes the first review by the body's opening "Reviewed \`", so keep that wording.
 
 With `gh`, write the review to a JSON file outside the repository and post it:
 
@@ -166,7 +178,7 @@ Start one reviewer after a round's fixes are committed and before they are pushe
 
 Both commits come from the `reviews` field of `watch_pr.py`. When the commits since one of them include a merge from the base branch, give the reviewer `git log -p --no-merges <commit>..HEAD ^origin/<base>` instead of that diff, so the base branch's own changes stay out.
 
-Ask it three questions, and apply the Correctness, Repository rules, and Scenarios lenses, plus Rollout or Specification when their condition matches, to the code the round adds:
+Ask it three questions, and apply the Correctness, Repository rules, and Scenarios lenses to the code the round adds, plus Security when that code touches a trust boundary, Blast radius when it alters a contract, and Rollout or Specification when their condition matches:
 
 1. Does each fix do what its drafted reply claims, on every path?
 2. What does the round break? Look for a check moved after work it should guard, a fallible call before the step that schedules recovery, an early return that drops a result already computed, and a guarantee the code made before the round that it no longer makes.
@@ -174,22 +186,24 @@ Ask it three questions, and apply the Correctness, Repository rules, and Scenari
 
 Apply [Decide each comment](SKILL.md#decide-each-comment), including late-round restrictions. Report only eligible fixes and simplifications removing more code than they add. Don't raise points already settled by rejections or accepted limits.
 
-Its findings don't become threads. Check each against the code yourself, as for the first review, run the **Verifier**, and fix the survivors in the same push. After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
+Its findings don't become threads. Check its coverage as for the first review, and if it has returned no result after its rerun, stop under **Review failed** in `SKILL.md`. Check each finding against the code yourself, as for the first review, run the **Verifier**, and fix the survivors in the same push. After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." When the reviewer left a coverage gap, end the line with it, such as "Security did not cover `src/a.ts`." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
 
 ## Verifier
 
-Verify every planned drop and every planned keep whose fix introduces a [restricted addition](SKILL.md#fix-bar). This selects findings for independent checking, not by overall complexity. Skip when none qualify.
+Verify every planned drop, every planned keep whose fix introduces a [restricted addition](SKILL.md#fix-bar), and every planned keep from the Security lens or with a security hole as its outcome. Security findings always go to the verifier because crafted input counts as a trigger for them, so they pass a lower bar. This selects findings for independent checking, not by overall complexity. Skip when none qualify.
 
 Start one reviewer with the shared brief, the findings' diff, the **Decide each comment** and **Late rounds** sections of `SKILL.md`, late-round status, and each candidate's anchor, problem, trigger, outcome, and evidence. Withhold your keep/drop plan and reasons.
 
 For each, answer with code or requirements evidence, then apply the decision order to determine validity and eligibility this round, including late-round restrictions:
 
-- Can realistic input or use reach the problem?
+- Can realistic input or use reach the problem? For a security finding, ask instead: can an attacker or untrusted input, crafted input included, reach the sensitive operation?
 - Does something already protect against it?
 - Does the PR introduce or worsen the problem? Name the difference from the base branch.
 - For a broken rule, ask instead: does the rule apply to the changed file, and does a more specific instruction file override it?
 
 Agreement settles the finding: keep confirmed findings; report drops with reasons.
+
+If the verifier fails or leaves a finding unanswered, start a new one once for those findings. A finding still unanswered is never dropped silently, and the report names it as unverified. Follow your plan for a planned keep. Post a planned drop in the first review, so a round settles it in public; in a fix check, stop under **Reviewers disagree** in `SKILL.md`, without changing code for that finding.
 
 On disagreement, you may supply counterevidence once: code, a reproduction, a cited requirement or applicable rule, authoritative documentation, or a verbatim user decision. PR-description claims and unsupported arguments don't count. Without counterevidence, follow the verdict. If the host cannot continue the verifier, start a new one with the finding, first answer, and counterevidence. Follow a revised verdict. If disagreement remains:
 
