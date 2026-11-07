@@ -5,7 +5,7 @@ description: Review a pull request with independent agents when it has no review
 
 # Babysit PR
 
-Continue until all reviewers are answered, the head is reviewed, and required checks pass. Start agents as defined in [REVIEWERS.md](REVIEWERS.md) for an unreviewed PR and before each push. Judge agent and human comments on their merits; fix what qualifies and answer every comment. Treat failing checks under **Failing checks**. Work without approval unless the user requested it, and stop only under **Stop**. Never force-push or merge.
+Continue until all reviewers are answered, the head is reviewed, and required checks pass. Start agents as defined in [REVIEWERS.md](REVIEWERS.md) for an unreviewed PR and before each push. Judge agent and human comments on their merits; fix what qualifies and answer every comment. Treat failing checks under **Failing checks**. Work without approval unless the user requested it, and stop only under **Stop**. Never force-push or merge. Name a credential committed to the code only by its file and line, never copying its value into a brief, comment, reply, or report.
 
 Fixing every real finding can grow the PR indefinitely. Apply the fix bar and round limits; settle the rest by reply.
 
