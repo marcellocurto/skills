@@ -1,6 +1,6 @@
 # Reviewers
 
-This file defines the independent reviewers `babysit-pr` starts: the first review of a pull request, the fix check before each push, and the verifier of findings you plan to drop. Choose each reviewer's agent type and model yourself from what the host offers, based on how much reasoning its lens needs for this diff; reviewers don't have to match. If the host can't start agents, review each lens in a separate pass yourself, and say in the report that the passes were not independent.
+This file defines the independent reviewers `babysit-pr` starts: the first review of a pull request, the fix check before each push, and the verifier of disputed and costly findings. Choose each reviewer's agent type and model yourself from what the host offers, based on how much reasoning its lens needs for this diff; reviewers don't have to match. If the host can't start agents, review each lens in a separate pass yourself, and say in the report that the passes were not independent.
 
 ## What every reviewer gets
 
@@ -26,8 +26,8 @@ Give each reviewer what an outside reviewer would have, and nothing from the imp
 
 Each reviewer returns what it inspected and what it skipped, plus each finding with:
 
-- **Anchor:** a file and line range on the head side of the diff, chosen from the changed lines that cause the problem. When the harm lands outside the diff, such as a caller that breaks, anchor to the change that breaks it and name the affected location in the text.
-- **Problem:** what goes wrong; for a structural finding, which future change gets harder and why; or for a broken rule, the rule quoted exactly and the file it comes from.
+- **Anchor:** a file and line range on the head side of the diff, chosen from the changed lines that cause the problem. When the harm lands outside the diff, such as a caller that breaks, anchor to the change that breaks it and name the affected file and line in the text.
+- **Problem:** what goes wrong; for a structural finding, which future change gets harder and why; or for a broken rule, the rule quoted exactly, the file and line it comes from, and why it applies to the changed file.
 - **Trigger:** the user action, data, or deploy step that produces it on the current deployment. A broken rule needs none.
 - **Outcome:** a security hole, data loss, a crash, a stuck job, or a wrong result; or none of these, for a broken rule or a structural or minor problem.
 - **Evidence:** _reproduced_, with the probe or test and what it showed, or _reasoned_, with the code path.
@@ -55,9 +55,9 @@ Leave workflows outside the diff to Scenarios, consumers to Blast radius, and tr
 
 ### Repository rules
 
-Does the change break a written rule in the repository's instruction files, such as `AGENTS.md`, `CLAUDE.md`, or `CONTRIBUTING.md`? For each changed file, read the instruction files in its directory and its parent directories, since only those apply to it, and check the changed lines against each rule whose wording covers that kind of change.
+Does the change break a written rule in the repository's instruction files, such as `AGENTS.md`, `CLAUDE.md`, or `CONTRIBUTING.md`? For each changed file, read the instruction files in its directory and its parent directories, since only those apply to it. Where they conflict, the more specific file overrides the more general one. Check the changed lines against each rule whose wording covers that kind of change.
 
-A finding quotes the rule, names its file, and names the change that follows it. These are not findings: a preference the file doesn't state, anything a formatter or linter enforces, and a violation silenced on purpose in the code, such as by a lint-ignore comment. If no instruction file applies to the changed files, say so and stop.
+A finding quotes the rule, names its file and line, says why the rule applies to the changed file, and names the change that follows it. These are not findings: a preference the file doesn't state, and anything a formatter or linter enforces. A comment in the code, such as a lint-ignore, doesn't excuse a violation; an exception counts only when the rule itself allows it or the user approved it in the requirements. If no instruction file applies to the changed files, say so and stop.
 
 ### Diff read
 
@@ -121,11 +121,11 @@ Read the vendor's documentation for the constructs the change handles, fetching 
 
 Record the PR URL, the base branch, the head commit, and the merge base. Choose the lenses, then start one reviewer per lens at the same time, each with the diff `git diff <merge-base>..<head>`. Don't push or change the checkout while they run.
 
-Wait for all reviewers. Check each finding against the code yourself, since agreement between reviewers is not proof. Plan to drop findings that are unsupported, already handled, pre-existing, outside the PR's intent, accepted by the non-goals or the repository's instructions, preference only, or speculative hardening; reasoned findings whose trigger is a crafted input or input that validation rejects, unless the lens is Security; and findings that fall short of the fix bar in `SKILL.md`. Merge findings that share one cause into one, under the lens that fits best. Then run **Verify the drops** on the findings you plan to drop.
+Wait for all reviewers. Check each finding against the code yourself, since agreement between reviewers is not proof. Plan to drop findings that are unsupported, already handled, pre-existing, outside the PR's intent, accepted by the non-goals or the repository's instructions, preference only, or speculative hardening; reasoned findings whose trigger is a crafted input or input that validation rejects, unless the lens is Security; and findings that fall short of the fix bar in `SKILL.md`. Merge findings that share one cause into one, under the lens that fits best. Then run **Verify disputed and costly findings**.
 
 Post the surviving findings as one pull request review with an inline comment for each, so each becomes a review thread that a round settles. Use the `COMMENT` event, because GitHub doesn't let authors approve or request changes on their own PR, and pin the review to the reviewed head commit.
 
-Start each inline comment with the lens and a short title in bold, followed by _(reproduced)_ when the evidence was reproduced. Then give the problem, its trigger if it has one, and the fix in two to four sentences. The review body is one line naming the lenses that ran, such as "Reviewed `abc1234` for correctness, repository rules, scenarios, simplicity, security, blast radius, and diff read: 3 findings, inline." When no finding survives, post the review with only that line, ending in "nothing to change." `watch_pr.py` recognizes the first review by the body's opening "Reviewed \`", so keep that wording.
+Start each inline comment with the lens and a short title in bold, followed by _(reproduced)_ when the evidence was reproduced. Then give the problem, its trigger if it has one, and the fix in two to four sentences. Link each cited rule and any affected code outside the diff with a permalink pinned to a full commit SHA, such as `https://<host>/<owner>/<repo>/blob/<full-sha>/src/a.ts#L10-L14`. Pin it to the reviewed head commit, or to the merge base for a rule the diff edits. The review body is one line naming the lenses that ran, such as "Reviewed `abc1234` for correctness, repository rules, scenarios, simplicity, security, blast radius, and diff read: 3 findings, inline." When no finding survives, post the review with only that line, ending in "nothing to change." `watch_pr.py` recognizes the first review by the body's opening "Reviewed \`", so keep that wording.
 
 With `gh`, write the review to a JSON file outside the repository and post it:
 
@@ -174,12 +174,24 @@ Ask it three questions, and apply the Correctness, Repository rules, and Scenari
 
 It reports only problems that meet the fix bar in `SKILL.md`, and simplifications that remove more code than they add. It doesn't raise points the rejected and accepted findings already settle. In a late round, it reports only security holes, data loss, crashes, stuck jobs, wrong results on realistic input, and changes that remove more code than they add.
 
-Its findings don't become threads. Check each against the code yourself, as for the first review, run **Verify the drops** on the findings you plan to drop, and fix the survivors in the same push. After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
+Its findings don't become threads. Check each against the code yourself, as for the first review, run **Verify disputed and costly findings**, and fix the survivors in the same push. After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
 
-## Verify the drops
+## Verify disputed and costly findings
 
-You may have written the code under review, as in `ship-pr`, and a finding you drop never reaches the pull request, so a second reader checks each drop. Skip this when you plan to drop nothing.
+You may have written the code under review, as in `ship-pr`, so a second reader checks the findings where your judgment matters most: each finding you plan to drop, because it would otherwise never reach the pull request, and each finding you plan to keep whose fix would make the code more complex, as the fix bar in `SKILL.md` measures it. Skip this step when there are none.
 
-Start one reviewer. Give it what every reviewer gets, the diff the findings came from, the fix bar in `SKILL.md`, whether this is a late round, and each finding you plan to drop with its anchor, problem, trigger, outcome, and evidence. Leave out your reasons for dropping them, so that your reasoning doesn't anchor its answer.
+Start one reviewer. Give it what every reviewer gets, the diff the findings came from, the fix bar, whether this is a late round, and each of these findings with its anchor, problem, trigger, outcome, and evidence. Leave out whether you plan to drop or keep each one and why, so that your reasoning doesn't anchor its answer.
 
-For each finding, it says whether the problem is real and meets the fix bar, with evidence from the code. A finding it confirms survives, and you don't overrule it: in the first review it is posted, and a round settles it in public; in a fix check you fix it in the same push. The rest stay dropped, and the report lists them with your reasons.
+For each finding, it answers these questions with evidence from the code, then says whether the problem is real and meets the fix bar:
+
+- Can realistic input or use reach the problem?
+- Does something already protect against it?
+- Does the base branch already have it?
+- For a broken rule, ask instead: does the rule apply to the changed file, and does a more specific instruction file override it?
+
+When its answer matches your plan, the finding is settled: one it confirms survives, and one it doesn't confirm is dropped, and the report lists it with the reason.
+
+When its answer differs from your plan, you may send it your counterevidence once. Counterevidence is code or a reproduction; an argument doesn't count. Without any, follow its answer. If the host can't continue the verifier, start a new one with the finding, the first answer, and the counterevidence. If it changes its answer, follow the new answer. If you still disagree:
+
+- In the first review, post the finding, and a round settles it in public.
+- In a fix check, stop under **Reviewers disagree** in `SKILL.md`, without changing code for that finding.
