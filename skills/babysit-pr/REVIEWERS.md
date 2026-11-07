@@ -176,7 +176,7 @@ Start one reviewer after a round's fixes are committed and before they are pushe
 
 Both commits come from the `reviews` field of `watch_pr.py`. When the commits since one of them include a merge from the base branch, give the reviewer `git log -p --no-merges <commit>..HEAD ^origin/<base>` instead of that diff, so the base branch's own changes stay out.
 
-Ask it three questions, and apply the Correctness, Repository rules, and Scenarios lenses, plus Security when the code the round adds touches a trust boundary and Rollout or Specification when their condition matches, to the code the round adds:
+Ask it three questions, and apply the Correctness, Repository rules, and Scenarios lenses to the code the round adds, plus Security when that code touches a trust boundary, Blast radius when it alters a contract, and Rollout or Specification when their condition matches:
 
 1. Does each fix do what its drafted reply claims, on every path?
 2. What does the round break? Look for a check moved after work it should guard, a fallible call before the step that schedules recovery, an early return that drops a result already computed, and a guarantee the code made before the round that it no longer makes.
