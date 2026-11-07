@@ -50,7 +50,7 @@ Does the change do what the requirements ask, for every input and state its call
 - arithmetic on realistic values: sums, rounding, and comparisons against limits, evaluated with concrete numbers and compared with the tolerance the validator uses elsewhere; and integer sizes at the realistic maximum
 - invalid input, errors, empty and boundary cases, ordering, retries, races, and partial failure, where the change involves them
 - whether the tests would fail if the changed behavior broke, naming the realistic regression that would slip through
-- changed tests that let a real failure pass, unless a requirement changes the contract or the old test demonstrably erred: an assertion, snapshot, or fixture updated to match new output; setup that seeds state the real workflow doesn't guarantee; a mock that replaces the logic the test claims to check; an error-handling test presented as proof that a capability works; or a skip, an expected-failure marker, or a test excluded from the run
+- changed tests that may hide a regression: an assertion, snapshot, or fixture updated to match new output; setup that seeds state the real workflow doesn't guarantee; a mock that replaces the logic the test claims to check; an error-handling test presented as proof that a capability works; or a skip, an expected-failure marker, or a test excluded from the run. A finding names the regression that would now pass and would have failed before; a contract change the requirements intend is not a finding.
 
 Leave workflows outside the diff to Scenarios, consumers to Blast radius, and trust boundaries to Security.
 
@@ -186,7 +186,7 @@ For each, answer with code or requirements evidence, then apply the decision ord
 
 - Can realistic input or use reach the problem?
 - Does something already protect against it?
-- Does the base branch already have it?
+- Does the PR introduce or worsen the problem? Name the difference from the base branch.
 - For a broken rule, ask instead: does the rule apply to the changed file, and does a more specific instruction file override it?
 
 Agreement settles the finding: keep confirmed findings; report drops with reasons.

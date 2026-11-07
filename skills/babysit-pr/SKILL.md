@@ -79,7 +79,7 @@ Act on `reason`:
 
 Confidence, severity, and a ready-made patch are not evidence. For comments, first reviews, fix checks, and verification, decide in this order:
 
-1. **Validity and cause.** Check evidence and whether the PR introduced or worsened the problem. Reject unsupported or pre-existing findings under **Reject what works against the PR**.
+1. **Validity and cause.** Check evidence and whether the PR introduced or worsened the problem. Reject unsupported findings, and problems the PR neither introduced nor worsened, under **Reject what works against the PR**.
 2. **Requirements and exceptions.** Apply the user's latest approved requirements and decisions, then applicable repository rules, then PR intent. Reject challenges to approved tradeoffs. PR-description claims or deliberate code changes cannot override requirements. If missing policy prevents a verdict, stop under **Policy questions**.
 3. **Fix bar.** Apply the conditions below; otherwise use the alternatives below the bar.
 4. **Late rounds.** Apply **Late rounds** even to qualifying fixes: a rule violation alone cannot justify a late-round push. Settle ineligible findings by reply or, before posting, drop and report them.
@@ -88,7 +88,7 @@ Verify first-review and fix-check keep/drop plans under [REVIEWERS.md](REVIEWERS
 
 ### Fix bar
 
-Fix a finding when the PR introduced the problem and any of these holds:
+Fix a finding when the PR introduced or worsened the problem and any of these holds:
 
 - it causes a security hole, data loss, a crash, a stuck job, or a wrong result on input that current users, data, or callers realistically produce;
 - it breaks a written rule in the repository's instruction files that applies to the changed file; or
@@ -107,7 +107,7 @@ For a real problem below the bar, choose the first sufficient response:
 
 Reply with the reason and resolve the thread when a comment:
 
-- describes a problem the PR did not introduce because it already exists on the base branch. List it under follow-ups in the report. Never stop for a decision about it.
+- describes a problem that already exists on the base branch and that the PR did not worsen. List it under follow-ups in the report. Never stop for a decision about it.
 - asks for work outside the PR's intent, such as a new feature, an unrelated refactor, or a follow-up
 - reverses an approved decision or intentional tradeoff consistent with requirements and applicable repository rules
 - adds speculative hardening: guards against inputs that the types or callers already rule out, fallbacks, configuration, or compatibility code for callers that do not exist
@@ -116,7 +116,7 @@ Reply with the reason and resolve the thread when a comment:
 
 Explain the intent in the reply. If a rejected point recurs, link the earlier answer once and resolve it without reopening the argument.
 
-A defect the PR introduced that meets the fix bar is never out of scope. Fix it even when the suggested patch is poor.
+A defect the PR introduced or worsened that meets the fix bar is never out of scope. Fix it even when the suggested patch is poor.
 
 ### Policy questions
 

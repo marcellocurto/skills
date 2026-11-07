@@ -48,7 +48,7 @@ Does the change do the right thing safely? Look for:
 - a fix that hides a symptom instead of addressing the cause
 - missing regression tests, only where a realistic defect could escape through a stable interface
 
-Compare changed tests with what they protected before. These changes let a real failure pass, and each needs an authorized contract change or a demonstrated error in the old test:
+Compare changed tests with what they protected before. These changes can let a real failure pass. For each one you report, name the regression that would now pass and would have failed before; a contract change the requirements authorize is not a finding:
 
 - an assertion, snapshot, or fixture updated to match new output
 - setup that seeds state the real workflow does not guarantee
