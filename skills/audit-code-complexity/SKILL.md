@@ -5,15 +5,15 @@ description: Find needless code complexity and suggest simpler designs that pres
 
 # Audit Code Complexity
 
-Find code that is harder to understand, change, or verify than the problem requires, and propose simpler shapes that keep its behavior. Simpler means easier to understand and change while keeping every real requirement; fewer files, functions, or lines do not by themselves make code simpler. This is an audit: do not edit code unless the user asks.
+Find code that is harder to understand, change, or verify than the problem requires, and propose simpler shapes that keep its behavior. Simpler means easier to understand and change while keeping every real requirement; fewer files, functions, or lines do not by themselves make code simpler. This is an audit: do not edit code unless the user or the skill running this audit asks.
 
 ## 1. Set the scope
 
 - **Current state:** audit the named code as it exists, whenever its complexity was introduced.
-- **Change:** audit only complexity that the named commits, branch, or pull request introduced or made worse. Read surrounding code for context.
+- **Change:** audit only complexity that the named commits, branch, pull request, or working changes introduced or made worse. Read surrounding code for context.
 - **Proposal:** audit a design or code the user proposes before it is built, against the requirements it states. A request to revise the proposal changes the proposal, not the code it describes.
 
-Use the change scope only when the user names a change; uncommitted work in the repository is not a reason to switch. If the user asks for both, report them separately.
+Use the change scope only when the user or the skill running this audit names a change; uncommitted work in the repository is not a reason to switch. If the user asks for both, report them separately.
 
 For a large target, split it by module across parallel read-only subagents where available, and verify their findings yourself before reporting.
 
@@ -62,7 +62,7 @@ When replacing an interface, find every user, including tests, and move tests to
 
 ## Applying a finding
 
-Edit code only when the user asks for it, then carry the change through and verify it without asking again. Run the relevant tests before the refactor and keep the same protected cases afterward. Change an expected outcome only for an authorized contract change or a demonstrated error in the test, and do not change fixtures, mocks, or test selection in ways that hide a failure. If the work includes a behavior fix, use the `tdd` skill when available. If a blocker stops you, keep any valid failing test and report the missing decision and what remains.
+Edit code only when the user or the skill running this audit asks for it, then carry the change through and verify it without asking again. Run the relevant tests before the refactor and keep the same protected cases afterward. Change an expected outcome only for an authorized contract change or a demonstrated error in the test, and do not change fixtures, mocks, or test selection in ways that hide a failure. If the work includes a behavior fix, use the `tdd` skill when available. If a blocker stops you, keep any valid failing test and report the missing decision and what remains.
 
 ## 4. Report
 
