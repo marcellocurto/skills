@@ -28,12 +28,12 @@ Skills for planning, building, reviewing, and improving software. You can run an
 - **[`valid-issue`](skills/valid-issue/SKILL.md)**: Quickly judge whether one GitHub issue is valid, still relevant, aligned with the project, and worth implementing.
 - **[`implement-to-pr`](skills/implement-to-pr/SKILL.md)**: Implement a GitHub issue or the work agreed in the conversation, run the repository's checks, and open a pull request that is ready for review.
 - **[`ship-pr`](skills/ship-pr/SKILL.md)**: Implement an issue or agreed work as a pull request, then run `babysit-pr` to review it with independent agents, settle every comment, and check each round of fixes before it is pushed.
-- **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Open a ready-for-review GitHub pull request for finished local changes, committing and pushing when needed.
+- **[`create-pull-request`](skills/create-pull-request/SKILL.md)**: Open a ready-for-review GitHub pull request for finished local changes, committing and pushing when needed. `implement-to-pr` runs it to publish its work.
 - **[`babysit-pr`](skills/babysit-pr/SKILL.md)**: Review a pull request with `code-review` when it has no review yet, settle its open comments from reviewers and people and its failing CI checks, and check each round of fixes with an independent reviewer before pushing, until every thread is answered and the required checks pass, or something needs you. It fixes what meets a fix bar, settles the rest by reply, and stops pushing once late rounds find nothing that matters.
-- **[`pr-audit`](skills/pr-audit/SKILL.md)**: Audit a whole PR for merge readiness across correctness, maintainability and complexity, and test quality, then post one actionable comment.
+- **[`pr-audit`](skills/pr-audit/SKILL.md)**: Audit a whole PR for merge readiness across correctness, maintainability and complexity, and test quality, using `code-review`, then post one actionable comment.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find needless complexity in code and get simpler designs that keep its behavior.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Find what a code change could break beyond the files it touches, across callers, data, timing, and runtime wiring.
-- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge whether tests catch realistic regressions, and recommend what to keep, change, or remove.
+- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge whether tests catch realistic regressions, and recommend what to keep, change, or remove. `code-review` runs it for its Tests lens.
 - **[`relentless-review`](skills/relentless-review/SKILL.md)**: Challenge an existing proposal or result to find its material risks and a better path.
 - **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition patterns when designing or refactoring component interfaces.
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.

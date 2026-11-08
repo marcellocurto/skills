@@ -1,8 +1,9 @@
 import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 
 import { readInvocationPolicies } from "./invocation-policy.ts";
 import { descriptionStatesWhenToUse } from "./skill-frontmatter.ts";
+import { divergentSharedScripts } from "./shared-scripts.ts";
 import { referencedSkillNames } from "./skill-references.ts";
 
 const repositoryRoot = join(import.meta.dir, "..");
@@ -39,6 +40,7 @@ const duplicatePaths = declaredPaths.filter((path, index) => declaredPaths.index
 const invocationPolicyMismatches: string[] = [];
 const descriptionsWithoutUseWhen: string[] = [];
 const unknownSkillReferences: string[] = [];
+const skillScripts: { skill: string; name: string; content: string }[] = [];
 const knownSkills = new Set(skillNames);
 
 for (const skillName of skillNames) {
@@ -50,9 +52,24 @@ for (const skillName of skillNames) {
 
   if (!descriptionStatesWhenToUse(skillMarkdown)) descriptionsWithoutUseWhen.push(skillName);
 
-  for (const file of await readdir(skillDirectory, { recursive: true })) {
-    if (!file.endsWith(".md")) continue;
-    const markdown = await Bun.file(join(skillDirectory, file)).text();
+  const scriptsDirectory = join(skillDirectory, "scripts");
+
+  for (const entry of await readdir(skillDirectory, { recursive: true, withFileTypes: true })) {
+    if (entry.isDirectory()) continue;
+    const path = join(entry.parentPath, entry.name);
+
+    // Dotfiles such as `.DS_Store` are local clutter, not scripts.
+    if (entry.isFile() && entry.parentPath === scriptsDirectory && !entry.name.startsWith(".")) {
+      skillScripts.push({
+        skill: skillName,
+        name: entry.name,
+        content: await Bun.file(path).text(),
+      });
+    }
+
+    if (!entry.name.endsWith(".md")) continue;
+    const file = relative(skillDirectory, path);
+    const markdown = await Bun.file(path).text();
     for (const name of referencedSkillNames(markdown)) {
       if (!knownSkills.has(name))
         unknownSkillReferences.push(`${skillName}/${file} names \`${name}\``);
@@ -66,13 +83,16 @@ for (const skillName of skillNames) {
   }
 }
 
+const divergentScripts = divergentSharedScripts(skillScripts);
+
 if (
   missingPaths.length ||
   extraPaths.length ||
   duplicatePaths.length ||
   invocationPolicyMismatches.length ||
   descriptionsWithoutUseWhen.length ||
-  unknownSkillReferences.length
+  unknownSkillReferences.length ||
+  divergentScripts.length
 ) {
   if (missingPaths.length) {
     console.error(`Missing manifest entries: ${missingPaths.join(", ")}`);
@@ -98,6 +118,10 @@ if (
 
   if (unknownSkillReferences.length) {
     console.error(`Skills that aren't in this repository: ${unknownSkillReferences.join(", ")}`);
+  }
+
+  if (divergentScripts.length) {
+    console.error(`Shared scripts whose copies differ: ${divergentScripts.join(", ")}`);
   }
 
   process.exit(1);

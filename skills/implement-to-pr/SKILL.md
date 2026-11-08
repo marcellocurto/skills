@@ -9,46 +9,12 @@ description: Implement a GitHub issue or the work agreed in the conversation, ch
 2. If you're on the main branch, create a new branch with a short name that describes the work. Leave unrelated local changes alone.
 3. Build it the way the rest of the codebase does things, and follow the repository's instructions. Add or update tests where the change creates or alters behavior that users or callers rely on. When removing behavior, remove its tests rather than asserting its absence. Read the project's ADRs that cover the code you change. If your change makes one false, update it in the same change, using the `domain-modeling` skill when available. Rewrite the ADR to state what the system now does, or delete it and fix the links to it when its decision no longer holds. Never mark it superseded unless the project documents a different way to revise ADRs. While you build, keep checks narrow: lint and format only the files you changed, and run only the tests you wrote or that cover the code you changed. Save the full suites for step 5.
 4. Once you think the work is complete, simplify it. Use the `audit-code-complexity` skill when available: name your changes against the base branch, including uncommitted work, as the change to audit, and ask it to apply its findings. Without it, read the diff for code no requirement needs, wrappers that only forward a call, the same rule kept in more than one place, and guards for cases that can't happen, and simplify what you find. Leave anything that would change behavior or what was agreed as it is, and name it under **Judgment calls** in the final response.
-5. Run the repository's full checks (formatting, linting, type checks, tests, and build) and read through the whole diff. If something fails, fix it using the same narrow checks, then run the full checks again. The work is done when everything the issue or conversation asked for works and every check passes. A check that already fails on the base branch for reasons unrelated to your change is not yours to fix; say so in the PR description instead of working around it. If a check needs a tool, runtime, or service that isn't installed here, such as a JDK, a database, or a browser, don't install system-level software without asking. Verify the change another way where you can, and report what didn't run in the PR description and your final response.
-6. Commit, push, and open a pull request into the branch the user or repository instructions name, otherwise the default branch; `gh repo view --json defaultBranchRef` tells you which that is. Don't open it as a draft. Write the title and description as described below, save the description to a temporary file outside the repository, and pass it with `--body-file`.
+5. Run the repository's full checks (formatting, linting, type checks, tests, and build) and read through the whole diff. If something fails, fix it using the same narrow checks, then run the full checks again. The work is done when everything the issue or conversation asked for works and every check passes, except a check that already fails on the base branch or can't run here. Before deciding that a check is one of those, read the **Verify** step of the `create-pull-request` skill and follow it, including how to confirm a base-branch failure and the rule against installing software. Don't work around those checks; note them for step 6 and the final response.
+6. Open the pull request with the `create-pull-request` skill, which commits, pushes, and writes the title and description. Give it the issue or agreed request, the decisions and rejected alternatives behind the change, and the results from step 5, including each check that didn't run and why. When it opens or updates the PR, hold back its report; the final response below replaces it. When it stops without one, tell the user why and what's needed instead.
 
 If anything does not work as expected, don't hesitate to ask questions so we can get it working right. That includes an unclear request, a check that fails for a reason you can't find, and code that doesn't behave the way the issue assumes. Ask instead of guessing or working around the problem.
 
-Never force-push or merge. When you're done, reply with the final response described below.
-
-## Pull request title and description
-
-Write both from the committed diff, the issue, and the check results. Use the conversation only for the decisions and rejected alternatives behind the change, and only where the diff reflects them. The readers are engineers who review many pull requests. Use simple, everyday words, with technical terms only where they name something exactly, such as a file, command, or API. Write short paragraphs, put the most important point first, and use backticks for code identifiers. Keep the description proportional to the change.
-
-Title: the outcome in simple words that a reviewer understands without opening the PR, such as "Retry failed webhook deliveries with backoff" rather than "Update webhook logic".
-
-Description, in this order:
-
-```markdown
-## Summary
-
-Two to four sentences: what problem this solves, why it matters, and how behavior changes. A reader who stops here should know what the PR does. End with `Closes #N` when the PR fully resolves that issue in the same repository and targets the default branch, since GitHub closes linked issues only for those merges; otherwise reference it without closing it.
-
-## Changes
-
-The changes grouped by concern, each with the behavior before and after. Explain decisions a reviewer might question and the alternatives you rejected.
-
-## How to review
-
-Where to start, which parts need careful reading, and which are mechanical, such as renames, moved code, or generated files. Name any specific question you want the reviewer's judgment on.
-
-## Verification
-
-The commands run and their results, and manual checks with what they showed, such as how a UI change looks at each width checked. Say what was not tested and why, including each check that couldn't run because a tool or service is missing here, and what you did instead.
-
-## Risks and non-goals
-
-What could break, such as compatibility, migrations, performance, or security; the known limits of a deliberately simple approach, such as "scans the HTML with patterns rather than parsing it, so logos inside nested `<template>` elements are missed"; and what this PR deliberately does not do. Reviewers and `babysit-pr` judge comments against this section, so name each limit and non-goal plainly.
-```
-
-Always include Summary and Verification. Include the other sections only when they have real content; a one-file fix usually needs only those two. Never write a section that says "None".
-
-Leave out file-by-file change lists, restatements of the diff, unticked checkboxes, secrets, absolute local paths, and raw command output.
+Never merge. When you're done, reply with the final response described below.
 
 ## Final response
 
