@@ -95,7 +95,7 @@ When another skill runs this review, return to it:
 
 ## Noticed items
 
-Noticed items reach people who haven't read the code they're about, so write each one for a developer who has never opened that part of the codebase. Merge items that share a cause, keeping every location, and list the most harmful first. Write each in this shape:
+Noticed items reach people who haven't read the code they're about, so write each one for a developer who has never opened that part of the codebase. Merge items that share a cause, keeping every location and the most harmful Outcome, and list the most harmful first. Write each in this shape:
 
 ```markdown
 **What goes wrong, in plain words.** Who runs into it, when, and what they see. Then the cause, with the file and line, explaining any internal name the first time it appears.

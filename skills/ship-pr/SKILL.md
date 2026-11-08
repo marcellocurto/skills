@@ -34,7 +34,7 @@ When `babysit-pr` finishes or stops, combine both skills' reports in this order,
 
 **Feedback:** each review finding, labeled with its lens, each fix-check finding, and each human comment, with its outcome: fixed (with the commit), rejected (with the reason), dropped before posting or fixing (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). Quote any user decision used as counterevidence. For an architectural problem, name the root cause and the change you recommend.
 
-**Noticed, not done:** the problems from `implement-to-pr`'s final response and `babysit-pr`'s follow-ups and noticed problems, in the form both use, merged where they share a cause, with the most harmful first.
+**Noticed, not done:** the problems from `implement-to-pr`'s final response and `babysit-pr`'s follow-ups and noticed problems, as one list written the way the `code-review` skill writes Noticed items.
 
 **Proposed rules:** the policy lines `babysit-pr` proposes for the repository's instructions, each as the line to add.
 ```
