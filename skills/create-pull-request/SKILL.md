@@ -28,7 +28,7 @@ Run the checks the repository requires. If it names none, run the smallest check
 
 Two cases don't stop publishing; name each in the Verification section instead:
 
-- a check that fails the same way on the base branch, which you confirmed by running it there or from the base branch's latest result for it
+- a check that fails the same way on the base branch, which you confirmed by running it in a separate worktree of the base branch (`git worktree add`), never by checking the base out over your changes, or from the base branch's latest result for it
 - a check that can't run here, such as one that needs a tool, runtime, service, or credential this machine doesn't have. Don't install system-level software to run it without asking. Verify the change another way where you can, and say what you did instead.
 
 ## 3. Commit and push
