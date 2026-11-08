@@ -1,8 +1,9 @@
 /**
  * A script that several skills need is copied into each skill's `scripts/`
  * directory under the same file name, because a skill runs scripts from its
- * own directory. Returns each file name whose copies differ, so the validator
- * can keep the copies identical.
+ * own directory. Returns a label for each file name whose copies differ,
+ * naming the skills that hold them, so the validator can keep the copies
+ * identical.
  */
 export function divergentSharedScripts(
   scripts: readonly { skill: string; name: string; content: string }[],

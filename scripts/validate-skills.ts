@@ -1,5 +1,5 @@
 import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 
 import { readInvocationPolicies } from "./invocation-policy.ts";
 import { descriptionStatesWhenToUse } from "./skill-frontmatter.ts";
@@ -53,16 +53,23 @@ for (const skillName of skillNames) {
   if (!descriptionStatesWhenToUse(skillMarkdown)) descriptionsWithoutUseWhen.push(skillName);
 
   const scriptsDirectory = join(skillDirectory, "scripts");
-  const scriptEntries = await readdir(scriptsDirectory, { withFileTypes: true }).catch(() => []);
-  for (const script of scriptEntries) {
-    if (!script.isFile()) continue;
-    const content = await Bun.file(join(scriptsDirectory, script.name)).text();
-    skillScripts.push({ skill: skillName, name: script.name, content });
-  }
 
-  for (const file of await readdir(skillDirectory, { recursive: true })) {
-    if (!file.endsWith(".md")) continue;
-    const markdown = await Bun.file(join(skillDirectory, file)).text();
+  for (const entry of await readdir(skillDirectory, { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    const path = join(entry.parentPath, entry.name);
+
+    // Dotfiles such as `.DS_Store` are local clutter, not scripts.
+    if (entry.parentPath === scriptsDirectory && !entry.name.startsWith(".")) {
+      skillScripts.push({
+        skill: skillName,
+        name: entry.name,
+        content: await Bun.file(path).text(),
+      });
+    }
+
+    if (!entry.name.endsWith(".md")) continue;
+    const file = relative(skillDirectory, path);
+    const markdown = await Bun.file(path).text();
     for (const name of referencedSkillNames(markdown)) {
       if (!knownSkills.has(name))
         unknownSkillReferences.push(`${skillName}/${file} names \`${name}\``);

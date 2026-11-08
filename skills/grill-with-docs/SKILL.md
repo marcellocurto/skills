@@ -9,14 +9,13 @@ Stress-test the requested plan through conversation and keep agreed domain langu
 
 ## Documentation scope
 
-A request to use this workflow asks for settled terms and qualifying decisions to be recorded, so run `domain-modeling` in its documentation-update mode as answers settle. When the user asks for read-only or proposed edits, run it in discussion mode instead. If the user limits writes to particular documents, update only those.
-
-Record only what `domain-modeling` qualifies as a domain term or an architectural decision. Keep routine choices, tentative proposals, and unresolved questions in the conversation, and don't turn them into specifications or tracker issues unless the user asks.
+A request to use this workflow is a request to record settled terms and qualifying decisions, so run `domain-modeling` in its documentation-update mode unless the user asks otherwise. Permission to record doesn't extend to commits, pushes, or publishing. Don't turn routine choices or open questions into specifications or tracker issues unless the user asks.
 
 ## Question, resolve, record
 
-1. Run a round of `grilling` on the decision the user wants to resolve.
-2. Record what the round settled with `domain-modeling`, before asking the questions it unlocks.
-3. If an answer revises an earlier decision, update the affected record so the documentation and the discussion agree.
+1. Read the existing glossary, context map, and relevant decision records as `domain-modeling` describes, so the questions build on what is already recorded.
+2. Run a round of `grilling` on the decision the user wants to resolve.
+3. Record what the round settled with `domain-modeling`, before asking the questions it unlocks.
+4. If an answer revises an earlier decision, update the affected record so the documentation and the discussion agree.
 
-Repeat until `grilling` finishes. Then report the settled conclusions, the remaining material questions, and the documentation changed or proposed.
+Repeat from step 2 until `grilling` finishes, then give one report that combines both skills' summaries.
