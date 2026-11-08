@@ -15,7 +15,7 @@ Use the `grilling` skill for questions and decision dependencies, and the `domai
 
 A request to use this workflow includes updating the local glossary and architectural decision records as the user settles decisions. These documentation rules apply when using the supporting skills too. In read-only or proposed-edit mode, keep proposed text in the conversation and do not create or edit files. If the user limits writes to particular documents, update only those documents and keep other proposed records in the conversation.
 
-Inspect the existing glossary, context map, relevant ADRs, and only the code needed to ground the discussion. Follow established documentation locations and formats. When no convention exists, use `CONTEXT.md` for domain terms and `docs/adr/` for qualifying decisions; create them only when there is agreed content to record.
+Inspect the existing glossary, context map, relevant ADRs, and only the code needed to ground the discussion. Follow established documentation locations and documented formats; the style of existing ADRs is not a documented format. When no convention exists, use `CONTEXT.md` for domain terms and `docs/adr/` for qualifying decisions; create them only when there is agreed content to record.
 
 ## Question, resolve, record
 
@@ -27,7 +27,11 @@ Inspect the existing glossary, context map, relevant ADRs, and only the code nee
 ## What to record
 
 - **Domain terms:** Record resolved project-specific concepts, their meaning, and misleading synonyms in the relevant glossary. Keep implementation choices, open questions, and conversation history out of it. When no existing glossary format governs, use the format guidance provided by the `domain-modeling` skill if available; otherwise a concise definition and any terms to avoid are sufficient.
-- **Architectural decisions:** Record a settled choice when reversing it has meaningful cost, its rationale would otherwise be unclear, and it resolves a real tradeoff or an outside constraint ruled the obvious option out. Include the decision, why it was chosen, and material consequences or rejected alternatives worth preserving. When no existing ADR format governs, use the format guidance provided by the `domain-modeling` skill if available; otherwise a short title and a paragraph explaining the choice and reason are sufficient. Do not create an ADR for every answer.
+- **Architectural decisions:** Record a settled choice when reversing it has meaningful cost, its rationale would otherwise be unclear, and it resolves a real tradeoff or an outside constraint ruled the obvious option out. Do not create an ADR for every answer. Follow the ADR guidance of the `domain-modeling` skill when available, otherwise the rules below. Where the project documents a different ADR format or way of revising ADRs, follow that instead.
+  - Before creating an ADR, look for one that records the same decision and update it. Combine decisions in one ADR only when understanding or revising one requires the other.
+  - Give the ADR a title that states the decision, and a paragraph that names first any outside constraint that forced the decision, then gives the decision and its reason. Add a rejected alternative or a consequence only when a reader would otherwise miss it.
+  - Describe the decided system rather than its history. Leave out issue references that narrate history, earlier behavior, migration steps, file paths and the names of tables or fields, anything code already states, and mechanism the decision does not depend on.
+  - When a decision is revised, rewrite its ADR to state the new decision, or delete the ADR and fix links to it when nothing that qualifies replaces it. Do not mark it superseded.
 - **Other answers:** Keep routine choices, tentative proposals, and unresolved questions in the conversation unless the user has requested another destination. Do not turn them into glossary definitions, accepted ADRs, specifications, or tracker issues automatically.
 
 Read back each documentation change and verify that it preserves the user's meaning without promoting an inference to an agreed requirement. Continue under the existing documentation authorization; ask again only when the proposed write exceeds it.
