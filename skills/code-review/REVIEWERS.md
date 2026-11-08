@@ -140,16 +140,14 @@ A finding names the release state and the step at which it breaks.
 
 ### Tests
 
-Runs when the diff adds, changes, or removes tests, fixtures, mocks, snapshots, or test configuration, or changes behavior that users or callers rely on.
+Runs when the diff changes tests, fixtures, mocks, snapshots, test configuration, or any code that runs outside tests.
 
-Use the `test-quality-audit` skill, read-only, on the tests the change adds, changes, or removes, and on the tests that should protect the behavior it changes. Report as findings:
+Use the `test-quality-audit` skill on the tests the change adds, changes, removes, or drops from the run; on tests whose fixtures, mocks, snapshots, helpers, or configuration it changes; and on the tests that should protect the code it changes. Its sensitivity experiments follow the probe rule above: a copy outside the working tree, deleted afterward. Report as findings:
 
-- protection the change loses: a changed or removed test that would now pass a regression it caught before
-- a test the change adds or changes that its method would classify as Fix or Cut
-- a realistic regression in the changed behavior that no test catches, which it would classify as Add
+- protection the change loses: a test that would now pass a regression it caught before
+- a test the change adds or changes that `test-quality-audit` would classify as Fix or Cut
+- a realistic regression in the changed code that no test catches, which `test-quality-audit` would classify as Add
 - validation results that claim tests ran when the run didn't include them
-
-Each finding names the regression that would slip through, or the maintenance cost. A contract change the requirements intend is not a finding. Put problems in tests the change doesn't touch under **Noticed**.
 
 ### Specification
 

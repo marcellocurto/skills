@@ -102,7 +102,7 @@ Label each kept finding:
 - **Must fix:** its Outcome is a security hole, data loss, a crash, a stuck job, or a wrong result; it breaks an applicable written rule; or it is a structural problem with a named, significant cost to future changes.
 - **Suggestion:** a smaller problem whose fix has a concrete benefit you can name.
 
-Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, and Specification findings, and Tests findings about lost or missing protection. **Maintainability** covers the Repository rules and Simplicity findings, and Tests findings about a test's maintenance cost. For each, take the first that applies:
+Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, Specification, and Tests findings, except Tests findings only about a test's maintenance cost. **Maintainability** covers the Repository rules and Simplicity findings, and those Tests findings. For each, take the first that applies:
 
 - **Changes requested** if any must-fix finding remains; note missing information under Limitations
 - **Blocked** if missing information, access, or a human decision makes approval unsafe
