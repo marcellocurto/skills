@@ -73,7 +73,7 @@ A calling skill runs this after it commits fixes for earlier findings and before
 - the findings and comments the round addresses, each with the reply it drafted
 - every earlier finding it rejected or accepted as a limit, with the reason
 
-Start one reviewer with all of it. It applies the Correctness, Repository rules, and Scenarios lenses to the code the round adds, plus Security when that code touches a trust boundary, Blast radius when it alters a contract, and Rollout or Specification when their condition matches. Ask it three questions:
+Start one reviewer with all of it. It applies the Correctness, Repository rules, and Scenarios lenses to the code the round adds, plus Security when that code touches a trust boundary, Blast radius when it alters a contract, and Rollout, Specification, or Tests when their condition matches. Ask it three questions:
 
 1. Does each fix resolve its finding, as its drafted reply claims, on every path?
 2. What does the round break? Look for a check moved after work it should guard, a fallible call before the step that schedules recovery, an early return that drops a result already computed, and a guarantee the code made before the round that it no longer makes. For a fix that changes validation, also look for any request, path, or value a legitimate caller could send that the code now rejects or newly accepts, beyond the input the finding names.
@@ -102,7 +102,7 @@ Label each kept finding:
 - **Must fix:** its Outcome is a security hole, data loss, a crash, a stuck job, or a wrong result; it breaks an applicable written rule; or it is a structural problem with a named, significant cost to future changes.
 - **Suggestion:** a smaller problem whose fix has a concrete benefit you can name.
 
-Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, and Specification findings, and **Maintainability** covers the Repository rules and Simplicity findings. For each, take the first that applies:
+Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, Specification, and Tests findings, except Tests findings only about a test's maintenance cost. **Maintainability** covers the Repository rules and Simplicity findings, and those Tests findings. For each, take the first that applies:
 
 - **Changes requested** if any must-fix finding remains; note missing information under Limitations
 - **Blocked** if missing information, access, or a human decision makes approval unsafe

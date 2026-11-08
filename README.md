@@ -33,7 +33,7 @@ Skills for planning, building, reviewing, and improving software. You can run an
 - **[`pr-audit`](skills/pr-audit/SKILL.md)**: Audit a whole PR for merge readiness across correctness, maintainability and complexity, and test quality, then post one actionable comment.
 - **[`audit-code-complexity`](skills/audit-code-complexity/SKILL.md)**: Find needless complexity in code and get simpler designs that keep its behavior.
 - **[`blast-radius-audit`](skills/blast-radius-audit/SKILL.md)**: Find what a code change could break beyond the files it touches, across callers, data, timing, and runtime wiring.
-- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge whether tests catch realistic regressions, and recommend what to keep, change, or remove.
+- **[`test-quality-audit`](skills/test-quality-audit/SKILL.md)**: Judge whether tests catch realistic regressions, and recommend what to keep, change, or remove. `code-review` runs it for its Tests lens.
 - **[`relentless-review`](skills/relentless-review/SKILL.md)**: Challenge an existing proposal or result to find its material risks and a better path.
 - **[`vercel-composition-patterns`](skills/vercel-composition-patterns/SKILL.md)**: Apply Vercel's React composition patterns when designing or refactoring component interfaces.
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
