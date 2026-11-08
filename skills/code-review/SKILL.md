@@ -99,7 +99,7 @@ When a person asked for the review, open with a short summary of the change so t
 
 Label each kept finding:
 
-- **Must fix:** its Outcome is a security hole, data loss, a crash, a stuck job, or a wrong result; it breaks an applicable written rule; or it is a structural problem with a named, significant cost to future changes.
+- **Must fix:** its Outcome is a security hole, data loss, a crash, a stuck job, or a wrong result; it breaks an applicable written rule; it is a structural problem with a named, significant cost to future changes; or it is a Tests finding that names a realistic regression in important behavior that would now go uncaught, through protection the change loses, a validation claim that doesn't hold, or changed behavior no test covers.
 - **Suggestion:** a smaller problem whose fix has a concrete benefit you can name.
 
 Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, Specification, and Tests findings, except Tests findings only about a test's maintenance cost. **Maintainability** covers the Repository rules and Simplicity findings, and those Tests findings. For each, take the first that applies:
