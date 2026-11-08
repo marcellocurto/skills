@@ -39,7 +39,7 @@ Also return **Noticed**: each real problem you came across in code the change ne
 
 ## Lenses
 
-Correctness, Repository rules, Simplicity, Security, Blast radius, and Diff read review every change. Scenarios, Rollout, and Specification review it when the diff matches their condition; decide that from the files and code the diff touches.
+Correctness, Repository rules, Simplicity, Security, Blast radius, and Diff read review every change. Scenarios, Rollout, Specification, and Tests review it when the diff matches their condition; decide that from the files and code the diff touches.
 
 A trivial diff gets only Repository rules. A diff is trivial when it changes only prose that no program or agent acts on, such as a README or a code comment, or the spelling of user-visible text. Instruction files and skills are never trivial, and size or an agent's authorship doesn't make a diff trivial. When in doubt, run the full set.
 
@@ -54,10 +54,8 @@ Does the change do what the requirements ask, for every input and state its call
 - what a deleted or replaced path enforced, such as a validation, trigger, or ordering rule, and where the new path enforces it, or that the change drops it on purpose
 - arithmetic on realistic values: sums, rounding, and comparisons against limits, evaluated with concrete numbers and compared with the tolerance the validator uses elsewhere; and integer sizes at the realistic maximum
 - invalid input, errors, empty and boundary cases, ordering, retries, races, and partial failure, where the change involves them
-- whether the tests would fail if the changed behavior broke, naming the realistic regression that would slip through, and whether the claimed validation ran the tests that cover the change
-- changed tests that may hide a regression: an assertion, snapshot, or fixture updated to match new output; setup that seeds state the real workflow doesn't guarantee; a mock that replaces the logic the test claims to check; an error-handling test presented as proof that a capability works; or a skip, an expected-failure marker, or a test excluded from the run. A finding names the regression that would now pass and would have failed before; a contract change the requirements intend is not a finding.
 
-Leave workflows outside the diff to Scenarios, consumers to Blast radius, and trust boundaries to Security.
+Leave workflows outside the diff to Scenarios, consumers to Blast radius, trust boundaries to Security, and tests to Tests.
 
 ### Repository rules
 
@@ -91,7 +89,6 @@ Is the change as easy to understand and change as the problem allows? Simpler me
 - leftover guards, fallbacks, and code that nothing uses
 - a diff that touches fewer files by making callers understand more unrelated context
 - an old API kept only because tests still call it
-- tests that are tautological, coupled to the implementation, mock away the code that ships, or freeze prose, static content, or configuration
 
 Read a wrapper's callers before calling it a forwarder, and keep wrappers that own real behavior or protect a contract. Duplication and repeated parameters don't by themselves justify a new abstraction. A single-use module is justified when it hides real complexity and reduces what callers must know.
 
@@ -140,6 +137,19 @@ Read the repository's release procedure and its policy for the previous release 
 - the rollback path, where the policy requires one
 
 A finding names the release state and the step at which it breaks.
+
+### Tests
+
+Runs when the diff adds, changes, or removes tests, fixtures, mocks, snapshots, or test configuration, or changes behavior that users or callers rely on.
+
+Use the `test-quality-audit` skill, read-only, on the tests the change adds, changes, or removes, and on the tests that should protect the behavior it changes. Report as findings:
+
+- protection the change loses: a changed or removed test that would now pass a regression it caught before
+- a test the change adds or changes that its method would classify as Fix or Cut
+- a realistic regression in the changed behavior that no test catches, which it would classify as Add
+- validation results that claim tests ran when the run didn't include them
+
+Each finding names the regression that would slip through, or the maintenance cost. A contract change the requirements intend is not a finding. Put problems in tests the change doesn't touch under **Noticed**.
 
 ### Specification
 

@@ -1,6 +1,6 @@
 ---
 name: test-quality-audit
-description: Judge whether tests catch realistic regressions and recommend what to keep, change, or remove. Use when the user asks whether tests are useful or well written, or when another skill needs a test-quality check.
+description: Judge whether tests catch realistic regressions and recommend what to keep, change, or remove. Use when the user asks whether tests are useful or well written, or when another skill runs it to judge the tests a change adds, changes, or relies on.
 ---
 
 # Test Quality Audit
@@ -84,6 +84,10 @@ Use only the sections that add information:
 - **Highest-value next changes**: the smallest set of edits that improves confidence.
 
 If the tests are strong, say so and name the remaining blind spots. Ask only when missing context prevents judging what a test protects.
+
+## When another skill runs it
+
+Stay within the scope the caller names, such as the tests a change adds, changes, removes, or relies on, and leave the tests unedited. Follow the caller's rules for disposable copies and other resources, such as who creates them and where. Return the classifications with their evidence, in the caller's return format when it gives one; the caller decides what to report and how.
 
 ## Editing tests
 
