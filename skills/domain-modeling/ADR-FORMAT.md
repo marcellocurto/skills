@@ -1,30 +1,53 @@
 # ADR Format
 
-Follow the project's existing ADR location, naming, numbering, and format. When no convention exists, use `docs/adr/` with sequential names such as `0001-slug.md` and `0002-slug.md`.
+An ADR records a decision the system follows today and the reason for it. Every ADR in the directory should be true of the current system, so a reader can act on it without first checking whether it still applies.
 
-Create the fallback directory only when a qualifying decision is settled and documentation writes are authorized. In discussion mode, keep the proposed ADR in the response without creating files.
+## Location and numbering
 
-## Template
+Follow the project's ADR directory, file naming, and numbering. When no convention exists, use `docs/adr/` with sequential names such as `0001-slug.md` and `0002-slug.md`. Create the fallback directory only when a qualifying decision is settled and documentation writes are authorized. In discussion mode, keep the proposed ADR in the response without creating files.
+
+When names are numbered, give a new ADR the number after the highest one ever used, including deleted ADRs that only Git history still shows; do not start another sequence in `docs/adr/` merely because records live elsewhere. Never renumber an ADR or reuse a number. A merged ADR keeps the lowest number of the ADRs it combines. Gaps left by deleted and merged ADRs are expected.
+
+## Shape
+
+Write every new or rewritten ADR in this shape unless the project documents its own format, as [SKILL.md](SKILL.md) describes. The style of existing ADRs is not a documented format, so do not copy the length or sections of older records.
 
 ```md
-# {Short title of the decision}
+# {The decision, stated as a sentence}
 
-{1-3 sentences: what's the context, what did we decide, and why.}
+{What we decided and why. When an outside constraint ruled out the obvious option, name the constraint in the first sentence.}
+
+{Optional: We rejected {alternative} because {reason}.}
+
+{Optional: consequences a reader would not guess from the decision.}
 ```
 
-That's it. An ADR can be a single paragraph. The value is in recording *that* a decision was made and *why*, not in filling out sections.
+Write as much as the decision needs to be understood and no more. Most ADRs are a single paragraph. Add the rejected alternative only when someone would otherwise propose it again, and consequences only when they would surprise a reader.
 
-## Optional sections
+Naming the outside constraint first, as in "Because database documents are capped at 1 MiB, …", lets a later change that removes the constraint find every ADR that depends on it.
 
-Only include these when they add genuine value. Most ADRs won't need them.
+Example:
 
-- **Status** frontmatter (`proposed | accepted | deprecated | superseded by ADR-NNNN`): useful when decisions are revisited
-- **Considered Options**: only when the rejected alternatives are worth remembering
-- **Consequences**: only when non-obvious downstream effects need to be called out
+```md
+# Blob deletes are queued with the row and retried until storage confirms
 
-## Numbering
+Deleting a row that names a blob queues the blob's key in the same transaction, and a background loop retries the delete until storage confirms it. We rejected deleting the blob right after the row: if that single attempt failed, nothing would still know the key, and the blob would stay in storage for good.
+```
 
-Follow the naming scheme in the actual ADR directory. When it uses sequential numbering, inspect that directory for the next available number; do not start another sequence in `docs/adr/` merely because records live elsewhere.
+## Leave out
+
+These details describe history or implementation, and they become false or irrelevant long before the decision changes:
+
+- issue, pull request, and commit references that narrate history, such as "since #529"; a link to evidence that supports the reason, such as an incident report or a benchmark, may stay
+- how the system behaved before the decision, including phrases such as "before this" or "previously"
+- migration, backfill, and rollout steps
+- file paths and the names of tables, fields, functions, and jobs; name the concept instead, such as "the chunk table", so a rename does not make the ADR wrong
+- anything a code comment, schema, or type already states
+- mechanism the decision does not depend on
+
+## Group decisions that change together
+
+Before writing an ADR, look for one that already records the same decision, and update it instead of creating another file. Put two decisions in one ADR only when understanding or revising one requires the other. A decision that can be revised on its own keeps its own ADR, even when it shares a subject with others. The title of a combined ADR still states what was decided, not the subsystem it applies to.
 
 ## What qualifies
 
