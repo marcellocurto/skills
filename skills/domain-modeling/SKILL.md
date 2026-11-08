@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Define and maintain the codebase's shared domain terms and architectural decisions. Use when a domain term is unclear or disputed, when a lasting architectural decision is made, or when the user asks to update the glossary or decision records.
+description: Define and maintain the codebase's shared domain terms and architectural decisions. Use when a domain term is unclear or disputed, when a lasting architectural decision is made or stops holding, when the user asks to update or clean up the glossary or decision records, or when another skill runs it.
 ---
 
 # Domain Modeling
@@ -16,7 +16,7 @@ Loading this skill alone does not authorize documentation writes. When the reque
 
 ## Find the existing documentation
 
-Inspect repository guidance and relevant documentation for the current glossary, context map, ADR location, and document formats. Follow existing names, links, context ownership, and numbering before creating anything. A glossary or ADR directory with a different name is not missing documentation.
+Inspect repository guidance and relevant documentation for the current glossary, context map, ADR location, and document formats. Follow existing names, links, context ownership, and numbering before creating anything. For ADRs, a documented format overrides [ADR-FORMAT.md](./ADR-FORMAT.md), but the style of existing records does not. A glossary or ADR directory with a different name is not missing documentation.
 
 If no convention exists, use `CONTEXT.md` for domain terms and `docs/adr/` for architectural decisions. Create them only in documentation-update mode when there is agreed content to record. Use an existing context map, whatever its filename, to locate domain-specific records; do not infer that the whole project has one context merely because a root `CONTEXT.md` exists.
 
@@ -52,7 +52,22 @@ A decision qualifies for an ADR when all three are true:
 2. **Surprising without context**: a future reader will wonder "why did they do it this way?"
 3. **The result of a real trade-off or an outside constraint**: there were genuine alternatives and you picked one for specific reasons, or a constraint invisible in the code ruled the obvious option out
 
-If any of the three is missing, do not create or propose an ADR. When documentation updates are already authorized, record qualifying settled decisions without requesting approval again. Otherwise propose the record in the conversation. Follow the project's ADR format; use [ADR-FORMAT.md](./ADR-FORMAT.md) when no convention exists; it also lists examples of qualifying decisions.
+If any of the three is missing, do not create or propose an ADR. When documentation updates are already authorized, record qualifying settled decisions without requesting approval again. Otherwise propose the record in the conversation. Write it as [ADR-FORMAT.md](./ADR-FORMAT.md) describes, which also lists examples of qualifying decisions.
+
+### Keep ADRs true of the current system
+
+When a decision changes or stops holding, rewrite its ADR to state what the system does now, or delete the ADR when nothing that replaces it qualifies. Git history keeps the earlier version. Do not mark an ADR as superseded or deprecated, and do not keep a record of a decision the system no longer follows. When the old approach is worth remembering as a rejected option, state it in a "We rejected" sentence of the current ADR.
+
+## Prune existing ADRs
+
+When the user asks to review, clean up, or simplify the ADRs, check each one against the current code and documentation, then:
+
+1. Delete ADRs whose decision the system no longer follows, such as workarounds for a constraint that no longer applies or rules for a feature that was removed.
+2. Merge ADRs that cover the same topic into one, which keeps the lowest of their numbers.
+3. Rewrite the rest in the shape [ADR-FORMAT.md](./ADR-FORMAT.md) describes, removing what it says to leave out.
+4. Keep the remaining ADRs' numbers, and fix links in other documents that pointed at deleted or merged records.
+
+In discussion mode, present the deletions, merges, and rewrites as a proposal instead.
 
 ## Finish
 
