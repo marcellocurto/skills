@@ -43,7 +43,7 @@ Each finding it keeps belongs to one merge gate: Tests lens findings to **Test q
 
 - **Correctness:** `code-review` would label it Must fix, or it is a material privacy, accessibility, performance, compatibility, or operational regression, or unapproved behavior with concrete consequences.
 - **Maintainability and complexity:** `code-review` would label it Must fix.
-- **Test quality:** it names protection the PR loses, a validation claim that doesn't hold for important behavior, a realistic regression in important behavior that no test catches, or a significant maintenance cost.
+- **Test quality:** `code-review` would label it Must fix, or it names a test whose maintenance cost is significant.
 
 Findings below their gate's bar don't block and stay out of the comment. A finding `code-review` returns as disputed or unverified, which would block if it holds, is a gap in inspection rather than a verified defect. Noticed items never block, and stay out of the comment because one can describe an unfixed security problem; report them to the user.
 

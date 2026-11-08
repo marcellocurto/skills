@@ -13,7 +13,7 @@ Run `code-review` as a review for another skill, pinned to the head commit. Don'
 Apply [Decide each comment](SKILL.md#decide-each-comment) to its findings. Post as threads:
 
 - each kept finding that meets the fix bar, including unverified ones `code-review` planned to keep
-- each disputed finding, and each unverified finding `code-review` planned to drop, so a round settles it in public
+- each disputed finding, and each unverified finding `code-review` planned to drop, so a round settles it in public. The exception is a security finding that may describe code already on the base branch: keep it off GitHub and list it in the report as unsettled, because posting it would disclose a live vulnerability.
 
 For a real finding below the bar, choose its response under **Fix bar** and list it in the report instead of posting it.
 
