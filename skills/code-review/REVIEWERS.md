@@ -1,6 +1,6 @@
 # Reviewers
 
-These are the instructions for the reviewers that [SKILL.md](SKILL.md) starts: one per lens for a review, one for a fix check, and one for the **Verifier**. Choose each agent type and model from the host's offerings to suit its lens and diff; they may differ.
+These are the instructions for the reviewers that [SKILL.md](SKILL.md) starts: the ones **Lenses** lists for a review, one for a fix check, and one for the **Verifier**. Run them all on Sonnet or GPT Sol, whichever the host offers, unless the user asks for another model; the session's own model is for implementing. Choose each agent type to suit its lenses.
 
 ## What every reviewer gets
 
@@ -40,7 +40,12 @@ Also return **Noticed**: each real problem you came across in code the change ne
 
 ## Lenses
 
-Correctness, Repository rules, Simplicity, Security, Blast radius, and Diff read review every change. Scenarios, Rollout, Specification, and Tests review it when the diff matches their condition; decide that from the files and code the diff touches.
+Start reviewers by the size of the diff:
+
+- **Small:** a few files and a couple hundred changed lines, or a diff that changes only instructions and documentation, such as skills. Start three reviewers: one for Correctness and Diff read, one for Security, and one for Repository rules and Simplicity.
+- **Larger:** start one reviewer each for Correctness, Diff read, Security, Repository rules, and Simplicity.
+
+Either way, add a reviewer for Blast radius when the diff alters a contract that code outside it relies on, as that lens lists them, and one each for Scenarios, Rollout, Specification, and Tests when the diff matches their condition. Decide from the files and code the diff touches; when in doubt, use the larger set. A reviewer that applies several lenses labels each finding with the lens it came from.
 
 A trivial diff gets only Repository rules. A diff is trivial when it changes only prose that no program or agent acts on, such as a README or a code comment, or the spelling of user-visible text. Instruction files and skills are never trivial, and size or an agent's authorship doesn't make a diff trivial. When in doubt, run the full set.
 
