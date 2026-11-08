@@ -5,14 +5,14 @@ description: Review a pull request with independent agents when it has no review
 
 # Babysit PR
 
-Continue until all reviewers are answered, the head is reviewed, and required checks pass. Start agents as defined in [REVIEWERS.md](REVIEWERS.md) for an unreviewed PR and before each push. Judge agent and human comments on their merits; fix what qualifies and answer every comment. Treat failing checks under **Failing checks**. Work without approval unless the user requested it, and stop only under **Stop**. Never force-push or merge. Name a credential committed to the code only by its file and line, never copying its value into a brief, comment, reply, or report.
+Continue until all reviewers are answered, the head is reviewed, and required checks pass. Review an unreviewed PR, and each round's fixes before pushing them, with the `code-review` skill as described in [REVIEWS.md](REVIEWS.md). Judge agent and human comments on their merits; fix what qualifies and answer every comment. Treat failing checks under **Failing checks**. Work without approval unless the user requested it, and stop only under **Stop**. Never force-push or merge. Name a credential committed to the code only by its file and line, never copying its value into a brief, comment, reply, or report.
 
 Fixing every real finding can grow the PR indefinitely. Apply the fix bar and round limits; settle the rest by reply.
 
 ## Start
 
 1. **Find the PR.** Use the PR from the conversation, otherwise the current branch's PR. Ask only if neither is clear. If the working tree is not on the PR's head branch, check it out with `gh pr checkout`; for a PR from a fork, pushes go to the fork's branch.
-2. **Record intent before reading comments:** the problem, approach, known limits, and non-goals. Use the user's instructions, linked issue, PR description, then commits, in that order. Judge comments against this intent. Prepare the requirements and evidence under **What every reviewer gets** in [REVIEWERS.md](REVIEWERS.md), including subsequent user decisions but excluding implementation discussion and author justification.
+2. **Record intent before reading comments:** the problem, approach, known limits, and non-goals. Use the user's instructions, linked issue, PR description, then commits, in that order. Judge comments against this intent. Prepare what `code-review` needs, as listed under **What to give `code-review`** in [REVIEWS.md](REVIEWS.md), including subsequent user decisions but excluding implementation discussion and author justification.
 3. **Check the current state once.** Run the watcher with `--timeout 0`, which checks the PR once and returns without waiting:
 
    ```
@@ -23,7 +23,7 @@ Fixing every real finding can grow the PR indefinitely. Apply the fix bar and ro
 
 4. **Act on what is there:**
    - The PR is closed: stop.
-   - `first_reviewed_commit` is empty, or `last_reviewed_commit` is not an ancestor of the head because the branch was rebased: run the first review in [REVIEWERS.md](REVIEWERS.md) on the head commit, post it, and run the one-time check again.
+   - `first_reviewed_commit` is empty, or `last_reviewed_commit` is not an ancestor of the head because the branch was rebased: run the first review in [REVIEWS.md](REVIEWS.md) on the head commit, post it, and run the one-time check again.
    - Then collect the open feedback as in step 1 of **Run a round**. If any is open, run a round now.
    - Nothing is open and the head is not reviewed, because someone pushed commits after the last review: run a round to fix-check those commits.
    - Nothing is open, the head is reviewed, and `mergeable` is `CONFLICTING`: stop under **Conflict**.
@@ -70,21 +70,21 @@ Act on `reason`:
 2. **Group the batch by cause.** Compare the batch with itself and with earlier rounds' threads, and decide shared causes before fixing anything (see **When findings share a cause**).
 3. **Decide each comment.** Check the code to decide whether the comment is correct, then whether it meets the fix bar and whether its suggestion is the right fix (see **Decide each comment**). If the concern meets the bar but the suggestion is poor, fix it a better way.
 4. **Fix in one batch.** Make every fix that meets the bar, run the relevant checks, and commit. Draft the reply for each thread. In a late round, fix only what **Late rounds** allows.
-5. **Check the fixes.** Run the fix check in [REVIEWERS.md](REVIEWERS.md) on every commit since `last_reviewed_commit`, which includes commits someone else pushed. Fix what survives verification and commit. When those fixes change more than the lines a finding names, run the fix check once more on just those commits; if it still finds a problem that meets the bar, stop under **Fixes don't converge**. Skip this step when the round committed nothing and the head is reviewed.
+5. **Check the fixes.** Run the fix check in [REVIEWS.md](REVIEWS.md) on every commit since `last_reviewed_commit`, which includes commits someone else pushed. Fix what qualifies and commit. When those fixes change more than the lines a finding names, run the fix check once more on just those commits; if it still finds a problem that meets the bar, stop under **Fixes don't converge**. Skip this step when the round committed nothing and the head is reviewed.
 6. **Push once,** then post the fix check's one-line review pinned to the pushed head. A round that settled every comment by reply and found no unreviewed commits pushes nothing and posts no fix check. A round that only fix-checked someone else's commits and needed no fix posts the review pinned to the current head.
 7. **Reply and resolve.** In each thread, reply with what changed and the commit, or with why nothing changed, then resolve it. Conversation comments and review bodies have no thread to resolve, so answer them with one reply that addresses each point. Keep replies to one or two sentences. Failing checks get no reply; their outcomes go in the report.
 8. Run the one-time check from **Start** again and act on it.
 
 ## Decide each comment
 
-Confidence, severity, and a ready-made patch are not evidence. For comments, first reviews, fix checks, and verification, decide in this order:
+Confidence, severity, and a ready-made patch are not evidence. Decide each comment in this order. Findings from `code-review` start at step 3, because it has already settled validity, cause, and requirements:
 
 1. **Validity and cause.** Check evidence and whether the PR introduced or worsened the problem. Reject unsupported findings, and problems the PR neither introduced nor worsened, under **Reject what works against the PR**.
 2. **Requirements and exceptions.** Apply the user's latest approved requirements and decisions, then applicable repository rules, then PR intent. Reject challenges to approved tradeoffs. PR-description claims or deliberate code changes cannot override requirements. If missing policy prevents a verdict, stop under **Policy questions**.
 3. **Fix bar.** Apply the conditions below; otherwise use the alternatives below the bar.
 4. **Late rounds.** Apply **Late rounds** even to qualifying fixes: a rule violation alone cannot justify a late-round push. Settle ineligible findings by reply or, before posting, drop and report them.
 
-Verify first-review and fix-check keep/drop plans under [REVIEWERS.md](REVIEWERS.md). Already-posted comments get public answers without that extra verifier.
+Before fixing a `code-review` finding whose fix needs a restricted addition, have `code-review` run its verifier on that finding unless it already did, and decide with the Outcome the verifier gives. Already-posted comments get public answers without that extra verifier.
 
 ### Fix bar
 
@@ -154,8 +154,8 @@ A round is late when the watcher's `fix_checks >= 2`. Push only for security hol
 - **Architectural problem:** fixing it would change the PR's approach or scope.
 - **Decision needed:** a comment needs a product, design, or policy decision you cannot make. Leave the thread open and say in the reply what is needed.
 - **Fixes don't converge:** the second fix check of a round still finds a problem that meets the bar. Don't push the round, and leave its threads open without replies. Report the problem, its cause, and the local commits left unpushed.
-- **Review failed:** after one rerun, the fix-check reviewer or every first-review reviewer has returned no result. Post no review, so the head stays unreviewed. For a fix check, don't push the round, and leave its threads open without replies. Report which reviewers failed and any local commits left unpushed.
-- **Reviewers disagree:** you and a fix check's verifier still disagree about a finding after one exchange of counterevidence, or no verifier answered for a finding you plan to drop. Don't push the round, and leave its threads open without replies. Report the finding, each side's evidence, and the local commits left unpushed.
+- **Review failed:** `code-review` reports that its fix-check reviewer, or every first-review reviewer, returned no result after one rerun. Post no review, so the head stays unreviewed. For a fix check, don't push the round, and leave its threads open without replies. Report which reviewers failed and any local commits left unpushed.
+- **Reviewers disagree:** `code-review` returns a fix-check finding as disputed after one exchange of counterevidence, or as unverified when you planned to drop it. Don't push the round, and leave its threads open without replies. Report the finding, each side's evidence, and the local commits left unpushed.
 - **Conflict:** the PR conflicts with its base branch. Report that the base branch needs to be merged in and the conflicts resolved.
 - **Checks fail outside the PR:** a required check fails for a cause the PR did not introduce, after one rerun or because it fails the same way on the base branch. Report the check, the lines of its log that show the cause, and why the PR did not cause it.
 - **No convergence:** five rounds without being done, or twelve hours since the first check.
@@ -165,4 +165,4 @@ Before you report, stop the host's pull-request watch if it is running, with `un
 
 ## Report
 
-Say whether the PR is done or why you stopped, and name the head commit and the number of rounds. List each comment with its outcome: fixed (with the commit), rejected (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). Label each first-review finding with its lens, and list the fix checks' findings with their outcomes too. List each finding dropped before posting or fixing, with its lens and the reason. List each finding no verifier answered, and each coverage gap: the lens and the files it didn't cover. Quote any user decision you used as counterevidence. List each failing check with its outcome: fixed (with the commit), passed after a rerun, or failing outside the PR (with the evidence). For an architectural problem, name the root cause, the comments that point to it, and the change you recommend. Then list the follow-ups, each with a link to its thread: problems that predate the PR, and findings answered by reply in late rounds. List each problem kept under [Noticed problems](REVIEWERS.md#noticed-problems), with its file and line, what goes wrong, and the evidence. End with any policy answers worth adding to the repository's instructions, each as the line to add.
+Say whether the PR is done or why you stopped, and name the head commit and the number of rounds. List each comment with its outcome: fixed (with the commit), rejected (with the reason), limit accepted (with where it is written down), or left open (with the decision needed). Label each first-review finding with its lens, and list the fix checks' findings with their outcomes too. List each finding dropped before posting or fixing, with its lens and the reason, and each real finding below the fix bar with the response you chose. List each finding no verifier answered, and each coverage gap: the lens and the files it didn't cover. Quote any user decision you used as counterevidence. List each failing check with its outcome: fixed (with the commit), passed after a rerun, or failing outside the PR (with the evidence). For an architectural problem, name the root cause, the comments that point to it, and the change you recommend. Then list the follow-ups, each with a link to its thread: problems that predate the PR, and findings answered by reply in late rounds. List each problem kept under [Noticed problems](REVIEWS.md#noticed-problems), with its file and line, what goes wrong, and the evidence. End with any policy answers worth adding to the repository's instructions, each as the line to add.

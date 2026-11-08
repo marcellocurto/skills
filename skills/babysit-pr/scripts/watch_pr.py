@@ -13,7 +13,7 @@ from typing import Any
 
 from fetch_review_context import PullRequestTarget, ensure_authenticated, fetch_all, graphql, next_cursor, resolve_pr
 
-# Bodies of the reviews this skill posts, as `REVIEWERS.md` specifies them. Each is pinned to the
+# Bodies of the reviews this skill posts, as `REVIEWS.md` specifies them. Each is pinned to the
 # commit it covers, so these prefixes plus the review's commit say what has been reviewed.
 FIRST_REVIEW_PREFIX = "Reviewed `"
 FIX_CHECK_PREFIX = "Reviewed the fixes in `"

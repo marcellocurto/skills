@@ -5,7 +5,7 @@ description: Implement a GitHub issue or the work agreed in the conversation as 
 
 # Ship PR
 
-Run `implement-to-pr`, then `babysit-pr`, to build, open, independently review, and settle a PR, checking fixes before each push. Never force-push or merge.
+Run the `implement-to-pr` skill, then the `babysit-pr` skill, to build, open, independently review, and settle a PR, checking fixes before each push. Never force-push or merge.
 
 ## 1. Build and open the PR
 
