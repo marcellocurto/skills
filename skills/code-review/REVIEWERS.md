@@ -149,7 +149,7 @@ Read the vendor's documentation for the constructs the change handles, fetching 
 
 ## Noticed problems
 
-Any reviewer or verifier can return Noticed items. Check each against the code. Discard one that misreads the code, and treat one the change caused or worsened as a finding. Keep the rest for the report. Items returned as Noticed skip the verifier and never affect a verdict. A finding dropped because it predates the change goes to the verifier like any other planned drop, then joins them, and the report lists it with them instead of among its dropped findings.
+Any reviewer or verifier can return Noticed items. Check each against the code. Discard one that misreads the code, and treat one the change caused or worsened as a finding. Keep the rest for the report. Items returned as Noticed skip the verifier and never affect a verdict. The report lists findings dropped because they predate the change with them instead of among its dropped findings.
 
 ## Verifier
 

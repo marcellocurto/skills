@@ -15,7 +15,7 @@ Apply [Decide each comment](SKILL.md#decide-each-comment) to its findings. Post 
 - each kept finding that meets the fix bar, including unverified ones `code-review` planned to keep
 - each disputed finding, and each unverified finding `code-review` planned to drop, so a round settles it in public
 
-For a real finding below the bar, choose its response under **Fix bar** and list it in the report instead of posting it. Keep **Noticed** items off GitHub, as under **Noticed problems**.
+For a real finding below the bar, choose its response under **Fix bar** and list it in the report instead of posting it.
 
 Post the threads as one review pinned to the reviewed head, with an inline thread per finding. Use `COMMENT`; authors cannot approve or request changes on their own PR.
 

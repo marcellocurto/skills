@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a specific diff, pull request, or commit range with independent reviewers for correctness, security, maintainability, and repository rules, check each finding against the code, and check fixes against earlier findings. Use when the user asks to review changes, a PR, or commits, or when another skill runs it to review a change or check fixes. Not for whole-codebase or current-state subsystem audits.
+description: Review a specific diff, pull request, or commit range with independent reviewers for correctness, security, maintainability, and repository rules, check each finding against the code, and check fixes against earlier findings. Use when the user asks to review changes, a PR, or commits, or when another skill runs it to review a change, check fixes, or verify findings. Not for whole-codebase or current-state subsystem audits.
 ---
 
 # Code Review
@@ -17,6 +17,8 @@ It runs in one of four modes:
 - **Review for another skill,** such as `babysit-pr` reviewing a new PR: return findings as under **Return to the caller**.
 - **Fix check for another skill:** check commits that fix earlier findings, as under **Fix check**, and return findings the same way.
 - **Verify for another skill:** run only the **Verifier** in [REVIEWERS.md](REVIEWERS.md) on the findings the caller names, with the brief of the review that found them, and return them as under **Return to the caller**.
+
+If the host can't start agents, do each reviewer's work, including the Verifier's, in a separate local pass, even for a change you wrote, and report that the passes weren't independent.
 
 ## 1. Pin the change
 
@@ -44,8 +46,6 @@ Prepare the brief under **What every reviewer gets** in [REVIEWERS.md](REVIEWERS
 Choose the lenses under **Lenses** in [REVIEWERS.md](REVIEWERS.md), and start one reviewer per lens at the same time. Don't change the checkout while they run.
 
 The reviewers must be independent of the change's author. If you wrote or changed the code under review, as when another skill built the PR in this conversation, start the reviewers as agents rather than reviewing it yourself. A reviewer that fails doesn't make this a host without agents, so don't replace it with a local pass. Standalone, a small change that you didn't write, such as a few files and a couple hundred changed lines, may be reviewed in one local pass per lens instead.
-
-If the host can't start agents, make one local pass per lens, even for a change you wrote, and report that the passes weren't independent.
 
 For adversarial, blind-spot, or tear-it-apart requests, start the reviewers as agents regardless of the change's size. First write one paragraph stating what the change is meant to accomplish, based on the sources in step 2, and mark what is inferred, and give every reviewer that paragraph. If the user wants the intent itself challenged, use the `relentless-review` skill for that separate question.
 
@@ -86,6 +86,7 @@ It reports every problem the round's code introduces or worsens. It doesn't rais
 When another skill runs this review, return to it:
 
 - the lenses that ran, and each coverage gap with its lens and files, or that the review failed
+- whether reviewers ran as local passes instead of independent agents
 - each kept finding with its lens, anchor, problem, trigger, Outcome, evidence, and fix, marked _(reproduced)_ when the evidence was reproduced, and whether the verifier confirmed it
 - each dropped finding with its lens and the reason
 - each finding left unverified or disputed, with your plan for it and each side's evidence
