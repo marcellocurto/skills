@@ -1,6 +1,6 @@
 ---
 name: create-pull-request
-description: Open a ready-for-review GitHub pull request for completed local changes, including any needed commit and push. Use when the user asks to open, create, or publish a PR for work that is already done.
+description: Open a ready-for-review GitHub pull request for completed local changes, including any needed commit and push. Use when the user asks to open, create, or publish a PR for work that is already done, or when another skill runs it to publish its work.
 ---
 
 # Create Pull Request
@@ -12,7 +12,7 @@ A request to open the PR authorizes creating a branch when needed, committing th
 Stop and report only when:
 
 - the change is empty, incomplete, or mixed with changes whose ownership is unclear
-- a required check fails or cannot run
+- the change makes a required check fail
 - publishing fails
 
 ## 1. Establish the change
@@ -24,7 +24,12 @@ Stop and report only when:
 
 ## 2. Verify
 
-Run the checks the repository requires. If it names none, run the smallest checks that exercise the changed behavior, plus `git diff --check`. Reuse earlier results when the code they tested has not changed since. Never weaken tests or bypass failing paths to get a check to pass, and never report a check that did not run.
+Run the checks the repository requires. If it names none, run the smallest checks that exercise the changed behavior, plus `git diff --check`. Reuse earlier results, including those another skill hands over, when the code they tested has not changed since. Never weaken tests or bypass failing paths to get a check to pass, and never report a check that did not run.
+
+Two failures don't stop publishing; name each in the Verification section instead:
+
+- a check that already fails the same way on the base branch, for a reason the change didn't introduce
+- a check that can't run because a tool, runtime, or service isn't installed here, such as a JDK, a database, or a browser. Don't install system-level software to run it without asking. Verify the change another way where you can, and say what you did instead.
 
 ## 3. Commit and push
 
@@ -53,7 +58,7 @@ Where to start, which parts need careful reading, and which are mechanical, such
 
 ## Verification
 
-The commands run and their results, and manual checks with what they showed, such as how a UI change looks at each width checked. Say what was not tested and why.
+The commands run and their results, and manual checks with what they showed, such as how a UI change looks at each width checked. Say what was not tested and why, including each check that couldn't run because a tool or service is missing here, and what you did instead.
 
 ## Risks and non-goals
 
