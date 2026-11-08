@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import { invocationPoliciesMatch } from "../scripts/invocation-policy.ts";
 import { descriptionStatesWhenToUse } from "../scripts/skill-frontmatter.ts";
+import { divergentSharedScripts } from "../scripts/shared-scripts.ts";
 import { referencedSkillNames } from "../scripts/skill-references.ts";
 
 const implicitSkill = `---
@@ -66,5 +67,26 @@ describe("skill references", () => {
 
   test("ignores code that is not named as a skill", () => {
     expect(referencedSkillNames("Run `bun test` and read `skill-path`.")).toEqual([]);
+  });
+});
+
+describe("shared scripts", () => {
+  test("accepts identical copies and scripts with distinct names", () => {
+    expect(
+      divergentSharedScripts([
+        { skill: "a", name: "fetch.py", content: "same" },
+        { skill: "b", name: "fetch.py", content: "same" },
+        { skill: "b", name: "other.py", content: "different" },
+      ]),
+    ).toEqual([]);
+  });
+
+  test("reports copies that differ", () => {
+    expect(
+      divergentSharedScripts([
+        { skill: "a", name: "fetch.py", content: "one" },
+        { skill: "b", name: "fetch.py", content: "two" },
+      ]),
+    ).toEqual(["fetch.py (a, b)"]);
   });
 });
