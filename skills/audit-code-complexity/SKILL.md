@@ -10,7 +10,7 @@ Find code that is harder to understand, change, or verify than the problem requi
 ## 1. Set the scope
 
 - **Current state:** audit the named code as it exists, regardless of when its complexity was introduced.
-- **Change:** audit only complexity that the named commits, branch, pull request, or working changes introduced or made worse. Read surrounding code for context.
+- **Change:** audit only complexity that the named commits, branch, pull request, or working changes introduced or made worse. Read surrounding code for context. When another skill runs this audit, also return under **Noticed** the real problems, bugs included, that you came across in code the change doesn't touch, with the file and line, who runs into each and when, what goes wrong, and your evidence. Don't search for more.
 - **Proposal:** audit a design or code the user proposes before it is built, against the requirements it states. If asked to revise the proposal, edit the proposal and leave the code alone.
 
 Default to the current state. Use the change scope only when the user or the skill running this audit names a change; uncommitted work alone doesn't count. If asked for more than one scope, report each separately.
@@ -73,7 +73,7 @@ When replacing an interface, find every user, including tests, and move tests to
 
 ## 5. Report
 
-When a skill asked you to apply the findings, give it a short report: one line for each applied change that a reader of the diff would need explained, and the format below only for findings you left unapplied.
+When a skill asked you to apply the findings, give it a short report: one line for each applied change that a reader of the diff would need explained, the format below only for findings you left unapplied, and the Noticed items from step 1.
 
 Otherwise use this format, order findings by benefit relative to risk, and omit empty sections:
 

@@ -91,7 +91,20 @@ When another skill runs this review, return to it:
 - each dropped finding with its lens and the reason
 - each finding left unverified or disputed, with your plan for it and each side's evidence
 - any counterevidence you gave the verifier, quoting user decisions verbatim
-- the Noticed items, marking those left unverified
+- the Noticed items, written as under **Noticed items** and marking those left unverified
+
+## Noticed items
+
+Noticed items reach people who haven't read the code they're about, so write each one for a developer who has never opened that part of the codebase. Merge items that share a cause, keeping every location, and list the most harmful first. Write each in this shape:
+
+```markdown
+**What goes wrong, in plain words.** Who runs into it, when, and what they see. Then the cause, with the file and line, explaining any internal name the first time it appears.
+
+- **Outcome:** a security hole, data loss, a crash, a stuck job, a wrong result, or a cost to future changes.
+- **Why left:** why this change doesn't fix it, such as that it predates the change.
+- **Next step:** the fix and its size, or the decision it needs first.
+- **Evidence:** reproduced, with the probe or test, or reasoned, with the code path. For an unverified item, say what remains uncertain.
+```
 
 ## Report
 
@@ -131,7 +144,7 @@ Same format as Correctness.
 
 ## Noticed
 
-Problems the change doesn't cause, each with its file and line, what goes wrong, and the evidence.
+Problems the change doesn't cause, written as under **Noticed items**.
 
 ## Limitations
 
