@@ -36,7 +36,7 @@ Return inspected and skipped areas, plus each finding with:
 - **Evidence:** _reproduced_, with the probe or test and what it showed, or _reasoned_, with the code path.
 - **Fix:** the focused change that resolves it.
 
-Also return **Noticed**: each real problem you came across in code the change neither introduces nor worsens, with its file and line, what goes wrong, and your evidence. Include only what your lens's work led you to, and don't search for more.
+Also return **Noticed**: each real problem you came across in code the change neither introduces nor worsens, with its file and line, what goes wrong, its Trigger, its Outcome as above or a cost to future changes, your evidence, and the fix with its size, such as a few lines, a focused PR, or a design decision. Include only what your lens's work led you to, and don't search for more.
 
 ## Lenses
 
