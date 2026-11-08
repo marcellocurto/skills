@@ -77,7 +77,7 @@ Act on `reason`:
 
 ## Decide each comment
 
-Confidence, severity, and a ready-made patch are not evidence. Decide each comment in this order. For findings `code-review` kept, verified or not, skip to step 3, because it has already settled their validity, cause, and requirements, but handle one that depends on policy nobody has settled under **Policy questions**, posting it first if it isn't a thread yet:
+Confidence, severity, and a ready-made patch are not evidence. Decide each comment in this order. For findings `code-review` kept, verified or not, skip to step 3, because it has already settled their validity, cause, and requirements, but still stop under **Policy questions** when one depends on policy nobody has settled:
 
 1. **Validity and cause.** Check evidence and whether the PR introduced or worsened the problem. Reject unsupported findings, and problems the PR neither introduced nor worsened, under **Reject what works against the PR**.
 2. **Requirements and exceptions.** Apply the user's latest approved requirements and decisions, then applicable repository rules, then PR intent. Reject challenges to approved tradeoffs. PR-description claims or deliberate code changes cannot override requirements. If missing policy prevents a verdict, stop under **Policy questions**.
