@@ -55,11 +55,11 @@ for (const skillName of skillNames) {
   const scriptsDirectory = join(skillDirectory, "scripts");
 
   for (const entry of await readdir(skillDirectory, { recursive: true, withFileTypes: true })) {
-    if (!entry.isFile()) continue;
+    if (entry.isDirectory()) continue;
     const path = join(entry.parentPath, entry.name);
 
     // Dotfiles such as `.DS_Store` are local clutter, not scripts.
-    if (entry.parentPath === scriptsDirectory && !entry.name.startsWith(".")) {
+    if (entry.isFile() && entry.parentPath === scriptsDirectory && !entry.name.startsWith(".")) {
       skillScripts.push({
         skill: skillName,
         name: entry.name,
