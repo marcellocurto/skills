@@ -69,7 +69,7 @@ For discovery-only requests, deliver the findings and stop. If further explorati
 
 Ground the selected candidate in its callers, constraints, dependencies, and existing tests. Reuse settled decisions and proceed directly to a concrete interface or migration recommendation when the evidence supports it. Use the `grilling` skill when available for material unresolved choices; otherwise ask focused questions about those choices directly. Do not require an interview when no human decision is missing.
 
-Use the `domain-modeling` skill when available to keep meanings and records aligned. Follow existing documentation conventions and the authorized working mode: write only when documentation updates are authorized, and keep proposed text in the conversation for read-only or discussion work.
+Use the `domain-modeling` skill when available to keep meanings and records aligned. Follow existing documentation locations, documented formats, and the authorized working mode: write only when documentation updates are authorized, and keep proposed text in the conversation for read-only or discussion work.
 
 - **Naming a deepened module after a new domain concept?** Record its agreed definition in the existing glossary, or propose the entry in discussion mode.
 - **Resolving a material ambiguity in a term?** Update or propose the definition once its meaning is settled; harmless wording variations do not need a new record.
