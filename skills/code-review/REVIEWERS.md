@@ -11,6 +11,7 @@ Exclude implementation discussion and author justification. Reviewers of the sam
 - the PR description's intent, risks, and non-goals, and the issue's non-goals
 - the repository's instruction files, including any review decisions, trust assumptions, and realistic input sizes they record
 - validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit. For tests that passed, say whether any of them exercise the changed code, or that this is unknown, and list temporary probes separately from the project's tests
+- the calling skill's resource rules, when it gives any
 - its lens, and the rules and return format below
 
 ## Rules for every reviewer
@@ -142,7 +143,7 @@ A finding names the release state and the step at which it breaks.
 
 Runs when the diff changes tests, test helpers, fixtures, mocks, snapshots, test configuration, or any code or configuration that runs outside tests.
 
-Use the `test-quality-audit` skill on the tests the change adds, changes, removes, or drops from the run; on tests whose fixtures, mocks, snapshots, helpers, or configuration it changes; and on the tests that should protect the code it changes. Its sensitivity experiments follow the probe rule above: a copy outside the working tree, deleted afterward. Report as findings:
+Use the `test-quality-audit` skill on the tests the change adds, changes, removes, or drops from the run; on tests whose fixtures, mocks, snapshots, helpers, or configuration it changes; and on the tests that should protect the code it changes. Its sensitivity experiments follow the probe rule above. Report as findings:
 
 - protection the change loses: a test that would now pass a regression it caught before
 - a test the change adds or changes that `test-quality-audit` would classify as Fix or Cut

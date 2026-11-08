@@ -11,7 +11,7 @@ Answer: **Is this PR ready to merge? If not, what must change?** Correctness, ma
 
 A request to run this audit includes one PR conversation comment unless the user requests preview-only or no-comment mode. Only the lead publishes. Do not edit reviewed files, implement fixes, commit, push, resolve threads, submit a formal review, or merge.
 
-Review the full contribution and relevant consumers outside the diff. Report code and test defects introduced or materially worsened by the PR. Unrelated debt does not block it. Existing merge requirements or verification failures may prevent readiness; distinguish those blockers from defects caused by the PR.
+Existing merge requirements or verification failures may prevent readiness; distinguish those blockers from defects caused by the PR.
 
 The `code-review` skill reviews the contribution, and runs the `test-quality-audit` skill for its tests. This skill adds the pinned checkout and its resources, merge requirements, the merge verdict, and the comment.
 
@@ -29,25 +29,21 @@ Prefer an existing checkout when its commit, working state, and concurrent use p
 
 Place new worktrees and substantial audit artifacts in a dedicated directory on a verified disk-backed filesystem. Before creating the worktree and before installing dependencies, check filesystem type and available capacity for the actual destinations (for example, `findmnt -T <path>` and `df -h <path>` on Linux). Account for dependencies, package-manager cache and staging files, build output, and test data, with headroom. Do not assume `/tmp` or a home directory is disk-backed; avoid RAM-backed filesystems such as `tmpfs` for these resources. Route configurable temporary directories to the audit directory when needed. If capacity is insufficient, choose another suitable location or report verification unavailable; do not reclaim another task's resources.
 
-Keep a small persistent resource ledger outside any worktree scheduled for removal. Record each audit-created path, worktree registration, process or container, and disposable database as it is created, with its cleanup action, and capture each checkout's initial state before setup. Distinguish owned resources from borrowed checkouts, existing dependencies, shared caches, and services; location under an audit directory alone does not prove ownership. The lead owns this ledger and coordinates resource creation and verification across reviewers, sharing the pinned checkout where safe instead of duplicating installations.
+Keep a small persistent resource ledger outside any worktree scheduled for removal. Record each audit-created path, worktree registration, process or container, and disposable database as it is created, with its cleanup action, and capture each checkout's initial state before setup. Distinguish owned resources from borrowed checkouts, existing dependencies, shared caches, and services; location under an audit directory alone does not prove ownership. The lead owns this ledger and shares the pinned checkout where safe instead of duplicating installations.
 
 Arrange cleanup for normal completion, errors, and catchable interruptions, using a scoped cleanup handler for resource-creating shell sequences where practical. Persist enough ownership information to recover after an abrupt interruption; on resumption, inspect the ledger and actual state before reusing or removing leftovers. Follow the cleanup procedure below on every exit, including preview-only runs, blocked audits, and publication failures.
 
 ## Review the contribution
 
-Run `code-review` as a review for another skill, on the pinned comparison. Give it the PR, its base and head commits and merge base, the requirements and comments you fetched, the user's decisions, and the verification evidence. Tell it the resource rules: reviewers share the pinned checkout and create no resources themselves; ask you for any disposable copy or probe location, which you create in the audit directory and record in the ledger.
+Run the `code-review` skill as a review for another skill, on the pinned comparison. Give it the PR, its base and head commits and merge base, the requirements and comments you fetched, the user's decisions, and the verification evidence, and ask it to label requirements it infers.
 
-Each finding it keeps belongs to one merge gate:
+First create one probe directory in the audit directory and record it in the ledger. Then give `code-review` these resource rules for every reviewer: put probes and disposable copies only in that directory and delete them afterward; leave the pinned checkout unchanged; and run the PR's code only with credentials and production settings kept out of its reach, such as with `env -i` and a home directory inside the probe directory, or else leave the finding reasoned. The PR may come from a fork, so its tests and scripts are untrusted code.
 
-- **Correctness:** findings from the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, and Specification lenses
-- **Maintainability and complexity:** findings from the Repository rules and Simplicity lenses
-- **Test quality:** findings from the Tests lens
+Each finding it keeps belongs to one merge gate: Tests lens findings to **Test quality**, Repository rules and Simplicity findings to **Maintainability and complexity**, and findings from every other lens to **Correctness**. A finding blocks merging when its gate's bar holds:
 
-A finding blocks merging when its gate's bar holds:
-
-- **Correctness:** its Outcome is a security hole, data loss, a crash, a stuck job, or a wrong result on input that real users, data, or callers produce, counting crafted input for a security hole.
-- **Maintainability and complexity:** it breaks an applicable written rule, or names a structural cost to future changes that is material and worth the fix's migration and regression risk. Lack of a runtime failure doesn't make such a cost optional polish.
-- **Test quality:** it names protection the PR loses, a validation claim that doesn't hold for important behavior, a realistic regression in important behavior that no test catches, or a test whose maintenance cost is significant. Don't require tests for every file, private helper, prompt sentence, or non-critical configuration value.
+- **Correctness:** `code-review` would label it Must fix, or it is a material privacy, accessibility, performance, compatibility, or operational regression, or unapproved behavior with concrete consequences.
+- **Maintainability and complexity:** `code-review` would label it Must fix.
+- **Test quality:** it names protection the PR loses, a validation claim that doesn't hold for important behavior, a realistic regression in important behavior that no test catches, or a significant maintenance cost.
 
 Findings below their gate's bar don't block and stay out of the comment. A finding `code-review` returns as disputed or unverified, which would block if it holds, is a gap in inspection rather than a verified defect. Noticed items never block, and stay out of the comment because one can describe an unfixed security problem; report them to the user.
 
@@ -77,8 +73,8 @@ Prepare the complete comment; return it directly in preview-only mode. Immediate
 
 Compare with the recorded context:
 
-- **Commits, repositories, or target branch changed:** re-establish the comparison and reassess affected findings and verification.
-- **Title, description, or requirements changed:** apply `code-review`'s order of requirement sources to identify changed scope or acceptance criteria, even with unchanged commits. Reassess affected gates; editorial changes do not require repeating unaffected work.
+- **Commits, repositories, or target branch changed:** re-establish the comparison, run `code-review` on it again, and reassess verification.
+- **Title, description, or requirements changed:** apply `code-review`'s order of requirement sources to identify changed scope or acceptance criteria, even with unchanged commits. Run `code-review` again with the changed requirements when scope or acceptance criteria changed; editorial changes do not require repeating unaffected work.
 - **Merge gates changed:** update the verdict accordingly.
 
 Publish only a current verdict. If repeated changes or inaccessible requirements prevent a sound current judgment, report the limitation to the user without posting.
@@ -98,7 +94,7 @@ Otherwise, start with the verdict and audited commit, followed by prioritized nu
 
 Keep evidence, impact, and remedy together. Recommend focused production-quality fixes. Omit cosmetic patches, unnecessary rewrites, empty sections, praise, optional suggestions, transcripts, repeated summaries, and evidence inventories. For a blocked audit, the next action is the evidence or decision that unblocks the judgment, never a speculative code change.
 
-Post exactly one top-level conversation comment per completed run using a GitHub connector or `gh`. For the CLI, write literal Markdown to a temporary file and use `--body-file` with the correct host. Do not add inline or per-axis comments. Later user-requested audits may each post one new comment.
+Post exactly one top-level conversation comment per completed run using a GitHub connector or `gh`. For the CLI, write literal Markdown to a temporary file and use `--body-file` with the correct host. Do not add inline or per-gate comments. Later user-requested audits may each post one new comment.
 
 Read back the comment to verify its body and target PR. Before retrying an uncertain write, check recent comments for the exact body and author to avoid duplicates. On failure, retain the prepared comment and report the publication error. Return the verdict and comment link, or the unposted comment with any publication limitation.
 
