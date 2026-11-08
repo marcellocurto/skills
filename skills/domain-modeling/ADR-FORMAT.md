@@ -38,16 +38,16 @@ Deleting a row that names a blob queues the blob's key in the same transaction, 
 
 These details describe history or implementation, and they become false or irrelevant long before the decision changes:
 
-- issue, pull request, and commit references
+- issue, pull request, and commit references that narrate history, such as "since #529"; a link to evidence that supports the reason, such as an incident report or a benchmark, may stay
 - how the system behaved before the decision, including phrases such as "before this" or "previously"
 - migration, backfill, and rollout steps
 - file paths and the names of tables, fields, functions, and jobs; name the concept instead, such as "the chunk table", so a rename does not make the ADR wrong
 - anything a code comment, schema, or type already states
 - mechanism the decision does not depend on
 
-## One ADR per topic
+## Group decisions that change together
 
-Before writing an ADR, look for one that already covers its topic, and add the decision there instead of creating another file. An ADR that holds several related decisions takes a title naming the topic, such as "How exclusion findings are modeled", and gives each decision a short section whose heading states it.
+Before writing an ADR, look for one that already records the same decision, and update it instead of creating another file. Put two decisions in one ADR only when understanding or revising one requires the other. A decision that can be revised on its own keeps its own ADR, even when it shares a subject with others. The title of a combined ADR still states what was decided, not the subsystem it applies to.
 
 ## What qualifies
 

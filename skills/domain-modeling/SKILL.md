@@ -56,14 +56,14 @@ If any of the three is missing, do not create or propose an ADR. When documentat
 
 ### Keep ADRs true of the current system
 
-When a decision changes or stops holding, rewrite its ADR to state what the system does now, or delete the ADR when nothing that replaces it qualifies. Git history keeps the earlier version. Do not mark an ADR as superseded or deprecated, and do not keep a record of a decision the system no longer follows. When the old approach is worth remembering as a rejected option, state it in a "We rejected" sentence of the current ADR.
+When a decision changes or stops holding, rewrite its ADR to state what the system does now, or delete the ADR when nothing that replaces it qualifies. Git history keeps the earlier version. When you delete an ADR, fix the links in other documents that pointed to it. Do not mark an ADR as superseded or deprecated, and do not keep a record of a decision the system no longer follows. When the old approach is worth remembering as a rejected option, state it in a "We rejected" sentence of the current ADR.
 
 ## Prune existing ADRs
 
 When the user asks to review, clean up, or simplify the ADRs, check each one against the current code and documentation, then:
 
 1. Delete ADRs whose decision the system no longer follows, such as workarounds for a constraint that no longer applies or rules for a feature that was removed.
-2. Merge ADRs that cover the same topic into one, which keeps the lowest of their numbers.
+2. Merge ADRs whose decisions cannot be understood or revised without each other. The merged ADR keeps the lowest of their numbers. Leave decisions that can be revised on their own in separate ADRs.
 3. Rewrite the rest in the shape [ADR-FORMAT.md](./ADR-FORMAT.md) describes, removing what it says to leave out.
 4. Keep the remaining ADRs' numbers, and fix links in other documents that pointed at deleted or merged records.
 
