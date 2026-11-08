@@ -3,6 +3,7 @@ import { join } from "node:path";
 
 import { readInvocationPolicies } from "./invocation-policy.ts";
 import { descriptionStatesWhenToUse } from "./skill-frontmatter.ts";
+import { divergentSharedScripts } from "./shared-scripts.ts";
 import { referencedSkillNames } from "./skill-references.ts";
 
 const repositoryRoot = join(import.meta.dir, "..");
@@ -39,6 +40,7 @@ const duplicatePaths = declaredPaths.filter((path, index) => declaredPaths.index
 const invocationPolicyMismatches: string[] = [];
 const descriptionsWithoutUseWhen: string[] = [];
 const unknownSkillReferences: string[] = [];
+const skillScripts: { skill: string; name: string; content: string }[] = [];
 const knownSkills = new Set(skillNames);
 
 for (const skillName of skillNames) {
@@ -49,6 +51,14 @@ for (const skillName of skillNames) {
   const policies = readInvocationPolicies(skillMarkdown, openAIYaml);
 
   if (!descriptionStatesWhenToUse(skillMarkdown)) descriptionsWithoutUseWhen.push(skillName);
+
+  const scriptsDirectory = join(skillDirectory, "scripts");
+  const scriptEntries = await readdir(scriptsDirectory, { withFileTypes: true }).catch(() => []);
+  for (const script of scriptEntries) {
+    if (!script.isFile()) continue;
+    const content = await Bun.file(join(scriptsDirectory, script.name)).text();
+    skillScripts.push({ skill: skillName, name: script.name, content });
+  }
 
   for (const file of await readdir(skillDirectory, { recursive: true })) {
     if (!file.endsWith(".md")) continue;
@@ -66,13 +76,16 @@ for (const skillName of skillNames) {
   }
 }
 
+const divergentScripts = divergentSharedScripts(skillScripts);
+
 if (
   missingPaths.length ||
   extraPaths.length ||
   duplicatePaths.length ||
   invocationPolicyMismatches.length ||
   descriptionsWithoutUseWhen.length ||
-  unknownSkillReferences.length
+  unknownSkillReferences.length ||
+  divergentScripts.length
 ) {
   if (missingPaths.length) {
     console.error(`Missing manifest entries: ${missingPaths.join(", ")}`);
@@ -98,6 +111,10 @@ if (
 
   if (unknownSkillReferences.length) {
     console.error(`Skills that aren't in this repository: ${unknownSkillReferences.join(", ")}`);
+  }
+
+  if (divergentScripts.length) {
+    console.error(`Shared scripts whose copies differ: ${divergentScripts.join(", ")}`);
   }
 
   process.exit(1);
