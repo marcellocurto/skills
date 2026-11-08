@@ -9,7 +9,7 @@ Exclude implementation discussion and author justification. Reviewers of the sam
 - the PR URL if there is one, the base and head commits, the merge base, and the diff it reviews
 - the requirements: the linked issue or, without one, the full agreed request; include all subsequent user-approved requirements, decisions, and exceptions, quoting user decisions verbatim
 - the PR description's intent, risks, and non-goals, and the issue's non-goals
-- the repository's instruction files, including any review decisions, trust assumptions, and realistic input sizes they record
+- the repository's instruction files, including any review decisions, trust assumptions, and realistic input sizes they record, and the project's ADRs that cover the changed code
 - validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit. For tests that passed, say whether any of them exercise the changed code, or that this is unknown, and list temporary probes separately from the project's tests
 - the calling skill's resource rules, when it gives any
 - its lens, and the rules and return format below
@@ -62,7 +62,9 @@ Leave workflows outside the diff to Scenarios, consumers to Blast radius, trust 
 
 Check changed lines against applicable rules in `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, or other repository instruction files. Only files in the changed file's directory or ancestors apply; more specific files override conflicting general rules.
 
-Use the return format for rule findings and name the compliant change. Exclude unstated preferences and formatter/linter checks. Code comments, including lint-ignores, grant no exception: the rule must allow it or the user must approve it in the requirements. If no instruction file applies, say so and stop.
+Use the return format for rule findings and name the compliant change. Exclude unstated preferences and formatter/linter checks. Code comments, including lint-ignores, grant no exception: the rule must allow it or the user must approve it in the requirements.
+
+Also check the project's ADRs that cover the changed code. Report an ADR that the change contradicts or makes false but leaves unchanged, citing the ADR and the code, and ask for the ADR to be updated in the same change or for the change to be brought back in line with it. If no instruction file or ADR applies, say so and stop.
 
 ### Diff read
 
