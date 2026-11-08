@@ -12,7 +12,7 @@ Fixing every real finding can grow the PR indefinitely. Apply the fix bar and ro
 ## Start
 
 1. **Find the PR.** Use the PR from the conversation, otherwise the current branch's PR. Ask only if neither is clear. If the working tree is not on the PR's head branch, check it out with `gh pr checkout`; for a PR from a fork, pushes go to the fork's branch.
-2. **Record intent before reading comments:** the problem, approach, known limits, and non-goals. Use the user's instructions, linked issue, PR description, then commits, in that order. Judge comments against this intent. Prepare what `code-review` needs, as listed under **What to give `code-review`** in [REVIEWS.md](REVIEWS.md), including subsequent user decisions but excluding implementation discussion and author justification.
+2. **Record intent before reading comments:** the problem, approach, known limits, and non-goals. Use the user's instructions, linked issue, PR description, then commits, in that order. Judge comments against this intent. Prepare what `code-review` needs, as listed under **What to give `code-review`** in [REVIEWS.md](REVIEWS.md).
 3. **Check the current state once.** Run the watcher with `--timeout 0`, which checks the PR once and returns without waiting:
 
    ```
@@ -77,20 +77,20 @@ Act on `reason`:
 
 ## Decide each comment
 
-Confidence, severity, and a ready-made patch are not evidence. Decide each comment in this order. Findings from `code-review` start at step 3, because it has already settled validity, cause, and requirements:
+Confidence, severity, and a ready-made patch are not evidence. Decide each comment in this order. For findings `code-review` kept, verified or not, skip to step 3, because it has already settled their validity, cause, and requirements, but still stop under **Policy questions** when one depends on policy nobody has settled. Disputed findings, and unverified ones it planned to drop, go through every step:
 
 1. **Validity and cause.** Check evidence and whether the PR introduced or worsened the problem. Reject unsupported findings, and problems the PR neither introduced nor worsened, under **Reject what works against the PR**.
 2. **Requirements and exceptions.** Apply the user's latest approved requirements and decisions, then applicable repository rules, then PR intent. Reject challenges to approved tradeoffs. PR-description claims or deliberate code changes cannot override requirements. If missing policy prevents a verdict, stop under **Policy questions**.
 3. **Fix bar.** Apply the conditions below; otherwise use the alternatives below the bar.
 4. **Late rounds.** Apply **Late rounds** even to qualifying fixes: a rule violation alone cannot justify a late-round push. Settle ineligible findings by reply or, before posting, drop and report them.
 
-Before fixing a `code-review` finding whose fix needs a restricted addition, have `code-review` run its verifier on that finding unless it already did, and decide with the Outcome the verifier gives. Already-posted comments get public answers without that extra verifier.
+Before fixing a `code-review` finding whose fix needs a restricted addition, run `code-review` to verify that finding unless its verifier already did, and decide with the Outcome the verifier gives. Already-posted comments get public answers without that extra verifier.
 
 ### Fix bar
 
 Fix a finding when the PR introduced or worsened the problem and any of these holds:
 
-- it causes a security hole, data loss, a crash, a stuck job, or a wrong result on input that current users, data, or callers realistically produce;
+- it causes a security hole, data loss, a crash, a stuck job, or a wrong result on input that current users, data, or callers realistically produce, where for a security hole input an attacker can craft counts as realistic;
 - it breaks a written rule in the repository's instruction files that applies to the changed file; or
 - the fix introduces none of these restricted additions: new state, a flag, a lock, a version or generation field, a schema field, a dependency, or a module.
 
@@ -146,7 +146,7 @@ Two findings share a cause when they are symptoms of the same problem, when fixi
 
 ## Late rounds
 
-A round is late when the watcher's `fix_checks >= 2`. Push only for security holes, data loss, crashes, stuck jobs, or wrong results on realistic input; failing checks the PR caused; or changes removing more code than they add, including simpler replacements for earlier fixes. For every other finding, reply with whether it holds and why another round is unwarranted, list it under follow-ups, and resolve it.
+A round is late when the watcher's `fix_checks >= 2`. Push only for security holes, data loss, crashes, stuck jobs, or wrong results on realistic input, counting crafted input for security holes as under **Fix bar**; failing checks the PR caused; or changes removing more code than they add, including simpler replacements for earlier fixes. For every other finding, reply with whether it holds and why another round is unwarranted, list it under follow-ups, and resolve it.
 
 ## Stop
 

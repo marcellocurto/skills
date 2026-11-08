@@ -4,20 +4,18 @@
 
 ## What to give `code-review`
 
-Give it the PR URL, the base branch, the head commit, the merge base, and the requirements, intent, and validation results that its brief asks for. The requirements are the linked issue or, without one, the full agreed request, with all subsequent user-approved requirements, decisions, and exceptions, quoting user decisions verbatim. Leave out implementation discussion and author justification.
-
-When this conversation built the PR, as `ship-pr` does, you are its author, so `code-review` starts its reviewers as independent agents rather than reviewing in your own context.
+Give it the PR URL, the base branch, the head commit, the merge base, and what its brief asks for: the intent you recorded under **Start**, the user's decisions from this conversation, and the validation results. Tell it when this conversation built the PR, as `ship-pr` does, because you are then its author.
 
 ## First review
 
 Run `code-review` as a review for another skill, pinned to the head commit. Don't push or change the checkout while it runs. If it reports that the review failed, stop under **Review failed** in `SKILL.md`.
 
-Apply [Decide each comment](SKILL.md#decide-each-comment) to its kept findings, starting at the fix bar, because `code-review` has already settled validity, cause, and requirements. Post as threads:
+Apply [Decide each comment](SKILL.md#decide-each-comment) to its findings. Post as threads:
 
-- each kept finding that meets the fix bar
-- each disputed finding, and each unverified finding you planned to drop, so a round settles it in public
+- each kept finding that meets the fix bar, including unverified ones `code-review` planned to keep
+- each disputed finding, and each unverified finding `code-review` planned to drop, so a round settles it in public
 
-For a real finding below the bar, choose its response under **Fix bar** and list it in the report instead of posting it. Never post a **Noticed** item, including a security finding dropped because it predates the PR.
+For a real finding below the bar, choose its response under **Fix bar** and list it in the report instead of posting it. Keep **Noticed** items off GitHub, as under **Noticed problems**.
 
 Post the threads as one review pinned to the reviewed head, with an inline thread per finding. Use `COMMENT`; authors cannot approve or request changes on their own PR.
 
@@ -54,7 +52,7 @@ An out-of-diff anchor rejects the whole review. Move it to a causal changed line
 
 After a round's fixes are committed and before they are pushed, run `code-review` as a fix check, with the inputs its **Fix check** section lists. Take `last_reviewed_commit` and `first_reviewed_commit` from the `reviews` field of `watch_pr.py`; a round's second fix check starts at the commit the first check reviewed. What the round answers is its threads and the fix-check findings it fixes, each with the reply you drafted.
 
-If it reports that the review failed, stop under **Review failed** in `SKILL.md`. If a finding stays disputed, or is unverified when you planned to drop it, stop under **Reviewers disagree**. Otherwise apply [Decide each comment](SKILL.md#decide-each-comment) from the fix bar, including **Late rounds**, to its findings. Its findings don't become threads. Fix the ones that qualify in the same push, and list the rest under follow-ups with the reason another round is unwarranted.
+If it reports that the review failed, stop under **Review failed** in `SKILL.md`. If a finding stays disputed, or is unverified when `code-review` planned to drop it, stop under **Reviewers disagree**. Otherwise apply [Decide each comment](SKILL.md#decide-each-comment), including **Late rounds**, to its findings. Its findings don't become threads. Fix the ones that qualify in the same push, and list the rest under follow-ups with the reason another round is unwarranted.
 
 After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." When it left a coverage gap, end the line with it, such as "Security did not cover `src/a.ts`." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
 

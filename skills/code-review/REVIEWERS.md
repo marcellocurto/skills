@@ -1,6 +1,6 @@
 # Reviewers
 
-These are the instructions for the reviewers that [SKILL.md](SKILL.md) starts: one per lens for a review, one for a fix check, and one for the **Verifier**. Choose each agent type and model from the host's offerings to suit its lens and diff; they may differ. Without agents, make one local pass per lens and report that they were not independent.
+These are the instructions for the reviewers that [SKILL.md](SKILL.md) starts: one per lens for a review, one for a fix check, and one for the **Verifier**. Choose each agent type and model from the host's offerings to suit its lens and diff; they may differ.
 
 ## What every reviewer gets
 
@@ -8,7 +8,7 @@ Exclude implementation discussion and author justification. Reviewers of the sam
 
 - the PR URL if there is one, the base and head commits, the merge base, and the diff it reviews
 - the requirements: the linked issue or, without one, the full agreed request; include all subsequent user-approved requirements, decisions, and exceptions, quoting user decisions verbatim
-- the PR description's intent, risks, and non-goals, and the issue's non-goals. They state intent and accepted limits; they can't excuse behavior that contradicts the requirements or narrow what the requirements ask for
+- the PR description's intent, risks, and non-goals, and the issue's non-goals
 - the repository's instruction files, including any review decisions, trust assumptions, and realistic input sizes they record
 - validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit. For tests that passed, say whether any of them exercise the changed code, or that this is unknown, and list temporary probes separately from the project's tests
 - its lens, and the rules and return format below
@@ -49,6 +49,7 @@ Does the change do what the requirements ask, for every input and state its call
 
 - behavior that is missing, partial, or contradicts the requirements; and extra behavior, only when it has product, data, compatibility, security, or operational effects nobody approved
 - a fix that hides a symptom instead of addressing its cause
+- accessibility, privacy, and performance effects the change introduces, such as a control that loses its label or keyboard access, personal data sent somewhere new, or slower work on a hot path
 - each guarantee the PR description, doc comments, or contract types make, traced through every exit path of the changed functions: early returns, `?`, `break`, and caught errors that skip a promised check or discard a result already computed
 - what a deleted or replaced path enforced, such as a validation, trigger, or ordering rule, and where the new path enforces it, or that the change drops it on purpose
 - arithmetic on realistic values: sums, rounding, and comparisons against limits, evaluated with concrete numbers and compared with the tolerance the validator uses elsewhere; and integer sizes at the realistic maximum
@@ -148,7 +149,7 @@ Read the vendor's documentation for the constructs the change handles, fetching 
 
 ## Noticed problems
 
-Any reviewer or verifier can return Noticed items. Check each against the code. Discard one that misreads the code, and treat one the change caused or worsened as a finding. Keep the rest for the report, along with any finding dropped because it predates the change, which the report lists with them instead of among its dropped findings. They skip the verifier and never affect a verdict. A Noticed item can describe an unfixed security problem, so keep it out of anything published, such as a PR comment.
+Any reviewer or verifier can return Noticed items. Check each against the code. Discard one that misreads the code, and treat one the change caused or worsened as a finding. Keep the rest for the report. Items returned as Noticed skip the verifier and never affect a verdict. A finding dropped because it predates the change goes to the verifier like any other planned drop, then joins them, and the report lists it with them instead of among its dropped findings.
 
 ## Verifier
 

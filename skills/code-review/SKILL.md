@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a specific diff, pull request, or commit range with independent reviewers for correctness, security, maintainability, and repository rules, verify each finding, and check fixes against earlier findings. Use when the user asks to review changes, a PR, or commits, or when another skill runs it to review a change or check fixes. Not for whole-codebase or current-state subsystem audits.
+description: Review a specific diff, pull request, or commit range with independent reviewers for correctness, security, maintainability, and repository rules, check each finding against the code, and check fixes against earlier findings. Use when the user asks to review changes, a PR, or commits, or when another skill runs it to review a change or check fixes. Not for whole-codebase or current-state subsystem audits.
 ---
 
 # Code Review
@@ -11,11 +11,12 @@ The reviewers' instructions, lenses, and return format, and the **Verifier**, ar
 
 This skill decides whether a problem is real, how much harm it causes, and whether the change caused it. Whether and when to fix it belongs to the person or skill that asked. Report every problem the change introduces or worsens with the Outcome the evidence supports, and don't hold one back because it seems minor or not worth another round.
 
-It runs in one of three modes:
+It runs in one of four modes:
 
 - **Standalone,** when a person asks for the review: report to them with verdicts, as under **Report**.
 - **Review for another skill,** such as `babysit-pr` reviewing a new PR: return findings as under **Return to the caller**.
 - **Fix check for another skill:** check commits that fix earlier findings, as under **Fix check**, and return findings the same way.
+- **Verify for another skill:** run only the **Verifier** in [REVIEWERS.md](REVIEWERS.md) on the findings the caller names, with the brief of the review that found them, and return them as under **Return to the caller**.
 
 ## 1. Pin the change
 
@@ -42,13 +43,11 @@ Prepare the brief under **What every reviewer gets** in [REVIEWERS.md](REVIEWERS
 
 Choose the lenses under **Lenses** in [REVIEWERS.md](REVIEWERS.md), and start one reviewer per lens at the same time. Don't change the checkout while they run.
 
-The reviewers must be independent of the change's author. If you wrote or changed the code under review, as when another skill built the PR in this conversation, never review it yourself: start the reviewers as agents. A reviewer that fails doesn't make this a host without agents, so don't replace it with a local pass.
+The reviewers must be independent of the change's author. If you wrote or changed the code under review, as when another skill built the PR in this conversation, start the reviewers as agents rather than reviewing it yourself. A reviewer that fails doesn't make this a host without agents, so don't replace it with a local pass. Standalone, a small change that you didn't write, such as a few files and a couple hundred changed lines, may be reviewed in one local pass per lens instead.
 
-Standalone, a small change that you didn't write, such as a few files and a couple hundred changed lines, may be reviewed in one local pass per lens instead. Say so in the report.
+If the host can't start agents, make one local pass per lens, even for a change you wrote, and report that the passes weren't independent.
 
 For adversarial, blind-spot, or tear-it-apart requests, start the reviewers as agents regardless of the change's size. First write one paragraph stating what the change is meant to accomplish, based on the sources in step 2, and mark what is inferred, and give every reviewer that paragraph. If the user wants the intent itself challenged, use the `relentless-review` skill for that separate question.
-
-If you cannot run subagents, do separate local passes and say so.
 
 ## 4. Check coverage
 
@@ -60,8 +59,8 @@ A lens that says it has nothing to review, such as Security when the change touc
 
 Treat reviewer output as leads; agreement between reviewers raises priority but doesn't prove a finding. Check each finding against the diff, the requirement or rule, whether the path is reachable, and the surrounding code, and plan to keep or drop it:
 
-- Drop findings that are unsupported, already handled, settled by a user-approved requirement or decision, preference-only, or enforced by tooling, and reasoned findings triggered by crafted or validation-rejected input unless the lens is Security.
-- Move problems the change neither introduces nor worsens under **Noticed**, and check the Noticed items as under **Noticed problems** in [REVIEWERS.md](REVIEWERS.md).
+- Drop findings that are unsupported, already handled, settled by a user-approved requirement or decision, preference-only, or enforced by tooling, and reasoned findings triggered by crafted or validation-rejected input unless the lens is Security. Also drop findings that predate the change; once the Verifier agrees, they go under **Noticed**.
+- Check the Noticed items reviewers return as under **Noticed problems** in [REVIEWERS.md](REVIEWERS.md).
 - Merge duplicates and findings with a shared cause under the best-fitting lens. When you confirm a problem, check the rest of the diff for the same problem and report the locations together.
 
 Then run the **Verifier** in [REVIEWERS.md](REVIEWERS.md), and keep each finding with the Outcome it settles on.
@@ -90,6 +89,7 @@ When another skill runs this review, return to it:
 - each kept finding with its lens, anchor, problem, trigger, Outcome, evidence, and fix, marked _(reproduced)_ when the evidence was reproduced, and whether the verifier confirmed it
 - each dropped finding with its lens and the reason
 - each finding left unverified or disputed, with your plan for it and each side's evidence
+- any counterevidence you gave the verifier, quoting user decisions verbatim
 - the Noticed items, marking those left unverified
 
 ## Report
