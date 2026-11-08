@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import { invocationPoliciesMatch } from "../scripts/invocation-policy.ts";
 import { descriptionStatesWhenToUse } from "../scripts/skill-frontmatter.ts";
+import { referencedSkillNames } from "../scripts/skill-references.ts";
 
 const implicitSkill = `---
 name: example
@@ -51,5 +52,19 @@ description: Review pull requests.
 
   test("rejects a skill without a description", () => {
     expect(descriptionStatesWhenToUse("---\nname: example\n---")).toBe(false);
+  });
+});
+
+describe("skill references", () => {
+  test("finds skills named singly and in lists", () => {
+    expect(
+      referencedSkillNames(
+        "Use the `tdd` skill when available. This skill runs the `implement-to-pr` and `babysit-pr` skills, then the `a`, `b`, or `c` skills.",
+      ).toSorted(),
+    ).toEqual(["a", "b", "babysit-pr", "c", "implement-to-pr", "tdd"]);
+  });
+
+  test("ignores code that is not named as a skill", () => {
+    expect(referencedSkillNames("Run `bun test` and read `skill-path`.")).toEqual([]);
   });
 });

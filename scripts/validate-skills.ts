@@ -3,6 +3,7 @@ import { join } from "node:path";
 
 import { readInvocationPolicies } from "./invocation-policy.ts";
 import { descriptionStatesWhenToUse } from "./skill-frontmatter.ts";
+import { referencedSkillNames } from "./skill-references.ts";
 
 const repositoryRoot = join(import.meta.dir, "..");
 const skillsRoot = join(repositoryRoot, "skills");
@@ -37,6 +38,8 @@ const extraPaths = declaredPaths.filter((path) => !expectedSet.has(path));
 const duplicatePaths = declaredPaths.filter((path, index) => declaredPaths.indexOf(path) !== index);
 const invocationPolicyMismatches: string[] = [];
 const descriptionsWithoutUseWhen: string[] = [];
+const unknownSkillReferences: string[] = [];
+const knownSkills = new Set(skillNames);
 
 for (const skillName of skillNames) {
   const skillDirectory = join(skillsRoot, skillName);
@@ -46,6 +49,15 @@ for (const skillName of skillNames) {
   const policies = readInvocationPolicies(skillMarkdown, openAIYaml);
 
   if (!descriptionStatesWhenToUse(skillMarkdown)) descriptionsWithoutUseWhen.push(skillName);
+
+  for (const file of await readdir(skillDirectory, { recursive: true })) {
+    if (!file.endsWith(".md")) continue;
+    const markdown = await Bun.file(join(skillDirectory, file)).text();
+    for (const name of referencedSkillNames(markdown)) {
+      if (!knownSkills.has(name))
+        unknownSkillReferences.push(`${skillName}/${file} names \`${name}\``);
+    }
+  }
 
   if (policies.claudeExplicitOnly !== policies.codexExplicitOnly) {
     invocationPolicyMismatches.push(
@@ -59,7 +71,8 @@ if (
   extraPaths.length ||
   duplicatePaths.length ||
   invocationPolicyMismatches.length ||
-  descriptionsWithoutUseWhen.length
+  descriptionsWithoutUseWhen.length ||
+  unknownSkillReferences.length
 ) {
   if (missingPaths.length) {
     console.error(`Missing manifest entries: ${missingPaths.join(", ")}`);
@@ -81,6 +94,10 @@ if (
     console.error(
       `Descriptions without a "Use when" clause: ${descriptionsWithoutUseWhen.join(", ")}`,
     );
+  }
+
+  if (unknownSkillReferences.length) {
+    console.error(`Skills that aren't in this repository: ${unknownSkillReferences.join(", ")}`);
   }
 
   process.exit(1);
