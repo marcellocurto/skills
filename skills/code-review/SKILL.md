@@ -72,7 +72,7 @@ Report a concern only when you can name its concrete cost. Look for:
 - an old API kept only because tests still call it
 - tests that are tautological, coupled to implementation, mock away the shipped path, or freeze prose, static content, or configuration
 - misleading names or public interfaces
-- an ADR that the change contradicts or makes false but leaves unchanged; cite the ADR and the code, and ask for the ADR to be updated in the same change as the project's ADR conventions direct, or for the change to be brought back in line with it
+- an ADR that the change contradicts or makes false but leaves unchanged; cite the ADR and the code, and ask for the ADR to be updated in the same change, or for the change to be brought back in line with it
 
 Duplication and repeated parameters do not by themselves justify a new abstraction. A single-use module is justified when it hides real complexity and reduces what callers must know. When no documented rule covers a concern, say so in the finding; it is then a judgment call that must stand on its concrete cost.
 

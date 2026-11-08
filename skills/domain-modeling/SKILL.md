@@ -16,7 +16,7 @@ Loading this skill alone does not authorize documentation writes. When the reque
 
 ## Find the existing documentation
 
-Inspect repository guidance and relevant documentation for the current glossary, context map, ADR location, and document formats. Follow existing names, links, context ownership, and numbering before creating anything. For ADRs, a convention the project documents in its instructions, an ADR README, or an ADR template overrides [ADR-FORMAT.md](./ADR-FORMAT.md) and this skill's rules for revising and deleting ADRs. The style of existing records is not such a convention. A glossary or ADR directory with a different name is not missing documentation.
+Inspect repository guidance and relevant documentation for the current glossary, context map, ADR location, and document formats. Follow existing names, links, context ownership, and numbering before creating anything. For ADRs, where a convention the project documents in its instructions, an ADR README, or an ADR template differs from [ADR-FORMAT.md](./ADR-FORMAT.md) or this skill's rules for revising and deleting ADRs, follow the convention. The style of existing records is not such a convention. A glossary or ADR directory with a different name is not missing documentation.
 
 If no convention exists, use `CONTEXT.md` for domain terms and `docs/adr/` for architectural decisions. Create them only in documentation-update mode when there is agreed content to record. Use an existing context map, whatever its filename, to locate domain-specific records; do not infer that the whole project has one context merely because a root `CONTEXT.md` exists.
 
@@ -56,13 +56,13 @@ If any of the three is missing, do not create or propose an ADR. When documentat
 
 ### Keep ADRs true of the current system
 
-When a decision changes or stops holding, rewrite its ADR to state what the system does now, or delete the ADR when nothing that replaces it qualifies. Git history keeps the earlier version. When you delete or merge an ADR, fix the links in other documents that pointed to it. Do not mark an ADR as superseded or deprecated, and do not keep a record of a decision the system no longer follows. When the old approach is worth remembering as a rejected option, state it in a "We rejected" sentence of the current ADR.
+When a decision changes or stops holding, rewrite its ADR to state what the system does now, or delete the ADR when nothing that replaces it qualifies. Git history keeps the earlier version. When you delete, merge, or rename an ADR, fix the links in other documents that pointed to it. Do not mark an ADR as superseded or deprecated, and do not keep a record of a decision the system no longer follows. When the old approach is worth remembering as a rejected option, state it in a "We rejected" sentence of the current ADR.
 
 ## Prune existing ADRs
 
 When the user asks to review, clean up, or simplify the ADRs, check each one against the current code and documentation, then:
 
-1. Rewrite an ADR whose decision was replaced by one that qualifies, so it states the current decision. Delete an ADR whose decision the system no longer follows when nothing that qualifies replaced it, such as a workaround for a constraint that no longer applies or rules for a feature that was removed.
+1. Rewrite an ADR whose decision was replaced by one that qualifies, so it states the current decision. When the code and documentation don't show why the replacement was chosen, ask the user for the reason or list the ADR as an open question; do not infer one. Delete an ADR whose decision the system no longer follows when nothing that qualifies replaced it, such as a workaround for a constraint that no longer applies or rules for a feature that was removed.
 2. Merge ADRs that the grouping rule in [ADR-FORMAT.md](./ADR-FORMAT.md) puts together.
 3. Rewrite the rest in the shape [ADR-FORMAT.md](./ADR-FORMAT.md) describes, removing what it says to leave out.
 
