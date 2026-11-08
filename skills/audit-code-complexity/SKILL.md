@@ -73,7 +73,7 @@ When replacing an interface, find every user, including tests, and move tests to
 
 ## 5. Report
 
-When a skill asked you to apply the findings, give it a short report: one line for each applied change that a reader of the diff would need explained, and the format below only for findings you left unapplied. Add the Noticed items from step 1 to either report.
+When a skill asked you to apply the findings, give it a short report: one line for each applied change that a reader of the diff would need explained, and the format below only for findings you left unapplied. Add the Noticed items from step 1 to either report, as under **Noticed** below.
 
 Otherwise use this format, order findings by benefit relative to risk, and omit empty sections:
 
@@ -94,4 +94,6 @@ Otherwise use this format, order findings by benefit relative to risk, and omit 
 **Justified complexity:** complex-looking code that earns its place, only when a reader would likely question it.
 
 **Order:** which findings to do first, only when the order matters.
+
+**Noticed:** for another skill's change audit, the problems from step 1, each with the facts step 1 lists.
 ```
