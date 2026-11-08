@@ -43,7 +43,7 @@ Prepare the brief under **What every reviewer gets** in [REVIEWERS.md](REVIEWERS
 
 ## 3. Choose reviewers
 
-Choose the lenses under **Lenses** in [REVIEWERS.md](REVIEWERS.md), and start one reviewer per lens at the same time. Don't change the checkout while they run.
+Choose the reviewers under **Lenses** in [REVIEWERS.md](REVIEWERS.md), and start them at the same time. Don't change the checkout while they run.
 
 The reviewers must be independent of the change's author. If you wrote or changed the code under review, as when another skill built the PR in this conversation, start the reviewers as agents rather than reviewing it yourself. A reviewer that fails doesn't make this a host without agents, so don't replace it with a local pass. Standalone, a small change that you didn't write, such as a few files and a couple hundred changed lines, may be reviewed in one local pass per lens instead.
 
@@ -51,7 +51,7 @@ For adversarial, blind-spot, or tear-it-apart requests, start the reviewers as a
 
 ## 4. Check coverage
 
-Wait for all reviewers, then compare each reviewer's inspected and skipped areas with the files its lens should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, or skipped or left unmentioned files its lens should read, limiting the rerun to what it missed. Report any gap that remains as a coverage gap, naming the lens and the files.
+Wait for all reviewers, then compare each reviewer's inspected and skipped areas with the files its lenses should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, or skipped or left unmentioned files its lenses should read, limiting the rerun to what it missed. Report any gap that remains as a coverage gap, naming the lens and the files.
 
 A lens that says it has nothing to review, such as Security when the change touches no trust boundary, has returned a result. If no reviewer has returned a result after its rerun, the review failed: say so instead of reporting findings.
 
