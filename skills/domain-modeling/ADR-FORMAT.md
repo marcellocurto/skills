@@ -6,11 +6,11 @@ An ADR records a decision the system follows today and the reason for it. Every 
 
 Follow the project's ADR directory, file naming, and numbering. When no convention exists, use `docs/adr/` with sequential names such as `0001-slug.md` and `0002-slug.md`. Create the fallback directory only when a qualifying decision is settled and documentation writes are authorized. In discussion mode, keep the proposed ADR in the response without creating files.
 
-When names are numbered, take the next unused number from the actual ADR directory; do not start another sequence in `docs/adr/` merely because records live elsewhere. Never renumber existing ADRs. Gaps left by deleted ADRs are expected.
+When names are numbered, give a new ADR the number after the highest one ever used, including deleted ADRs that only Git history still shows; do not start another sequence in `docs/adr/` merely because records live elsewhere. Never renumber an ADR or reuse a number. A merged ADR keeps the lowest number of the ADRs it combines. Gaps left by deleted and merged ADRs are expected.
 
 ## Shape
 
-Write every new or rewritten ADR in this shape unless the project's instructions or an ADR README document a different format. The style of existing ADRs is not a documented format, so do not copy the length or sections of older records.
+Write every new or rewritten ADR in this shape unless the project documents its own format, as [SKILL.md](SKILL.md) describes. The style of existing ADRs is not a documented format, so do not copy the length or sections of older records.
 
 ```md
 # {The decision, stated as a sentence}
