@@ -140,7 +140,7 @@ A finding names the release state and the step at which it breaks.
 
 ### Tests
 
-Runs when the diff changes tests, fixtures, mocks, snapshots, test configuration, or any code that runs outside tests.
+Runs when the diff changes tests, test helpers, fixtures, mocks, snapshots, test configuration, or any code or configuration that runs outside tests.
 
 Use the `test-quality-audit` skill on the tests the change adds, changes, removes, or drops from the run; on tests whose fixtures, mocks, snapshots, helpers, or configuration it changes; and on the tests that should protect the code it changes. Its sensitivity experiments follow the probe rule above: a copy outside the working tree, deleted afterward. Report as findings:
 
