@@ -10,7 +10,7 @@ Exclude implementation discussion and author justification. Reviewers of the sam
 - the requirements: the linked issue or, without one, the full agreed request; include all subsequent user-approved requirements, decisions, and exceptions, quoting user decisions verbatim
 - the PR description's intent, risks, and non-goals, and the issue's non-goals
 - the repository's instruction files, including any review decisions, trust assumptions, and realistic input sizes they record, and the project's ADRs that cover the changed code
-- validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit. For tests that passed, say whether any of them exercise the changed code, or that this is unknown, and list temporary probes separately from the project's tests
+- validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit. For tests that passed, say whether any of them exercise the changed code, or that this is unknown, and list temporary probes separately from the project's tests. Include each end-to-end check with what it showed
 - the calling skill's resource rules, when it gives any
 - its lens, and the rules and return format below
 
@@ -123,7 +123,7 @@ While tracing, check:
 - **Logs and errors don't leak.** Trace each field a changed log, trace, metric, or error message emits, especially on error branches, where redaction is often skipped and an upstream error can repeat a secret from a URL or header.
 - **Resource limits hold.** When the change parses, decompresses, fetches, or loops over untrusted input, confirm that its size, time, and count limits guard the actual peak use. A defect that defeats a limit is a finding, and plain high volume is not.
 
-Report a candidate once you can name where the input enters, the sensitive operation, and the path between them with no effective protection, even if you aren't sure of it, because the verifier checks every Security finding.
+Report a candidate once you can name where the input enters, the sensitive operation, and the path between them with no effective protection, even if you aren't sure of it, because the verifier checks every finding.
 
 Each finding's Trigger names the entry point, who controls the input, and the sensitive operation it reaches. Its Problem names the missing protection, who is harmed, and the authority or data that crossing this boundary gives the attacker. These are not findings: a guard against input that the types or callers already rule out, a protection you confirmed a framework or earlier layer supplies, and a risk a recorded trust assumption accepts, unless the change makes that assumption's stated reason no longer true.
 
@@ -169,7 +169,7 @@ Any reviewer or verifier can return Noticed items. Check each against the code. 
 
 ## Verifier
 
-Verify every finding you plan to drop, every finding from the Security lens or with a security hole as its Outcome, and every finding the calling skill names. Security findings always go to the verifier because crafted input counts as a trigger for them, so they pass a lower bar. This selects findings for independent checking, not by overall complexity. Skip when none qualify.
+Verify every finding, whether you plan to keep or drop it. A kept finding that is wrong costs a fix, a commit, and another review round, and a dropped one that is right ships a defect, so nobody acts on a finding until an independent verifier has checked it. Skip when there are no findings.
 
 Start one reviewer with the shared brief, the findings' diff, and each candidate's anchor, problem, trigger, outcome, and evidence. Withhold your keep/drop plan and reasons.
 
@@ -186,6 +186,6 @@ Don't judge whether a confirmed problem is worth fixing now; its Outcome says ho
 
 Agreement settles the finding: keep confirmed findings with the Outcome the verifier gives, and drop refuted ones with the reasons. When you disagree with the verifier's verdict or Outcome, settle it as below.
 
-If the verifier fails or leaves a finding unanswered, start a new one once for those findings. A finding still unanswered is never dropped silently: report it as unverified, with your plan for it and the reason. A finding you planned to drop because it predates the change stays under **Noticed**, marked unverified.
+If the verifier fails or leaves a finding unanswered, start a new one once for those findings. A finding still unanswered is never dropped silently: report it as unverified, with your plan for it and the reason. It leaves the review incomplete, as a coverage gap does, because nobody may act on it yet. A finding you planned to drop because it predates the change stays under **Noticed**, marked unverified, and doesn't make the review incomplete, because nobody acts on Noticed items.
 
 On disagreement, you may supply counterevidence once: code, a reproduction, a cited requirement or applicable rule, authoritative documentation, or a verbatim user decision. PR-description claims and unsupported arguments don't count. Without counterevidence, follow the verdict. If the host cannot continue the verifier, start a new one with the finding, first answer, and counterevidence. Follow a revised verdict. If disagreement remains, report the finding as disputed, with each side's evidence.

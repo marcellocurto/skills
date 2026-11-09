@@ -59,7 +59,7 @@ Check PR state, draft status, conflicts, required checks, approvals, and other e
 
 ## Decide
 
-Record each gate internally as **Pass**, **Changes required**, or **Blocked**, with coverage limits, including coverage gaps and reviews `code-review` ran as local passes. Derive the overall verdict. The first two differ by whether the audit reached a judgment: Not ready means it did and something must change; Blocked means it could not, and the next step is evidence, not a fix.
+Record each gate internally as **Pass**, **Changes required**, or **Blocked**, with coverage limits, including coverage gaps and reviews `code-review` ran as local passes. A review `code-review` reports as incomplete is a material inspection gap. Derive the overall verdict. The first two differ by whether the audit reached a judgment: Not ready means it did and something must change; Blocked means it could not, and the next step is evidence, not a fix.
 
 - **Not ready to merge:** the audit reached a judgment and the PR must change before merging. A verified code or test blocker remains, or a merge requirement is known to be unmet, such as a failed required check or a conflict with the base. Each finding names the fix.
 - **Blocked — readiness not established:** the audit could not reach a judgment. No verified defect or unmet requirement remains, but a material inspection gap, pending verification, or missing access or requirement prevents one. Each finding names the evidence or decision that would settle it and who can supply it.
