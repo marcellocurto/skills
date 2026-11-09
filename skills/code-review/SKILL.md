@@ -34,7 +34,7 @@ Requirements come from these sources, highest priority first:
 
 A pull-request description or commit message states intent, risks, and non-goals. It can't excuse behavior that contradicts a higher source or narrow what that source asks for.
 
-Read the repository instructions that govern the touched files, such as `AGENTS.md` and `CONTRIBUTING.md`, the project's ADRs that cover the changed code, and the validation results. Existing review comments are leads; treat resolved or outdated threads as history.
+Read the repository instructions that govern the touched files, such as `AGENTS.md` and `CONTRIBUTING.md`, the root `REVIEW.md` when the repository has one, the project's ADRs that cover the changed code, and the validation results. Existing review comments are leads; treat resolved or outdated threads as history.
 
 If there are no requirements, review correctness against the code's evident purpose and report the missing context. Block approval only when a safe verdict is impossible without it.
 
