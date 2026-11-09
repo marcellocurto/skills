@@ -117,7 +117,7 @@ Label each kept finding:
 Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, Specification, and Tests findings, except Tests findings only about a test's maintenance cost. **Maintainability** covers the Repository rules and Simplicity findings, and those Tests findings. For each, take the first that applies:
 
 - **Changes requested** if any must-fix finding remains; note missing information under Limitations
-- **Blocked** if missing information, access, or a human decision makes approval unsafe, or, for Correctness, the review is incomplete
+- **Blocked** if missing information, access, or a human decision makes approval unsafe, or a coverage gap or unanswered finding in a lens the verdict covers leaves the review incomplete
 - **Approved** otherwise
 
 No findings is a valid result. Do not add minor observations to fill the report.

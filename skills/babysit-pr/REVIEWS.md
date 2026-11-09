@@ -12,8 +12,8 @@ Run `code-review` as a review for another skill, pinned to the head commit. Don'
 
 Apply [Decide each comment](SKILL.md#decide-each-comment) to its findings. Post as threads:
 
-- each kept finding that meets the fix bar, including unverified ones `code-review` planned to keep
-- each disputed finding, and each unverified finding `code-review` planned to drop, so a round settles it in public. The exception is a security finding that may describe code already on the base branch: keep it off GitHub and list it in the report as unsettled, because posting it would disclose a live vulnerability.
+- each kept finding that meets the fix bar
+- each disputed finding, so a round settles it in public. The exception is a security finding that may describe code already on the base branch: keep it off GitHub and list it in the report as unsettled, because posting it would disclose a live vulnerability.
 
 For a real finding below the bar, choose its response under **Fix bar** and list it in the report instead of posting it.
 
@@ -52,7 +52,7 @@ An out-of-diff anchor rejects the whole review. Move it to a causal changed line
 
 After a round's fixes are committed and before they are pushed, run `code-review` as a fix check, with the inputs its **Fix check** section lists. Take `last_reviewed_commit` and `first_reviewed_commit` from the `reviews` field of `watch_pr.py`; a round's second fix check starts at the commit the first check reviewed. What the round answers is its threads and the fix-check findings it fixes, each with the reply you drafted.
 
-If it reports that the review failed or is incomplete, stop under **Review failed or incomplete** in `SKILL.md`. If a finding stays disputed, or is unverified when `code-review` planned to drop it, stop under **Reviewers disagree**. Otherwise apply [Decide each comment](SKILL.md#decide-each-comment), including **Late rounds**, to its findings. Its findings don't become threads. Fix the ones that qualify in the same push, and list the rest under follow-ups with the reason another round is unwarranted.
+If it reports that the review failed or is incomplete, stop under **Review failed or incomplete** in `SKILL.md`. If a finding stays disputed, stop under **Reviewers disagree**. Otherwise apply [Decide each comment](SKILL.md#decide-each-comment), including **Late rounds**, to its findings. Its findings don't become threads. Fix the ones that qualify in the same push, and list the rest under follow-ups with the reason another round is unwarranted.
 
 After the push, post a review with no inline comments, pinned to the pushed head, whose body is one line such as "Reviewed the fixes in `abc1234`: 2 findings fixed before this push." or "Reviewed the fixes in `abc1234`: nothing to change." When it left a coverage gap, end the line with it, such as "Security did not cover `src/a.ts`." `watch_pr.py` counts fix checks and recognizes a reviewed head by that opening, so keep the wording.
 
