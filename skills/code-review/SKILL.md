@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Review a specific diff, pull request, or commit range with independent reviewers for correctness, security, maintainability, and repository rules, check each finding against the code, and check fixes against earlier findings. Use when the user asks to review changes, a PR, or commits, or when another skill runs it to review a change, check fixes, or verify findings. Not for whole-codebase or current-state subsystem audits.
+description: Review a specific diff, pull request, or commit range with independent reviewers for correctness, security, maintainability, and repository rules, check each finding against the code, and check fixes against earlier findings. Use when the user asks to review changes, a PR, or commits, or when another skill runs it to review a change or check fixes. Not for whole-codebase or current-state subsystem audits.
 ---
 
 # Code Review
@@ -11,12 +11,11 @@ The reviewers' instructions, lenses, and return format, and the **Verifier**, ar
 
 This skill decides whether a problem is real, how much harm it causes, and whether the change caused it. Whether and when to fix it belongs to the person or skill that asked. Report every problem the change introduces or worsens with the Outcome the evidence supports, and don't hold one back because it seems minor or not worth another round.
 
-It runs in one of four modes:
+It runs in one of three modes:
 
 - **Standalone,** when a person asks for the review: report to them with verdicts, as under **Report**.
 - **Review for another skill,** such as `babysit-pr` reviewing a new PR: return findings as under **Return to the caller**.
 - **Fix check for another skill:** check commits that fix earlier findings, as under **Fix check**, and return findings the same way.
-- **Verify for another skill:** run only the **Verifier** in [REVIEWERS.md](REVIEWERS.md) on the findings the caller names, with the brief of the review that found them, and return them as under **Return to the caller**.
 
 If the host can't start agents, do each reviewer's work, including the Verifier's, in a separate local pass, even for a change you wrote, and report that the passes weren't independent.
 
@@ -51,7 +50,7 @@ For adversarial, blind-spot, or tear-it-apart requests, start the reviewers as a
 
 ## 4. Check coverage
 
-Wait for all reviewers, then compare each reviewer's inspected and skipped areas with the files its lenses should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, or skipped or left unmentioned files its lenses should read, limiting the rerun to what it missed. Report any gap that remains as a coverage gap, naming the lens and the files.
+Wait for all reviewers, then compare each reviewer's inspected and skipped areas with the files its lenses should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, or skipped or left unmentioned files its lenses should read, limiting the rerun to what it missed. Report any gap that remains as a coverage gap, naming the lens and the files. A gap in a lens the **Correctness** verdict covers, as listed under **Report**, leaves the review incomplete, because nothing has checked those files for the harm that lens looks for.
 
 A lens that says it has nothing to review, such as Security when the change touches no trust boundary, has returned a result. If no reviewer has returned a result after its rerun, the review failed: say so instead of reporting findings.
 
@@ -85,7 +84,7 @@ It reports every problem the round's code introduces or worsens. It doesn't rais
 
 When another skill runs this review, return to it:
 
-- the lenses that ran, and each coverage gap with its lens and files, or that the review failed
+- the lenses that ran, each coverage gap with its lens and files, and whether the review is incomplete; or that the review failed
 - whether reviewers ran as local passes instead of independent agents
 - each kept finding with its lens, anchor, problem, trigger, Outcome, evidence, and fix, marked _(reproduced)_ when the evidence was reproduced, and whether the verifier confirmed it
 - each dropped finding with its lens and the reason
@@ -118,7 +117,7 @@ Label each kept finding:
 Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, Specification, and Tests findings, except Tests findings only about a test's maintenance cost. **Maintainability** covers the Repository rules and Simplicity findings, and those Tests findings. For each, take the first that applies:
 
 - **Changes requested** if any must-fix finding remains; note missing information under Limitations
-- **Blocked** if missing information, access, or a human decision makes approval unsafe
+- **Blocked** if missing information, access, or a human decision makes approval unsafe, or, for Correctness, the review is incomplete
 - **Approved** otherwise
 
 No findings is a valid result. Do not add minor observations to fill the report.

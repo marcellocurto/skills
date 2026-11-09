@@ -10,7 +10,7 @@ Exclude implementation discussion and author justification. Reviewers of the sam
 - the requirements: the linked issue or, without one, the full agreed request; include all subsequent user-approved requirements, decisions, and exceptions, quoting user decisions verbatim
 - the PR description's intent, risks, and non-goals, and the issue's non-goals
 - the repository's instruction files, including any review decisions, trust assumptions, and realistic input sizes they record, and the project's ADRs that cover the changed code
-- validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit. For tests that passed, say whether any of them exercise the changed code, or that this is unknown, and list temporary probes separately from the project's tests
+- validation results: passed, failed, skipped, and not run; identify unavailable results or results for an earlier commit. For tests that passed, say whether any of them exercise the changed code, or that this is unknown, and list temporary probes separately from the project's tests. Include each end-to-end check with what it showed
 - the calling skill's resource rules, when it gives any
 - its lens, and the rules and return format below
 
@@ -123,7 +123,7 @@ While tracing, check:
 - **Logs and errors don't leak.** Trace each field a changed log, trace, metric, or error message emits, especially on error branches, where redaction is often skipped and an upstream error can repeat a secret from a URL or header.
 - **Resource limits hold.** When the change parses, decompresses, fetches, or loops over untrusted input, confirm that its size, time, and count limits guard the actual peak use. A defect that defeats a limit is a finding, and plain high volume is not.
 
-Report a candidate once you can name where the input enters, the sensitive operation, and the path between them with no effective protection, even if you aren't sure of it, because the verifier checks every Security finding.
+Report a candidate once you can name where the input enters, the sensitive operation, and the path between them with no effective protection, even if you aren't sure of it, because the verifier checks every finding.
 
 Each finding's Trigger names the entry point, who controls the input, and the sensitive operation it reaches. Its Problem names the missing protection, who is harmed, and the authority or data that crossing this boundary gives the attacker. These are not findings: a guard against input that the types or callers already rule out, a protection you confirmed a framework or earlier layer supplies, and a risk a recorded trust assumption accepts, unless the change makes that assumption's stated reason no longer true.
 
@@ -169,7 +169,7 @@ Any reviewer or verifier can return Noticed items. Check each against the code. 
 
 ## Verifier
 
-Verify every finding you plan to drop, every finding from the Security lens or with a security hole as its Outcome, and every finding the calling skill names. Security findings always go to the verifier because crafted input counts as a trigger for them, so they pass a lower bar. This selects findings for independent checking, not by overall complexity. Skip when none qualify.
+Verify every finding, whether you plan to keep or drop it. A kept finding that is wrong costs a fix, a commit, and another review round, and a dropped one that is right ships a defect, so nobody acts on a finding until an independent verifier has checked it. Skip when there are no findings.
 
 Start one reviewer with the shared brief, the findings' diff, and each candidate's anchor, problem, trigger, outcome, and evidence. Withhold your keep/drop plan and reasons.
 
