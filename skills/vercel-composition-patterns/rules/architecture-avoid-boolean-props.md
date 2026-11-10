@@ -9,7 +9,9 @@ tags: composition, props, architecture
 
 Don't add boolean props like `isThread`, `isEditing`, `isDMThread` to customize
 component behavior. Each boolean doubles possible states and creates
-unmaintainable conditional logic. Use composition instead.
+unmaintainable conditional logic. Use composition instead. A boolean for
+independent state, such as `disabled`, `checked`, or `open`, is fine, because
+it does not select a variant.
 
 **Incorrect (boolean props create exponential complexity):**
 

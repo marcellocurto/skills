@@ -25,7 +25,7 @@ If any part of the release path stays unclear after reading, stop and ask instea
 1. **Pull requests.** Take them from the user's request. Fetch each with `gh pr view` to learn its base branch, head commit, checks, and mergeability.
 2. **Extra commits.** Commits already on the main branch that are not yet in an environment branch ship too. That is expected; list them in the report.
 3. **Environment-only commits.** For each environment branch, list the commits that are not on the main branch, ignoring merge commits, for example a hotfix pushed straight to `prod`. Leave them where they are; the forward promotion keeps them, and the report names them.
-4. **Pending migrations per environment.** Compare each environment branch with the main branch after the requested pull requests, and collect every migration in that difference, not only the ones in the named pull requests. Then check each environment's applied state so you skip migrations that already ran there.
+4. **Pending migrations per environment.** Compare what each environment runs now, which is its environment branch or, for an environment the main branch deploys, the main branch before the merges, with the main branch after the requested pull requests. Collect every migration in that difference, not only the ones in the named pull requests. Then check each environment's applied state so you skip migrations that already ran there. If the migration tool reports an unapplied migration that is not in that difference, such as one left by an earlier failed release, stop: it is outside this release, and nobody has decided whether it should run.
 
 ## Plan the order
 
@@ -39,7 +39,7 @@ If any part of the release path stays unclear after reading, stop and ask instea
 
 When the project documents its own procedure, follow it. Keep the tool's own migration order. If migrations from different pull requests claim the same sequence position or depend on each other in the opposite order, stop.
 
-Every merge into a branch that deploys an environment is a deploy. When the main branch deploys an environment, the merges in the next section are that environment's deploys, so run its before-deploy migrations for a pull request before merging it.
+Every merge into a branch that deploys an environment is a deploy. When the main branch deploys an environment, each merge in the next section is a separate deploy of that environment, so that environment goes through the full deploy sequence once per pull request during the merges, and the promotion section skips it.
 
 ## Merge the pull requests
 
@@ -48,7 +48,9 @@ For each pull request, in the planned order:
 1. If it is stacked on a pull request you just merged, retarget it to the main branch with `gh pr edit --base` when GitHub has not done so.
 2. If the repository requires branches to be up to date, update it with `gh pr update-branch`.
 3. Wait until its required checks pass and it is mergeable. Resolve conflicts that are purely mechanical; stop on conflicts that change behavior.
-4. Merge it with `gh pr merge` using a method the repository allows, preferring the one its history uses. Missing approval is not a reason to wait, but a merge blocked by branch protection is a reason to stop.
+4. When the main branch deploys an environment, run this pull request's before-deploy migrations there, with a dry run or status check first when the tool has one.
+5. Merge it with `gh pr merge` using a method the repository allows, preferring the one its history uses. Missing approval is not a reason to wait, but a merge blocked by branch protection is a reason to stop.
+6. When the main branch deploys an environment, finish this deploy before merging the next pull request: wait for the deploy to finish and succeed, run this pull request's after-deploy migrations, and verify them, as steps 5 to 7 under **Promote each environment** describe.
 
 After the last merge, record the head of the main branch as the **release commit**. Every environment receives this commit.
 
@@ -69,7 +71,7 @@ Check each finding against the code and the deploy docs yourself. A finding that
 
 Promote through pull requests. Open a pull request from the promotion source into the environment branch and merge it, instead of merging locally and pushing. Branch protection often blocks direct pushes, and the pull request runs the branch's checks and records what was promoted. Push directly only when the repository's instructions say promotions work that way.
 
-For each environment, in order:
+For each environment that an environment branch deploys, in order:
 
 1. **Confirm the previous environment.** Start only after the previous environment's deploy and migrations succeeded and checked out.
 2. **Run before-deploy migrations** for this environment, with a dry run or status check first when the tool has one.
@@ -88,6 +90,7 @@ Stop and report when:
 - the release path, a promotion route, or a migration command stays unclear after reading the repository
 - a pull request's checks fail, it conflicts in a way that changes behavior, or branch protection blocks its merge
 - a migration needs a sequence across two deploys, or migrations conflict in order
+- an environment has an unapplied migration that the release does not ship
 - the release review finds a problem that holds
 - a migration would delete or rewrite data in a way that neither the pull request nor the user's request describes
 - a deploy fails, a migration fails, or verification shows anything unexpected
@@ -103,6 +106,6 @@ Say whether everything shipped or where you stopped and why. Then list:
 - the extra commits from the main branch that shipped with them
 - the release commit
 - the release review's findings, each with whether it held and why
-- for each environment: the promotion pull request, the deploy result, each migration with whether it ran before or after the deploy, how it was verified, and its result
+- for each environment: the promotion pull request, or the merges that deployed it, the deploy result, each migration with whether it ran before or after the deploy, how it was verified, and its result
 - the environment-only commits found on each environment branch
 - anything left undone, with the command or decision needed to finish it

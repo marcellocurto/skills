@@ -17,8 +17,8 @@ lifting state, and composing internals.
 
 ### Component Architecture (HIGH)
 
-- `architecture-avoid-boolean-props.md` - Don't add boolean props to customize
-  behavior
+- `architecture-avoid-boolean-props.md` - Don't add boolean mode flags that
+  combine into component variants
 - `architecture-compound-components.md` - Structure as compound components with
   shared context
 

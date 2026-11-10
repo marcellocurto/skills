@@ -119,14 +119,14 @@ While tracing, check:
 - **Security controls cover the new case.** When the change adds a credential type, field, scope, or resource, search for the redaction lists, revocation handlers, authorization mappings, and sanitizers that apply to that kind of thing, and confirm each covers it. When it adds an entry to such a list, confirm the entry matches the format the list's consumer reads.
 - **Sibling paths have the same guard.** When the change adds a guard to one branch, handler, or layer, check the other branches, early returns, error paths, and handlers that reach the same resource.
 - **Security decisions fail closed.** On error, cancellation, and a missing value, confirm the decision doesn't end in allow. At the exact limit and the values on either side, confirm the result matches whether the limit is meant to be inclusive or exclusive.
-- **Safety claims hold.** A comment, a name, or a header treated as trusted that says input is validated, internal, or safe is a claim. Confirm it in the code or infrastructure before relying on it.
+- **Safety claims hold.** A comment, a name, or a header treated as trusted that says input is validated, internal, or safe is a claim. Confirm it in the code or infrastructure before relying on it. A static type on input from outside the process is a claim too, because nothing checks it at runtime.
 - **Returned values are safe where they're used.** When a changed function builds a command, query, URL, path, or template and returns it, read the callers that use it, because the sensitive operation is there.
 - **Logs and errors don't leak.** Trace each field a changed log, trace, metric, or error message emits, especially on error branches, where redaction is often skipped and an upstream error can repeat a secret from a URL or header.
 - **Resource limits hold.** When the change parses, decompresses, fetches, or loops over untrusted input, confirm that its size, time, and count limits guard the actual peak use. A defect that defeats a limit is a finding, and plain high volume is not.
 
 Report a candidate once you can name where the input enters, the sensitive operation, and the path between them with no effective protection, even if you aren't sure of it, because the verifier checks every finding.
 
-Each finding's Trigger names the entry point, who controls the input, and the sensitive operation it reaches. Its Problem names the missing protection, who is harmed, and the authority or data that crossing this boundary gives the attacker. These are not findings: a guard against input that the types or callers already rule out, a protection you confirmed a framework or earlier layer supplies, and a risk a recorded trust assumption accepts, unless the change makes that assumption's stated reason no longer true.
+Each finding's Trigger names the entry point, who controls the input, and the sensitive operation it reaches. Its Problem names the missing protection, who is harmed, and the authority or data that crossing this boundary gives the attacker. These are not findings: a guard against input that a runtime check or every caller already rules out, a protection you confirmed a framework or earlier layer supplies, and a risk a recorded trust assumption accepts, unless the change makes that assumption's stated reason no longer true.
 
 ### Blast radius
 

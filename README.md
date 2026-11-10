@@ -45,7 +45,7 @@ Skills for planning, building, reviewing, and improving software. You can run an
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Define and maintain the codebase's shared domain terms and the architectural decisions behind them.
 - **[`grilling`](skills/grilling/SKILL.md)**: Stress-test an idea or decision through focused questions about the assumptions and tradeoffs that matter.
 - **[`grill-with-docs`](skills/grill-with-docs/SKILL.md)**: Stress-test a plan through questions while recording the resulting domain terms and lasting architectural decisions in the project's docs.
-- **[`tdd`](skills/tdd/SKILL.md)**: Build features and bug fixes test-first. Agents load it before implementing behavior that users or callers rely on, even when the request does not mention tests. Not for removals, behavior-preserving refactors, design exploration, prototypes, styling, copy, configuration, or data cleanup.
+- **[`tdd`](skills/tdd/SKILL.md)**: Build features and bug fixes test-first. Agents load it before implementing behavior that users or callers rely on, even when the request does not mention tests. Not for removals, behavior-preserving refactors, design exploration, prototypes, styling, copy, configuration that leaves relied-on behavior unchanged, or data cleanup.
 - **[`wizard`](skills/wizard/SKILL.md)**: Create an interactive Bash wizard for setup steps that only a person can complete, such as credentials, dashboards, or cutovers.
 
 ## Sources and Attribution
