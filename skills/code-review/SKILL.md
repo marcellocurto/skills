@@ -19,7 +19,7 @@ It runs in one of three modes:
 
 If the host can't start agents, do each reviewer's work, including the Verifier's, in a separate local pass, even for a change you wrote, and report that the passes weren't independent.
 
-Check that the agents this skill starts leave the checkout as they found it. Before each group starts, whether reviewers, a fix-check reviewer, or verifiers, record the branch, the commit, and the output of `git status --porcelain`. When the group has returned, compare. A difference leaves the review incomplete, because the agents may have read changed code. Leave the checkout as it is, since the change may be someone else's, and name what differs so the person or skill that asked can decide what to keep.
+Check that the agents this skill starts leave the checkout as they found it. Before each group starts, whether reviewers, a fix-check reviewer, or verifiers, record the branch, the commit, and the output of `git status --porcelain --untracked-files=all` and `git diff HEAD | git hash-object --stdin`, which changes when a file that already had uncommitted changes is edited again. When the group has returned, compare. A difference leaves the review incomplete, because the agents may have read changed code. Leave the checkout as it is, since the change may be someone else's, and name what differs so the person or skill that asked can decide what to keep.
 
 ## 1. Pin the change
 

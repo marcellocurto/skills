@@ -44,7 +44,7 @@ When behavior is removed, the tests deleted with it are not lost protection. Che
 
 ### Checking sensitivity
 
-When it is unclear whether an important test would fail on the regression it claims to catch, use existing failing-before evidence or run it against a known broken version. If introducing a temporary defect would settle the question, do it in a disposable copy, keep the test unchanged, restore the copy, and report what you saw. Do not modify the reviewed checkout or require mutation-testing infrastructure. A test that passes against a defect is disproved only for that defect.
+When it is unclear whether an important test would fail on the regression it claims to catch, use existing failing-before evidence or run it against a known broken version. If introducing a temporary defect would settle the question, do it in a disposable copy of only the files the experiment needs, made without the checkout's `.git`, because git commands in a copied worktree act on the original. Keep the test unchanged, restore the copy, and report what you saw. Do not modify the reviewed checkout or require mutation-testing infrastructure. A test that passes against a defect is disproved only for that defect.
 
 ## Classify
 
