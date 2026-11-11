@@ -19,6 +19,8 @@ It runs in one of three modes:
 
 If the host can't start agents, do each reviewer's work, including the Verifier's, in a separate local pass, even for a change you wrote, and report that the passes weren't independent.
 
+Check that the agents this skill starts leave the checkout as they found it. Before each group starts, whether reviewers, a fix-check reviewer, or verifiers, record the branch, the commit, and the output of `git status --porcelain`. When the group has returned, compare. A difference leaves the review incomplete, because the agents may have read changed code. Leave the checkout as it is, since the change may be someone else's, and name what differs so the person or skill that asked can decide what to keep.
+
 ## 1. Pin the change
 
 Review the pull request, branch, commit range, or working changes the user or calling skill names. If none is named, review the current branch against the default branch plus uncommitted changes. Record the base and head commits and the merge base, and review `git diff <merge-base>..<head>` with its commit list. For working changes, include staged, unstaged, and relevant untracked files.
@@ -50,7 +52,7 @@ For adversarial, blind-spot, or tear-it-apart requests, start the reviewers as a
 
 ## 4. Check coverage
 
-Wait for all reviewers, then compare each reviewer's inspected and skipped areas with the files its lenses should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, or skipped or left unmentioned files its lenses should read, limiting the rerun to what it missed. Report any gap that remains as a coverage gap, naming the lens and the files. A gap in a lens the **Correctness** verdict covers, as listed under **Report**, leaves the review incomplete, because nothing has checked those files for the harm that lens looks for.
+Wait for all reviewers, then compare each reviewer's inspected and skipped areas with the files its lenses should read. A lens may rule files out by stating why they fall outside it, as Security does for files that touch no trust boundary. Rerun a reviewer once if it failed, returned nothing, could not load a skill its lens uses, or skipped or left unmentioned files its lenses should read, limiting the rerun to what it missed. Report any gap that remains as a coverage gap, naming the lens and the files. A gap in a lens the **Correctness** verdict covers, as listed under **Report**, leaves the review incomplete, because nothing has checked those files for the harm that lens looks for.
 
 A lens that says it has nothing to review, such as Security when the change touches no trust boundary, has returned a result. If no reviewer has returned a result after its rerun, the review failed: say so instead of reporting findings.
 
@@ -87,6 +89,7 @@ When another skill runs this review, return to it:
 
 - the lenses that ran, each coverage gap with its lens and files, and whether the review is incomplete; or that the review failed
 - whether reviewers ran as local passes instead of independent agents
+- what differs in the checkout after the agents ran, which leaves the review incomplete
 - each kept finding with its lens, anchor, problem, trigger, Outcome, evidence, and fix, marked _(reproduced)_ when the evidence was reproduced, and whether the verifier confirmed it
 - each dropped finding with its lens and the reason
 - each finding left unverified or disputed, with your plan for it and each side's evidence
@@ -118,7 +121,7 @@ Label each kept finding:
 Set two verdicts. **Correctness** covers the Correctness, Diff read, Scenarios, Security, Blast radius, Rollout, Specification, and Tests findings, except Tests findings only about a test's maintenance cost. **Maintainability** covers the Repository rules and Simplicity findings, and those Tests findings. For each, take the first that applies:
 
 - **Changes requested** if any must-fix finding remains; note missing information under Limitations
-- **Blocked** if missing information, access, or a human decision makes approval unsafe, or a coverage gap or unanswered finding in a lens the verdict covers leaves the review incomplete
+- **Blocked** if missing information, access, or a human decision makes approval unsafe, or the review is incomplete: a coverage gap or unanswered finding in a lens the verdict covers, or a checkout that differs after the agents ran
 - **Approved** otherwise
 
 No findings is a valid result. Do not add minor observations to fill the report.
@@ -150,11 +153,11 @@ Problems the change doesn't cause, written as under **Noticed items**.
 
 ## Limitations
 
-Coverage gaps, unverified or disputed findings, reviews done in local passes instead of by independent agents, and anything else that could not be checked, with whether it affects the verdict.
+Coverage gaps, unverified or disputed findings, reviews done in local passes instead of by independent agents, what differs in the checkout after the agents ran, and anything else that could not be checked, with whether it affects the verdict.
 
 ## Adversarial
 
 Only for adversarial reviews: the intent tested, where reviewers disagreed, and dismissed leads worth a second look.
 ```
 
-End by stating that the review made no changes.
+End by stating that the review made no changes, or by naming what differs in the checkout after its agents ran.
