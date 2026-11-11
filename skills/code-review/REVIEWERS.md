@@ -1,6 +1,6 @@
 # Reviewers
 
-These are the instructions for the reviewers that [SKILL.md](SKILL.md) starts: the ones **Lenses** lists for a review, one for a fix check, and one for the **Verifier**. Run them all on Sonnet or GPT Sol, whichever the host offers, unless the user asks for another model; the session's own model is for implementing. Choose each agent type to suit its lenses.
+These are the instructions for the reviewers that [SKILL.md](SKILL.md) starts: the ones **Lenses** lists for a review, one for a fix check, and one for the **Verifier**. Run them all on Sonnet or GPT Sol, whichever the host offers, at high reasoning effort, unless the user asks for another model or effort; the session's own model is for implementing. Set the effort on each agent as you start it, because a host left to choose can run a reviewer at a lower effort than the session's. Choose each agent type to suit its lenses.
 
 ## What every reviewer gets
 
