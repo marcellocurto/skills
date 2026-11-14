@@ -69,7 +69,7 @@ When you make drafts, build each one as its own HTML file in `.tmp/drafts/<topic
 
 If `node_modules/.bin/playwright-core` is missing, run `bunx playwright-core@<version> screenshot` with the version from the lockfile. Don't capture or record animations; the user opens the file to see them.
 
-In the reply, give each draft a short description, a link to its HTML file by absolute path, and its desktop and mobile screenshots embedded by absolute path.
+In the reply, give each draft a short description, a link to its HTML file by absolute path, and its desktop and mobile screenshots embedded by absolute path. Don't build anything else to present the drafts, such as a gallery, a wrapper page, or a page that switches between them; put the effort into the drafts themselves.
 
 ## More on writing in design
 
