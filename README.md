@@ -52,7 +52,7 @@ Skills for planning, building, reviewing, and improving software. You can run an
 
 Several skills are forked, adapted, or inspired by other projects:
 
-- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, a rule for existing design systems, and product-specific copy guidance. The original license is retained.
+- [Anthropic's frontend-design skill](https://github.com/anthropics/skills/tree/main/skills/frontend-design): `frontend-design`, adapted with scoped planning, a rule for existing design systems, product-specific copy guidance, and a workflow for building and presenting drafts. The original license is retained.
 - [Anthropic's code-simplifier agent](https://github.com/anthropics/claude-plugins-official/blob/main/plugins/code-simplifier/agents/code-simplifier.md): the readability checks, the over-simplifying test, and the simplification step in `implement-to-pr`, written locally in `audit-code-complexity`, `code-review`, and `implement-to-pr`.
 - [Anthropic's code-review plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review): the independent check of findings, the Repository rules and Diff read lenses, and the lighter review of trivial diffs, written locally in `code-review`, and commit-pinned links in review comments, written locally in `babysit-pr`.
 - [Anthropic's Claude Code Security Reviewer](https://github.com/anthropics/claude-code-security-review): the Security lens's investigation order, independent checks of security findings, and project trust assumptions with their reasons, written locally in `code-review` and `babysit-pr`.
