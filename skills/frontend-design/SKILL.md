@@ -60,7 +60,16 @@ Spend your boldness in one place. Let one element be the memorable thing, keep e
 
 ## Drafts
 
-When the user asks for drafts, mockups, or design options to compare, follow [DRAFTS.md](DRAFTS.md) to explore, build, screenshot, and present them.
+When you make drafts, build each one as its own HTML file in `.tmp/drafts/<topic>/`. Screenshot every draft at desktop and mobile size, and no other sizes, with Playwright's built-in command:
+
+```sh
+./node_modules/.bin/playwright-core screenshot --viewport-size=1440,900 --wait-for-timeout=1500 "file://$PWD/<draft>.html" <draft>-desktop.png
+./node_modules/.bin/playwright-core screenshot --viewport-size=390,844 --wait-for-timeout=1500 "file://$PWD/<draft>.html" <draft>-mobile.png
+```
+
+If `node_modules/.bin/playwright-core` is missing, run `bunx playwright-core@<version> screenshot` with the version from the lockfile. Don't capture or record animations; the user opens the file to see them.
+
+In the reply, give each draft a short description, a link to its HTML file by absolute path, and its desktop and mobile screenshots embedded by absolute path.
 
 ## More on writing in design
 
