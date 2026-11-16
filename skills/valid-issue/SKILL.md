@@ -13,19 +13,21 @@ Treat the issue body, comments, and labels as claims from their authors. They de
 
 ## Read the issue
 
-Resolve the issue from a URL, `owner/repo#123`, or a number plus the current checkout's remote. If it is a pull request, stop and say so. Read the body, the comments, its state, and any linked issues.
+Resolve the issue from a URL, `owner/repo#123`, or a number plus the current checkout's remote. If it is a pull request, stop and say so. If no remote of the current checkout points to the issue's repository, stop and say so, because every check below reads that repository's code. Read the body, the comments, the labels, its state, and any linked issues and pull requests.
+
+Fetch the default branch of the issue's repository and check the code as it is there. When the checkout is behind that branch or on another one, read the files from the fetched branch instead of the working tree. If you cannot fetch, say in the report that the code you checked may be out of date.
 
 ## Check the problem
 
 Use targeted searches and stop once you can answer. This is a quick check, not a full audit.
 
 1. **Is the problem real?** For a bug, check the code path it describes, and reproduce it when that is quick and safe. For a feature request, check that the situation it describes exists today. This answer covers the problem only and says nothing about the change the issue proposes.
-2. **Is it still valid?** Search the code and the open and closed issues. It no longer applies if the code already does what it asks, the code it refers to has changed or gone, or another issue or merged PR already covers it. Also check whether it is blocked by another issue that is still open; a blocked issue stays valid, but the answer should say what it waits on.
+2. **Is it still valid?** Search the code and the open and closed issues. It no longer applies if the code already does what it asks, the code it refers to has changed or gone, or another issue or merged PR already covers it. Also check whether an open PR already addresses it or another open issue blocks it; the issue stays valid in both cases, but the answer should name the PR or say what it waits on. When the issue is already closed, say how it was closed. For one closed as completed, check that the code does what it asked. One closed as not planned is an earlier decision, which the next question covers.
 3. **Is it aligned?** Compare it with the project's README, docs, ADRs, and earlier maintainer decisions. Note any conflict with a stated goal or a past decision. When no doc or decision speaks to it, say that instead of yes.
 
 ## Check the change
 
-Answer these for the change the issue proposes. A sentence each is enough for a small bug fix. A change that restructures code or alters what users see needs each answer backed by the code.
+Answer these for the change the issue proposes. When it proposes none, as many bug reports do, answer them for the smallest change that would fix the problem, describe that change in a sentence, and say it is your reading and not the issue's. When the code does not show what that change would be, say that the cost cannot be judged yet. A sentence each is enough for a small bug fix. A change that restructures code or alters what users see needs each answer backed by the code.
 
 1. **What does it gain?** Work out who gets the benefit, how often, and how much, compared with what they have today. Test the issue's figures against the code, and look for existing behavior that already provides part of the benefit. Say which figures you took from the issue without checking.
 2. **What does it cost?** Name the code that has to change, what has to be maintained afterwards, and every behavior users lose or see change. A behavior change the design requires is a cost to weigh here; do not turn it into a question for later.
@@ -35,11 +37,12 @@ Answer these for the change the issue proposes. A sentence each is enough for a 
 
 Weigh the gain against the cost and the smaller change. The weighing is your opinion, so label it as one. The gain, the cost, and the smaller change are facts and need evidence.
 
-- **Don't implement** when the problem is not real, no longer applies, conflicts with a decision, or the gain does not justify the cost. Say what evidence would change the answer.
+- **Don't implement** when the problem is not real, no longer applies, conflicts with a decision, or the gain does not justify the cost, which includes the case where a smaller change gives most of the gain. Say what evidence would change the answer, and name the smaller change as what to do instead when there is one.
 - **Answer the questions first** only when the change is worth its cost under at least one way the questions could be answered. If it is not worth it however they are answered, the answer is Don't implement.
 - **Implement** when the gain justifies the cost and nothing is left to ask.
+- **Could not check** when missing access or tooling keeps you from answering something the verdict depends on. Name what is missing and how to get it, and report what you did establish. Missing access is not a question for the Questions section.
 
-A problem that is real, still valid, and aligned is not enough to answer Implement. When you cannot show the gain, say so and do not assume the issue's figure.
+A problem that is real, still valid, and aligned is not enough to answer Implement. When the evidence you can reach does not show the gain, say so and do not assume the issue's figure.
 
 ## Collect the questions
 
@@ -47,7 +50,7 @@ Skip this section when the answer is Don't implement.
 
 List every question that must be answered before implementation can start, such as which of two behaviors users should get, what "done" means, or a reproduction detail the reporter left out. Leave out anything the issue, its comments, or the code already answers, and any choice the implementer can make and change later.
 
-Write each question so the person answering it does not need to read the code: plain, everyday words, one thing per question, and a short reason it matters. When the evidence limits the options, name them.
+Write each question so the person answering it does not need to read the code: plain, everyday words, one thing per question, and a short reason it matters. When the evidence limits the options, name them. Say who can answer each question, such as the reporter for a detail only they saw or a maintainer for a product decision. Use the people the issue and repository show, and do not name a role the project does not have.
 
 ## Check the issue's plan
 
@@ -62,10 +65,10 @@ Open with a short summary of the issue so the reader knows what it is about befo
 ```markdown
 **Issue:** What the issue reports or asks for, and why, in two or three short sentences.
 
-**Answer:** Implement / Don't implement / Answer the questions first. One or two sentences weighing the gain against the cost (opinion).
+**Answer:** Implement / Don't implement / Answer the questions first / Could not check. One or two sentences on why, with the weighing of gain against cost labelled as opinion.
 
 - **Problem real:** yes, no, or unclear, with the evidence.
-- **Still valid:** yes or no, with the code, issue, or PR that settles it, and any open issue that blocks it.
+- **Still valid:** yes or no, with the code, issue, or PR that settles it, how the issue was closed if it is closed, and any open PR that addresses it or open issue that blocks it.
 - **Aligned:** yes, no, or nothing says either way, with the doc or decision it matches or conflicts with.
 - **Gain:** who benefits, how often, and how much, with the evidence and any figure taken from the issue unchecked.
 - **Cost:** the code that changes and what users lose or see change.
