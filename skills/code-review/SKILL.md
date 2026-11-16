@@ -98,16 +98,27 @@ When another skill runs this review, return to it:
 
 ## Noticed items
 
-Noticed items reach people who haven't read the code they're about, so write each one for a developer who has never opened that part of the codebase. Merge items that share a cause, keeping every location and the most harmful Outcome, and list the most harmful first. Write each in this shape:
+Noticed items reach people who haven't read the code they're about, and what the reader decides about each is whether to act on it. Write each one for a developer who has never opened that part of the codebase, as one or two plain sentences with no labelled fields: what goes wrong and for whom, with the file and line, then the fix and its size. When nothing goes wrong today, say which later change the problem makes harder or riskier. Explain an internal name the first time it appears.
+
+Merge items that share a cause, keeping every location. Sort the items into the groups below by what you recommend, most harmful first within a group. Number them in one sequence across the groups, so the reader can answer with the numbers, and leave out an empty group:
 
 ```markdown
-**What goes wrong, in plain words.** Who runs into it, when, and what they see. Then the cause, with the file and line, explaining any internal name the first time it appears.
+**I'd fix now:**
 
-- **Outcome:** a security hole, data loss, a crash, a stuck job, a wrong result, or a cost to future changes.
-- **Why left:** why this change doesn't fix it, such as that it predates the change.
-- **Next step:** the fix and its size, or the decision it needs first.
-- **Evidence:** reproduced, with the probe or test, or reasoned, with the code path. For an unverified item, say what remains uncertain.
+1. What goes wrong and for whom, with the file and line. The fix and its size.
+
+**Needs its own change or your decision:**
+
+2. The same, ending with the size of the change or the decision it waits on.
+
+**I'd leave:**
+
+3. The problem in one sentence, and why it isn't worth doing.
 ```
+
+- **I'd fix now** holds only items whose fix is a few lines and needs no decision, and that you checked yourself: read the code and confirm what goes wrong, every place it happens, and that the fix is the size you say. Readers act on this group without looking again.
+- An item you couldn't check that way goes in the second group and says what remains uncertain.
+- An item whose fix is a new test goes under **I'd leave** unless the test would catch a realistic regression in behavior that users or callers rely on. An item whose fix is a shared helper goes there unless the helper would own a rule or concept; one that only builds a value or passes its arguments on doesn't.
 
 ## Report
 

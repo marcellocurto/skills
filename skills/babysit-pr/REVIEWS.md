@@ -50,7 +50,7 @@ An out-of-diff anchor rejects the whole review. Move it to a causal changed line
 
 ## Fix check
 
-After a round's fixes are committed and before they are pushed, run `code-review` as a fix check, with the inputs its **Fix check** section lists. Take `last_reviewed_commit` and `first_reviewed_commit` from the `reviews` field of `watch_pr.py`; a round's second fix check starts at the commit the first check reviewed. What the round answers is its threads and the fix-check findings it fixes, each with the reply you drafted.
+After a round's fixes are committed and before they are pushed, run `code-review` as a fix check, with the inputs its **Fix check** section lists. Take `last_reviewed_commit` and `first_reviewed_commit` from the `reviews` field of `watch_pr.py`; each later fix check in a round starts at the commit the check before it reviewed. What the round answers is its threads and the fix-check findings it fixes, each with the reply you drafted.
 
 If it reports that the review failed or is incomplete, stop under **Review failed or incomplete** in `SKILL.md`. If a finding stays disputed, stop under **Reviewers disagree**. Otherwise apply [Decide each comment](SKILL.md#decide-each-comment), including **Late rounds**, to its findings. Its findings don't become threads. Fix the ones that qualify in the same push, and list the rest under follow-ups with the reason another round is unwarranted.
 
