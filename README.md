@@ -39,7 +39,6 @@ Skills for planning, building, reviewing, and improving software. You can run an
 - **[`vercel-react-best-practices`](skills/vercel-react-best-practices/SKILL.md)**: Apply Vercel's React and Next.js performance guidance while writing or reviewing application code.
 - **[`code-review`](skills/code-review/SKILL.md)**: Review a specific diff, pull request, or commit range with independent reviewers for correctness, security, maintainability, and repository rules, and check each finding against the code. `babysit-pr` runs it for first reviews and for checking fixes. Whole-codebase and current-state subsystem audits fall outside this skill.
 - **[`frontend-design`](skills/frontend-design/SKILL.md)**: Choose the visual direction, typography, layout, and interface copy when building new UI or reshaping an existing one.
-- **[`shadcn`](skills/shadcn/SKILL.md)**: Build, update, debug, and style shadcn/ui components using the project's registry and conventions.
 - **[`codebase-design`](skills/codebase-design/SKILL.md)**: Design small, type-safe interfaces that hide complexity from callers and give domain logic a clear home.
 - **[`improve-codebase-architecture`](skills/improve-codebase-architecture/SKILL.md)**: Find high-value ways to deepen a codebase's modules, present them visually, and explore the chosen change with you.
 - **[`domain-modeling`](skills/domain-modeling/SKILL.md)**: Define and maintain the codebase's shared domain terms and the architectural decisions behind them.
@@ -61,7 +60,6 @@ Several skills are forked, adapted, or inspired by other projects:
 - [Matt Pocock's skills](https://github.com/mattpocock/skills): `grill-with-docs`, `improve-codebase-architecture`, `triage`, `diagnosing-bugs`, `to-tickets`, `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `tdd`, and `wizard`.
 - [Cursor PStack](https://github.com/cursor/plugins/tree/main/pstack/skills): `explain-codebase`, `blast-radius-audit`, and the adversarial mode in `code-review`.
 - [Roark Coding Agent](https://github.com/marcellocurto/roark-coding-agent): `pr-audit`, `create-pull-request`, the comment-audit workflow in `babysit-pr`, the review-context helper shared by `babysit-pr` and `to-tickets`, and the review lenses in `code-review`.
-- [shadcn/ui](https://github.com/shadcn/ui/tree/main/skills/shadcn): `shadcn`. CLI behavior is referenced from the [official CLI documentation](https://ui.shadcn.com/docs/cli).
 - [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills): `vercel-composition-patterns` and `vercel-react-best-practices`.
 
 ## Development
