@@ -56,20 +56,27 @@ Then review that plan against the brief before building: if any part of it reads
 
 ## Restraint and self-critique
 
-Spend your boldness in one place. Let one element be the memorable thing, keep everything around it quiet and disciplined, and cut any decoration that does not serve the brief. Build to a quality floor without announcing it: responsive down to mobile, visible keyboard focus, reduced motion respected, visually accessible, harmonious color palettes. Critique your own work as you build, taking screenshots to review if your environment supports it — a picture is worth 1000 tokens. Consider Chanel's advice: before leaving the house, take a look in the mirror and remove one accessory. Human creatives have memory and always try to do something new, so if you have a space to quickly jot down notes about what you've tried, it can help you in future passes.
+Spend your boldness in one place. Let one element be the memorable thing, keep everything around it quiet and disciplined, and cut any decoration that does not serve the brief. Build to a quality floor without announcing it: web pages and apps responsive down to mobile, visible keyboard focus, reduced motion respected, visually accessible, harmonious color palettes. Critique your own work as you build, taking screenshots to review if your environment supports it — a picture is worth 1000 tokens. Consider Chanel's advice: before leaving the house, take a look in the mirror and remove one accessory. Human creatives have memory and always try to do something new, so if you have a space to quickly jot down notes about what you've tried, it can help you in future passes.
 
 ## Drafts
 
-When you make drafts, build each one as its own HTML file in `.tmp/drafts/<topic>/`. Screenshot every draft at desktop and mobile size, and no other sizes, with Playwright's built-in command:
+When you make drafts, build each one as its own HTML file in `.tmp/drafts/<topic>/`. Screenshot every draft with Playwright's built-in command, at desktop size by default:
 
 ```sh
 ./node_modules/.bin/playwright-core screenshot --viewport-size=1440,900 --wait-for-timeout=1500 "file://$PWD/<draft>.html" <draft>-desktop.png
+```
+
+Add a mobile screenshot only when the draft is a web page or web app that people will use on a phone:
+
+```sh
 ./node_modules/.bin/playwright-core screenshot --viewport-size=390,844 --wait-for-timeout=1500 "file://$PWD/<draft>.html" <draft>-mobile.png
 ```
 
+When the draft has a fixed size of its own, such as a slide, poster, social image, or desktop app window, take a single screenshot with the viewport set to that size instead. Take no other sizes.
+
 If `node_modules/.bin/playwright-core` is missing, run `bunx playwright-core@<version> screenshot` with the version from the lockfile. Don't capture or record animations; the user opens the file to see them.
 
-In the reply, give each draft a short description, a link to its HTML file by absolute path, and its desktop and mobile screenshots embedded by absolute path. Don't build anything else to present the drafts, such as a gallery, a wrapper page, or a page that switches between them; put the effort into the drafts themselves.
+In the reply, give each draft a short description, a link to its HTML file by absolute path, and its screenshots embedded by absolute path. Don't build anything else to present the drafts, such as a gallery, a wrapper page, or a page that switches between them; put the effort into the drafts themselves.
 
 ## More on writing in design
 
